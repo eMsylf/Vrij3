@@ -32,35 +32,95 @@ public class PlayerController : MonoBehaviour
 
     Vector2 MovementInput;
     public float Speed = 1f;
+    public float DodgeSpeed = 2f;
+    public float DodgeDuration = 1f;
+    public Vector2 DodgeDirection;
+
+    public MoveState _MoveState;
+    public enum MoveState
+    {
+        Moving,
+        Dodging,
+        Idle,
+        Stunned
+    }
 
     private void Awake()
     {
         Controls.InGame.Enable();
         Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
-        Debug.Log("Hi");
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        Controls.InGame.Movement.canceled += _ => Stop();
+        Controls.InGame.Dodge.performed += _ => Dodge();
     }
 
     private void FixedUpdate()
     {
-        Rigidbody.AddForce(MovementInput.x, 0f, MovementInput.y);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        switch (_MoveState)
+        {
+            case MoveState.Moving:
+                break;
+            case MoveState.Dodging:
+                MovementInput = DodgeDirection * DodgeSpeed;
+                break;
+            case MoveState.Stunned:
+                break;
+        }
+        Rigidbody.MovePosition(Rigidbody.position + new Vector3(MovementInput.x, 0f, MovementInput.y));
     }
 
     private void Move(Vector2 input)
     {
-        Debug.Log("Move! " + input);
-        MovementInput = input * Speed;
+        //Debug.Log("Move! " + input);
+        switch (_MoveState)
+        {
+            case MoveState.Moving:
+                MovementInput = input * Speed;
+                break;
+            case MoveState.Stunned:
+                MovementInput = input * 0f;
+                break;
+        }
+    }
+
+
+    private void Stop()
+    {
+        //Debug.Log("Stop!");
+        MovementInput = Vector2.zero;
+    }
+
+    private void Dodge()
+    {
+        if (_MoveState == MoveState.Dodging)
+        {
+            Debug.Log("Already dodging");
+            return;
+        }
+
+        StartCoroutine(Dodge(DodgeDuration));
+    }
+
+    private IEnumerator Dodge(float duration)
+    {
+        _MoveState = MoveState.Dodging;
+        DodgeDirection = MovementInput;
+        Debug.Log("Dodge!");
+        yield return new WaitForSeconds(duration);
+        Debug.Log("Dodge end");
+        Stop();
+        _MoveState = MoveState.Moving;
+    }
+
+    private bool InputLock = false;
+    private void LockInput()
+    {
+        Debug.Log("Lock input");
+        InputLock = true;
+    }
+
+    private void UnlockInput()
+    {
+        Debug.Log("Unlock input");
+        InputLock = false;
     }
 }

@@ -27,7 +27,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Roll"",
+                    ""name"": ""Dodge"",
                     ""type"": ""Button"",
                     ""id"": ""503c1796-6ccd-43b4-b8f6-44962e5b74d5"",
                     ""expectedControlType"": ""Button"",
@@ -51,7 +51,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Roll"",
+                    ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -62,7 +62,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard & Mouse"",
-                    ""action"": ""Roll"",
+                    ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -201,7 +201,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": ""Thumbstick"",
                     ""id"": ""ffe7dff3-ef3e-42a7-84c3-0c89544cbb64"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=2)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard & Mouse"",
@@ -289,7 +289,7 @@ public class @Controls : IInputActionCollection, IDisposable
         // InGame
         m_InGame = asset.FindActionMap("InGame", throwIfNotFound: true);
         m_InGame_Movement = m_InGame.FindAction("Movement", throwIfNotFound: true);
-        m_InGame_Roll = m_InGame.FindAction("Roll", throwIfNotFound: true);
+        m_InGame_Dodge = m_InGame.FindAction("Dodge", throwIfNotFound: true);
         m_InGame_Interact = m_InGame.FindAction("Interact", throwIfNotFound: true);
     }
 
@@ -341,14 +341,14 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_InGame;
     private IInGameActions m_InGameActionsCallbackInterface;
     private readonly InputAction m_InGame_Movement;
-    private readonly InputAction m_InGame_Roll;
+    private readonly InputAction m_InGame_Dodge;
     private readonly InputAction m_InGame_Interact;
     public struct InGameActions
     {
         private @Controls m_Wrapper;
         public InGameActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_InGame_Movement;
-        public InputAction @Roll => m_Wrapper.m_InGame_Roll;
+        public InputAction @Dodge => m_Wrapper.m_InGame_Dodge;
         public InputAction @Interact => m_Wrapper.m_InGame_Interact;
         public InputActionMap Get() { return m_Wrapper.m_InGame; }
         public void Enable() { Get().Enable(); }
@@ -362,9 +362,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
-                @Roll.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnRoll;
-                @Roll.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnRoll;
-                @Roll.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnRoll;
+                @Dodge.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnDodge;
                 @Interact.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnInteract;
@@ -375,9 +375,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
-                @Roll.started += instance.OnRoll;
-                @Roll.performed += instance.OnRoll;
-                @Roll.canceled += instance.OnRoll;
+                @Dodge.started += instance.OnDodge;
+                @Dodge.performed += instance.OnDodge;
+                @Dodge.canceled += instance.OnDodge;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
@@ -406,7 +406,7 @@ public class @Controls : IInputActionCollection, IDisposable
     public interface IInGameActions
     {
         void OnMovement(InputAction.CallbackContext context);
-        void OnRoll(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
     }
 }
