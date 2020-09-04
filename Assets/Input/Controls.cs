@@ -20,9 +20,9 @@ public class @Controls : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Movement"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""f2783a58-7c5d-4bc8-b28f-38d5c1d7d943"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Stick"",
                     ""processors"": """",
                     ""interactions"": """"
                 },

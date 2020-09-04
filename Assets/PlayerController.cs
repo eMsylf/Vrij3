@@ -36,8 +36,8 @@ public class PlayerController : MonoBehaviour
     public float DodgeDuration = 1f;
     public Vector2 DodgeDirection;
 
-    public MoveState _MoveState;
-    public enum MoveState
+    private MoveState _MoveState;
+    private enum MoveState
     {
         Moving,
         Dodging,
@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
     private void Move(Vector2 input)
     {
-        //Debug.Log("Move! " + input);
+        Debug.Log("Move! " + input);
         switch (_MoveState)
         {
             case MoveState.Moving:
@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void Stop()
     {
-        //Debug.Log("Stop!");
+        Debug.Log("Stop!");
         MovementInput = Vector2.zero;
     }
 
@@ -105,22 +105,26 @@ public class PlayerController : MonoBehaviour
         _MoveState = MoveState.Dodging;
         DodgeDirection = MovementInput;
         Debug.Log("Dodge!");
+        
         yield return new WaitForSeconds(duration);
+
         Debug.Log("Dodge end");
-        Stop();
         _MoveState = MoveState.Moving;
+        Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
+        Debug.Log("Held direction at the end of dash: " + directionAtEndOfDodge);
+        Move(directionAtEndOfDodge);
     }
 
-    private bool InputLock = false;
-    private void LockInput()
-    {
-        Debug.Log("Lock input");
-        InputLock = true;
-    }
+    //private bool InputLock = false;
+    //private void LockInput()
+    //{
+    //    Debug.Log("Lock input");
+    //    InputLock = true;
+    //}
 
-    private void UnlockInput()
-    {
-        Debug.Log("Unlock input");
-        InputLock = false;
-    }
+    //private void UnlockInput()
+    //{
+    //    Debug.Log("Unlock input");
+    //    InputLock = false;
+    //}
 }
