@@ -47,10 +47,10 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        Controls.InGame.Enable();
-        Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
-        Controls.InGame.Movement.canceled += _ => Stop();
-        Controls.InGame.Dodge.performed += _ => Dodge();
+        Controls.Game.Enable();
+        Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
+        Controls.Game.Movement.canceled += _ => Stop();
+        Controls.Game.Dodge.performed += _ => Dodge();
     }
 
     private void FixedUpdate()

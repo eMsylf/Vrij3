@@ -15,7 +15,7 @@ public class @Controls : IInputActionCollection, IDisposable
     ""name"": ""Controls"",
     ""maps"": [
         {
-            ""name"": ""InGame"",
+            ""name"": ""Game"",
             ""id"": ""2680061e-e6f7-4b4d-9223-848700219278"",
             ""actions"": [
                 {
@@ -254,6 +254,112 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Menu"",
+            ""id"": ""7c06a6b8-e2a2-4948-98a0-39e5c73e013e"",
+            ""actions"": [
+                {
+                    ""name"": ""Toggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""30231658-998f-4896-b2b5-798d0778b93d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""0ba71961-7116-4ff8-b838-ac52ffa43a80"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Toggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b26b6a83-64c3-41ac-b55e-5daa2d2a8949"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Toggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""SlideShow"",
+            ""id"": ""096270c7-ab08-49ad-b24d-34ad8256d1ea"",
+            ""actions"": [
+                {
+                    ""name"": ""Continue"",
+                    ""type"": ""Button"",
+                    ""id"": ""d0e12201-0b81-4017-bd9f-bba8ad833ff6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3b8ba70-8acc-41c8-a792-b9dbe2f93e92"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""bf142aa4-833c-429f-b287-7996ec3b63d7"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Continue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""adb8b2cc-db9c-475d-88de-09a9bb6e3f9d"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Continue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""83cc5933-1317-42e1-9a40-e18e36f02e7c"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9404e946-95be-41b6-bd22-61efd1ee0c2e"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -286,11 +392,18 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     ]
 }");
-        // InGame
-        m_InGame = asset.FindActionMap("InGame", throwIfNotFound: true);
-        m_InGame_Movement = m_InGame.FindAction("Movement", throwIfNotFound: true);
-        m_InGame_Dodge = m_InGame.FindAction("Dodge", throwIfNotFound: true);
-        m_InGame_Interact = m_InGame.FindAction("Interact", throwIfNotFound: true);
+        // Game
+        m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
+        m_Game_Movement = m_Game.FindAction("Movement", throwIfNotFound: true);
+        m_Game_Dodge = m_Game.FindAction("Dodge", throwIfNotFound: true);
+        m_Game_Interact = m_Game.FindAction("Interact", throwIfNotFound: true);
+        // Menu
+        m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
+        m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
+        // SlideShow
+        m_SlideShow = asset.FindActionMap("SlideShow", throwIfNotFound: true);
+        m_SlideShow_Continue = m_SlideShow.FindAction("Continue", throwIfNotFound: true);
+        m_SlideShow_Skip = m_SlideShow.FindAction("Skip", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -337,39 +450,39 @@ public class @Controls : IInputActionCollection, IDisposable
         asset.Disable();
     }
 
-    // InGame
-    private readonly InputActionMap m_InGame;
-    private IInGameActions m_InGameActionsCallbackInterface;
-    private readonly InputAction m_InGame_Movement;
-    private readonly InputAction m_InGame_Dodge;
-    private readonly InputAction m_InGame_Interact;
-    public struct InGameActions
+    // Game
+    private readonly InputActionMap m_Game;
+    private IGameActions m_GameActionsCallbackInterface;
+    private readonly InputAction m_Game_Movement;
+    private readonly InputAction m_Game_Dodge;
+    private readonly InputAction m_Game_Interact;
+    public struct GameActions
     {
         private @Controls m_Wrapper;
-        public InGameActions(@Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Movement => m_Wrapper.m_InGame_Movement;
-        public InputAction @Dodge => m_Wrapper.m_InGame_Dodge;
-        public InputAction @Interact => m_Wrapper.m_InGame_Interact;
-        public InputActionMap Get() { return m_Wrapper.m_InGame; }
+        public GameActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_Game_Movement;
+        public InputAction @Dodge => m_Wrapper.m_Game_Dodge;
+        public InputAction @Interact => m_Wrapper.m_Game_Interact;
+        public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(InGameActions set) { return set.Get(); }
-        public void SetCallbacks(IInGameActions instance)
+        public static implicit operator InputActionMap(GameActions set) { return set.Get(); }
+        public void SetCallbacks(IGameActions instance)
         {
-            if (m_Wrapper.m_InGameActionsCallbackInterface != null)
+            if (m_Wrapper.m_GameActionsCallbackInterface != null)
             {
-                @Movement.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
-                @Dodge.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnDodge;
-                @Dodge.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnDodge;
-                @Dodge.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnDodge;
-                @Interact.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnInteract;
-                @Interact.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnInteract;
-                @Interact.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnInteract;
+                @Movement.started -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
+                @Dodge.started -= m_Wrapper.m_GameActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnDodge;
+                @Interact.started -= m_Wrapper.m_GameActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnInteract;
             }
-            m_Wrapper.m_InGameActionsCallbackInterface = instance;
+            m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Movement.started += instance.OnMovement;
@@ -384,7 +497,81 @@ public class @Controls : IInputActionCollection, IDisposable
             }
         }
     }
-    public InGameActions @InGame => new InGameActions(this);
+    public GameActions @Game => new GameActions(this);
+
+    // Menu
+    private readonly InputActionMap m_Menu;
+    private IMenuActions m_MenuActionsCallbackInterface;
+    private readonly InputAction m_Menu_Toggle;
+    public struct MenuActions
+    {
+        private @Controls m_Wrapper;
+        public MenuActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Toggle => m_Wrapper.m_Menu_Toggle;
+        public InputActionMap Get() { return m_Wrapper.m_Menu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
+        public void SetCallbacks(IMenuActions instance)
+        {
+            if (m_Wrapper.m_MenuActionsCallbackInterface != null)
+            {
+                @Toggle.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnToggle;
+                @Toggle.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnToggle;
+                @Toggle.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnToggle;
+            }
+            m_Wrapper.m_MenuActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Toggle.started += instance.OnToggle;
+                @Toggle.performed += instance.OnToggle;
+                @Toggle.canceled += instance.OnToggle;
+            }
+        }
+    }
+    public MenuActions @Menu => new MenuActions(this);
+
+    // SlideShow
+    private readonly InputActionMap m_SlideShow;
+    private ISlideShowActions m_SlideShowActionsCallbackInterface;
+    private readonly InputAction m_SlideShow_Continue;
+    private readonly InputAction m_SlideShow_Skip;
+    public struct SlideShowActions
+    {
+        private @Controls m_Wrapper;
+        public SlideShowActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Continue => m_Wrapper.m_SlideShow_Continue;
+        public InputAction @Skip => m_Wrapper.m_SlideShow_Skip;
+        public InputActionMap Get() { return m_Wrapper.m_SlideShow; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(SlideShowActions set) { return set.Get(); }
+        public void SetCallbacks(ISlideShowActions instance)
+        {
+            if (m_Wrapper.m_SlideShowActionsCallbackInterface != null)
+            {
+                @Continue.started -= m_Wrapper.m_SlideShowActionsCallbackInterface.OnContinue;
+                @Continue.performed -= m_Wrapper.m_SlideShowActionsCallbackInterface.OnContinue;
+                @Continue.canceled -= m_Wrapper.m_SlideShowActionsCallbackInterface.OnContinue;
+                @Skip.started -= m_Wrapper.m_SlideShowActionsCallbackInterface.OnSkip;
+                @Skip.performed -= m_Wrapper.m_SlideShowActionsCallbackInterface.OnSkip;
+                @Skip.canceled -= m_Wrapper.m_SlideShowActionsCallbackInterface.OnSkip;
+            }
+            m_Wrapper.m_SlideShowActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Continue.started += instance.OnContinue;
+                @Continue.performed += instance.OnContinue;
+                @Continue.canceled += instance.OnContinue;
+                @Skip.started += instance.OnSkip;
+                @Skip.performed += instance.OnSkip;
+                @Skip.canceled += instance.OnSkip;
+            }
+        }
+    }
+    public SlideShowActions @SlideShow => new SlideShowActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -403,10 +590,19 @@ public class @Controls : IInputActionCollection, IDisposable
             return asset.controlSchemes[m_GamepadSchemeIndex];
         }
     }
-    public interface IInGameActions
+    public interface IGameActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+    }
+    public interface IMenuActions
+    {
+        void OnToggle(InputAction.CallbackContext context);
+    }
+    public interface ISlideShowActions
+    {
+        void OnContinue(InputAction.CallbackContext context);
+        void OnSkip(InputAction.CallbackContext context);
     }
 }
