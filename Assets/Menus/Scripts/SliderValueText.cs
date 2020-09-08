@@ -30,7 +30,7 @@ namespace BobJeltes.Menu
         void UpdateValue()
         {
             Debug.Log("Update value to " + slider.value);
-            GetTMPComponent().text = slider.value.ToString();
+            GetTMPComponent().text = slider.value.ToString(); //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
         }
     }
 }
