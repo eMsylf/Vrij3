@@ -205,8 +205,9 @@ namespace BobJeltes.Menu
 #endif
         private void OnEnable()
         {
+            Debug.Log("Menu enabled");
             Controls.Menu.Toggle.performed += _ => Toggle();
-            Controls.Game.Enable();
+            Controls.Menu.Enable();
             FindActiveEventSystem();
         }
 
