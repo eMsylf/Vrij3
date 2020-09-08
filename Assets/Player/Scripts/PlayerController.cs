@@ -30,7 +30,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    Animator animator;
+    Animator Animator
+    {
+        get
+        {
+            if (animator == null)
+            {
+                animator = GetComponentInChildren<Animator>();
+            }
+            return animator;
+        }
+    }
+
+    public Direction Direction;
+    public Transform MovementTransform;
+
     Vector2 MovementInput;
+    Vector2 Movement;
     public float Speed = 1f;
     public float DodgeSpeed = 2f;
     public float DodgeDuration = 1f;
@@ -57,36 +74,43 @@ public class PlayerController : MonoBehaviour
     {
         switch (_MoveState)
         {
+            case MoveState.Idle:
             case MoveState.Moving:
                 break;
             case MoveState.Dodging:
-                MovementInput = DodgeDirection * DodgeSpeed;
+                Movement = DodgeDirection * DodgeSpeed;
                 break;
             case MoveState.Stunned:
                 break;
         }
-        Rigidbody.MovePosition(Rigidbody.position + new Vector3(MovementInput.x, 0f, MovementInput.y));
+        Rigidbody.MovePosition(Rigidbody.position + new Vector3(Movement.x, 0f, Movement.y));
     }
 
     private void Move(Vector2 input)
     {
+        MovementInput = input;
+        MovementTransform.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
         Debug.Log("Move! " + input);
         switch (_MoveState)
         {
+            case MoveState.Idle:
             case MoveState.Moving:
-                MovementInput = input * Speed;
+                Movement = MovementInput * Speed;
                 break;
             case MoveState.Stunned:
-                MovementInput = input * 0f;
+                Movement = MovementInput * 0f;
                 break;
         }
+        UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
     }
-
 
     private void Stop()
     {
         Debug.Log("Stop!");
         MovementInput = Vector2.zero;
+        Movement = MovementInput;
+        //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
+        _MoveState = MoveState.Idle;
     }
 
     private void Dodge()
@@ -113,6 +137,14 @@ public class PlayerController : MonoBehaviour
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
         Debug.Log("Held direction at the end of dash: " + directionAtEndOfDodge);
         Move(directionAtEndOfDodge);
+    }
+
+    public void UpdateAnimatorDirection(ELookDirection direction)
+    {
+        if (Animator == null)
+            return;
+
+        Animator.SetInteger("Direction", (int)direction);
     }
 
     //private bool InputLock = false;
