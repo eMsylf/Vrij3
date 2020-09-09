@@ -37,7 +37,9 @@ public class PlayerController : MonoBehaviour
         {
             if (animator == null)
             {
-                animator = GetComponentInChildren<Animator>();
+                animator = GetComponent<Animator>();
+                if (animator == null)
+                    Debug.LogError("Animator is null", this);
             }
             return animator;
         }
@@ -88,12 +90,6 @@ public class PlayerController : MonoBehaviour
     private void Move(Vector2 input)
     {
         MovementInput = input;
-        if (Direction != null)
-        {
-            Direction.MovementIndicator.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
-            UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
-        }
-        else Debug.LogWarning("Direction not assigned", this);
         //Debug.Log("Move! " + input);
         switch (_MoveState)
         {
@@ -105,6 +101,12 @@ public class PlayerController : MonoBehaviour
                 Movement = MovementInput * 0f;
                 break;
         }
+        if (Direction != null)
+        {
+            Direction.MovementIndicator.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
+            UpdateAnimatorDirection();
+        }
+        else Debug.LogWarning("Direction not assigned", this);
     }
 
     private void Stop()
@@ -142,12 +144,13 @@ public class PlayerController : MonoBehaviour
         Move(directionAtEndOfDodge);
     }
 
-    public void UpdateAnimatorDirection(ELookDirection direction)
+    public void UpdateAnimatorDirection()
     {
         if (Animator == null)
             return;
-
-        Animator.SetInteger("Direction", (int)direction);
+        Debug.Log("Set animator thingies", Animator);
+        Animator.SetFloat("Hor", MovementInput.x);
+        Animator.SetFloat("Vert", MovementInput.y);
     }
 
     //private bool InputLock = false;
