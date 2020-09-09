@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     public float Speed = 1f;
     public float DodgeSpeed = 2f;
     public float DodgeDuration = 1f;
-    public Vector2 DodgeDirection;
+    private Vector2 DodgeDirection;
 
     private MoveState _MoveState;
     private enum MoveState
@@ -88,7 +88,12 @@ public class PlayerController : MonoBehaviour
     private void Move(Vector2 input)
     {
         MovementInput = input;
-        Direction.MovementIndicator.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
+        if (Direction != null)
+        {
+            Direction.MovementIndicator.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
+            UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
+        }
+        else Debug.LogWarning("Direction not assigned", this);
         //Debug.Log("Move! " + input);
         switch (_MoveState)
         {
@@ -100,7 +105,6 @@ public class PlayerController : MonoBehaviour
                 Movement = MovementInput * 0f;
                 break;
         }
-        UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
     }
 
     private void Stop()

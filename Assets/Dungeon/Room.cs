@@ -10,8 +10,8 @@ public class Room : MonoBehaviour
     {
         if (other.GetComponent<PlayerController>() == null)
             return;
-        Debug.Log("Player entered " + name, this);
-        Debug.Log("Activate " + name, this);
+        Debug.Log("Entered " + name, this);
+        //Debug.Log("Activate " + name, this);
         PhysicalRoom?.SetActive(true);
         Debug.Log("Set camera position to " + name, this);
         Camera.main.transform.position = CameraViewPoint.position;
@@ -20,7 +20,9 @@ public class Room : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Left room " + name + ". Deactivate.", this);
+        if (other.GetComponent<PlayerController>() == null)
+            return;
+        //Debug.Log("Left " + name + ". Deactivate.", this);
         PhysicalRoom?.SetActive(false);
     }
 }
