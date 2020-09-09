@@ -44,7 +44,6 @@ public class PlayerController : MonoBehaviour
     }
 
     public Direction Direction;
-    public Transform MovementTransform;
 
     Vector2 MovementInput;
     Vector2 Movement;
@@ -89,8 +88,8 @@ public class PlayerController : MonoBehaviour
     private void Move(Vector2 input)
     {
         MovementInput = input;
-        MovementTransform.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
-        Debug.Log("Move! " + input);
+        Direction.MovementIndicator.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
+        //Debug.Log("Move! " + input);
         switch (_MoveState)
         {
             case MoveState.Idle:
@@ -106,7 +105,7 @@ public class PlayerController : MonoBehaviour
 
     private void Stop()
     {
-        Debug.Log("Stop!");
+        //Debug.Log("Stop!");
         MovementInput = Vector2.zero;
         Movement = MovementInput;
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
