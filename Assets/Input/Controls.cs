@@ -41,6 +41,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""94838e5b-987c-4f15-b9e7-a578708197b3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -252,6 +260,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e0da132-4b0e-428f-b20c-e1fcdeeecc78"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8fcbe01a-5aba-4509-ba4d-0bd07fb85132"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -397,6 +427,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Game_Movement = m_Game.FindAction("Movement", throwIfNotFound: true);
         m_Game_Dodge = m_Game.FindAction("Dodge", throwIfNotFound: true);
         m_Game_Interact = m_Game.FindAction("Interact", throwIfNotFound: true);
+        m_Game_Attack = m_Game.FindAction("Attack", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
@@ -456,6 +487,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Game_Movement;
     private readonly InputAction m_Game_Dodge;
     private readonly InputAction m_Game_Interact;
+    private readonly InputAction m_Game_Attack;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -463,6 +495,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Movement => m_Wrapper.m_Game_Movement;
         public InputAction @Dodge => m_Wrapper.m_Game_Dodge;
         public InputAction @Interact => m_Wrapper.m_Game_Interact;
+        public InputAction @Attack => m_Wrapper.m_Game_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -481,6 +514,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_GameActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnInteract;
+                @Attack.started -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -494,6 +530,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
             }
         }
     }
@@ -595,6 +634,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

@@ -45,14 +45,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public Direction Direction;
-
     Vector2 MovementInput;
     Vector2 Movement;
     public float Speed = 1f;
     public float DodgeSpeed = 2f;
     public float DodgeDuration = 1f;
     private Vector2 DodgeDirection;
+
+    public UnityEngine.UI.Slider AttackChargeSlider;
 
     private MoveState _MoveState;
     private enum MoveState
@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour
         Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => Dodge();
+        Controls.Game.Attack.performed += _ => Attack();
     }
 
     private void FixedUpdate()
@@ -101,12 +102,7 @@ public class PlayerController : MonoBehaviour
                 Movement = MovementInput * 0f;
                 break;
         }
-        if (Direction != null)
-        {
-            Direction.MovementIndicator.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
-            UpdateAnimatorDirection();
-        }
-        else Debug.LogWarning("Direction not assigned", this);
+        UpdateAnimatorDirection();
     }
 
     private void Stop()
@@ -142,6 +138,21 @@ public class PlayerController : MonoBehaviour
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
         Debug.Log("Held direction at the end of dash: " + directionAtEndOfDodge);
         Move(directionAtEndOfDodge);
+    }
+
+    void Attack()
+    {
+        Debug.Log("Attack!");
+        if (AttackChargeSlider == null)
+        {
+            Debug.LogError("Attack charge slider is null!", this);
+            return;
+        }
+    }
+
+    void Charge()
+    {
+        Debug.Log("Charge!");
     }
 
     public void UpdateAnimatorDirection()
