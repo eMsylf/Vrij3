@@ -32,7 +32,7 @@ public class Direction : MonoBehaviour
                 closestLookDirection = lookDirectionObj;
             }
         }
-        Debug.Log("Update move direction: " + closestLookDirection.Direction);
+        //Debug.Log("Update move direction: " + closestLookDirection.Direction);
         LookDirection = closestLookDirection.Direction;
 
         return closestLookDirection.Direction;
