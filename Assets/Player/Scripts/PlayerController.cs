@@ -73,8 +73,11 @@ public class PlayerController : MonoBehaviour
 
     private void Move(Vector2 input)
     {
+        if (!movement.ApplyMovementInput)
+        {
+            return;
+        }
         movement.Input = input;
-        //Debug.Log("Move! " + input);
         switch (movement._MoveState)
         {
             case Movement.MoveState.Idle:
@@ -90,6 +93,8 @@ public class PlayerController : MonoBehaviour
 
     private void Stop()
     {
+        if (!movement.ApplyMovementInput)
+            return;
         //Debug.Log("Stop!");
         movement.Input = Vector2.zero;
         movement.CalculatedMovement = movement.Input;
@@ -101,7 +106,6 @@ public class PlayerController : MonoBehaviour
     {
         if (movement._MoveState == Movement.MoveState.Dodging)
         {
-            Debug.Log("Already dodging");
             return;
         }
 
@@ -111,25 +115,22 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Dodge(float duration)
     {
         movement._MoveState = Movement.MoveState.Dodging;
+        movement.ApplyMovementInput = false;
         movement.DodgeDirection = movement.Input;
-        Debug.Log("Dodge!");
         
         yield return new WaitForSeconds(duration);
 
-        Debug.Log("Dodge end");
         movement._MoveState = Movement.MoveState.Moving;
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
-        Debug.Log("Held direction at the end of dash: " + directionAtEndOfDodge);
+        movement.ApplyMovementInput = true;
         Move(directionAtEndOfDodge);
     }
 
-    
 
     public void UpdateAnimatorDirection()
     {
         if (Animator == null)
             return;
-        //Debug.Log("Set animator thingies", Animator);
         Animator.SetFloat("Hor", movement.Input.x);
         Animator.SetFloat("Vert", movement.Input.y);
     }
@@ -140,7 +141,9 @@ public class PlayerController : MonoBehaviour
         public float Speed = 1f;
         public float DodgeSpeed = 2f;
         public float DodgeDuration = 1f;
+        public bool ApplyMovementInput = true;
         internal Vector2 Input;
+        internal Vector2 FacingDirection = new Vector2(0f, 1f);
         internal Vector2 CalculatedMovement;
         internal Vector3 GetTopDownMovement()
         {
@@ -179,29 +182,19 @@ public class PlayerController : MonoBehaviour
         {
             if (chargeTime == 0f)
             {
-                Debug.Log("Launch uncharged attack!");
+                //Debug.Log("Launch uncharged attack!");
                 return;
             }
 
-            Debug.Log("Launch charged attack. Charge amount: " + GetAttackZone(chargeTime));
-            //if (attack.ChargeSlider == null)
-            //{
-            //    Debug.LogError("Attack charge slider is null!", this);
-            //    return;
-            //}
+            //Debug.Log("Launch charged attack. Charge amount: " + GetAttackZone(chargeTime));
         }
-
-        //void StartCharge()
-        //{
-        //    Debug.Log("Start attack charge!");
-        //}
 
         public IEnumerator Charge()
         {
             charging = true;
             float chargeStart = Time.time;
             float chargeTime = 0f;
-            Debug.Log("Start charge");
+            //Debug.Log("Start charge");
             while (charging)
             {
                 yield return new WaitForEndOfFrame();
