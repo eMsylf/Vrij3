@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 1850707862080668138}
   - component: {fileID: 701161329913697213}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: AttackCharge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1850707862080668138
 RectTransform:
   m_ObjectHideFlags: 0
@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 55}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &701161329913697213
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 4357543822737466935}
   - component: {fileID: 2694053997594771084}
   m_Layer: 5
-  m_Name: AttackCharge
+  m_Name: Player Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,8 +125,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1.93}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4964046005022652542
 Canvas:
@@ -256,8 +256,8 @@ RectTransform:
   m_Father: {fileID: 934410908070093533}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 15, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -412,10 +412,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7195744fc6eea4e9ff8193ab614252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 0.13
-  DodgeSpeed: 0.5
-  DodgeDuration: 0.2
-  AttackChargeSlider: {fileID: 701161329913697213}
+  movement:
+    Speed: 0.13
+    DodgeSpeed: 0.5
+    DodgeDuration: 0.2
+  attack:
+    ChargeSlider: {fileID: 701161329913697213}
+    ChargeZones:
+      serializedVersion: 2
+      key0: {r: 0.06140983, g: 1, b: 0, a: 1}
+      key1: {r: 1, g: 0.9728835, b: 0, a: 1}
+      key2: {r: 1, g: 0.6640479, b: 0, a: 0}
+      key3: {r: 1, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 16384
+      ctime1: 32768
+      ctime2: 49151
+      ctime3: 65535
+      ctime4: 65535
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 1
+      m_NumColorKeys: 4
+      m_NumAlphaKeys: 2
+    ChargeSpeed: 0.25
+  targeting:
+    DebugTarget: {fileID: 0}
 --- !u!212 &7256993588055032754
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -519,7 +553,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
