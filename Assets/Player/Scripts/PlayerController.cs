@@ -45,61 +45,47 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    Vector2 MovementInput;
-    Vector2 Movement;
-    public float Speed = 1f;
-    public float DodgeSpeed = 2f;
-    public float DodgeDuration = 1f;
-    private Vector2 DodgeDirection;
-
-    public UnityEngine.UI.Slider AttackChargeSlider;
-
-    private MoveState _MoveState;
-    private enum MoveState
-    {
-        Moving,
-        Dodging,
-        Idle,
-        Stunned
-    }
-
     private void Awake()
     {
         Controls.Game.Enable();
         Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => Dodge();
-        Controls.Game.Attack.performed += _ => Attack();
+        Controls.Game.Attack.performed += _ => StartCoroutine(attack.Charge());
+        Controls.Game.Attack.canceled += _ => attack.charging = false;
     }
 
     private void FixedUpdate()
     {
-        switch (_MoveState)
+        switch (movement._MoveState)
         {
-            case MoveState.Idle:
-            case MoveState.Moving:
+            case Movement.MoveState.Idle:
+            case Movement.MoveState.Moving:
                 break;
-            case MoveState.Dodging:
-                Movement = DodgeDirection * DodgeSpeed;
+            case Movement.MoveState.Dodging:
+                movement.CalculatedMovement = movement.DodgeDirection * movement.DodgeSpeed;
                 break;
-            case MoveState.Stunned:
+            case Movement.MoveState.Stunned:
                 break;
         }
-        Rigidbody.MovePosition(Rigidbody.position + new Vector3(Movement.x, 0f, Movement.y));
+        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement());
     }
 
     private void Move(Vector2 input)
     {
-        MovementInput = input;
-        //Debug.Log("Move! " + input);
-        switch (_MoveState)
+        if (!movement.ApplyMovementInput)
         {
-            case MoveState.Idle:
-            case MoveState.Moving:
-                Movement = MovementInput * Speed;
+            return;
+        }
+        movement.Input = input;
+        switch (movement._MoveState)
+        {
+            case Movement.MoveState.Idle:
+            case Movement.MoveState.Moving:
+                movement.CalculatedMovement = movement.Input * movement.Speed;
                 break;
-            case MoveState.Stunned:
-                Movement = MovementInput * 0f;
+            case Movement.MoveState.Stunned:
+                movement.CalculatedMovement = movement.Input * 0f;
                 break;
         }
         UpdateAnimatorDirection();
@@ -107,73 +93,139 @@ public class PlayerController : MonoBehaviour
 
     private void Stop()
     {
+        if (!movement.ApplyMovementInput)
+            return;
         //Debug.Log("Stop!");
-        MovementInput = Vector2.zero;
-        Movement = MovementInput;
+        movement.Input = Vector2.zero;
+        movement.CalculatedMovement = movement.Input;
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
-        _MoveState = MoveState.Idle;
+        movement._MoveState = Movement.MoveState.Idle;
     }
 
     private void Dodge()
     {
-        if (_MoveState == MoveState.Dodging)
+        if (movement._MoveState == Movement.MoveState.Dodging)
         {
-            Debug.Log("Already dodging");
             return;
         }
 
-        StartCoroutine(Dodge(DodgeDuration));
+        StartCoroutine(Dodge(movement.DodgeDuration));
     }
 
     private IEnumerator Dodge(float duration)
     {
-        _MoveState = MoveState.Dodging;
-        DodgeDirection = MovementInput;
-        Debug.Log("Dodge!");
+        movement._MoveState = Movement.MoveState.Dodging;
+        movement.ApplyMovementInput = false;
+        movement.DodgeDirection = movement.Input;
         
         yield return new WaitForSeconds(duration);
 
-        Debug.Log("Dodge end");
-        _MoveState = MoveState.Moving;
+        movement._MoveState = Movement.MoveState.Moving;
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
-        Debug.Log("Held direction at the end of dash: " + directionAtEndOfDodge);
+        movement.ApplyMovementInput = true;
         Move(directionAtEndOfDodge);
     }
 
-    void Attack()
-    {
-        Debug.Log("Attack!");
-        if (AttackChargeSlider == null)
-        {
-            Debug.LogError("Attack charge slider is null!", this);
-            return;
-        }
-    }
-
-    void Charge()
-    {
-        Debug.Log("Charge!");
-    }
 
     public void UpdateAnimatorDirection()
     {
         if (Animator == null)
             return;
-        Debug.Log("Set animator thingies", Animator);
-        Animator.SetFloat("Hor", MovementInput.x);
-        Animator.SetFloat("Vert", MovementInput.y);
+        Animator.SetFloat("Hor", movement.Input.x);
+        Animator.SetFloat("Vert", movement.Input.y);
     }
 
-    //private bool InputLock = false;
-    //private void LockInput()
-    //{
-    //    Debug.Log("Lock input");
-    //    InputLock = true;
-    //}
+    [System.Serializable]
+    public class Movement
+    {
+        public float Speed = 1f;
+        public float DodgeSpeed = 2f;
+        public float DodgeDuration = 1f;
+        public bool ApplyMovementInput = true;
+        internal Vector2 Input;
+        internal Vector2 FacingDirection = new Vector2(0f, 1f);
+        internal Vector2 CalculatedMovement;
+        internal Vector3 GetTopDownMovement()
+        {
+            return new Vector3(CalculatedMovement.x, 0f, CalculatedMovement.y);
+        }
+        internal Vector2 DodgeDirection;
 
-    //private void UnlockInput()
-    //{
-    //    Debug.Log("Unlock input");
-    //    InputLock = false;
-    //}
+
+        internal MoveState _MoveState;
+        internal enum MoveState
+        {
+            Moving,
+            Dodging,
+            Idle,
+            Stunned
+        }
+    }
+    public Movement movement;
+
+    [System.Serializable]
+    public class Attack
+    {
+        public UnityEngine.UI.Slider ChargeSlider;
+        public Gradient ChargeZones;
+        [Tooltip("Charge speed of the slider in sliders per second")]
+        [Range(0f, 1f)]
+        public float ChargeSpeed = .25f;
+        internal bool charging;
+
+        internal Color GetAttackZone(float time)
+        {
+            return ChargeZones.Evaluate(time);
+        }
+
+        void Launch(float chargeTime)
+        {
+            if (chargeTime == 0f)
+            {
+                //Debug.Log("Launch uncharged attack!");
+                return;
+            }
+
+            //Debug.Log("Launch charged attack. Charge amount: " + GetAttackZone(chargeTime));
+        }
+
+        public IEnumerator Charge()
+        {
+            charging = true;
+            float chargeStart = Time.time;
+            float chargeTime = 0f;
+            //Debug.Log("Start charge");
+            while (charging)
+            {
+                yield return new WaitForEndOfFrame();
+                float delta = Time.time - chargeStart;
+                chargeTime += delta;
+                ChargeSlider.value = chargeTime;
+                chargeTime = Mathf.Clamp01(chargeTime);
+            }
+            Launch(chargeTime);
+        }
+
+        // Attempt at creating a standard attack zone setting (does not get called)
+        //Attack()
+        //{
+        //    ChargeZones.colorKeys = new GradientColorKey[4];
+        //    ChargeZones.colorKeys[0].color = Color.green;
+        //    ChargeZones.colorKeys[0].time = 0f;
+        //    ChargeZones.colorKeys[1].color = Color.blue;
+        //    ChargeZones.colorKeys[1].time = .33f;
+        //    ChargeZones.colorKeys[2].color = Color.yellow;
+        //    ChargeZones.colorKeys[2].time = .66f;
+        //    ChargeZones.colorKeys[3].color = Color.red;
+        //    ChargeZones.colorKeys[3].time = 1f;
+        //}
+    }
+    public Attack attack;
+
+    [System.Serializable]
+    public class Targeting
+    {
+        public GameObject DebugTarget;
+    }
+    public Targeting targeting;
 }
