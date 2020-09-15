@@ -272,7 +272,7 @@ public class PlayerController : MonoBehaviour
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime = Time.time - chargeStart;
-                chargeTimeClamped = chargeTime / ChargeTime;
+                chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
                 ChargeSlider.value = chargeTimeClamped;
             }
             ChargeSlider.gameObject.SetActive(false);
