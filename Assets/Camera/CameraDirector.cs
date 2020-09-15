@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class CameraDirector : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [Tooltip("Uses the main camera by default")]
+    public Camera OverrideCamera;
 
-    // Update is called once per frame
-    void Update()
+    private Camera cam;
+    private Camera GetCamera()
     {
-        
+        cam = OverrideCamera == null ? Camera.main : OverrideCamera;
+        return cam;
     }
 }
