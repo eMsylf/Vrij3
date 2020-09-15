@@ -235,7 +235,6 @@ public class PlayerController : MonoBehaviour
             if (chargeTime == 0f)
             {
                 Debug.Log("Launch uncharged attack!");
-                return;
             }
             else
             {
