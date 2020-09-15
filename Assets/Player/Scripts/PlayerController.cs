@@ -37,20 +37,22 @@ public class PlayerController : MonoBehaviour
         {
             if (animator == null)
             {
-                animator = GetComponentInChildren<Animator>();
+                animator = GetComponent<Animator>();
+                if (animator == null)
+                    Debug.LogError("Animator is null", this);
             }
             return animator;
         }
     }
-
-    public Direction Direction;
 
     Vector2 MovementInput;
     Vector2 Movement;
     public float Speed = 1f;
     public float DodgeSpeed = 2f;
     public float DodgeDuration = 1f;
-    public Vector2 DodgeDirection;
+    private Vector2 DodgeDirection;
+
+    public UnityEngine.UI.Slider AttackChargeSlider;
 
     private MoveState _MoveState;
     private enum MoveState
@@ -67,6 +69,7 @@ public class PlayerController : MonoBehaviour
         Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => Dodge();
+        Controls.Game.Attack.performed += _ => Attack();
     }
 
     private void FixedUpdate()
@@ -88,7 +91,6 @@ public class PlayerController : MonoBehaviour
     private void Move(Vector2 input)
     {
         MovementInput = input;
-        Direction.MovementIndicator.localPosition = new Vector3(MovementInput.x, 0f, MovementInput.y);
         //Debug.Log("Move! " + input);
         switch (_MoveState)
         {
@@ -100,7 +102,7 @@ public class PlayerController : MonoBehaviour
                 Movement = MovementInput * 0f;
                 break;
         }
-        UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
+        UpdateAnimatorDirection();
     }
 
     private void Stop()
@@ -138,12 +140,28 @@ public class PlayerController : MonoBehaviour
         Move(directionAtEndOfDodge);
     }
 
-    public void UpdateAnimatorDirection(ELookDirection direction)
+    void Attack()
+    {
+        Debug.Log("Attack!");
+        if (AttackChargeSlider == null)
+        {
+            Debug.LogError("Attack charge slider is null!", this);
+            return;
+        }
+    }
+
+    void Charge()
+    {
+        Debug.Log("Charge!");
+    }
+
+    public void UpdateAnimatorDirection()
     {
         if (Animator == null)
             return;
-
-        Animator.SetInteger("Direction", (int)direction);
+        Debug.Log("Set animator thingies", Animator);
+        Animator.SetFloat("Hor", MovementInput.x);
+        Animator.SetFloat("Vert", MovementInput.y);
     }
 
     //private bool InputLock = false;
