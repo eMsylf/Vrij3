@@ -1,9 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
+    public enum EState
+    {
+        Idle = default,
+        Moving,
+        Dodging,
+        Attacking,
+        Hit
+    }
+    public EState State = default;
+
     Controls controls;
     Controls Controls
     {
@@ -51,8 +63,10 @@ public class PlayerController : MonoBehaviour
         Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => Dodge();
-        Controls.Game.Attack.performed += _ => StartCoroutine(attack.Charge());
-        Controls.Game.Attack.canceled += _ => attack.charging = false;
+        Controls.Game.Attack.performed += _ => StartCoroutine(attacking.Charge());
+        Controls.Game.Attack.canceled += _ => attacking.charging = false;
+
+        attacking.attackLaunched += () => OnAttack();
     }
 
     private void FixedUpdate()
@@ -100,6 +114,7 @@ public class PlayerController : MonoBehaviour
         movement.CalculatedMovement = movement.Input;
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
         movement._MoveState = Movement.MoveState.Idle;
+        State = EState.Idle;
     }
 
     private void Dodge()
@@ -115,17 +130,18 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Dodge(float duration)
     {
         movement._MoveState = Movement.MoveState.Dodging;
+        State = EState.Dodging;
         movement.ApplyMovementInput = false;
         movement.DodgeDirection = movement.Input;
         
         yield return new WaitForSeconds(duration);
 
         movement._MoveState = Movement.MoveState.Moving;
+        State = EState.Moving;
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
         movement.ApplyMovementInput = true;
         Move(directionAtEndOfDodge);
     }
-
 
     public void UpdateAnimatorDirection()
     {
@@ -133,6 +149,14 @@ public class PlayerController : MonoBehaviour
             return;
         Animator.SetFloat("Hor", movement.Input.x);
         Animator.SetFloat("Vert", movement.Input.y);
+    }
+
+    public void OnAttack()
+    {
+        Debug.Log("Attack");
+        Animator.SetFloat("AttackCharge", attacking.latestCharge);
+        Animator.SetTrigger("Attack");
+        //Animator.ResetTrigger("Attack");
     }
 
     [System.Serializable]
@@ -164,29 +188,69 @@ public class PlayerController : MonoBehaviour
     public Movement movement;
 
     [System.Serializable]
-    public class Attack
+    public class Attacking
     {
         public UnityEngine.UI.Slider ChargeSlider;
-        public Gradient ChargeZones;
-        [Tooltip("Charge speed of the slider in sliders per second")]
-        [Range(0f, 1f)]
-        public float ChargeSpeed = .25f;
+        //public Gradient ChargeZones;
+        [Tooltip("Time it takes for the slider to fill up")]
+        public float ChargeTime = 2f;
+        [Tooltip("Time below which a charge will not be initiated")]
+        public float ChargeTimeDeadzone = .1f;
         internal bool charging;
+        internal float latestCharge;
+        internal event UnityAction attackLaunched;
+        //public enum ColorChannel
+        //{
+        //    r = default,
+        //    g,
+        //    b,
+        //    a
+        //}
+        //public ColorChannel EvaluatedColorChannel;
 
-        internal Color GetAttackZone(float time)
-        {
-            return ChargeZones.Evaluate(time);
-        }
+        //internal Color GetChargeZone(float time)
+        //{
+        //    return ChargeZones.Evaluate(time);
+        //}
 
-        void Launch(float chargeTime)
+        //internal float GetChargeZone(float time, ColorChannel channel)
+        //{
+        //    switch (channel)
+        //    {
+        //        case ColorChannel.r:
+        //            return ChargeZones.Evaluate(time).r;
+        //        case ColorChannel.g:
+        //            return ChargeZones.Evaluate(time).g;
+        //        case ColorChannel.b:
+        //            return ChargeZones.Evaluate(time).b;
+        //        case ColorChannel.a:
+        //            return ChargeZones.Evaluate(time).a;
+        //        default:
+        //            return ChargeZones.Evaluate(time).r;
+        //    }
+        //}
+
+        internal void Launch(float chargeTime)
         {
             if (chargeTime == 0f)
             {
-                //Debug.Log("Launch uncharged attack!");
-                return;
+                Debug.Log("Launch uncharged attack!");
             }
+            else
+            {
+                //string colorString = GetChargeZone(chargeTime).ToString();
+                //string chargeAmount = GetChargeZone(chargeTime, EvaluatedColorChannel).ToString();
+                //Debug.Log("Launch charged attack. Charge amount: <color=" + colorString + ">" + chargeAmount + "</color>");
+                Debug.Log("Launch charged attack. Charge amount: " + chargeTime);
+            }
+            latestCharge = chargeTime;
+            attackLaunched.Invoke();
+        }
 
-            //Debug.Log("Launch charged attack. Charge amount: " + GetAttackZone(chargeTime));
+
+        public void InterruptCharge()
+        {
+            charging = false;
         }
 
         public IEnumerator Charge()
@@ -194,33 +258,29 @@ public class PlayerController : MonoBehaviour
             charging = true;
             float chargeStart = Time.time;
             float chargeTime = 0f;
+            float chargeTimeClamped = 0f;
             //Debug.Log("Start charge");
+            while (chargeTime < ChargeTimeDeadzone)
+            {
+                yield return new WaitForEndOfFrame();
+                chargeTime = Time.time - chargeStart;
+            }
+            
+            ChargeSlider.gameObject.SetActive(true);
+            
             while (charging)
             {
                 yield return new WaitForEndOfFrame();
-                float delta = Time.time - chargeStart;
-                chargeTime += delta;
-                ChargeSlider.value = chargeTime;
-                chargeTime = Mathf.Clamp01(chargeTime);
+                chargeTime = Time.time - chargeStart;
+                chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
+                ChargeSlider.value = chargeTimeClamped;
             }
-            Launch(chargeTime);
-        }
+            ChargeSlider.gameObject.SetActive(false);
 
-        // Attempt at creating a standard attack zone setting (does not get called)
-        //Attack()
-        //{
-        //    ChargeZones.colorKeys = new GradientColorKey[4];
-        //    ChargeZones.colorKeys[0].color = Color.green;
-        //    ChargeZones.colorKeys[0].time = 0f;
-        //    ChargeZones.colorKeys[1].color = Color.blue;
-        //    ChargeZones.colorKeys[1].time = .33f;
-        //    ChargeZones.colorKeys[2].color = Color.yellow;
-        //    ChargeZones.colorKeys[2].time = .66f;
-        //    ChargeZones.colorKeys[3].color = Color.red;
-        //    ChargeZones.colorKeys[3].time = 1f;
-        //}
+            Launch(chargeTimeClamped);
+        }
     }
-    public Attack attack;
+    public Attacking attacking;
 
     [System.Serializable]
     public class Targeting
