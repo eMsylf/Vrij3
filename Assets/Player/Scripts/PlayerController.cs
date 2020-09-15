@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Combat;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Fighter
 {
     public enum EState
     {
