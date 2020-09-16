@@ -8,13 +8,14 @@ namespace Combat
     {
         public Statistic Health;
         public Statistic Stamina;
+        public int TouchDamage = 0;
 
         private void OnEnable()
         {
-            if (!Health.syncCurrentToMax)
-                Health.current = Health.max;
-            if (!Stamina.syncCurrentToMax)
-                Stamina.current = Stamina.max;
+            if (Health.syncCurrentToMax)
+                Health.SetCurrent(Health.max);
+            if (Stamina.syncCurrentToMax)
+                Stamina.SetCurrent(Stamina.max);
         }
 
         public void Attack()
@@ -34,6 +35,17 @@ namespace Combat
             if (Health.current <= 0) Die();
         }
 
+        public void TakeDamage(int damageTaken, Fighter damageSource)
+        {
+            Debug.Log(damageSource.name + " hit enemy " + this.name + " for " + damageTaken + " damage. New health: " + this.Health.current, this);
+            TakeDamage(damageTaken);
+        }
+
+        public void UseStamina(int amount)
+        {
+            Stamina.SetCurrent(Mathf.Clamp(Stamina.current - amount, 0, Stamina.max));
+        }
+
         [System.Serializable]
         public class Statistic
         {
@@ -46,8 +58,8 @@ namespace Combat
             }
             [Tooltip("The time it takes for a point to be recovered. 0 = no recovery.")]
             public float recoveryTime = 1f;
-            [Tooltip("When enabled, this statistic does not get set to its maximum automatically on startup.")]
-            public bool syncCurrentToMax;
+            [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
+            public bool syncCurrentToMax = true;
 
             public GameObject Visualizer;
             public void UpdateVisual()
@@ -63,7 +75,7 @@ namespace Combat
                     GameObject child = Visualizer.transform.GetChild(i).gameObject;
                     bool shouldBeActive = current >= i + 1;
                     child.SetActive(shouldBeActive);
-                    Debug.Log("This child (" + i + ") should be active: " + shouldBeActive);
+                    //Debug.Log("This child (" + i + ") should be active: " + shouldBeActive);
                 }
             }
         }

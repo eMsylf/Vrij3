@@ -170,10 +170,10 @@ public class PlayerController : Fighter
 
     private void OnTriggerEnter(Collider other)
     {
-        Fighter otherFighter = other.gameObject.GetComponent<Fighter>();
-        if (otherFighter != null)
+        if (other.attachedRigidbody == Rigidbody)
         {
-
+            Debug.Log("Hit self");
+            return;
         }
     }
 
