@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Combat {
     public class Attack : MonoBehaviour
     {
-        public float Damage = 1f;
+        public int Damage = 1;
 
         Fighter fighter;
         Fighter GetFighter()
@@ -19,12 +19,19 @@ namespace Combat {
 
         private void OnTriggerEnter(Collider other)
         {
-            Enemy enemyHit = other.gameObject.GetComponent<Enemy>();
-            if (enemyHit != null)
+            Fighter fighterHit = other.gameObject.GetComponent<Fighter>();
+            Fighter parent = GetComponentInParent<Fighter>();
+
+            if (fighterHit == null)
+                return;
+
+            if (parent == fighterHit)
             {
-                enemyHit.TakeDamage(Damage);
-                Debug.Log(GetFighter().name + " hit enemy " + enemyHit.name + " for " + Damage + " damage. New health: " + enemyHit.Health , enemyHit);
+                return;
             }
+
+            fighterHit.TakeDamage(Damage);
+            Debug.Log(GetFighter().name + " hit enemy " + fighterHit.name + " for " + Damage + " damage. New health: " + fighterHit.Health.current , fighterHit);
         }
     }
 }

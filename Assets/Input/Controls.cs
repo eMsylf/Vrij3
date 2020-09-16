@@ -49,6 +49,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""LockOn"",
+                    ""type"": ""Button"",
+                    ""id"": ""d551f09d-2cd2-43b8-931a-4620664e2085"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -282,6 +290,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e924b8d0-1446-4d27-b560-37cb8105c27c"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""LockOn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fdfd46a0-2ebd-4310-a707-f2a1bdf53e3e"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""LockOn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -428,6 +458,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Game_Dodge = m_Game.FindAction("Dodge", throwIfNotFound: true);
         m_Game_Interact = m_Game.FindAction("Interact", throwIfNotFound: true);
         m_Game_Attack = m_Game.FindAction("Attack", throwIfNotFound: true);
+        m_Game_LockOn = m_Game.FindAction("LockOn", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
@@ -488,6 +519,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Game_Dodge;
     private readonly InputAction m_Game_Interact;
     private readonly InputAction m_Game_Attack;
+    private readonly InputAction m_Game_LockOn;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -496,6 +528,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Dodge => m_Wrapper.m_Game_Dodge;
         public InputAction @Interact => m_Wrapper.m_Game_Interact;
         public InputAction @Attack => m_Wrapper.m_Game_Attack;
+        public InputAction @LockOn => m_Wrapper.m_Game_LockOn;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -517,6 +550,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Attack.started -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
                 @Attack.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
                 @Attack.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
+                @LockOn.started -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
+                @LockOn.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
+                @LockOn.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -533,6 +569,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
+                @LockOn.started += instance.OnLockOn;
+                @LockOn.performed += instance.OnLockOn;
+                @LockOn.canceled += instance.OnLockOn;
             }
         }
     }
@@ -635,6 +674,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnDodge(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnLockOn(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

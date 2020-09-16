@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Combat;
+using UnityEditor;
 
 public class PlayerController : Fighter
 {
@@ -13,7 +14,8 @@ public class PlayerController : Fighter
         Moving,
         Dodging,
         Attacking,
-        Hit
+        Hit,
+        Stunned
     }
     public EState State = default;
 
@@ -66,21 +68,22 @@ public class PlayerController : Fighter
         Controls.Game.Dodge.performed += _ => Dodge();
         Controls.Game.Attack.performed += _ => StartCoroutine(attacking.Charge());
         Controls.Game.Attack.canceled += _ => attacking.charging = false;
+        Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
 
         attacking.attackLaunched += () => OnAttack();
     }
 
     private void FixedUpdate()
     {
-        switch (movement._MoveState)
+        switch (State)
         {
-            case Movement.MoveState.Idle:
-            case Movement.MoveState.Moving:
+            case EState.Idle:
+            case EState.Moving:
                 break;
-            case Movement.MoveState.Dodging:
+            case EState.Dodging:
                 movement.CalculatedMovement = movement.DodgeDirection * movement.DodgeSpeed;
                 break;
-            case Movement.MoveState.Stunned:
+            case EState.Stunned:
                 break;
         }
         Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement());
@@ -93,17 +96,19 @@ public class PlayerController : Fighter
             return;
         }
         movement.Input = input;
-        switch (movement._MoveState)
+        switch (State)
         {
-            case Movement.MoveState.Idle:
-            case Movement.MoveState.Moving:
+            case EState.Idle:
+            case EState.Moving:
                 movement.CalculatedMovement = movement.Input * movement.Speed;
                 break;
-            case Movement.MoveState.Stunned:
+            case EState.Stunned:
                 movement.CalculatedMovement = movement.Input * 0f;
                 break;
         }
-        UpdateAnimatorDirection();
+        Animator.SetBool("IsWalking", true);
+        
+        UpdateFacingDirection(movement.Input);
     }
 
     private void Stop()
@@ -114,13 +119,13 @@ public class PlayerController : Fighter
         movement.Input = Vector2.zero;
         movement.CalculatedMovement = movement.Input;
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
-        movement._MoveState = Movement.MoveState.Idle;
         State = EState.Idle;
+        Animator.SetBool("IsWalking", false);
     }
 
     private void Dodge()
     {
-        if (movement._MoveState == Movement.MoveState.Dodging)
+        if (State == EState.Dodging)
         {
             return;
         }
@@ -130,26 +135,46 @@ public class PlayerController : Fighter
 
     private IEnumerator Dodge(float duration)
     {
-        movement._MoveState = Movement.MoveState.Dodging;
         State = EState.Dodging;
         movement.ApplyMovementInput = false;
-        movement.DodgeDirection = movement.Input;
+        if (movement.Input == Vector2Int.zero)
+        {
+            movement.DodgeDirection = movement.FacingDirection * -1f;
+        }
+        else
+        {
+            movement.DodgeDirection = movement.Input;
+        }
         
         yield return new WaitForSeconds(duration);
 
-        movement._MoveState = Movement.MoveState.Moving;
-        State = EState.Moving;
+        State = EState.Idle;
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
         movement.ApplyMovementInput = true;
-        Move(directionAtEndOfDodge);
+        if (directionAtEndOfDodge != Vector2.zero)
+            Move(directionAtEndOfDodge);
+        else
+        {
+            Stop();
+        }
     }
 
-    public void UpdateAnimatorDirection()
+    public void UpdateFacingDirection(Vector2 direction)
     {
+        movement.FacingDirection = direction;
         if (Animator == null)
             return;
-        Animator.SetFloat("Hor", movement.Input.x);
-        Animator.SetFloat("Vert", movement.Input.y);
+        Animator.SetFloat("Hor", direction.x);
+        Animator.SetFloat("Vert", direction.y);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Fighter otherFighter = other.gameObject.GetComponent<Fighter>();
+        if (otherFighter != null)
+        {
+
+        }
     }
 
     public void OnAttack()
@@ -175,16 +200,6 @@ public class PlayerController : Fighter
             return new Vector3(CalculatedMovement.x, 0f, CalculatedMovement.y);
         }
         internal Vector2 DodgeDirection;
-
-
-        internal MoveState _MoveState;
-        internal enum MoveState
-        {
-            Moving,
-            Dodging,
-            Idle,
-            Stunned
-        }
     }
     public Movement movement;
 
@@ -199,37 +214,7 @@ public class PlayerController : Fighter
         public float ChargeTimeDeadzone = .1f;
         internal bool charging;
         internal float latestCharge;
-        internal event UnityAction attackLaunched;
-        //public enum ColorChannel
-        //{
-        //    r = default,
-        //    g,
-        //    b,
-        //    a
-        //}
-        //public ColorChannel EvaluatedColorChannel;
-
-        //internal Color GetChargeZone(float time)
-        //{
-        //    return ChargeZones.Evaluate(time);
-        //}
-
-        //internal float GetChargeZone(float time, ColorChannel channel)
-        //{
-        //    switch (channel)
-        //    {
-        //        case ColorChannel.r:
-        //            return ChargeZones.Evaluate(time).r;
-        //        case ColorChannel.g:
-        //            return ChargeZones.Evaluate(time).g;
-        //        case ColorChannel.b:
-        //            return ChargeZones.Evaluate(time).b;
-        //        case ColorChannel.a:
-        //            return ChargeZones.Evaluate(time).a;
-        //        default:
-        //            return ChargeZones.Evaluate(time).r;
-        //    }
-        //}
+        internal UnityAction attackLaunched;
 
         internal void Launch(float chargeTime)
         {
@@ -287,6 +272,34 @@ public class PlayerController : Fighter
     public class Targeting
     {
         public GameObject DebugTarget;
+        public GameObject GetTarget(Vector3 position)
+        {
+            if (DebugTarget != null)
+                return DebugTarget;
+            Collider[] colliders = Physics.OverlapSphere(position, Radius, Targetable);
+            if (colliders.Length > 0)
+                return colliders[0].gameObject;
+            return null;
+        }
+        public float Radius = 3f;
+        public Color RadiusColor = Color.white;
+        public LayerMask Targetable;
+
+        internal void LockOn(Vector3 position)
+        {
+            Debug.Log("Lock on");
+        }
     }
     public Targeting targeting;
+
+    public void LockOn(Vector3 position)
+    {
+
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Handles.color = targeting.RadiusColor;
+        Handles.DrawWireDisc(transform.position, transform.up, targeting.Radius);
+    }
 }
