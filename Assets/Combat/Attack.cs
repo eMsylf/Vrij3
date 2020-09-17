@@ -39,9 +39,14 @@ namespace Combat {
                 return;
             }
 
-            if (!CanMultiHit && fightersHit.Contains(fighterHit))
+            if (fightersHit.Contains(fighterHit))
             {
-                Debug.Log("Already hit this fighter");
+                //Debug.Log("Already hit this fighter");
+                if (!CanMultiHit)
+                {
+                    //Debug.Log("Trying to multihit but is disabled", this);
+                    return;
+                }
             }
 
             fighterHit.TakeDamage(Damage);

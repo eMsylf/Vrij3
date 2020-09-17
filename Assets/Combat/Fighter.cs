@@ -69,7 +69,7 @@ namespace Combat
                     Debug.LogError("Statistic visualizer is null");
                     return;
                 }
-                Debug.Log("Updating visual");
+                //Debug.Log("Updating visual");
                 for (int i = 0; i < Visualizer.transform.childCount; i++)
                 {
                     GameObject child = Visualizer.transform.GetChild(i).gameObject;

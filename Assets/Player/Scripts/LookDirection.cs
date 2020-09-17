@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class LookDirection : MonoBehaviour
 {
-    public ELookDirection Direction;
+    //public ELookDirection Direction;
 }

@@ -162,6 +162,7 @@ public class PlayerController : Fighter
     public void UpdateFacingDirection(Vector2 direction)
     {
         movement.FacingDirection = direction;
+        UpdateDirectionIndicator();
         if (Animator == null)
             return;
         Animator.SetFloat("Hor", direction.x);
@@ -179,11 +180,21 @@ public class PlayerController : Fighter
 
     public void OnAttack()
     {
-        Debug.Log("Attack");
+        //Debug.Log("Attack");
         Animator.SetFloat("AttackCharge", attacking.latestCharge);
         Animator.SetTrigger("Attack");
+        attacking.WeaponAnimator.SetFloat("AttackCharge", attacking.latestCharge);
+        attacking.WeaponAnimator.SetTrigger("Attack");
+
         //Animator.ResetTrigger("Attack");
     }
+
+    public Direction Direction;
+    public void UpdateDirectionIndicator()
+    {
+        Direction.DirectionIndicator.localPosition = new Vector3(movement.FacingDirection.x, 0f, movement.FacingDirection.y);
+    }
+
 
     [System.Serializable]
     public class Movement
@@ -207,6 +218,7 @@ public class PlayerController : Fighter
     public class Attacking
     {
         public UnityEngine.UI.Slider ChargeSlider;
+        public Animator WeaponAnimator;
         //public Gradient ChargeZones;
         [Tooltip("Time it takes for the slider to fill up")]
         public float ChargeTime = 2f;
@@ -297,9 +309,11 @@ public class PlayerController : Fighter
 
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         Handles.color = targeting.RadiusColor;
         Handles.DrawWireDisc(transform.position, transform.up, targeting.Radius);
     }
+#endif
 }

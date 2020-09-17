@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FaceTarget : MonoBehaviour
+public class LookAtTarget : MonoBehaviour
 {
     [Tooltip("Uses the main camera by default")]
     public Transform OverrideTarget;
@@ -24,7 +24,7 @@ public class FaceTarget : MonoBehaviour
     public EFacingSide FacingSide = default;
     [Tooltip("Only takes effect when Forward, Up or Right is selected under FacingSide")]
     public bool reverse;
-
+    private Vector3 lookVector;
 
     private void Update()
     {
@@ -36,20 +36,20 @@ public class FaceTarget : MonoBehaviour
         }
 
         Vector3 targetPosition = GetTarget().transform.position;
-        Debug.DrawLine(transform.position, targetPosition);
+        Debug.DrawLine(transform.position, targetPosition, Color.white, 1f);
 
-        Vector3 facingVector = transform.position - targetPosition;
-        if (reverse) facingVector *= -1f;
+        lookVector = transform.position - targetPosition;
+        if (reverse) lookVector *= -1f;
         switch (FacingSide)
         {
             case EFacingSide.Forward:
-                transform.forward = facingVector;
+                transform.forward = lookVector;
                 break;
             case EFacingSide.Up:
-                transform.up = facingVector;
+                transform.up = lookVector;
                 break;
             case EFacingSide.Right:
-                transform.right = facingVector;
+                transform.right = lookVector;
                 break;
         };
     }

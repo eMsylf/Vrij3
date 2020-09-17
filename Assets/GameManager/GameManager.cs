@@ -25,6 +25,11 @@ public class GameManager : Singleton<GameManager>
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
     }
 
+    public void ReloadScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void NextScene()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
