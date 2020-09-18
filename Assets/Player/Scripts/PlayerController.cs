@@ -224,9 +224,20 @@ public class PlayerController : Fighter
         public float ChargeTime = 2f;
         [Tooltip("Time below which a charge will not be initiated")]
         public float ChargeTimeDeadzone = .1f;
+
+        public UnityEvent OnAttackEnd;
+
         internal bool charging;
         internal float latestCharge;
         internal UnityAction attackLaunched;
+
+        public enum AttackState
+        {
+            Ready,
+            CurrentlyAttacking,
+            OnCooldown
+        }
+        public AttackState attackState;
 
         internal void Launch(float chargeTime)
         {
@@ -243,6 +254,7 @@ public class PlayerController : Fighter
             }
             latestCharge = chargeTime;
             attackLaunched.Invoke();
+            attackState = AttackState.CurrentlyAttacking;
         }
 
 
