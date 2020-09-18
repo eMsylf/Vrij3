@@ -23,7 +23,6 @@ public class TimeManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("hi this is the awake");
         Controls.Game.Enable();
         Controls.Game.Attack.performed += _ => DoSlowmotion(slowdownFactor);
         Controls.Game.Dodge.performed += _ => StopSlowmotion();
@@ -31,22 +30,32 @@ public class TimeManager : MonoBehaviour
 
     private float savedTimeScale;
     private float savedFixedDeltaTime;
+    private bool slowmo = false;
+
     public void DoSlowmotion(float factor)
     {
-        Debug.Log("Slowmo");
+        if (!slowmo)
+        {
+            Debug.Log("Slowmo");
 
-        savedTimeScale = Time.timeScale;
-        savedFixedDeltaTime = Time.fixedDeltaTime;
-        Time.timeScale = factor;
-        
-        Time.fixedDeltaTime = Time.timeScale * savedFixedDeltaTime;
+            savedTimeScale = Time.timeScale;
+            savedFixedDeltaTime = Time.fixedDeltaTime;
+            Time.timeScale = factor;
+
+            Time.fixedDeltaTime = Time.timeScale * savedFixedDeltaTime;
+        }
+        slowmo = true;
     }
 
     public void StopSlowmotion()
     {
-        Debug.Log("Unslomo");
-        Time.timeScale = savedTimeScale;
-        Time.fixedDeltaTime = savedFixedDeltaTime;
+        if (slowmo)
+        {
+            Debug.Log("Unslomo");
+            Time.timeScale = savedTimeScale;
+            Time.fixedDeltaTime = savedFixedDeltaTime;
+        }
+        slowmo = false;
     }
 
     public IEnumerator DoSlowmotion(float transitionTime, float factor)
