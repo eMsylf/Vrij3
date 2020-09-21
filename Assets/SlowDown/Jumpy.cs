@@ -7,7 +7,6 @@ public class Jumpy : MonoBehaviour
 {
     public float JumpPower = 5f;
     public Vector3 Torque = Vector3.zero;
-    public float Interval = 1f;
 
     new Rigidbody rigidbody;
     Rigidbody Rigidbody
