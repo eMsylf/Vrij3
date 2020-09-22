@@ -396,6 +396,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 50146490363355145, guid: aae58c2248611d84fbe88d4bdd2a31d3,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aae58c2248611d84fbe88d4bdd2a31d3, type: 3}
 --- !u!1 &596540876
@@ -512,7 +517,7 @@ PrefabInstance:
     - target: {fileID: 50146490363355145, guid: aae58c2248611d84fbe88d4bdd2a31d3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.881
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 50146490363355145, guid: aae58c2248611d84fbe88d4bdd2a31d3,
         type: 3}
@@ -558,6 +563,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 50146490363355145, guid: aae58c2248611d84fbe88d4bdd2a31d3,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aae58c2248611d84fbe88d4bdd2a31d3, type: 3}
@@ -627,6 +637,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 50146490363355145, guid: aae58c2248611d84fbe88d4bdd2a31d3,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aae58c2248611d84fbe88d4bdd2a31d3, type: 3}
@@ -873,6 +888,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slowdownFactor: 0.05
   slowdownLength: 2
+  slowdownTransition: 1
+  SlowdownTransition:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &1692128021
 PrefabInstance:
   m_ObjectHideFlags: 0

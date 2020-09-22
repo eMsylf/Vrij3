@@ -86,7 +86,7 @@ public class PlayerController : Fighter
             case EState.Stunned:
                 break;
         }
-        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement());
+        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement() * 50f * Time.fixedDeltaTime);
     }
 
     private void Move(Vector2 input)
@@ -225,7 +225,7 @@ public class PlayerController : Fighter
         [Tooltip("Time below which a charge will not be initiated")]
         public float ChargeTimeDeadzone = .1f;
 
-        public UnityEvent OnAttackEnd;
+        //public UnityEvent OnAttackEnd;
 
         internal bool charging;
         internal float latestCharge;
@@ -277,14 +277,20 @@ public class PlayerController : Fighter
             }
             
             ChargeSlider.gameObject.SetActive(true);
-            
+            bool slowmotionInitiated = false;
             while (charging)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime = Time.time - chargeStart;
                 chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
                 ChargeSlider.value = chargeTimeClamped;
+                if (!slowmotionInitiated && chargeTimeClamped > .5f)
+                {
+                    slowmotionInitiated = true;
+                    TimeManager.Instance.DoSlowmotion(.25f);
+                }
             }
+            TimeManager.Instance.StopSlowmotion();
             ChargeSlider.gameObject.SetActive(false);
 
             Launch(chargeTimeClamped);

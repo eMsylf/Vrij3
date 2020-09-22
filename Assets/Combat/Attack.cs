@@ -8,6 +8,12 @@ namespace Combat {
         public int Damage = 1;
         public bool CanMultiHit = false;
 
+        public bool HitStun = true;
+        [Min(0.001f)]
+        public float HitStunSlowdown = .01f;
+        [Min(0.001f)]
+        public float HitStunDuration = .5f;
+
         Fighter fighter;
         Fighter GetFighter()
         {
@@ -51,6 +57,7 @@ namespace Combat {
 
             fighterHit.TakeDamage(Damage);
             fightersHit.Add(fighterHit);
+            TimeManager.Instance.DoSlowmotionWithDuration(HitStunSlowdown, HitStunDuration);
         }
     }
 }

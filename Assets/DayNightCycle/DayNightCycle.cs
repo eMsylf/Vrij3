@@ -9,7 +9,7 @@ public class DayNightCycle : MonoBehaviour
 
     void Update()
     {
-        transform.Rotate(transform.right, Speed, Space.World);
+        transform.Rotate(transform.right, Speed * Time.deltaTime, Space.World);
     }
 
     private void OnDrawGizmosSelected()

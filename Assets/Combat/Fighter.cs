@@ -12,9 +12,9 @@ namespace Combat
 
         private void OnEnable()
         {
-            if (Health.syncCurrentToMax)
+            if (Health.max != 0 && Health.syncCurrentToMax)
                 Health.SetCurrent(Health.max);
-            if (Stamina.syncCurrentToMax)
+            if (Stamina.max != 0 && Stamina.syncCurrentToMax)
                 Stamina.SetCurrent(Stamina.max);
         }
 

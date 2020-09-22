@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4573143366805225867}
   - component: {fileID: 2303036874158902753}
   - component: {fileID: 4873939926616291116}
-  - component: {fileID: 1254770946656198990}
   m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
@@ -28,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1532065310686210720}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 6652186539071122854}
   m_RootOrder: 0
@@ -80,20 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &1254770946656198990
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1532065310686210720}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &2894326787943032012
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,7 +644,7 @@ MonoBehaviour:
     syncCurrentToMax: 1
     Visualizer: {fileID: 4976917289497784945}
   Stamina:
-    max: 4
+    max: 0
     current: 0
     recoveryTime: 1
     syncCurrentToMax: 1
