@@ -2653,6 +2653,7 @@ MonoBehaviour:
   DeathObjects:
   - {fileID: 5158045116331438428, guid: dd127f65693ebc14ba65ef33bb2bf587, type: 3}
   State: 0
+  SpawnPosSet: 0
   Direction: {fileID: 580390366}
   movement:
     Speed: 0.13
@@ -2666,10 +2667,10 @@ MonoBehaviour:
     WeaponAnimator: {fileID: 2190966152617901063}
     ChargeZones:
       serializedVersion: 2
-      key0: {r: 0, g: 0, b: 0, a: 1}
-      key1: {r: 0.39215687, g: 0, b: 0, a: 1}
-      key2: {r: 0.78431374, g: 0, b: 0, a: 0}
-      key3: {r: 1, g: 0, b: 0, a: 0}
+      key0: {r: 0.8726415, g: 1, b: 1, a: 1}
+      key1: {r: 0.7216981, g: 1, b: 1, a: 1}
+      key2: {r: 0.514151, g: 1, b: 1, a: 0}
+      key3: {r: 0, g: 1, b: 1, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
@@ -2693,13 +2694,13 @@ MonoBehaviour:
       m_Mode: 1
       m_NumColorKeys: 4
       m_NumAlphaKeys: 2
-    Charge:
+    ChargeIndicator:
       max: 4
       current: 0
       recoveryTime: 1
-      syncCurrentToMax: 0
-      Visualizer: {fileID: 8793324607389498753}
-    ChargeTime: 2
+      syncCurrentToMax: 1
+      Visualizer: {fileID: 0}
+    ChargeTime: 0.5
     ChargeTimeDeadzone: 0.1
     ChargeEffectedBySlowdown: 0
     attackState: 0
@@ -3918,7 +3919,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8793324607389498753}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

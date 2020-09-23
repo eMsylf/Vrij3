@@ -65,7 +65,7 @@ public class PlayerController : Fighter
 
     private void OnEnable()
     {
-        Debug.Log("Player enabled");
+        //Debug.Log("Player enabled");
         if (!SpawnPosSet)
         {
             SpawnPos = transform.position;
@@ -85,7 +85,7 @@ public class PlayerController : Fighter
 
     private void OnDisable()
     {
-        Debug.Log("Player disabled");
+        //Debug.Log("Player disabled");
         Controls.Game.Disable();
         UnsubControls();
 
@@ -270,14 +270,12 @@ public class PlayerController : Fighter
         public EChargeType ChargeType;
         public Animator WeaponAnimator;
         public Gradient ChargeZones;
-        public Statistic Charge;
+        public Statistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         public float ChargeTime = 2f;
         [Tooltip("Time below which a charge will not be initiated")]
         public float ChargeTimeDeadzone = .1f;
         public bool ChargeEffectedBySlowdown = false;
-
-        //public UnityEvent OnAttackEnd;
 
         internal bool charging;
         internal float latestCharge;
@@ -354,6 +352,7 @@ public class PlayerController : Fighter
         public IEnumerator StartCharge()
         {
             charging = true;
+            ChargeIndicator.SetCurrent(0);
             float chargeStart = Time.time;
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
@@ -380,14 +379,15 @@ public class PlayerController : Fighter
                 //}
                 
                 chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
-                Debug.Log("Chargetime clamped: " + chargeTimeClamped);
+                //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
                 switch (ChargeType)
                 {
                     case EChargeType.Slider:
                         ChargeSlider.value = chargeTimeClamped;
+                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
                         break;
                     case EChargeType.States:
-                        Charge.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
+                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
                         break;
                 }
                 if (!slowmotionInitiated && chargeTimeClamped > .5f)
@@ -399,7 +399,8 @@ public class PlayerController : Fighter
             TimeManager.Instance.StopSlowmotion();
             GetChargeObject().SetActive(false);
 
-            Launch(chargeTimeClamped);
+            //Launch(chargeTimeClamped);
+            Launch(GetChargeZoneIndex(chargeTimeClamped));
         }
     }
     public Attacking attacking;

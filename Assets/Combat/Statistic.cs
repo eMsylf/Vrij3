@@ -7,6 +7,12 @@ namespace Combat
     {
         public int max = 4;
         public int current;
+
+        public int Get()
+        {
+            return current;
+        }
+
         public void SetCurrent(int value)
         {
             current = value;
