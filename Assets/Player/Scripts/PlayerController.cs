@@ -224,6 +224,7 @@ public class PlayerController : Fighter
         public float ChargeTime = 2f;
         [Tooltip("Time below which a charge will not be initiated")]
         public float ChargeTimeDeadzone = .1f;
+        public bool ChargeEffectedBySlowdown = false;
 
         //public UnityEvent OnAttackEnd;
 
@@ -281,7 +282,14 @@ public class PlayerController : Fighter
             while (charging)
             {
                 yield return new WaitForEndOfFrame();
-                chargeTime = Time.time - chargeStart;
+                if (ChargeEffectedBySlowdown)
+                {
+                    chargeTime = Time.time - chargeStart;
+                }
+                else
+                {
+                    chargeTime = Time.unscaledTime - chargeStart;
+                }
                 chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
                 ChargeSlider.value = chargeTimeClamped;
                 if (!slowmotionInitiated && chargeTimeClamped > .5f)
