@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Combat
@@ -10,8 +9,16 @@ namespace Combat
         public Statistic Stamina;
         public int TouchDamage = 0;
 
+        public List<GameObject> DeathObjects = new List<GameObject>();
+
         private void OnEnable()
         {
+            EnableTasks();
+        }
+
+        internal void EnableTasks()
+        {
+            Debug.Log("Set current health and stamina of " + name + " to max", this);
             if (Health.max != 0 && Health.syncCurrentToMax)
                 Health.SetCurrent(Health.max);
             if (Stamina.max != 0 && Stamina.syncCurrentToMax)
@@ -23,9 +30,14 @@ namespace Combat
             throw new System.NotImplementedException();
         }
 
-        public void Die()
+        public virtual void Die()
         {
             Debug.Log(name + " died", this);
+            foreach (GameObject obj in DeathObjects)
+            {
+                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
+                //Instantiate(obj);
+            }
             gameObject.SetActive(false);
         }
 
@@ -37,47 +49,13 @@ namespace Combat
 
         public void TakeDamage(int damageTaken, Fighter damageSource)
         {
-            Debug.Log(damageSource.name + " hit enemy " + this.name + " for " + damageTaken + " damage. New health: " + this.Health.current, this);
+            Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.current, this);
             TakeDamage(damageTaken);
         }
 
         public void UseStamina(int amount)
         {
             Stamina.SetCurrent(Mathf.Clamp(Stamina.current - amount, 0, Stamina.max));
-        }
-
-        [System.Serializable]
-        public class Statistic
-        {
-            public int max = 4;
-            public int current;
-            public void SetCurrent(int value)
-            {
-                current = value;
-                UpdateVisual();
-            }
-            [Tooltip("The time it takes for a point to be recovered. 0 = no recovery.")]
-            public float recoveryTime = 1f;
-            [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
-            public bool syncCurrentToMax = true;
-
-            public GameObject Visualizer;
-            public void UpdateVisual()
-            {
-                if (Visualizer == null)
-                {
-                    Debug.LogError("Statistic visualizer is null");
-                    return;
-                }
-                //Debug.Log("Updating visual");
-                for (int i = 0; i < Visualizer.transform.childCount; i++)
-                {
-                    GameObject child = Visualizer.transform.GetChild(i).gameObject;
-                    bool shouldBeActive = current >= i + 1;
-                    child.SetActive(shouldBeActive);
-                    //Debug.Log("This child (" + i + ") should be active: " + shouldBeActive);
-                }
-            }
         }
     }
 }

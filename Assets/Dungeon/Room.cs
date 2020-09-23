@@ -10,10 +10,10 @@ public class Room : MonoBehaviour
     {
         if (other.GetComponent<PlayerController>() == null)
             return;
-        Debug.Log("Entered " + name, this);
+        //Debug.Log("Entered " + name, this);
         //Debug.Log("Activate " + name, this);
         PhysicalRoom?.SetActive(true);
-        Debug.Log("Set camera position to " + name, this);
+        //Debug.Log("Set camera position to " + name, this);
         Camera.main.transform.position = CameraViewPoint.position;
         Camera.main.transform.rotation = CameraViewPoint.rotation;
     }

@@ -60,17 +60,63 @@ public class PlayerController : Fighter
         }
     }
 
-    private void Awake()
+    private Vector3 SpawnPos;
+    public bool SpawnPosSet = false;
+
+    private void OnEnable()
     {
+        //Debug.Log("Player enabled");
+        if (!SpawnPosSet)
+        {
+            SpawnPos = transform.position;
+            SpawnPosSet = true;
+        }
+        else
+        {
+            transform.position = SpawnPos;
+        }
         Controls.Game.Enable();
+        SubscribeControls();
+
+        attacking.attackLaunched += () => OnAttack();
+
+        EnableTasks();
+    }
+
+    private void OnDisable()
+    {
+        //Debug.Log("Player disabled");
+        Controls.Game.Disable();
+        UnsubControls();
+
+        attacking.attackLaunched -= () => OnAttack();
+    }
+
+    bool controlsSubscribed;
+    private void SubscribeControls()
+    {
+        if (controlsSubscribed)
+            return;
         Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => Dodge();
-        Controls.Game.Attack.performed += _ => StartCoroutine(attacking.Charge());
+        Controls.Game.Attack.performed += _ => StartCoroutine(attacking.StartCharge());
         Controls.Game.Attack.canceled += _ => attacking.charging = false;
         Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
+        controlsSubscribed = true;
+    }
 
-        attacking.attackLaunched += () => OnAttack();
+    private void UnsubControls()
+    {
+        if (!controlsSubscribed)
+            return;
+        Controls.Game.Movement.performed -= _ => Move(_.ReadValue<Vector2>());
+        Controls.Game.Movement.canceled -= _ => Stop();
+        Controls.Game.Dodge.performed -= _ => Dodge();
+        Controls.Game.Attack.performed -= _ => StartCoroutine(attacking.StartCharge());
+        Controls.Game.Attack.canceled -= _ => attacking.charging = false;
+        Controls.Game.LockOn.performed -= _ => targeting.LockOn(transform.position);
+        controlsSubscribed = false;
     }
 
     private void FixedUpdate()
@@ -88,6 +134,46 @@ public class PlayerController : Fighter
         }
         Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement() * 50f * Time.fixedDeltaTime);
     }
+
+    public override void Die()
+    {
+        GameManager.Instance.PlayerDeath(this);
+        base.Die();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.attachedRigidbody == Rigidbody)
+        {
+            Debug.Log("Hit self");
+            return;
+        }
+    }
+
+    public Direction Direction;
+    public void UpdateDirectionIndicator()
+    {
+        Direction.DirectionIndicator.localPosition = new Vector3(movement.FacingDirection.x, 0f, movement.FacingDirection.y);
+    }
+
+    #region Movement
+    [System.Serializable]
+    public class Movement
+    {
+        public float Speed = 1f;
+        public float DodgeSpeed = 2f;
+        public float DodgeDuration = 1f;
+        public bool ApplyMovementInput = true;
+        internal Vector2 Input;
+        internal Vector2 FacingDirection = new Vector2(0f, 1f);
+        internal Vector2 CalculatedMovement;
+        internal Vector3 GetTopDownMovement()
+        {
+            return new Vector3(CalculatedMovement.x, 0f, CalculatedMovement.y);
+        }
+        internal Vector2 DodgeDirection;
+    }
+    public Movement movement;
 
     private void Move(Vector2 input)
     {
@@ -107,7 +193,7 @@ public class PlayerController : Fighter
                 break;
         }
         Animator.SetBool("IsWalking", true);
-        
+
         UpdateFacingDirection(movement.Input);
     }
 
@@ -145,7 +231,7 @@ public class PlayerController : Fighter
         {
             movement.DodgeDirection = movement.Input;
         }
-        
+
         yield return new WaitForSeconds(duration);
 
         State = EState.Idle;
@@ -168,64 +254,28 @@ public class PlayerController : Fighter
         Animator.SetFloat("Hor", direction.x);
         Animator.SetFloat("Vert", direction.y);
     }
+    #endregion
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.attachedRigidbody == Rigidbody)
-        {
-            Debug.Log("Hit self");
-            return;
-        }
-    }
-
-    public void OnAttack()
-    {
-        //Debug.Log("Attack");
-        Animator.SetFloat("AttackCharge", attacking.latestCharge);
-        Animator.SetTrigger("Attack");
-        attacking.WeaponAnimator.SetFloat("AttackCharge", attacking.latestCharge);
-        attacking.WeaponAnimator.SetTrigger("Attack");
-
-        //Animator.ResetTrigger("Attack");
-    }
-
-    public Direction Direction;
-    public void UpdateDirectionIndicator()
-    {
-        Direction.DirectionIndicator.localPosition = new Vector3(movement.FacingDirection.x, 0f, movement.FacingDirection.y);
-    }
-
-
-    [System.Serializable]
-    public class Movement
-    {
-        public float Speed = 1f;
-        public float DodgeSpeed = 2f;
-        public float DodgeDuration = 1f;
-        public bool ApplyMovementInput = true;
-        internal Vector2 Input;
-        internal Vector2 FacingDirection = new Vector2(0f, 1f);
-        internal Vector2 CalculatedMovement;
-        internal Vector3 GetTopDownMovement()
-        {
-            return new Vector3(CalculatedMovement.x, 0f, CalculatedMovement.y);
-        }
-        internal Vector2 DodgeDirection;
-    }
-    public Movement movement;
-
-    [System.Serializable]
+    #region Attacking
+    [Serializable]
     public class Attacking
     {
         public UnityEngine.UI.Slider ChargeSlider;
+        public GameObject ChargeIndicators;
+        public enum EChargeType
+        {
+            Slider,
+            States
+        }
+        public EChargeType ChargeType;
         public Animator WeaponAnimator;
-        //public Gradient ChargeZones;
+        public Gradient ChargeZones;
+        public Statistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         public float ChargeTime = 2f;
         [Tooltip("Time below which a charge will not be initiated")]
         public float ChargeTimeDeadzone = .1f;
-
-        //public UnityEvent OnAttackEnd;
+        public bool ChargeEffectedBySlowdown = false;
 
         internal bool charging;
         internal float latestCharge;
@@ -238,6 +288,12 @@ public class PlayerController : Fighter
             OnCooldown
         }
         public AttackState attackState;
+
+        internal void Launch(int chargeIndex)
+        {
+            WeaponAnimator.SetTrigger("Attack");
+            WeaponAnimator.SetInteger("AttackIndex", chargeIndex);
+        }
 
         internal void Launch(float chargeTime)
         {
@@ -257,33 +313,83 @@ public class PlayerController : Fighter
             attackState = AttackState.CurrentlyAttacking;
         }
 
+        GameObject GetChargeObject()
+        {
+            switch (ChargeType)
+            {
+                default:
+                case EChargeType.Slider:
+                    return ChargeSlider.gameObject;
+                case EChargeType.States:
+                    return ChargeIndicators.gameObject;
+            }
+        }
+
+        int GetChargeZoneIndex(float time)
+        {
+            for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
+            {
+                if (ChargeZones.colorKeys[i].time > time)
+                {
+                    Debug.Log("Time: " + time + " index " + i);
+                    return i;
+                }
+            }
+            Debug.Log("No index at time " + time + " found. Returning max: " + (ChargeZones.colorKeys.Length - 1));
+            return ChargeZones.colorKeys.Length - 1;
+        }
 
         public void InterruptCharge()
         {
+            if (!charging)
+            {
+                Debug.Log("No charge to interrupt");
+                return;
+            }
             charging = false;
         }
 
-        public IEnumerator Charge()
+        public IEnumerator StartCharge()
         {
             charging = true;
+            ChargeIndicator.SetCurrent(0);
             float chargeStart = Time.time;
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
-            //Debug.Log("Start charge");
+            Debug.Log("Start charge");
             while (chargeTime < ChargeTimeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime = Time.time - chargeStart;
             }
-            
-            ChargeSlider.gameObject.SetActive(true);
+            Debug.Log("Charge deadzone passed");
+            GetChargeObject().SetActive(true);
             bool slowmotionInitiated = false;
             while (charging)
             {
                 yield return new WaitForEndOfFrame();
-                chargeTime = Time.time - chargeStart;
+                chargeTime += Time.deltaTime / Time.timeScale;
+                //if (ChargeEffectedBySlowdown)
+                //{
+                //    chargeTime = Time.time - chargeStart;
+                //}
+                //else
+                //{
+                //    chargeTime = Time.unscaledTime - chargeStart;
+                //}
+                
                 chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
-                ChargeSlider.value = chargeTimeClamped;
+                //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
+                switch (ChargeType)
+                {
+                    case EChargeType.Slider:
+                        ChargeSlider.value = chargeTimeClamped;
+                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
+                        break;
+                    case EChargeType.States:
+                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
+                        break;
+                }
                 if (!slowmotionInitiated && chargeTimeClamped > .5f)
                 {
                     slowmotionInitiated = true;
@@ -291,13 +397,26 @@ public class PlayerController : Fighter
                 }
             }
             TimeManager.Instance.StopSlowmotion();
-            ChargeSlider.gameObject.SetActive(false);
+            GetChargeObject().SetActive(false);
 
-            Launch(chargeTimeClamped);
+            //Launch(chargeTimeClamped);
+            Launch(GetChargeZoneIndex(chargeTimeClamped));
         }
     }
     public Attacking attacking;
 
+    public void OnAttack()
+    {
+        Animator.SetFloat("AttackCharge", attacking.latestCharge);
+        Animator.SetTrigger("Attack");
+        attacking.WeaponAnimator.SetFloat("AttackCharge", attacking.latestCharge);
+        attacking.WeaponAnimator.SetTrigger("Attack");
+
+        //Animator.ResetTrigger("Attack");
+    }
+    #endregion
+
+    #region Targeting
     [System.Serializable]
     public class Targeting
     {
@@ -326,6 +445,7 @@ public class PlayerController : Fighter
     {
 
     }
+    #endregion
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

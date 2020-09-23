@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using BobJeltes.Menu;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using BobJeltes.Menu;
 using BobJeltes.StandardUtilities;
+using System;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -22,36 +23,42 @@ public class GameManager : Singleton<GameManager>
 
     public void LoadScene(string sceneName)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     public void ReloadScene()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void NextScene()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void Quit()
     {
         Debug.Log("Quit game");
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+        EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
     }
 
+    private PlayerController PlayerInstance;
+    public GameObject DeathScreen;
+
     public void PlayerDeath(PlayerController player)
     {
-        Players.Remove(player);
-        if (Players.Count == 1)
-        {
-            MatchComplete();
-        }
+        //Players.Remove(player);
+        //if (Players.Count == 1)
+        //{
+        //    MatchComplete();
+        //}
+        PlayerInstance = player;
+
+        DeathScreen.SetActive(true);
     }
 
     public void MatchComplete()
@@ -63,5 +70,10 @@ public class GameManager : Singleton<GameManager>
         }
         EndGameScreenInstance.IsWinner = true;
         EndGameScreenInstance.gameObject.SetActive(true);
+    }
+
+    public void ActivatePlayer()
+    {
+        PlayerInstance.gameObject.SetActive(true);
     }
 }
