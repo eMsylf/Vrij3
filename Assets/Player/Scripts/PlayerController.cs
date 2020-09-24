@@ -134,7 +134,7 @@ public class PlayerController : Fighter
             case EState.Stunned:
                 break;
         }
-        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement() * 50f * Time.fixedDeltaTime);
+        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement() * Time.fixedUnscaledDeltaTime);
     }
 
     public override void Die()

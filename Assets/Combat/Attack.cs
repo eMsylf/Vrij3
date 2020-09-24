@@ -33,7 +33,7 @@ namespace Combat {
 
         private void OnTriggerEnter(Collider other)
         {
-            Fighter fighterHit = other.attachedRigidbody.GetComponent<Fighter>();
+            Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parent = GetComponentInParent<Fighter>();
 
             if (fighterHit == null)
