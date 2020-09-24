@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace Combat
 {
@@ -7,6 +9,13 @@ namespace Combat
     {
         public int max = 4;
         public int current;
+        [Tooltip("The time it takes for a point to be recovered. 0 = no recovery.")]
+        public float recoveryTime = 1f;
+        [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
+        public bool syncCurrentToMax = true;
+        public GameObject Visualizer;
+
+        public UnityAction OnUse;
 
         public int Get()
         {
@@ -15,15 +24,32 @@ namespace Combat
 
         public void SetCurrent(int value)
         {
-            current = value;
-            UpdateVisual();
+            SetCurrent(value, true);
         }
-        [Tooltip("The time it takes for a point to be recovered. 0 = no recovery.")]
-        public float recoveryTime = 1f;
-        [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
-        public bool syncCurrentToMax = true;
 
-        public GameObject Visualizer;
+        public void SetCurrent(int value, bool updateVisual)
+        {
+            current = value;
+            if (updateVisual) 
+                UpdateVisual();
+        }
+
+        public bool Use()
+        {
+            return Use(1);
+        }
+
+        public bool Use(int amount)
+        {
+            if (current - amount >= 0)
+            {
+                SetCurrent(current - amount);
+                OnUse.Invoke();
+                return true;
+            }
+            return false;
+        }
+
         public void UpdateVisual()
         {
             if (Visualizer == null)

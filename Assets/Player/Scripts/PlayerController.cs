@@ -90,6 +90,8 @@ public class PlayerController : Fighter
         UnsubControls();
 
         attacking.attackLaunched -= () => OnAttack();
+
+        DisableTasks();
     }
 
     bool controlsSubscribed;
@@ -99,8 +101,8 @@ public class PlayerController : Fighter
             return;
         Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
-        Controls.Game.Dodge.performed += _ => Dodge();
-        Controls.Game.Attack.performed += _ => StartCoroutine(attacking.StartCharge());
+        Controls.Game.Dodge.performed += _ => AttemptDodge();
+        Controls.Game.Attack.performed += _ => AttemptAttack();
         Controls.Game.Attack.canceled += _ => attacking.charging = false;
         Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
         controlsSubscribed = true;
@@ -112,7 +114,7 @@ public class PlayerController : Fighter
             return;
         Controls.Game.Movement.performed -= _ => Move(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled -= _ => Stop();
-        Controls.Game.Dodge.performed -= _ => Dodge();
+        Controls.Game.Dodge.performed -= _ => AttemptDodge();
         Controls.Game.Attack.performed -= _ => StartCoroutine(attacking.StartCharge());
         Controls.Game.Attack.canceled -= _ => attacking.charging = false;
         Controls.Game.LockOn.performed -= _ => targeting.LockOn(transform.position);
@@ -209,10 +211,16 @@ public class PlayerController : Fighter
         Animator.SetBool("IsWalking", false);
     }
 
-    private void Dodge()
+    private void AttemptDodge()
     {
         if (State == EState.Dodging)
         {
+            return;
+        }
+
+        if (!Stamina.Use())
+        {
+            Debug.Log("Insufficient stamina to dodge");
             return;
         }
 
@@ -248,6 +256,7 @@ public class PlayerController : Fighter
     public void UpdateFacingDirection(Vector2 direction)
     {
         movement.FacingDirection = direction;
+        //TODO: Do dit niet wanneer de speler aan het aanvallen is
         UpdateDirectionIndicator();
         if (Animator == null)
             return;
@@ -284,7 +293,7 @@ public class PlayerController : Fighter
         public enum AttackState
         {
             Ready,
-            CurrentlyAttacking,
+            Attacking,
             OnCooldown
         }
         public AttackState attackState;
@@ -310,7 +319,7 @@ public class PlayerController : Fighter
             }
             latestCharge = chargeTime;
             attackLaunched.Invoke();
-            attackState = AttackState.CurrentlyAttacking;
+            attackState = AttackState.Attacking;
         }
 
         GameObject GetChargeObject()
@@ -329,9 +338,9 @@ public class PlayerController : Fighter
         {
             for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
             {
-                if (ChargeZones.colorKeys[i].time > time)
+                if (ChargeZones.colorKeys[i].time >= time)
                 {
-                    Debug.Log("Time: " + time + " index " + i);
+                    //Debug.Log("Time: " + time + " index " + i);
                     return i;
                 }
             }
@@ -352,15 +361,22 @@ public class PlayerController : Fighter
         public IEnumerator StartCharge()
         {
             charging = true;
-            ChargeIndicator.SetCurrent(0);
-            float chargeStart = Time.time;
+            switch (ChargeType)
+            {
+                case EChargeType.Slider:
+                    ChargeIndicator.SetCurrent(0, false);
+                    break;
+                case EChargeType.States:
+                    ChargeIndicator.SetCurrent(0);
+                    break;
+            }
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
             Debug.Log("Start charge");
             while (chargeTime < ChargeTimeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
-                chargeTime = Time.time - chargeStart;
+                chargeTime += Time.unscaledDeltaTime;
             }
             Debug.Log("Charge deadzone passed");
             GetChargeObject().SetActive(true);
@@ -368,7 +384,7 @@ public class PlayerController : Fighter
             while (charging)
             {
                 yield return new WaitForEndOfFrame();
-                chargeTime += Time.deltaTime / Time.timeScale;
+                chargeTime += Time.unscaledDeltaTime;
                 //if (ChargeEffectedBySlowdown)
                 //{
                 //    chargeTime = Time.time - chargeStart;
@@ -384,7 +400,7 @@ public class PlayerController : Fighter
                 {
                     case EChargeType.Slider:
                         ChargeSlider.value = chargeTimeClamped;
-                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
+                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1, false);
                         break;
                     case EChargeType.States:
                         ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
@@ -404,6 +420,16 @@ public class PlayerController : Fighter
         }
     }
     public Attacking attacking;
+
+    public void AttemptAttack()
+    {
+        if (!Stamina.Use())
+        {
+            Debug.Log("Not enough stamina to attack");
+            return;
+        }
+        StartCoroutine(attacking.StartCharge());
+    }
 
     public void OnAttack()
     {
