@@ -1851,6 +1851,11 @@ MonoBehaviour:
     recoveryTime: 1
     syncCurrentToMax: 1
     Visualizer: {fileID: 8511082039303856159}
+  staminaRecharge:
+    staminaRechargeTime: 1
+    recharge: 0
+    staminaRechargeWindupTime: 1
+    windup: 0
   TouchDamage: 0
   DeathObjects:
   - {fileID: 5158045116331438428, guid: dd127f65693ebc14ba65ef33bb2bf587, type: 3}
@@ -1865,7 +1870,7 @@ MonoBehaviour:
   attacking:
     ChargeSlider: {fileID: 701161329913697213}
     ChargeIndicators: {fileID: 8793324607389498753}
-    ChargeType: 0
+    ChargeType: 1
     WeaponAnimator: {fileID: 2190966152617901063}
     ChargeZones:
       serializedVersion: 2
@@ -1901,8 +1906,8 @@ MonoBehaviour:
       current: 0
       recoveryTime: 1
       syncCurrentToMax: 1
-      Visualizer: {fileID: 0}
-    ChargeTime: 0.5
+      Visualizer: {fileID: 8793324607389498753}
+    ChargeTime: 2
     ChargeTimeDeadzone: 0.1
     ChargeEffectedBySlowdown: 0
     attackState: 0
