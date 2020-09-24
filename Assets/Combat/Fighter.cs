@@ -30,6 +30,17 @@ namespace Combat
             Stamina.OnUse += () => staminaRecharge.recharge = 0f;
         }
 
+        private void OnDisable()
+        {
+            DisableTasks();
+        }
+
+        internal void DisableTasks()
+        {
+            Stamina.OnUse -= () => staminaRecharge.windup = 0f;
+            Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
+        }
+
 
         private void Update()
         {

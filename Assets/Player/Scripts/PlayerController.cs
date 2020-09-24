@@ -90,6 +90,8 @@ public class PlayerController : Fighter
         UnsubControls();
 
         attacking.attackLaunched -= () => OnAttack();
+
+        DisableTasks();
     }
 
     bool controlsSubscribed;
