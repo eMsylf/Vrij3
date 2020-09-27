@@ -430,17 +430,18 @@ public class PlayerController : Fighter
 
         public void ApplyChargeZoneColors()
         {
-            Debug.Log("Apply charge zone colors");
             GameObject chargeObject = GetChargeObject();
             if (chargeObject == null)
             {
+                Debug.LogError("Charge object is not assigned");
                 return;
             }
+            Debug.Log("Apply charge zone colors");
             
             for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
             {
                 Color currentColor = ChargeZones.colorKeys[i].color;
-                Debug.Log("Color key " + i + ": " + currentColor);
+                //Debug.Log("Color key " + i + ": " + currentColor);
                 Transform child = chargeObject.transform.GetChild(i);
                 if (child == null)
                 {
@@ -451,7 +452,7 @@ public class PlayerController : Fighter
                 {
                     Debug.LogError("Transform child " + i + " of " + chargeObject + " has no Graphic component to set the color of", child);
                 }
-                Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
+                //Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
                 graphic.color = currentColor;
             }
         }
