@@ -62,6 +62,7 @@ public class PlayerController : Fighter
     }
 
     private Vector3 SpawnPos;
+    [Tooltip("If unticked, the player's position will be saved as its new spawn position the next time the player is enabled.")]
     public bool SpawnPosSet = false;
 
     private void OnEnable()

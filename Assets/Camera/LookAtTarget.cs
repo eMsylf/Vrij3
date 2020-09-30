@@ -26,6 +26,8 @@ public class LookAtTarget : MonoBehaviour
     public bool reverse;
     private Vector3 lookVector;
 
+    public bool OnlyRotateY;
+
     private void Update()
     {
         switch (FacingSide)
@@ -37,7 +39,10 @@ public class LookAtTarget : MonoBehaviour
 
         Vector3 targetPosition = GetTarget().transform.position;
         Debug.DrawLine(transform.position, targetPosition, Color.white, 1f);
-
+        if (OnlyRotateY)
+        {
+            targetPosition.y = transform.position.y;
+        }
         lookVector = transform.position - targetPosition;
         if (reverse) lookVector *= -1f;
         switch (FacingSide)
