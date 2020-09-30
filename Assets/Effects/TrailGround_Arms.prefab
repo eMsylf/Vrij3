@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4736287647662775983}
   - component: {fileID: 4736287647662775982}
   m_Layer: 0
-  m_Name: TrailGround_Slash 1
+  m_Name: TrailGround_Arms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14552,13 +14552,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4736287648657152530}
-  m_LocalRotation: {x: 0.7071058, y: -0, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: -0, z: 0.33}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4736287649382896612}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 180, y: 0, z: -180}
 --- !u!198 &4736287648657152525
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -14811,8 +14811,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 5
-      minScalar: 2
+      scalar: 30
+      minScalar: 25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -19348,7 +19348,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_RenderMode: 3
+  m_RenderMode: 4
   m_SortMode: 0
   m_MinParticleSize: 0
   m_MaxParticleSize: 0.5
@@ -19366,7 +19366,7 @@ ParticleSystemRenderer:
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_VertexStreams: 00010304
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 7629811779324647873, guid: 29f2dd533d96fcc448857fe1b4ec07fe, type: 3}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -29161,6 +29161,11 @@ PrefabInstance:
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.atime1
       value: 31997
+      objectReference: {fileID: 0}
+    - target: {fileID: 5383590404514759758, guid: bcba166b8585f1f418b49d4dbb9c2f79,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5383590404514759759, guid: bcba166b8585f1f418b49d4dbb9c2f79,
         type: 3}
