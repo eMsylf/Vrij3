@@ -19,23 +19,82 @@ public class CameraFollow : MonoBehaviour
             }
             return target;
         }
-        set
+        set => target = value;
+    }
+
+    private Transform cameraResources;
+    public Transform CameraResources
+    {
+        get
         {
-            target = value;
+            if (cameraResources == null)
+            {
+                cameraResources = new GameObject("Camera resources").transform;
+            }
+            return cameraResources;
         }
     }
-    public Vector3 PositionOffset;
-    public Quaternion PositionOffsetRot = Quaternion.identity;
-    public float Distance = 1f;
-    [Range(.1f, 1f)]
-    public float PositionSmoothing = .125f;
-    public Vector3 LookOffset;
-    public Quaternion LookOffsetRot = Quaternion.identity;
-    [Range(.1f, 1f)]
-    public float LookSmoothing = .125f;
-    public bool LivePreview = true;
 
-    public float HorizontalRotation = 0f;
+    [Space]
+
+    private Transform positionPivot;
+    public Transform PositionPivot
+    {
+        get
+        {
+            if (positionPivot == null)
+            {
+                positionPivot = new GameObject("Position pivot").transform;
+                positionPivot.parent = CameraResources;
+            }
+            return positionPivot;
+        }
+    }
+
+    private Transform positionTransform;
+    public Transform PositionTransform
+    {
+        get
+        {
+            if (positionTransform == null)
+            {
+                positionTransform = new GameObject("Position transform").transform;
+                positionTransform.parent = PositionPivot;
+            }
+            return positionTransform;
+        }
+    }
+
+    private Transform lookTransform;
+    public Transform LookTransform
+    {
+        get
+        {
+            if (lookTransform == null)
+            {
+                lookTransform = new GameObject("Look transform").transform;
+                lookTransform.parent = CameraResources;
+            }
+            return lookTransform;
+        }
+    }
+    [Header("Position")]
+    public Vector3 PositionOffset;
+    [Range(0f, .99f)]
+    public float PositionSmoothing = .125f;
+
+    [Header("Rotation")]
+    public Vector3 RotationAroundTarget;
+    [Header("Distance")]
+    [Min(0f)]
+    public float Distance = 2f;
+    [Header("Look")]
+    public Vector3 LookOffset;
+    [Range(0f, .99f)]
+    public float LookSmoothing = .125f;
+
+    [Header("Live preview")]
+    public bool LivePreview = true;
 
     private void Update()
     {
@@ -44,54 +103,45 @@ public class CameraFollow : MonoBehaviour
 
     public void SetPositionAndLook()
     {
-        SetPosition(GetMoveTargetPosition());
+        CalculatePivot();
+
+        SetPosition(CalculatePosition());
 
         CalculateRotationAroundTarget();
 
-        SetLook(GetLookTargetPosition());
+        SetLook(CalculateLook());
     }
 
-    public Vector3 GetMoveTargetPosition()
+    public void CalculatePivot()
     {
-        Vector3 movePosition;
-        if (PositionSmoothing == 0f)
-        {
-            movePosition = Target.position + PositionOffset;
-        }
-        else
-        {
-            movePosition = Vector3.Lerp(transform.position, Target.position + PositionOffset, 1f - PositionSmoothing);
-        }
-
-        return movePosition;
-    } 
-
-    private void CalculateRotationAroundTarget()
-    {
-        Vector3 currentOffset = Target.position - transform.position;
-
-        Distance = Vector3.Distance(Target.position, transform.position);
-
-        currentOffset.x = currentOffset.x * Mathf.Cos(HorizontalRotation);
-        currentOffset.z = Mathf.Cos(HorizontalRotation);
-
-        transform.position = currentOffset + Target.position;
+        PositionPivot.position = Target.position + PositionOffset;
     }
 
-    private Vector3 GetLookTargetPosition()
+    public Vector3 CalculatePosition()
     {
-        // Get camera look position
-        if (LookSmoothing == 0f)
-        {
-            return Target.position;
-        }
-        return Vector3.Lerp(transform.position, Target.position + LookOffset, 1f - LookSmoothing);
+        PositionTransform.position = PositionPivot.position + PositionPivot.forward * -Distance;
+        return PositionTransform.position;
     }
 
     private void SetPosition(Vector3 position)
     {
-        // Set camera position
-        transform.position = position;
+        transform.position = Vector3.Lerp(transform.position, position, 1f - PositionSmoothing);
+    }
+
+    private void CalculateRotationAroundTarget()
+    {
+        PositionPivot.rotation = Quaternion.Euler(RotationAroundTarget);
+    }
+
+    private Vector3 CalculateLook()
+    {
+        // Get camera look position
+        Vector3 desiredLook = Target.position + LookOffset;
+        if (LookSmoothing == 0f)
+            LookTransform.position = desiredLook;
+        else
+            LookTransform.position = Vector3.Lerp(lookTransform.position, desiredLook, 1f - LookSmoothing);
+        return LookTransform.position;
     }
 
     private void SetLook(Vector3 position)
@@ -100,10 +150,11 @@ public class CameraFollow : MonoBehaviour
         transform.LookAt(position);
     }
 
-    public void OverrideOffsets()
-    {
-        PositionOffset = Target.position - transform.position;
-    }
+    //public void OverrideOffsets()
+    //{
+    //    //PositionTransform.position = transform.position;
+    //    PositionOffset = Target.position - transform.position;
+    //}
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
@@ -111,7 +162,10 @@ public class CameraFollow : MonoBehaviour
         Vector3 targetPos = Target.position;
 
         Gizmos.DrawLine(transform.position, targetPos);
-        Gizmos.DrawCube(targetPos + PositionOffset, Vector3.one);
+        Gizmos.DrawLine(PositionTransform.position, targetPos);
+        Gizmos.DrawLine(LookTransform.position, targetPos);
+        Gizmos.DrawLine(PositionTransform.position, PositionPivot.position);
+        Gizmos.DrawLine(PositionPivot.position, Target.position);
     }
 #endif
 }
