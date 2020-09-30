@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
+[CanEditMultipleObjects]
 public class LookAtTarget : MonoBehaviour
 {
     [Tooltip("Uses the main camera by default")]
@@ -14,48 +16,59 @@ public class LookAtTarget : MonoBehaviour
         return target;
     }
 
-    public enum EFacingSide
+    public enum EMethod
     {
         AlignRotation = default,
-        Forward,
-        Up,
-        Right
+        Forward
+        //Up,
+        //Right
     }
-    public EFacingSide FacingSide = default;
-    [Tooltip("Only takes effect when Forward, Up or Right is selected under FacingSide")]
+    public EMethod Method = default;
+    [Tooltip("Only takes effect when Forward is selected")]
     public bool reverse;
     private Vector3 lookVector;
-
-    public bool OnlyRotateY;
+    [Tooltip("Only takes effect when Forward is selected")]
+    public bool StayUpright;
 
     private void Update()
     {
-        switch (FacingSide)
+        switch (Method)
         {
-            case EFacingSide.AlignRotation:
+            case EMethod.AlignRotation:
                 transform.rotation = GetTarget().transform.rotation;
                 return;
         }
 
         Vector3 targetPosition = GetTarget().transform.position;
         Debug.DrawLine(transform.position, targetPosition, Color.white, 1f);
-        if (OnlyRotateY)
-        {
-            targetPosition.y = transform.position.y;
-        }
+
+        //switch (FacingSide)
+        //{
+        //    case EFacingSide.Forward:
+        //        if (StayUpright) targetPosition.y = transform.position.y;
+        //        break;
+        //    case EFacingSide.Up:
+        //        if (StayUpright) targetPosition.z = transform.position.z;
+        //        break;
+        //    case EFacingSide.Right:
+        //        if (StayUpright) targetPosition.x = transform.position.x;
+        //        break;
+        //}
+        if (StayUpright) targetPosition.y = transform.position.y;
+
         lookVector = transform.position - targetPosition;
         if (reverse) lookVector *= -1f;
-        switch (FacingSide)
+        switch (Method)
         {
-            case EFacingSide.Forward:
+            case EMethod.Forward:
                 transform.forward = lookVector;
                 break;
-            case EFacingSide.Up:
-                transform.up = lookVector;
-                break;
-            case EFacingSide.Right:
-                transform.right = lookVector;
-                break;
+            //case EMethod.Up:
+            //    transform.up = lookVector;
+            //    break;
+            //case EMethod.Right:
+            //    transform.right = lookVector;
+            //    break;
         };
     }
 }
