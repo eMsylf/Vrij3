@@ -4,6 +4,7 @@
     using UnityEngine.InputSystem.Controls;
 #endif
 
+
 using UnityEngine;
 
 namespace UnityTemplateProjects
@@ -62,6 +63,7 @@ namespace UnityTemplateProjects
         [Header("Movement Settings")]
         [Tooltip("Exponential boost factor on translation, controllable by mouse wheel.")]
         public float boost = 3.5f;
+        public bool boosting = false;
 
         [Tooltip("Time it takes to interpolate camera position 99% of the way to the target."), Range(0.001f, 1f)]
         public float positionLerpTime = 0.2f;
@@ -69,6 +71,8 @@ namespace UnityTemplateProjects
         [Header("Rotation Settings")]
         [Tooltip("X = Change in mouse position.\nY = Multiplicative factor for camera rotation.")]
         public AnimationCurve mouseSensitivityCurve = new AnimationCurve(new Keyframe(0f, 0.5f, 0f, 5f), new Keyframe(1f, 2.5f, 0f, 0f));
+        public float mouseSensitivityHorizontal = .5f;
+        public float mouseSensitivityVertical = .5f;
 
         [Tooltip("Time it takes to interpolate camera rotation 99% of the way to the target."), Range(0.001f, 1f)]
         public float rotationLerpTime = 0.01f;
@@ -80,7 +84,58 @@ namespace UnityTemplateProjects
         {
             m_TargetCameraState.SetFromTransform(transform);
             m_InterpolatingCameraState.SetFromTransform(transform);
+
+            SubscribeControls();
         }
+
+        private void OnDisable()
+        {
+            UnsubscribeControls();
+        }
+
+
+        #region Controls
+        Controls controls;
+        Controls Controls
+        {
+            get
+            {
+                if (controls == null)
+                {
+                    controls = new Controls();
+                }
+                return controls;
+            }
+        }
+
+        void SubscribeControls()
+        {
+            Controls.CameraController.Enable();
+            //Controls.CameraController.Movement.performed += _ => GetTranslation(_.ReadValue<Vector2>());
+            //Controls.CameraController.Look.performed += _ => GetRotation(_.ReadValue<Vector2>());
+            Controls.CameraController.Boost.started += _ => boosting = true;
+            Controls.CameraController.Boost.canceled += _ => boosting = false;
+        }
+
+        void UnsubscribeControls()
+        {
+            Controls.CameraController.Disable();
+            //Controls.CameraController.Movement.performed -= _ => GetTranslation(_.ReadValue<Vector2>());
+            //Controls.CameraController.Look.performed -= _ => GetRotation(_.ReadValue<Vector2>());
+            Controls.CameraController.Boost.started -= _ => boosting = true;
+            Controls.CameraController.Boost.canceled -= _ => boosting = false;
+        }
+        #endregion
+
+        Vector3 Vector2XYtoVector3XZ(Vector2 movement)
+        {
+            return new Vector3(movement.x, 0f, movement.y);
+        }
+
+        //Vector3 GetRotation(Vector2 look)
+        //{
+
+        //}
 
         Vector3 GetInputTranslationDirection()
         {
@@ -122,9 +177,9 @@ namespace UnityTemplateProjects
             if (Input.GetKey(KeyCode.Escape))
             {
                 Application.Quit();
-				#if UNITY_EDITOR
+#if UNITY_EDITOR
 				UnityEditor.EditorApplication.isPlaying = false; 
-				#endif
+#endif
             }
             // Hide and lock cursor when right mouse button pressed
             if (Input.GetMouseButtonDown(1))
@@ -156,18 +211,34 @@ namespace UnityTemplateProjects
             // Speed up movement when shift key held
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                translation *= 10.0f;
+                translation *= boostf;
             }
 
             // Modify movement by a boost factor (defined in Inspector and modified in play mode through the mouse scroll wheel)
             boost += Input.mouseScrollDelta.y * 0.2f;
-            translation *= Mathf.Pow(2.0f, boost);
+            
 
-#elif USE_INPUT_SYSTEM 
+#elif USE_INPUT_SYSTEM
             // TODO: make the new input system work
+#else
+            translation = Vector2XYtoVector3XZ(Controls.CameraController.Movement.ReadValue<Vector2>()) * Time.deltaTime;
+            translation.y = Controls.CameraController.Altitude.ReadValue<float>() * Time.deltaTime;
+            if (boosting)
+            {
+                translation *= boost;
+            }
+
+            Vector2 mouseDelta = Controls.CameraController.Look.ReadValue<Vector2>();
+
+            var mouseSensitivityFactor = mouseSensitivityCurve.Evaluate(mouseDelta.magnitude);
+
+            m_TargetCameraState.pitch += mouseDelta.y * mouseSensitivityFactor * mouseSensitivityVertical * (invertY ? 1 : -1);
+            m_TargetCameraState.yaw += mouseDelta.x * mouseSensitivityFactor * mouseSensitivityHorizontal;
 #endif
 
+
             m_TargetCameraState.Translate(translation);
+            translation *= Mathf.Pow(2.0f, boost);
 
             // Framerate-independent interpolation
             // Calculate the lerp amount, such that we get 99% of the way to our target in the specified time
