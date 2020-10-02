@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Combat;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class PlayerController : Fighter
 {
@@ -61,6 +62,7 @@ public class PlayerController : Fighter
     }
 
     private Vector3 SpawnPos;
+    [Tooltip("If unticked, the player's position will be saved as its new spawn position the next time the player is enabled.")]
     public bool SpawnPosSet = false;
 
     private void OnEnable()
@@ -324,14 +326,22 @@ public class PlayerController : Fighter
 
         GameObject GetChargeObject()
         {
+            GameObject obj;
             switch (ChargeType)
             {
                 default:
                 case EChargeType.Slider:
-                    return ChargeSlider.gameObject;
+                    obj = ChargeSlider.gameObject;
+                    break;
                 case EChargeType.States:
-                    return ChargeIndicators.gameObject;
+                    obj = ChargeIndicators.gameObject;
+                    break;
             }
+            if (obj == null)
+            {
+                Debug.LogWarning("Charge object " + ChargeType + " of Player is null!");
+            }
+            return obj;
         }
 
         int GetChargeZoneIndex(float time)
@@ -417,6 +427,35 @@ public class PlayerController : Fighter
 
             //Launch(chargeTimeClamped);
             Launch(GetChargeZoneIndex(chargeTimeClamped));
+        }
+
+        public void ApplyChargeZoneColors()
+        {
+            GameObject chargeObject = GetChargeObject();
+            if (chargeObject == null)
+            {
+                Debug.LogError("Charge object is not assigned");
+                return;
+            }
+            Debug.Log("Apply charge zone colors");
+            
+            for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
+            {
+                Color currentColor = ChargeZones.colorKeys[i].color;
+                //Debug.Log("Color key " + i + ": " + currentColor);
+                Transform child = chargeObject.transform.GetChild(i);
+                if (child == null)
+                {
+                    Debug.LogError("Charge zone has no child at index " + i, chargeObject);
+                }
+                Graphic graphic = child.GetComponent<Graphic>();
+                if (graphic == null)
+                {
+                    Debug.LogError("Transform child " + i + " of " + chargeObject + " has no Graphic component to set the color of", child);
+                }
+                //Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
+                graphic.color = currentColor;
+            }
         }
     }
     public Attacking attacking;

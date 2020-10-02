@@ -12,8 +12,10 @@ public class DayNightCycle : MonoBehaviour
         transform.Rotate(transform.right, Speed * Time.deltaTime, Space.World);
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         Handles.DrawWireDisc(transform.position, transform.right, 2f);
     }
+#endif
 }

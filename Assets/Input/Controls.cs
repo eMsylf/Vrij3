@@ -420,6 +420,156 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""CameraController"",
+            ""id"": ""dbee8ffa-257f-4e38-bd44-c18e5b248c5c"",
+            ""actions"": [
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""Value"",
+                    ""id"": ""1401aa23-7958-49fa-8a36-30f15920f9b8"",
+                    ""expectedControlType"": ""Vector3"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Altitude"",
+                    ""type"": ""Button"",
+                    ""id"": ""b2b7ed13-a712-49a8-a39d-73e464065bbe"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""bda90d1d-297d-4bda-931d-4796a0217386"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Boost"",
+                    ""type"": ""Button"",
+                    ""id"": ""25c6c4ab-025b-4e2c-86a5-7a1982f9af51"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""9eb8007b-f94c-4349-a0a6-f6cd95a2d003"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""1196e129-1a23-497d-9810-b045e885db1d"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""245d5706-19da-4846-ade8-396e5e4520a3"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""0e684365-9a6c-4fd7-88b7-a1329ee96983"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""3073af09-2f03-4a62-944e-406699ccba2d"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7308d95a-4c01-40b8-b804-2fbd94a41d50"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Boost"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fe3e4edd-73df-485b-b5c6-94dc8321598f"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": ""InvertVector2(invertX=false,invertY=false)"",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""QE"",
+                    ""id"": ""ce9ebae8-7a28-4b48-81e6-3d96b8965cda"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Altitude"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""17c0a1d8-e95f-4bd6-ba8f-4c5db0f094b1"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Altitude"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""255fdedd-6b12-49aa-987a-253aac9b0f5b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Altitude"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -466,6 +616,12 @@ public class @Controls : IInputActionCollection, IDisposable
         m_SlideShow = asset.FindActionMap("SlideShow", throwIfNotFound: true);
         m_SlideShow_Continue = m_SlideShow.FindAction("Continue", throwIfNotFound: true);
         m_SlideShow_Skip = m_SlideShow.FindAction("Skip", throwIfNotFound: true);
+        // CameraController
+        m_CameraController = asset.FindActionMap("CameraController", throwIfNotFound: true);
+        m_CameraController_Movement = m_CameraController.FindAction("Movement", throwIfNotFound: true);
+        m_CameraController_Altitude = m_CameraController.FindAction("Altitude", throwIfNotFound: true);
+        m_CameraController_Look = m_CameraController.FindAction("Look", throwIfNotFound: true);
+        m_CameraController_Boost = m_CameraController.FindAction("Boost", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -650,6 +806,63 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public SlideShowActions @SlideShow => new SlideShowActions(this);
+
+    // CameraController
+    private readonly InputActionMap m_CameraController;
+    private ICameraControllerActions m_CameraControllerActionsCallbackInterface;
+    private readonly InputAction m_CameraController_Movement;
+    private readonly InputAction m_CameraController_Altitude;
+    private readonly InputAction m_CameraController_Look;
+    private readonly InputAction m_CameraController_Boost;
+    public struct CameraControllerActions
+    {
+        private @Controls m_Wrapper;
+        public CameraControllerActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_CameraController_Movement;
+        public InputAction @Altitude => m_Wrapper.m_CameraController_Altitude;
+        public InputAction @Look => m_Wrapper.m_CameraController_Look;
+        public InputAction @Boost => m_Wrapper.m_CameraController_Boost;
+        public InputActionMap Get() { return m_Wrapper.m_CameraController; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CameraControllerActions set) { return set.Get(); }
+        public void SetCallbacks(ICameraControllerActions instance)
+        {
+            if (m_Wrapper.m_CameraControllerActionsCallbackInterface != null)
+            {
+                @Movement.started -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnMovement;
+                @Altitude.started -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnAltitude;
+                @Altitude.performed -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnAltitude;
+                @Altitude.canceled -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnAltitude;
+                @Look.started -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnLook;
+                @Boost.started -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnBoost;
+                @Boost.performed -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnBoost;
+                @Boost.canceled -= m_Wrapper.m_CameraControllerActionsCallbackInterface.OnBoost;
+            }
+            m_Wrapper.m_CameraControllerActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
+                @Altitude.started += instance.OnAltitude;
+                @Altitude.performed += instance.OnAltitude;
+                @Altitude.canceled += instance.OnAltitude;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
+                @Boost.started += instance.OnBoost;
+                @Boost.performed += instance.OnBoost;
+                @Boost.canceled += instance.OnBoost;
+            }
+        }
+    }
+    public CameraControllerActions @CameraController => new CameraControllerActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -684,5 +897,12 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnContinue(InputAction.CallbackContext context);
         void OnSkip(InputAction.CallbackContext context);
+    }
+    public interface ICameraControllerActions
+    {
+        void OnMovement(InputAction.CallbackContext context);
+        void OnAltitude(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        void OnBoost(InputAction.CallbackContext context);
     }
 }
