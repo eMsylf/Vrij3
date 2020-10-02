@@ -8,7 +8,7 @@ public class CameraRotationHorizontal : MonoBehaviour {
     [SerializeField] private float rotationSmoothing = .9f;
     private float cameraRotationY;
     [SerializeField] private Transform player;
-    [SerializeField] private Transform playerArt;
+    [SerializeField] private Transform playerArt = null;
     [SerializeField] private Quaternion storedRotation;
     [SerializeField] private float horizontalR;
     [SerializeField] private float vertical;

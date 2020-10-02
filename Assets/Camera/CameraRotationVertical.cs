@@ -8,9 +8,9 @@ public class CameraRotationVertical : MonoBehaviour {
     [SerializeField] private float rotationSpeed = 1f;
     [Range(.1f, .9f)]
     [SerializeField] private float rotationSmoothing = .9f;
-    [SerializeField] private bool invertVertical;
-    [SerializeField] private float rotationUpperBound;
-    [SerializeField] private float rotationLowerBound;
+    [SerializeField] private bool invertVertical = false;
+    [SerializeField] private float rotationUpperBound = 179f;
+    [SerializeField] private float rotationLowerBound = 1f;
 
     public Vector3 rot;
 
