@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
+    [Header("Supply a transform to override the camera position upon entering the room")]
     public Transform CameraViewPoint;
-    public GameObject PhysicalRoom;
+    public GameObject RoomObjects;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerController>() == null)
             return;
         Debug.Log(other.name + " entered " + name + ". Activate.", this);
-        PhysicalRoom?.SetActive(true);
-        //Debug.Log("Set camera position to " + name, this);
-        Camera.main.transform.position = CameraViewPoint.position;
-        Camera.main.transform.rotation = CameraViewPoint.rotation;
+        RoomObjects?.SetActive(true);
+        if (CameraViewPoint != null)
+        {
+            Camera.main.transform.position = CameraViewPoint.position;
+            Camera.main.transform.rotation = CameraViewPoint.rotation;
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -22,6 +26,6 @@ public class Room : MonoBehaviour
         if (other.GetComponent<PlayerController>() == null)
             return;
         Debug.Log(other.name + " left " + name + ". Deactivate.", this);
-        PhysicalRoom?.SetActive(false);
+        RoomObjects?.SetActive(false);
     }
 }
