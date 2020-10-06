@@ -57,6 +57,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraRotationHorizontal"",
+                    ""type"": ""Value"",
+                    ""id"": ""3f441776-7b99-4570-a9b8-4e69e25e0e1b"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -312,6 +320,39 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""LockOn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""QE"",
+                    ""id"": ""056af49d-c01f-493e-8e2b-e6b4f4bc7d3d"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraRotationHorizontal"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""ef6f648d-b115-4460-86cb-5f0da067dcb7"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""CameraRotationHorizontal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""3928051c-0c82-4cbd-aff1-3b1d7b56adf2"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""CameraRotationHorizontal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -609,6 +650,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Game_Interact = m_Game.FindAction("Interact", throwIfNotFound: true);
         m_Game_Attack = m_Game.FindAction("Attack", throwIfNotFound: true);
         m_Game_LockOn = m_Game.FindAction("LockOn", throwIfNotFound: true);
+        m_Game_CameraRotationHorizontal = m_Game.FindAction("CameraRotationHorizontal", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
@@ -676,6 +718,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Game_Interact;
     private readonly InputAction m_Game_Attack;
     private readonly InputAction m_Game_LockOn;
+    private readonly InputAction m_Game_CameraRotationHorizontal;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -685,6 +728,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Interact => m_Wrapper.m_Game_Interact;
         public InputAction @Attack => m_Wrapper.m_Game_Attack;
         public InputAction @LockOn => m_Wrapper.m_Game_LockOn;
+        public InputAction @CameraRotationHorizontal => m_Wrapper.m_Game_CameraRotationHorizontal;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -709,6 +753,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @LockOn.started -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
                 @LockOn.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
                 @LockOn.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
+                @CameraRotationHorizontal.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraRotationHorizontal;
+                @CameraRotationHorizontal.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraRotationHorizontal;
+                @CameraRotationHorizontal.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraRotationHorizontal;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -728,6 +775,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @LockOn.started += instance.OnLockOn;
                 @LockOn.performed += instance.OnLockOn;
                 @LockOn.canceled += instance.OnLockOn;
+                @CameraRotationHorizontal.started += instance.OnCameraRotationHorizontal;
+                @CameraRotationHorizontal.performed += instance.OnCameraRotationHorizontal;
+                @CameraRotationHorizontal.canceled += instance.OnCameraRotationHorizontal;
             }
         }
     }
@@ -888,6 +938,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnLockOn(InputAction.CallbackContext context);
+        void OnCameraRotationHorizontal(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {
