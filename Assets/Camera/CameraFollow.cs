@@ -22,7 +22,7 @@ public class CameraFollow : MonoBehaviour
         set => target = value;
     }
 
-    private Transform cameraResources;
+    [SerializeField] private Transform cameraResources;
     public Transform CameraResources
     {
         get
@@ -37,7 +37,7 @@ public class CameraFollow : MonoBehaviour
 
     [Space]
 
-    private Transform positionPivot;
+    [SerializeField] private Transform positionPivot;
     public Transform PositionPivot
     {
         get
@@ -51,7 +51,7 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    private Transform positionTransform;
+    [SerializeField] private Transform positionTransform;
     public Transform PositionTransform
     {
         get
@@ -65,7 +65,7 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    private Transform lookTransform;
+    [SerializeField] private Transform lookTransform;
     public Transform LookTransform
     {
         get

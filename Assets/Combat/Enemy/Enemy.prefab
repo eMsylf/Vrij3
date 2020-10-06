@@ -105,7 +105,7 @@ Transform:
   m_GameObject: {fileID: 4255981192211593038}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4573143366805225867}
   - {fileID: 1922482274244667581}
@@ -155,7 +155,7 @@ RectTransform:
   m_GameObject: {fileID: 4370668396344857813}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -0.54}
-  m_LocalScale: {x: 0.009438029, y: 0.009438029, z: 0.009438029}
+  m_LocalScale: {x: 0.039806772, y: 0.039806772, z: 0.039806772}
   m_Children:
   - {fileID: 111700490426984373}
   m_Father: {fileID: 5575644691505147071}
@@ -270,7 +270,7 @@ Transform:
   m_GameObject: {fileID: 5575644691505147066}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6652186539071122854}
   - {fileID: 4528282903633008412}
@@ -329,12 +329,8 @@ MonoBehaviour:
     staminaRechargeTime: 1
     staminaRechargeWindupTime: 1
   TouchDamage: 1
-  HitObjects:
-  - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
-  DeathObjects:
-  - {fileID: 2246161315229917419, guid: 71cf660223df8ba4a94c5b8aa9d796ac, type: 3}
-  - {fileID: 4745142591786541650, guid: 50fe08b795d3c934187df25af82f02b0, type: 3}
-  - {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b, type: 3}
+  HitObjects: []
+  DeathObjects: []
 --- !u!1 &5605460725966255300
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,7 +460,7 @@ MonoBehaviour:
   OverrideTarget: {fileID: 0}
   Method: 0
   reverse: 0
-  StayUpright: 0
+  StayUpright: 1
 --- !u!1001 &1748086743626820927
 PrefabInstance:
   m_ObjectHideFlags: 0

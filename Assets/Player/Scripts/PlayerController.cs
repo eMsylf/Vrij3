@@ -96,12 +96,12 @@ public class PlayerController : Fighter
         DisableTasks();
     }
 
-    bool controlsSubscribed;
+    bool controlsSubscribed = false;
     private void SubscribeControls()
     {
         if (controlsSubscribed)
             return;
-        Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
+        Controls.Game.Movement.performed += _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => AttemptDodge();
         Controls.Game.Attack.performed += _ => AttemptAttack();
@@ -114,7 +114,7 @@ public class PlayerController : Fighter
     {
         if (!controlsSubscribed)
             return;
-        Controls.Game.Movement.performed -= _ => Move(_.ReadValue<Vector2>());
+        Controls.Game.Movement.performed -= _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled -= _ => Stop();
         Controls.Game.Dodge.performed -= _ => AttemptDodge();
         Controls.Game.Attack.performed -= _ => StartCoroutine(attacking.StartCharge());
@@ -125,18 +125,13 @@ public class PlayerController : Fighter
 
     private void FixedUpdate()
     {
-        switch (State)
-        {
-            case EState.Idle:
-            case EState.Moving:
-                break;
-            case EState.Dodging:
-                movement.CalculatedMovement = movement.DodgeDirection * movement.DodgeSpeed;
-                break;
-            case EState.Stunned:
-                break;
-        }
-        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement() * 50f * Time.fixedDeltaTime);
+        Vector3 forwardDirection = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1));
+        Vector3 rightDirection = Camera.main.transform.right;
+
+        Vector3 playerMovement = movement.GetTopDownMovement(State) * movement.GetSpeedModifier(State);
+        Vector3 cameraRelativeMovement = forwardDirection * playerMovement.z + rightDirection * playerMovement.x;
+
+        Rigidbody.MovePosition(Rigidbody.position + cameraRelativeMovement * Time.fixedUnscaledDeltaTime);
     }
 
     public override void Die()
@@ -167,47 +162,77 @@ public class PlayerController : Fighter
         public float Speed = 1f;
         public float DodgeSpeed = 2f;
         public float DodgeDuration = 1f;
-        public bool ApplyMovementInput = true;
+        public bool AcceptMovementInput = true;
         internal Vector2 Input;
         internal Vector2 FacingDirection = new Vector2(0f, 1f);
-        internal Vector2 CalculatedMovement;
-        internal Vector3 GetTopDownMovement()
-        {
-            return new Vector3(CalculatedMovement.x, 0f, CalculatedMovement.y);
-        }
         internal Vector2 DodgeDirection;
+
+        #region It would be nice if I could combine these somehow
+        internal Vector3 GetTopDownMovement(EState state)
+        {
+            Vector3 movement = Vector3.zero;
+            switch (state)
+            {
+                case EState.Moving:
+                    movement = new Vector3(Input.x, 0f, Input.y);
+                    break;
+                case EState.Dodging:
+                    movement = new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
+                    break;
+            }
+            return movement;
+        }
+
+        internal float GetSpeedModifier(EState state)
+        {
+            switch (state)
+            {
+                case EState.Moving:
+                    return Speed;
+                case EState.Dodging:
+                    return DodgeSpeed;
+                case EState.Attacking:
+                case EState.Hit:
+                case EState.Stunned:
+                case EState.Idle:
+                default:
+                    return 0f;
+            }
+        }
+        #endregion
     }
     public Movement movement;
 
-    private void Move(Vector2 input)
+    private void SetMoveInput(Vector2 input)
     {
-        if (!movement.ApplyMovementInput)
+        if (!movement.AcceptMovementInput)
         {
             return;
         }
-        movement.Input = input;
+
         switch (State)
         {
-            case EState.Idle:
-            case EState.Moving:
-                movement.CalculatedMovement = movement.Input * movement.Speed;
-                break;
+            case EState.Dodging:
+            case EState.Attacking:
+            case EState.Hit:
             case EState.Stunned:
-                movement.CalculatedMovement = movement.Input * 0f;
+                Debug.Log("Player can't move while " + State.ToString());
+                return;
+            case EState.Idle:
+                State = EState.Moving;
                 break;
         }
+        movement.Input = input;
         Animator.SetBool("IsWalking", true);
-
         UpdateFacingDirection(movement.Input);
     }
 
     private void Stop()
     {
-        if (!movement.ApplyMovementInput)
+        if (!movement.AcceptMovementInput)
             return;
         //Debug.Log("Stop!");
         movement.Input = Vector2.zero;
-        movement.CalculatedMovement = movement.Input;
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
         State = EState.Idle;
         Animator.SetBool("IsWalking", false);
@@ -232,23 +257,25 @@ public class PlayerController : Fighter
     private IEnumerator Dodge(float duration)
     {
         State = EState.Dodging;
-        movement.ApplyMovementInput = false;
+        movement.AcceptMovementInput = false;
         if (movement.Input == Vector2Int.zero)
         {
             movement.DodgeDirection = movement.FacingDirection * -1f;
+            Debug.Log("No input detected. Dodge direction = " + movement.DodgeDirection.ToString());
         }
         else
         {
             movement.DodgeDirection = movement.Input;
+            Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
         }
 
         yield return new WaitForSeconds(duration);
 
         State = EState.Idle;
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
-        movement.ApplyMovementInput = true;
+        movement.AcceptMovementInput = true;
         if (directionAtEndOfDodge != Vector2.zero)
-            Move(directionAtEndOfDodge);
+            SetMoveInput(directionAtEndOfDodge);
         else
         {
             Stop();
