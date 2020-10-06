@@ -14,7 +14,7 @@ public class DungeonRoomInspector : Editor
         {
             GUILayout.BeginVertical();
             {
-                GUILayout.Label("East");
+                GUILayout.Label("North");
                 GUILayout.Label("South");
                 GUILayout.Label("West");
                 GUILayout.Label("East");
