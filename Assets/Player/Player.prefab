@@ -1571,6 +1571,7 @@ GameObject:
   - component: {fileID: 4615263301592231098}
   - component: {fileID: 7256993588055032754}
   - component: {fileID: 7814676406689674136}
+  - component: {fileID: 2992239591994268313}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1664,7 +1665,7 @@ MonoBehaviour:
     Speed: 5
     DodgeSpeed: 0.3
     DodgeDuration: 0.3
-    ApplyMovementInput: 1
+    AcceptMovementInput: 1
   attacking:
     ChargeSlider: {fileID: 701161329913697213}
     ChargeIndicators: {fileID: 8793324607389498753}
@@ -1786,6 +1787,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2992239591994268313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4615263301592231088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22f3806b63e58d941ac9f47b86543b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OverrideTarget: {fileID: 0}
+  Method: 1
+  reverse: 0
+  StayUpright: 1
 --- !u!1 &4622515943897186622
 GameObject:
   m_ObjectHideFlags: 0

@@ -136,7 +136,14 @@ public class PlayerController : Fighter
             case EState.Stunned:
                 break;
         }
-        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement() * Time.fixedUnscaledDeltaTime);
+        Vector3 forwardDirection = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1));
+        Vector3 rightDirection = Camera.main.transform.right;
+
+        Vector3 inputMovement = movement.GetTopDownMovement();
+        Vector3 newMovement = forwardDirection * inputMovement.z + rightDirection * inputMovement.x;
+
+
+        Rigidbody.MovePosition(Rigidbody.position + newMovement * Time.fixedUnscaledDeltaTime);
     }
 
     public override void Die()
@@ -167,7 +174,7 @@ public class PlayerController : Fighter
         public float Speed = 1f;
         public float DodgeSpeed = 2f;
         public float DodgeDuration = 1f;
-        public bool ApplyMovementInput = true;
+        public bool AcceptMovementInput = true;
         internal Vector2 Input;
         internal Vector2 FacingDirection = new Vector2(0f, 1f);
         internal Vector2 CalculatedMovement;
@@ -181,7 +188,7 @@ public class PlayerController : Fighter
 
     private void Move(Vector2 input)
     {
-        if (!movement.ApplyMovementInput)
+        if (!movement.AcceptMovementInput)
         {
             return;
         }
@@ -203,7 +210,7 @@ public class PlayerController : Fighter
 
     private void Stop()
     {
-        if (!movement.ApplyMovementInput)
+        if (!movement.AcceptMovementInput)
             return;
         //Debug.Log("Stop!");
         movement.Input = Vector2.zero;
@@ -232,7 +239,7 @@ public class PlayerController : Fighter
     private IEnumerator Dodge(float duration)
     {
         State = EState.Dodging;
-        movement.ApplyMovementInput = false;
+        movement.AcceptMovementInput = false;
         if (movement.Input == Vector2Int.zero)
         {
             movement.DodgeDirection = movement.FacingDirection * -1f;
@@ -246,7 +253,7 @@ public class PlayerController : Fighter
 
         State = EState.Idle;
         Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
-        movement.ApplyMovementInput = true;
+        movement.AcceptMovementInput = true;
         if (directionAtEndOfDodge != Vector2.zero)
             Move(directionAtEndOfDodge);
         else
