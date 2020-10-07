@@ -9520,6 +9520,8 @@ GameObject:
   - component: {fileID: 1432732583754614831}
   - component: {fileID: 1432732583754614828}
   - component: {fileID: 1432732583754614829}
+  - component: {fileID: 7210055107386569785}
+  - component: {fileID: 4118154699285325562}
   m_Layer: 0
   m_Name: SlashBeam
   m_TagString: Untagged
@@ -9557,7 +9559,7 @@ ParticleSystem:
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -14341,6 +14343,32 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!65 &7210055107386569785
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432732583754614826}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.746217, y: 1.9579945, z: 1.4046029}
+  m_Center: {x: -4.158108, y: -0.12600279, z: 0.012301445}
+--- !u!135 &4118154699285325562
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432732583754614826}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 3.1816342
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8362025403191828382
 GameObject:
   m_ObjectHideFlags: 0

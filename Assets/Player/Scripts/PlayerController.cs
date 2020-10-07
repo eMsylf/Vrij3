@@ -20,6 +20,8 @@ public class PlayerController : Fighter
     }
     public EState State = default;
 
+    //public UnityEvent OnHit;
+
     Controls controls;
     Controls Controls
     {
