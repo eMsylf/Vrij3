@@ -1076,7 +1076,7 @@ GameObject:
   - component: {fileID: 3213076045501665320}
   - component: {fileID: 9026486060216599293}
   m_Layer: 0
-  m_Name: Button
+  m_Name: QuitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1095,7 +1095,7 @@ RectTransform:
   m_Children:
   - {fileID: 6712124788431867549}
   m_Father: {fileID: 1787375062165181697}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1183,7 +1183,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8610143996436127403, guid: 7935bf05f858eef4fa2ea6e186f36324,
+          type: 3}
         m_MethodName: Quit
         m_Mode: 1
         m_Arguments:
@@ -1315,7 +1316,7 @@ GameObject:
   - component: {fileID: 8821846284330810565}
   - component: {fileID: 251072004159579810}
   m_Layer: 0
-  m_Name: Button (1)
+  m_Name: ReloadButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1334,7 +1335,7 @@ RectTransform:
   m_Children:
   - {fileID: 1797797626838119904}
   m_Father: {fileID: 1787375062165181697}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1422,7 +1423,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1257280971710107327, guid: 7935bf05f858eef4fa2ea6e186f36324,
+          type: 3}
         m_MethodName: ReloadScene
         m_Mode: 1
         m_Arguments:
@@ -2678,8 +2680,8 @@ RectTransform:
   - {fileID: 190906864}
   - {fileID: 488691812}
   - {fileID: 611206929}
-  - {fileID: 4833019697046215853}
   - {fileID: 6380460039909443997}
+  - {fileID: 4833019697046215853}
   m_Father: {fileID: 4615263301592231092}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
