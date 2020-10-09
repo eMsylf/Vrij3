@@ -16,26 +16,6 @@ public class GameManager : Singleton<GameManager>
 
     public List<PlayerController> Players = new List<PlayerController>();
 
-    private void Start()
-    {
-        Players = FindObjectsOfType<PlayerController>().ToList();
-    }
-
-    public void LoadScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
-    }
-
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void NextScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
-
     public void Quit()
     {
         Debug.Log("Quit game");
@@ -76,4 +56,14 @@ public class GameManager : Singleton<GameManager>
     {
         PlayerInstance.gameObject.SetActive(true);
     }
+
+    private void Start()
+    {
+        Players = FindObjectsOfType<PlayerController>().ToList();
+    }
+
+    //public void LoadScene(string sceneName)
+    //{
+    //    SceneManager.LoadScene(sceneName);
+    //}
 }
