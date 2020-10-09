@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+#if UNITY_EDITOR
 [CanEditMultipleObjects]
+#endif
 public class LookAtTarget : MonoBehaviour
 {
     [Tooltip("Uses the main camera by default")]

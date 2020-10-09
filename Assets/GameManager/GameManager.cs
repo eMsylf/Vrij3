@@ -16,6 +16,19 @@ public class GameManager : Singleton<GameManager>
 
     public List<PlayerController> Players = new List<PlayerController>();
 
+    Controls controls;
+    Controls Controls
+    {
+        get
+        {
+            if (controls == null)
+            {
+                controls = new Controls();
+            }
+            return controls;
+        }
+    }
+
     public void Quit()
     {
         Debug.Log("Quit game");
@@ -60,6 +73,34 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         Players = FindObjectsOfType<PlayerController>().ToList();
+    }
+
+    private void OnEnable()
+    {
+        SubscribeControls();
+    }
+
+    private void OnDisable()
+    {
+        UnsubControls();
+    }
+
+    void SubscribeControls()
+    {
+        Controls.Game.Enable();
+#if !UNITY_EDITOR
+        Controls.Game.Quit.performed += _ => Quit();
+#endif
+        Controls.Game.Reload.performed += _ => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    void UnsubControls()
+    {
+        Controls.Game.Disable();
+#if !UNITY_EDITOR
+        Controls.Game.Quit.performed -= _ => Quit();
+#endif
+        Controls.Game.Reload.performed -= _ => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     //public void LoadScene(string sceneName)
