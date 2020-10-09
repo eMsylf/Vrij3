@@ -1728,10 +1728,11 @@ MonoBehaviour:
     DodgeSpeed: 10
     DodgeDuration: 0.3
     AcceptMovementInput: 1
+    defaultDodgeDirection: 0
   attacking:
     ChargeSlider: {fileID: 701161329913697213}
     ChargeIndicators: {fileID: 8793324607389498753}
-    ChargeType: 1
+    ChargeType: 0
     WeaponAnimator: {fileID: 7814676406689674136}
     ChargeZones:
       serializedVersion: 2
@@ -1771,7 +1772,7 @@ MonoBehaviour:
     ChargeTime: 2
     ChargeTimeDeadzone: 0.1
     ChargeEffectedBySlowdown: 0
-    attackState: 0
+    attackState: 3
   targeting:
     DebugTarget: {fileID: 0}
     Radius: 3
@@ -3095,6 +3096,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 5238073204563823818, guid: 44e7b41cb6339144f88edd3a8dc520f4,
+        type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238073204563823818, guid: 44e7b41cb6339144f88edd3a8dc520f4,
+        type: 3}
+      propertyPath: m_Animations.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238073204563823818, guid: 44e7b41cb6339144f88edd3a8dc520f4,
+        type: 3}
+      propertyPath: m_Animations.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238073204563823818, guid: 44e7b41cb6339144f88edd3a8dc520f4,
+        type: 3}
+      propertyPath: m_Animations.Array.data[2]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7990195786271917638, guid: 44e7b41cb6339144f88edd3a8dc520f4,
         type: 3}
       propertyPath: m_Enabled
@@ -3188,7 +3209,22 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Animation
       value: 
-      objectReference: {fileID: 7400000, guid: 343af7475bc69ca4d9d49532873608eb, type: 2}
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238073204563823818, guid: 44e7b41cb6339144f88edd3a8dc520f4,
+        type: 3}
+      propertyPath: m_Animations.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238073204563823818, guid: 44e7b41cb6339144f88edd3a8dc520f4,
+        type: 3}
+      propertyPath: m_Animations.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238073204563823818, guid: 44e7b41cb6339144f88edd3a8dc520f4,
+        type: 3}
+      propertyPath: m_Animations.Array.data[2]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6337887920262406962, guid: 44e7b41cb6339144f88edd3a8dc520f4,
         type: 3}
       propertyPath: CanMultiHit

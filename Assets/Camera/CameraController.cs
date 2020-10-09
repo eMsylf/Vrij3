@@ -69,7 +69,7 @@ public class CameraController : MonoBehaviour
 
     private void SetRotationDelta(float input)
     {
-        Debug.Log("Set camera rotation: " + input);
+        //Debug.Log("Set camera rotation delta: " + input);
         rotationDelta = input * RotationSpeed;
     }
 
