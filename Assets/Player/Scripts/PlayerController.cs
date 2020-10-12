@@ -165,7 +165,7 @@ public class PlayerController : Fighter
 
     private Vector3 ConvertToCameraRelative(Vector3 vector3)
     {
-        Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1));
+        Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 cameraRight = Camera.main.transform.right;
         Vector3 cameraRelativeMovement = cameraForward * vector3.z + cameraRight * vector3.x;
         return cameraRelativeMovement;

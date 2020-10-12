@@ -6,6 +6,10 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public float RotationSpeed = 1f;
+    public float ZoomSpeed = .01f;
+    public float ZoomMin = 2f;
+    public float ZoomMax = 7f;
+
     private float rotationDelta = 0f;
 
     Controls controls;
@@ -52,7 +56,8 @@ public class CameraController : MonoBehaviour
         Debug.Log("Subscribe controls");
         Controls.Game.Enable();
         Controls.Game.CameraRotationHorizontal.performed += _ => SetRotationDelta(_.ReadValue<float>());
-        controls.Game.CameraRotationHorizontal.canceled += _ => SetRotationDelta(0f);
+        Controls.Game.CameraRotationHorizontal.canceled += _ => SetRotationDelta(0f);
+        Controls.Game.CameraZoom.performed += _ => SetZoomDelta(_.ReadValue<float>());
         controlsSubscribed = true;
     }
 
@@ -63,7 +68,8 @@ public class CameraController : MonoBehaviour
         Debug.Log("Unsubscribe controls");
         Controls.Game.Disable();
         Controls.Game.CameraRotationHorizontal.performed -= _ => SetRotationDelta(_.ReadValue<float>());
-        controls.Game.CameraRotationHorizontal.canceled -= _ => SetRotationDelta(0f);
+        Controls.Game.CameraRotationHorizontal.canceled -= _ => SetRotationDelta(0f);
+        Controls.Game.CameraZoom.performed -= _ => SetZoomDelta(_.ReadValue<float>());
         controlsSubscribed = false;
     }
 
@@ -71,6 +77,11 @@ public class CameraController : MonoBehaviour
     {
         //Debug.Log("Set camera rotation delta: " + input);
         rotationDelta = input * RotationSpeed;
+    }
+
+    private void SetZoomDelta(float input)
+    {
+        CameraFollow.Distance = Mathf.Clamp(CameraFollow.Distance + (input * ZoomSpeed), ZoomMin, ZoomMax);
     }
 
     private void Update()
