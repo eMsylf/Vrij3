@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
+[RequireComponent(typeof(Rigidbody))]
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] private Transform target;
@@ -82,6 +83,8 @@ public class CameraFollow : MonoBehaviour
     public Vector3 PositionOffset;
     [Range(0f, .99f)]
     public float PositionSmoothing = .125f;
+    public bool PlaceBeforeObstacles = true;
+    public LayerMask ObstacleMask;
 
     [Header("Rotation")]
     public Vector3 RotationAroundTarget;
@@ -96,7 +99,18 @@ public class CameraFollow : MonoBehaviour
     [Header("Live preview")]
     public bool LivePreview = true;
 
-    private void Update()
+    private new Rigidbody rigidbody;
+    private Rigidbody Rigidbody
+    {
+        get
+        {
+            if (rigidbody == null)
+                rigidbody = GetComponent<Rigidbody>();
+            return rigidbody;
+        }
+    }
+
+    private void FixedUpdate()
     {
         SetPositionAndLook();
     }
@@ -119,13 +133,24 @@ public class CameraFollow : MonoBehaviour
 
     public Vector3 CalculatePosition()
     {
-        PositionTransform.position = PositionPivot.position + PositionPivot.forward * -Distance;
+        if (PlaceBeforeObstacles)
+        {
+            float overrideDistance = Distance;
+            Ray cameraDistanceRay = new Ray(PositionPivot.position, -PositionPivot.forward);
+            if (Physics.Raycast(cameraDistanceRay, out RaycastHit info, Distance, ObstacleMask))
+            {
+                overrideDistance = info.distance;
+            }
+            PositionTransform.position = PositionPivot.position - PositionPivot.forward * overrideDistance;
+        }
+        else 
+            PositionTransform.position = PositionPivot.position - PositionPivot.forward * Distance;
         return PositionTransform.position;
     }
 
     private void SetPosition(Vector3 position)
     {
-        transform.position = Vector3.Lerp(transform.position, position, 1f - PositionSmoothing);
+        Rigidbody.MovePosition(Vector3.Lerp(Rigidbody.position, position, 1f - PositionSmoothing));
     }
 
     private void CalculateRotationAroundTarget()
@@ -147,7 +172,9 @@ public class CameraFollow : MonoBehaviour
     private void SetLook(Vector3 position)
     {
         // Camera looks at the target position
-        transform.LookAt(position);
+        Rigidbody.MoveRotation(Quaternion.LookRotation(position - Rigidbody.position));
+        // Look at
+        //transform.LookAt(position);
     }
 
     //public void OverrideOffsets()

@@ -249,7 +249,7 @@ public class PlayerController : Fighter
             Debug.LogWarning("Tried to move while input was not accepted");
             return;
         }
-        Debug.Log("Input: " + input);
+        //Debug.Log("Input: " + input);
 
         switch (State)
         {
