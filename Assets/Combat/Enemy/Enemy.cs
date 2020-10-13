@@ -6,6 +6,8 @@ namespace Combat
 {
     public class Enemy : Fighter
     {
+        public AnimationCurve AttackCurve;
+
         private void OnTriggerEnter(Collider other)
         {
             Fighter otherFighter = other.gameObject.GetComponent<Fighter>();
