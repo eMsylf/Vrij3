@@ -16,10 +16,10 @@ namespace Combat
 
         private void OnEnable()
         {
-            EnableTasks();
+            OnEnableTasks();
         }
 
-        internal void EnableTasks()
+        internal void OnEnableTasks()
         {
             Debug.Log("Set current health and stamina of " + name + " to max", this);
             if (Health.max != 0 && Health.syncCurrentToMax)
@@ -33,10 +33,10 @@ namespace Combat
 
         private void OnDisable()
         {
-            DisableTasks();
+            OnDisableTasks();
         }
 
-        internal void DisableTasks()
+        internal void OnDisableTasks()
         {
             Stamina.OnUse -= () => staminaRecharge.windup = 0f;
             Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
@@ -50,6 +50,8 @@ namespace Combat
 
         void ManageStaminaRecharge()
         {
+            if (!staminaRecharge.allow)
+                return;
             if (Stamina.Get() < Stamina.max)
             {
                 if (staminaRecharge.windup < staminaRecharge.staminaRechargeWindupTime)
@@ -114,6 +116,7 @@ namespace Combat
             public float staminaRechargeWindupTime = 1f;
             internal float recharge = 0f;
             internal float windup = 0f;
+            internal bool allow = true;
         }
     }
     

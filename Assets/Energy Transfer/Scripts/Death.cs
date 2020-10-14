@@ -7,6 +7,7 @@ public class Death : MonoBehaviour
 {
     [Range(0f, 1f)]
     public float EnergyAbsorbedRatio = .1f;
+    [Tooltip("This is turned off upon death")]
     public MeshRenderer Visual;
     [SerializeField] private ParticleSystem nonAbsorbedParticles = null;
     public ParticleSystem GetNonAbsorbedParticles()
@@ -30,6 +31,7 @@ public class Death : MonoBehaviour
 
     public void Die()
     {
+        if (IsDead) return;
         IsDead = true;
         if (Visual != null)
             Visual.enabled = false;
@@ -77,6 +79,7 @@ public class Death : MonoBehaviour
 
     public void Resurrect()
     {
+        if (!IsDead) return;
         IsDead = false;
         if (Visual != null)
             Visual.enabled = true;

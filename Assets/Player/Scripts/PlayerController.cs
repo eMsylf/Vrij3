@@ -111,7 +111,7 @@ public class PlayerController : Fighter
         attacking.attackLaunched += () => OnAttack();
         attacking.attackEnd += () => OnAttackEnd();
 
-        EnableTasks();
+        OnEnableTasks();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -126,7 +126,7 @@ public class PlayerController : Fighter
         attacking.attackLaunched -= () => OnAttack();
         attacking.attackEnd -= () => OnAttackEnd();
 
-        DisableTasks();
+        OnDisableTasks();
     }
 
     bool controlsSubscribed = false;
@@ -560,6 +560,7 @@ public class PlayerController : Fighter
             return;
         }
         StartCoroutine(attacking.StartCharge());
+        staminaRecharge.allow = false;
     }
 
     public void OnAttack()
@@ -575,11 +576,13 @@ public class PlayerController : Fighter
         attacking.attackState = Attacking.AttackState.Attacking;
         State = EState.Attacking;
         //Animator.ResetTrigger("Attack");
+        staminaRecharge.allow = false;
     }
 
     public void OnAttackEnd()
     {
         Instance.OnAttackEndInstance();
+        staminaRecharge.allow = true;
     }
 
     private void OnAttackEndInstance()
