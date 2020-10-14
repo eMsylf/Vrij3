@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Combat {
     public class Attack : MonoBehaviour
@@ -13,6 +14,9 @@ namespace Combat {
         public float HitStunSlowdown = .01f;
         [Min(0.001f)]
         public float HitStunDuration = .5f;
+
+        public float ShakeDuration = .5f;
+        public float ShakeStrength = .6f;
 
         Fighter fighter;
         Fighter GetFighter()
@@ -33,7 +37,7 @@ namespace Combat {
 
         private void OnTriggerEnter(Collider other)
         {
-            Fighter fighterHit = other.attachedRigidbody.GetComponent<Fighter>();
+            Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parent = GetComponentInParent<Fighter>();
 
             if (fighterHit == null)
@@ -54,7 +58,7 @@ namespace Combat {
                     return;
                 }
             }
-
+            Camera.main.DOShakePosition(ShakeDuration, ShakeStrength);
             fighterHit.TakeDamage(Damage);
             fightersHit.Add(fighterHit);
             TimeManager.Instance.DoSlowmotionWithDuration(HitStunSlowdown, HitStunDuration);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Combat;
@@ -19,6 +18,8 @@ public class PlayerController : Fighter
         Stunned
     }
     public EState State = default;
+
+    //public UnityEvent OnHit;
 
     Controls controls;
     Controls Controls
@@ -61,7 +62,35 @@ public class PlayerController : Fighter
         }
     }
 
+    static PlayerController instance;
+    public static PlayerController Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                // Search for existing instance.
+                instance = (PlayerController)FindObjectOfType(typeof(PlayerController));
+
+                // Create new instance if one doesn't already exist.
+                if (instance == null)
+                {
+                    // Need to create a new GameObject to attach the singleton to.
+                    var singletonObject = new GameObject();
+                    instance = singletonObject.AddComponent<PlayerController>();
+                    singletonObject.name = typeof(PlayerController).ToString() + " (Singleton)";
+
+                    // Make instance persistent.
+                    DontDestroyOnLoad(singletonObject);
+                }
+            }
+
+            return instance;
+        }
+    }
+
     private Vector3 SpawnPos;
+    [Tooltip("If unticked, the player's position will be saved as its new spawn position the next time the player is enabled.")]
     public bool SpawnPosSet = false;
 
     private void OnEnable()
@@ -80,8 +109,12 @@ public class PlayerController : Fighter
         SubscribeControls();
 
         attacking.attackLaunched += () => OnAttack();
+        attacking.attackEnd += () => OnAttackEnd();
 
         EnableTasks();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void OnDisable()
@@ -91,16 +124,17 @@ public class PlayerController : Fighter
         UnsubControls();
 
         attacking.attackLaunched -= () => OnAttack();
+        attacking.attackEnd -= () => OnAttackEnd();
 
         DisableTasks();
     }
 
-    bool controlsSubscribed;
+    bool controlsSubscribed = false;
     private void SubscribeControls()
     {
         if (controlsSubscribed)
             return;
-        Controls.Game.Movement.performed += _ => Move(_.ReadValue<Vector2>());
+        Controls.Game.Movement.performed += _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => AttemptDodge();
         Controls.Game.Attack.performed += _ => AttemptAttack();
@@ -113,7 +147,7 @@ public class PlayerController : Fighter
     {
         if (!controlsSubscribed)
             return;
-        Controls.Game.Movement.performed -= _ => Move(_.ReadValue<Vector2>());
+        Controls.Game.Movement.performed -= _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled -= _ => Stop();
         Controls.Game.Dodge.performed -= _ => AttemptDodge();
         Controls.Game.Attack.performed -= _ => StartCoroutine(attacking.StartCharge());
@@ -124,18 +158,17 @@ public class PlayerController : Fighter
 
     private void FixedUpdate()
     {
-        switch (State)
-        {
-            case EState.Idle:
-            case EState.Moving:
-                break;
-            case EState.Dodging:
-                movement.CalculatedMovement = movement.DodgeDirection * movement.DodgeSpeed;
-                break;
-            case EState.Stunned:
-                break;
-        }
-        Rigidbody.MovePosition(Rigidbody.position + movement.GetTopDownMovement() * 50f * Time.fixedDeltaTime);
+        Vector3 playerMovement = movement.GetTopDownMovement(State) * movement.GetSpeedModifier(State);
+        
+        Rigidbody.MovePosition(Rigidbody.position + ConvertToCameraRelative(playerMovement) * Time.fixedUnscaledDeltaTime);
+    }
+
+    private Vector3 ConvertToCameraRelative(Vector3 vector3)
+    {
+        Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
+        Vector3 cameraRight = Camera.main.transform.right;
+        Vector3 cameraRelativeMovement = cameraForward * vector3.z + cameraRight * vector3.x;
+        return cameraRelativeMovement;
     }
 
     public override void Die()
@@ -166,47 +199,79 @@ public class PlayerController : Fighter
         public float Speed = 1f;
         public float DodgeSpeed = 2f;
         public float DodgeDuration = 1f;
-        public bool ApplyMovementInput = true;
+        public bool AcceptMovementInput = true;
         internal Vector2 Input;
         internal Vector2 FacingDirection = new Vector2(0f, 1f);
-        internal Vector2 CalculatedMovement;
-        internal Vector3 GetTopDownMovement()
-        {
-            return new Vector3(CalculatedMovement.x, 0f, CalculatedMovement.y);
-        }
+        internal enum DefaultDodgeDirection { Backward, ToCamera} 
+        [SerializeField] internal DefaultDodgeDirection defaultDodgeDirection = DefaultDodgeDirection.Backward;
         internal Vector2 DodgeDirection;
+
+        #region It would be nice if I could combine these somehow
+        internal Vector3 GetTopDownMovement(EState state)
+        {
+            Vector3 movement = Vector3.zero;
+            switch (state)
+            {
+                case EState.Moving:
+                    movement = new Vector3(Input.x, 0f, Input.y);
+                    break;
+                case EState.Dodging:
+                    movement = new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
+                    break;
+            }
+            return movement;
+        }
+
+        internal float GetSpeedModifier(EState state)
+        {
+            switch (state)
+            {
+                case EState.Moving:
+                    return Speed;
+                case EState.Dodging:
+                    return DodgeSpeed;
+                case EState.Attacking:
+                case EState.Hit:
+                case EState.Stunned:
+                case EState.Idle:
+                default:
+                    return 0f;
+            }
+        }
+        #endregion
     }
     public Movement movement;
 
-    private void Move(Vector2 input)
+    private void SetMoveInput(Vector2 input)
     {
-        if (!movement.ApplyMovementInput)
+        if (!movement.AcceptMovementInput)
         {
+            Debug.LogWarning("Tried to move while input was not accepted");
             return;
         }
-        movement.Input = input;
+        //Debug.Log("Input: " + input);
+
         switch (State)
         {
-            case EState.Idle:
-            case EState.Moving:
-                movement.CalculatedMovement = movement.Input * movement.Speed;
-                break;
+            case EState.Dodging:
+            case EState.Attacking:
+            case EState.Hit:
             case EState.Stunned:
-                movement.CalculatedMovement = movement.Input * 0f;
+                Debug.Log("Player can't move while " + State.ToString());
+                return;
+            case EState.Idle:
+                State = EState.Moving;
                 break;
         }
+        movement.Input = input;
         Animator.SetBool("IsWalking", true);
-
         UpdateFacingDirection(movement.Input);
     }
 
     private void Stop()
     {
-        if (!movement.ApplyMovementInput)
-            return;
         //Debug.Log("Stop!");
         movement.Input = Vector2.zero;
-        movement.CalculatedMovement = movement.Input;
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
         State = EState.Idle;
         Animator.SetBool("IsWalking", false);
@@ -214,7 +279,7 @@ public class PlayerController : Fighter
 
     private void AttemptDodge()
     {
-        if (State == EState.Dodging)
+        if (State == EState.Dodging || State == EState.Attacking)
         {
             return;
         }
@@ -231,23 +296,46 @@ public class PlayerController : Fighter
     private IEnumerator Dodge(float duration)
     {
         State = EState.Dodging;
-        movement.ApplyMovementInput = false;
+        movement.AcceptMovementInput = false;
         if (movement.Input == Vector2Int.zero)
         {
-            movement.DodgeDirection = movement.FacingDirection * -1f;
+            NeutralDodge();
         }
         else
         {
-            movement.DodgeDirection = movement.Input;
+            DirectionalDodge(movement.Input);
         }
 
         yield return new WaitForSeconds(duration);
-
         State = EState.Idle;
-        Vector2 directionAtEndOfDodge = Controls.Game.Movement.ReadValue<Vector2>();
-        movement.ApplyMovementInput = true;
-        if (directionAtEndOfDodge != Vector2.zero)
-            Move(directionAtEndOfDodge);
+        movement.AcceptMovementInput = true;
+        UpdateMoveInput();
+    }
+
+    private void NeutralDodge()
+    {
+        switch (movement.defaultDodgeDirection)
+        {
+            case Movement.DefaultDodgeDirection.Backward:
+                DirectionalDodge(movement.FacingDirection * -1f);
+                break;
+            case Movement.DefaultDodgeDirection.ToCamera:
+                DirectionalDodge(new Vector2(0f, -1f));
+                break;
+        }
+    }
+
+    private void DirectionalDodge(Vector2 direction)
+    {
+        movement.DodgeDirection = direction;
+        Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
+    }
+
+    private void UpdateMoveInput()
+    {
+        Vector2 readMovement = Controls.Game.Movement.ReadValue<Vector2>();
+        if (readMovement != Vector2.zero)
+            SetMoveInput(readMovement);
         else
         {
             Stop();
@@ -270,7 +358,7 @@ public class PlayerController : Fighter
     [Serializable]
     public class Attacking
     {
-        public UnityEngine.UI.Slider ChargeSlider;
+        public Slider ChargeSlider;
         public GameObject ChargeIndicators;
         public enum EChargeType
         {
@@ -290,10 +378,12 @@ public class PlayerController : Fighter
         internal bool charging;
         internal float latestCharge;
         internal UnityAction attackLaunched;
+        internal UnityAction attackEnd;
 
         public enum AttackState
         {
             Ready,
+            Charging,
             Attacking,
             OnCooldown
         }
@@ -303,6 +393,8 @@ public class PlayerController : Fighter
         {
             WeaponAnimator.SetTrigger("Attack");
             WeaponAnimator.SetInteger("AttackIndex", chargeIndex);
+
+            attackLaunched.Invoke();
         }
 
         internal void Launch(float chargeTime)
@@ -320,7 +412,6 @@ public class PlayerController : Fighter
             }
             latestCharge = chargeTime;
             attackLaunched.Invoke();
-            attackState = AttackState.Attacking;
         }
 
         GameObject GetChargeObject()
@@ -461,6 +552,8 @@ public class PlayerController : Fighter
 
     public void AttemptAttack()
     {
+        if (State == EState.Attacking || State == EState.Dodging)
+            return;
         if (!Stamina.Use())
         {
             Debug.Log("Not enough stamina to attack");
@@ -476,7 +569,27 @@ public class PlayerController : Fighter
         attacking.WeaponAnimator.SetFloat("AttackCharge", attacking.latestCharge);
         attacking.WeaponAnimator.SetTrigger("Attack");
 
+        Stop();
+        Debug.Log("OnAttack, set movement input to false");
+        movement.AcceptMovementInput = false;
+        attacking.attackState = Attacking.AttackState.Attacking;
+        State = EState.Attacking;
         //Animator.ResetTrigger("Attack");
+    }
+
+    public void OnAttackEnd()
+    {
+        Instance.OnAttackEndInstance();
+    }
+
+    private void OnAttackEndInstance()
+    {
+        Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
+        State = EState.Idle;
+        movement.AcceptMovementInput = true;
+        attacking.attackState = Attacking.AttackState.OnCooldown;
+        // Get walking direction at end of attack 
+        UpdateMoveInput();
     }
     #endregion
 

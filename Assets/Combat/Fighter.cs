@@ -11,6 +11,7 @@ namespace Combat
 
         public int TouchDamage = 0;
 
+        public List<GameObject> HitObjects = new List<GameObject>();
         public List<GameObject> DeathObjects = new List<GameObject>();
 
         private void OnEnable()
@@ -91,6 +92,12 @@ namespace Combat
         {
             Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
             if (Health.current <= 0) Die();
+
+            foreach (GameObject obj in HitObjects)
+            {
+                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
+                //Instantiate(obj);
+            }
         }
 
         public void TakeDamage(int damageTaken, Fighter damageSource)

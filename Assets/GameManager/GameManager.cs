@@ -16,24 +16,17 @@ public class GameManager : Singleton<GameManager>
 
     public List<PlayerController> Players = new List<PlayerController>();
 
-    private void Start()
+    Controls controls;
+    Controls Controls
     {
-        Players = FindObjectsOfType<PlayerController>().ToList();
-    }
-
-    public void LoadScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
-    }
-
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void NextScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        get
+        {
+            if (controls == null)
+            {
+                controls = new Controls();
+            }
+            return controls;
+        }
     }
 
     public void Quit()
@@ -76,4 +69,42 @@ public class GameManager : Singleton<GameManager>
     {
         PlayerInstance.gameObject.SetActive(true);
     }
+
+    private void Start()
+    {
+        Players = FindObjectsOfType<PlayerController>().ToList();
+    }
+
+    private void OnEnable()
+    {
+        SubscribeControls();
+    }
+
+    private void OnDisable()
+    {
+        UnsubControls();
+    }
+
+    void SubscribeControls()
+    {
+        Controls.Game.Enable();
+#if !UNITY_EDITOR
+        Controls.Game.Quit.performed += _ => Quit();
+#endif
+        Controls.Game.Reload.performed += _ => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    void UnsubControls()
+    {
+        Controls.Game.Disable();
+#if !UNITY_EDITOR
+        Controls.Game.Quit.performed -= _ => Quit();
+#endif
+        Controls.Game.Reload.performed -= _ => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    //public void LoadScene(string sceneName)
+    //{
+    //    SceneManager.LoadScene(sceneName);
+    //}
 }
