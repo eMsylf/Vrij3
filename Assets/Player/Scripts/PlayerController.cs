@@ -582,7 +582,6 @@ public class PlayerController : Fighter
     public void OnAttackEnd()
     {
         Instance.OnAttackEndInstance();
-        staminaRecharge.allow = true;
     }
 
     private void OnAttackEndInstance()
@@ -590,6 +589,7 @@ public class PlayerController : Fighter
         Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
         State = EState.Idle;
         movement.AcceptMovementInput = true;
+        staminaRecharge.allow = true;
         attacking.attackState = Attacking.AttackState.OnCooldown;
         // Get walking direction at end of attack 
         UpdateMoveInput();

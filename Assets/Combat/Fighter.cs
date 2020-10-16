@@ -116,7 +116,7 @@ namespace Combat
             public float staminaRechargeWindupTime = 1f;
             internal float recharge = 0f;
             internal float windup = 0f;
-            internal bool allow = true;
+            public bool allow = true;
         }
     }
     
