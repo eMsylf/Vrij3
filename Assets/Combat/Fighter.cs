@@ -82,7 +82,7 @@ namespace Combat
             Debug.Log(name + " died", this);
             foreach (GameObject obj in DeathObjects)
             {
-                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
+                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
                 //Instantiate(obj);
             }
             gameObject.SetActive(false);
