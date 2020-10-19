@@ -19,16 +19,7 @@ public class GridLayoutGroupAutoScalerInspector : Editor
             targetScripts[i] = (GridLayoutGroupAutoScaler)targets[i];
         }
 
-        //if (GUILayout.Button("Calculate remaining pixels"))
-        //{
-        //    targetScript.CalculateCellSize();
-        //}
-
-        EditorGUILayout.HelpBox("This component is designed to work for GridLayoutGroups that " +
-            "\nuse 1 row or column", 
-            MessageType.Info);
-
-        Undo.RecordObject(targetScript.GetComponent<GridLayoutGroup>(), "Fit into padding on selected axis");
+        Undo.RecordObject(targetScript.GetComponent<GridLayoutGroup>(), "Fit into padding");
 
         if (GUILayout.Button("Fit into padding"))
         {
