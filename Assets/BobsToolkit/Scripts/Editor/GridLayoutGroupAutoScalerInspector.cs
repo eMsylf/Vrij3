@@ -10,9 +10,10 @@ public class GridLayoutGroupAutoScalerInspector : Editor
 {
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
         GridLayoutGroupAutoScaler targetScript = (GridLayoutGroupAutoScaler)target;
         GridLayoutGroupAutoScaler[] targetScripts = new GridLayoutGroupAutoScaler[targets.Length];
+
+        base.OnInspectorGUI();
         for (int i = 0; i < targets.Length; i++)
         {
             targetScripts[i] = (GridLayoutGroupAutoScaler)targets[i];
@@ -29,7 +30,7 @@ public class GridLayoutGroupAutoScalerInspector : Editor
 
         Undo.RecordObject(targetScript.GetComponent<GridLayoutGroup>(), "Fit into padding on selected axis");
 
-        if (GUILayout.Button("Fit into padding on selected axis"))
+        if (GUILayout.Button("Fit into padding"))
         {
             for (int i = 0; i < targetScripts.Length; i++)
             {

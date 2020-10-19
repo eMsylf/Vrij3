@@ -159,9 +159,9 @@ GameObject:
   - component: {fileID: 1859604706394966666}
   - component: {fileID: 4955806634360447205}
   - component: {fileID: 5870319490466924283}
-  - component: {fileID: 2808155396967931450}
   - component: {fileID: 2015251036170173270}
   - component: {fileID: 5336908350715966084}
+  - component: {fileID: 6074763738324158010}
   m_Layer: 5
   m_Name: Statistic Meter
   m_TagString: Untagged
@@ -229,30 +229,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2808155396967931450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6724996047303728974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 5
-    m_Right: 5
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 3
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 10, y: 10}
-  m_Spacing: {x: 1, y: 1}
-  m_Constraint: 0
-  m_ConstraintCount: 4
 --- !u!114 &2015251036170173270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,6 +256,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ae444a8c9a618049b00271940d32612, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 5
+    m_Right: 5
+    m_Top: 5
+    m_Bottom: 5
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 20.5, y: 20}
+  m_Spacing: {x: 2, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
+  fitX: 1
+  fitY: 1
+--- !u!111 &6074763738324158010
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6724996047303728974}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 47eb48d589ffd8843a8b80348a2fef7b, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 47eb48d589ffd8843a8b80348a2fef7b, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &6783490151048063111
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,63 +4,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(GridLayoutGroup))]
 [RequireComponent(typeof(RectTransform))]
-public class GridLayoutGroupAutoScaler : MonoBehaviour
+public class GridLayoutGroupAutoScaler : GridLayoutGroup
 {
+    public bool fitX = true;
+    public bool fitY = true;
+
     public Vector2 CalculateCellSize()
     {
-
-        return CalculateCellSize(GetComponent<GridLayoutGroup>().startAxis);
-    }
-
-
-    public Vector2 CalculateCellSize(GridLayoutGroup.Axis axis)
-    {
-        GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
         RectTransform rectTransform = GetComponent<RectTransform>();
-
-        float startingPixels;
-        float padding;
-        float totalSpacing;
-        int childCount = transform.childCount;
-        float pixelsRemaining = 0f;
-        float calculatedCellSize;
-        Vector2 newCellSize = gridLayoutGroup.cellSize;
-
-        switch (axis)
+        Vector2 newCellSize = cellSize;
+        if (fitX)
         {
-            case GridLayoutGroup.Axis.Horizontal:
-                startingPixels = rectTransform.sizeDelta.x;
-                padding = gridLayoutGroup.padding.horizontal;
-                totalSpacing = gridLayoutGroup.spacing.x * childCount;
-
-                pixelsRemaining = startingPixels - (padding + totalSpacing);
-                calculatedCellSize =  pixelsRemaining / childCount;
-                newCellSize.x = calculatedCellSize;
-                break;
-            case GridLayoutGroup.Axis.Vertical:
-                startingPixels = rectTransform.sizeDelta.y;
-                padding = gridLayoutGroup.padding.vertical;
-                totalSpacing = gridLayoutGroup.spacing.y * childCount;
-
-                pixelsRemaining = startingPixels - (padding + totalSpacing);
-                calculatedCellSize =  pixelsRemaining / childCount;
-                newCellSize.y = calculatedCellSize;
-                break;
+            newCellSize.x = CalculateCellSizeOneAxis(padding.horizontal, spacing.x, rectTransform.sizeDelta.x, startAxis == Axis.Horizontal);
+        }
+        if (fitY)
+        {
+            newCellSize.y = CalculateCellSizeOneAxis(padding.vertical, spacing.y, rectTransform.sizeDelta.y, startAxis == Axis.Vertical);
         }
 
-
-        Debug.Log("Pixels remaining on the selected axis: " + pixelsRemaining + ". Calculated cell size: " + newCellSize);
+        Debug.Log("Calculated cell size: " + newCellSize);
         return newCellSize;
+    }
+
+    public float CalculateCellSizeOneAxis(float padding, float spacing, float sizeDelta, bool childCountDependent)
+    {
+        float startingPixels;
+        float totalSpacing;
+        int childCount = (childCountDependent?transform.childCount:1);
+        float calculatedCellSize;
+
+        startingPixels = sizeDelta;
+        totalSpacing = spacing * childCount;
+
+        float pixelsRemaining = startingPixels - (padding + totalSpacing);
+        calculatedCellSize = pixelsRemaining / childCount;
+        return calculatedCellSize;
     }
 
     public void AutoScale()
     {
-        GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
-        
-        gridLayoutGroup.cellSize = CalculateCellSize();
-        gridLayoutGroup.CalculateLayoutInputHorizontal();
-        gridLayoutGroup.CalculateLayoutInputVertical();
+        cellSize = CalculateCellSize();
+        CalculateLayoutInputHorizontal();
+        CalculateLayoutInputVertical();
     }
 }
