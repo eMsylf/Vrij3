@@ -57,6 +57,14 @@ namespace Combat
                 Debug.LogError("Statistic visualizer is null");
                 return;
             }
+
+            FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
+            if (fadeOutComponent != null)
+            {
+                fadeOutComponent.ResetFade();
+                fadeOutComponent.StartFadeOut();
+            }
+
             //Debug.Log("Updating visual");
             for (int i = 0; i < Visualizer.transform.childCount; i++)
             {

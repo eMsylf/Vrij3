@@ -150,7 +150,10 @@ public class CameraFollow : MonoBehaviour
 
     private void SetPosition(Vector3 position)
     {
-        Rigidbody.MovePosition(Vector3.Lerp(Rigidbody.position, position, 1f - PositionSmoothing));
+        if (LivePreview)
+            transform.position = Vector3.Lerp(Rigidbody.position, position, 1f - PositionSmoothing);
+        else
+            Rigidbody.MovePosition(Vector3.Lerp(Rigidbody.position, position, 1f - PositionSmoothing));
     }
 
     private void CalculateRotationAroundTarget()
@@ -172,9 +175,10 @@ public class CameraFollow : MonoBehaviour
     private void SetLook(Vector3 position)
     {
         // Camera looks at the target position
-        Rigidbody.MoveRotation(Quaternion.LookRotation(position - Rigidbody.position));
-        // Look at
-        //transform.LookAt(position);
+        if (LivePreview)
+            transform.LookAt(position);
+        else
+            Rigidbody.MoveRotation(Quaternion.LookRotation(position - Rigidbody.position));
     }
 
     //public void OverrideOffsets()

@@ -111,7 +111,7 @@ public class PlayerController : Fighter
         attacking.attackLaunched += () => OnAttack();
         attacking.attackEnd += () => OnAttackEnd();
 
-        EnableTasks();
+        OnEnableTasks();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -126,7 +126,7 @@ public class PlayerController : Fighter
         attacking.attackLaunched -= () => OnAttack();
         attacking.attackEnd -= () => OnAttackEnd();
 
-        DisableTasks();
+        OnDisableTasks();
     }
 
     bool controlsSubscribed = false;
@@ -560,6 +560,7 @@ public class PlayerController : Fighter
             return;
         }
         StartCoroutine(attacking.StartCharge());
+        staminaRecharge.allow = false;
     }
 
     public void OnAttack()
@@ -575,6 +576,7 @@ public class PlayerController : Fighter
         attacking.attackState = Attacking.AttackState.Attacking;
         State = EState.Attacking;
         //Animator.ResetTrigger("Attack");
+        staminaRecharge.allow = false;
     }
 
     public void OnAttackEnd()
@@ -587,6 +589,7 @@ public class PlayerController : Fighter
         Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
         State = EState.Idle;
         movement.AcceptMovementInput = true;
+        staminaRecharge.allow = true;
         attacking.attackState = Attacking.AttackState.OnCooldown;
         // Get walking direction at end of attack 
         UpdateMoveInput();
