@@ -148,6 +148,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!111 &9152274505859889515
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8511082039303856159}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 47eb48d589ffd8843a8b80348a2fef7b, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 47eb48d589ffd8843a8b80348a2fef7b, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!114 &5645035560985968389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,22 +188,6 @@ MonoBehaviour:
   m_Spacing: {x: -2, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 1
---- !u!111 &9152274505859889515
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8511082039303856159}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 47eb48d589ffd8843a8b80348a2fef7b, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 47eb48d589ffd8843a8b80348a2fef7b, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1001 &3104575833992745605
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -801,6 +801,11 @@ PrefabInstance:
         type: 3}
       propertyPath: movement.DodgeDuration
       value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7717233248994819647, guid: c89ba7e25b127174395dcdb70dc52f61,
+        type: 3}
+      propertyPath: staminaRecharge.staminaRechargeTime
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7808859098446331285, guid: c89ba7e25b127174395dcdb70dc52f61,
         type: 3}
