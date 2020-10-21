@@ -58,6 +58,12 @@ namespace Combat
                 return;
             }
 
+            Animation animComponent = Visualizer.GetComponent<Animation>();
+            if (animComponent != null)
+            {
+                animComponent.Play();
+            }
+
             FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
             if (fadeOutComponent != null)
             {

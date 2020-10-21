@@ -6,7 +6,6 @@ using DG.Tweening;
 namespace Combat {
     public class Attack : MonoBehaviour
     {
-        public int Damage = 1;
         public bool CanMultiHit = false;
 
         public bool HitStun = true;
@@ -17,6 +16,29 @@ namespace Combat {
 
         public float ShakeDuration = .5f;
         public float ShakeStrength = .6f;
+
+        public enum Effect
+        {
+            Health,
+            Stamina,
+            ChargeSpeed,
+            MovementSpeed
+        }
+        public Effect effect = Effect.Health;
+        // if (effect != Effect.Health)
+            [HideInInspector]
+        public int Damage = 1;
+        // if (effect != Effect.Stamina)
+            [HideInInspector]
+        public int StaminaReduction = 1;
+        // if (effect != Effect.ChargeReduction)
+            [HideInInspector]
+        [Range(0f, 1f)]
+        public float ChargeReduction = 1;
+        // if (effect != Effect.MovementSpeedReduction
+            [HideInInspector]
+        [Range(0f, 1f)]
+        public float MovementSpeedReduction = 1;
 
         Fighter fighter;
         Fighter GetFighter()

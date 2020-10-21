@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -4525,12 +4525,52 @@ PrefabInstance:
     - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_CellSize.x
-      value: 3.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_CellSize.y
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_Padding.m_Left
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_ChildAlignment
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_Spacing.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_Spacing.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_Constraint
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_ConstraintCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520173481503798021, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_StartAxis
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5575644691505147066, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
@@ -4641,6 +4681,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5932070289785462715, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_Constraint
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5932070289785462715, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_ConstraintCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5932070289785462715, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_CellSize.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5932070289785462715, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_CellSize.y
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6828928193702602129, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
@@ -6739,6 +6799,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1787375062165181697, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2007109124036374736, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -6828,6 +6893,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453965747568874005, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: m_CellSize.x
+      value: 20.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453965747568874005, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: m_CellSize.y
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4478327868012382015, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
@@ -6949,6 +7024,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7016060238770310613, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: m_CellSize.y
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 7113313405110343935, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -7009,6 +7089,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8904904834403971683, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: effect
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904904834403971683, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: ChargeReduction
+      value: 0.393
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904904834403971683, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: StaminaReduction
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 8936290547870924735, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -7039,7 +7134,8 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7793681200535378887, guid: fc5a6d50b9535b54fbc25322817d21c9, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fc5a6d50b9535b54fbc25322817d21c9, type: 3}
 --- !u!1001 &1773928544
 PrefabInstance:
