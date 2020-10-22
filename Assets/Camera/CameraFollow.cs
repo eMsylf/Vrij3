@@ -97,7 +97,7 @@ public class CameraFollow : MonoBehaviour
     public float LookSmoothing = .125f;
 
     [Header("Live preview")]
-    public bool LivePreview = true;
+    public bool LivePreview = false;
 
     private new Rigidbody rigidbody;
     private Rigidbody Rigidbody
