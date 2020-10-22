@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using BobJeltes.StandardUtilities;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CameraFollow))]
-public class CameraController : MonoBehaviour
+public class CameraController : Singleton<CameraController>
 {
     public float RotationSpeed = 1f;
     public float ZoomSpeed = .01f;
@@ -11,6 +12,13 @@ public class CameraController : MonoBehaviour
     public float ZoomMax = 7f;
 
     private float rotationDelta = 0f;
+
+    public bool AllowControls = true;
+
+    public void EnableControlsInstance(bool enabled)
+    {
+        Instance.AllowControls = enabled;
+    }
 
     Controls controls;
     Controls Controls
@@ -76,16 +84,22 @@ public class CameraController : MonoBehaviour
     private void SetRotationDelta(float input)
     {
         //Debug.Log("Set camera rotation delta: " + input);
+        if (!AllowControls)
+            return;
         rotationDelta = input * RotationSpeed;
     }
 
     private void SetZoomDelta(float input)
     {
+        if (!AllowControls)
+            return;
         CameraFollow.Distance = Mathf.Clamp(CameraFollow.Distance + (input * ZoomSpeed), ZoomMin, ZoomMax);
     }
 
     private void Update()
     {
+        if (!AllowControls)
+            return;
         CameraFollow.RotationAroundTarget.y += rotationDelta;
     }
 }
