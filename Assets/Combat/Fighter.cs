@@ -27,6 +27,7 @@ namespace Combat
 
         void ResetMaterial() {
             if (WhiteflashOn)Sr.material = MatDefault;
+            else Invoke("ResetMaterial", WhiteFlashDuration);
         }
 
         #endregion
