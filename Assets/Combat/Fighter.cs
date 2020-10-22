@@ -5,6 +5,32 @@ namespace Combat
 {
     public class Fighter : MonoBehaviour, CombatProperties.IKillable, CombatProperties.IDamagable<int>, CombatProperties.ICanAttack
     {
+        #region Julia Added
+        //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something- overall it's nothing very important, it's just for the game feel
+        //materials
+
+        //This is all to flicker white before returning to it's normal color Let's hope it works :')
+        private Material MatWhite;
+        private Material MatDefault;
+        SpriteRenderer Sr;
+        public SpriteRenderer Sprite;
+
+        public bool WhiteflashOn = true;
+        
+        public float WhiteFlashDuration = 0.1f;
+
+        void Start(){
+            Sr = Sprite;
+            MatWhite = Resources.Load("WhiteFlash", typeof(Material)) as Material;
+            MatDefault = Sr.material;
+        }
+
+        void ResetMaterial() {
+            if (WhiteflashOn)Sr.material = MatDefault;
+        }
+
+        #endregion
+
         public Statistic Health;
         public Statistic Stamina;
         public StaminaRecharge staminaRecharge;
@@ -93,7 +119,10 @@ namespace Combat
         public void TakeDamage(int damageTaken)
         {
             Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
+            Sr.material = MatWhite;
+
             if (Health.current <= 0) Die();
+            else Invoke("ResetMaterial", WhiteFlashDuration);
 
             foreach (GameObject obj in HitObjects)
             {
@@ -106,6 +135,7 @@ namespace Combat
         {
             Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.current, this);
             TakeDamage(damageTaken);
+            
         }
         [System.Serializable]
         public class StaminaRecharge
