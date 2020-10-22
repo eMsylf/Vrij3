@@ -8,6 +8,14 @@ using UnityEngine.UI;
 
 public class PlayerController : Fighter
 {
+    #region Julia Added
+    //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something- overall it's nothing very important, it's just for the game feel
+    public ParticleSystem dust;
+    public void CreateDust(){
+        dust.Play();
+}
+
+    #endregion
     public enum EState
     {
         Idle = default,
@@ -217,6 +225,7 @@ public class PlayerController : Fighter
                     break;
                 case EState.Dodging:
                     movement = new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
+                    
                     break;
             }
             return movement;
@@ -291,6 +300,7 @@ public class PlayerController : Fighter
         }
 
         StartCoroutine(Dodge(movement.DodgeDuration));
+        CreateDust(); //Creates dust, added by Julia :^)
     }
 
     private IEnumerator Dodge(float duration)
