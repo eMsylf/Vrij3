@@ -2989,6 +2989,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: DeathObjects.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: DeathObjects.Array.data[3]
+      value: 
+      objectReference: {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b,
+        type: 3}
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4478,7 +4489,7 @@ Transform:
   - {fileID: 1427146020}
   - {fileID: 195769992}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1294659475
 PrefabInstance:
@@ -4585,7 +4596,7 @@ PrefabInstance:
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.93
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
@@ -4595,7 +4606,7 @@ PrefabInstance:
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 17.23
+      value: 14.37
       objectReference: {fileID: 0}
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
@@ -4640,12 +4651,12 @@ PrefabInstance:
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 3.3032
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.3032
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
@@ -4771,6 +4782,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9214617433295504007, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.037
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 582f66759dfd6c5469d7b5764e001485, type: 3}
@@ -11653,6 +11669,26 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1884550631528542971, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: HitStunSlowdown
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884550631528542971, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: HitStunDuration
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884550631528542971, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: ShakeDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884550631528542971, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: ShakeStrength
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 2007109124036374736, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -11893,6 +11929,16 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6511729721251445371, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511729721251445373, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 7016060238770310613, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
       propertyPath: m_CellSize.y
@@ -11958,6 +12004,31 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8251544607731333093, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251544607731333115, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: lengthInSec
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251544607731333115, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251544607731333115, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: TrailModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251544607731333115, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: TrailModule.mode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8904904834403971683, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
       propertyPath: effect
@@ -11972,6 +12043,11 @@ PrefabInstance:
         type: 3}
       propertyPath: StaminaReduction
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904904834403971683, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: ShakeStrength
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8936290547870924735, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
@@ -13378,7 +13454,7 @@ PrefabInstance:
     - target: {fileID: 8610143996436127402, guid: 7935bf05f858eef4fa2ea6e186f36324,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8610143996436127402, guid: 7935bf05f858eef4fa2ea6e186f36324,
         type: 3}
