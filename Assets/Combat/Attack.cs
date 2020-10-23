@@ -7,6 +7,8 @@ namespace Combat {
     public class Attack : MonoBehaviour
     {
         public bool CanMultiHit = false;
+        [Min(0f)]
+        public float InvincibilityTime = 0f;
 
         public bool HitStun = true;
         [Min(0.001f)]
@@ -81,7 +83,7 @@ namespace Combat {
                 }
             }
             Camera.main.DOShakePosition(ShakeDuration, ShakeStrength);
-            fighterHit.TakeDamage(Damage);
+            fighterHit.TakeDamage(Damage, InvincibilityTime);
             fightersHit.Add(fighterHit);
             TimeManager.Instance.DoSlowmotionWithDuration(HitStunSlowdown, HitStunDuration);
         }
