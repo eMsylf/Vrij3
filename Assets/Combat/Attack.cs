@@ -7,6 +7,8 @@ namespace Combat {
     public class Attack : MonoBehaviour
     {
         public bool CanMultiHit = false;
+        public LayerMask HitsTheseLayers;
+        
         [Min(0f)]
         public float InvincibilityTime = 0f;
 
@@ -71,9 +73,16 @@ namespace Combat {
 
         private void OnTriggerEnter(Collider other)
         {
+            if (other.gameObject.layer != HitsTheseLayers)
+            {
+                Debug.Log("Hit something on ignored layer: " + other.gameObject.layer, this);
+                return;
+            }
+
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parent = GetComponentInParent<Fighter>();
-
+            
+            
             if (other.attachedRigidbody != null)
             {
                 other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);

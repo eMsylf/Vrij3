@@ -14,7 +14,7 @@ namespace Combat
             if (otherFighter != null)
             {
                 if (TouchDamage != 0)
-                    otherFighter.TakeDamage(TouchDamage);
+                    otherFighter.TakeDamage(TouchDamage, TouchDamageInvincibilityTime);
             }
         }
     }

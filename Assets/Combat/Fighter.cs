@@ -38,6 +38,7 @@ namespace Combat
         public StaminaRecharge staminaRecharge;
 
         public int TouchDamage = 0;
+        public float TouchDamageInvincibilityTime = 1f;
 
         public List<GameObject> HitObjects = new List<GameObject>();
         public List<GameObject> DeathObjects = new List<GameObject>();
