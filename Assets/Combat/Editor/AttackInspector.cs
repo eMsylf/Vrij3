@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Combat;
 
+[CanEditMultipleObjects]
 [CustomEditor(typeof(Attack))]
 public class AttackInspector : Editor
 {

@@ -26,6 +26,15 @@ namespace Combat {
             ChargeSpeed,
             MovementSpeed
         }
+        public float Force;
+        public enum EDirection
+        {
+            Forward,
+            Right,
+            Up
+        }
+        public EDirection Direction = EDirection.Forward;
+
         public Effect effect = Effect.Health;
         // if (effect != Effect.Health)
             [HideInInspector]
@@ -41,6 +50,7 @@ namespace Combat {
             [HideInInspector]
         [Range(0f, 1f)]
         public float MovementSpeedReduction = 1;
+
 
         Fighter fighter;
         Fighter GetFighter()
@@ -64,6 +74,11 @@ namespace Combat {
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parent = GetComponentInParent<Fighter>();
 
+            if (other.attachedRigidbody != null)
+            {
+                other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);
+            }
+
             if (fighterHit == null)
                 return;
 
@@ -82,10 +97,35 @@ namespace Combat {
                     return;
                 }
             }
+            else
+            {
+                fightersHit.Add(fighterHit);
+            }
             Camera.main.DOShakePosition(ShakeDuration, ShakeStrength);
             fighterHit.TakeDamage(Damage, InvincibilityTime);
-            fightersHit.Add(fighterHit);
             TimeManager.Instance.DoSlowmotionWithDuration(HitStunSlowdown, HitStunDuration);
         }
+
+        Vector3 GetForceVector(EDirection direction)
+        {
+            switch (direction)
+            {
+                case EDirection.Forward:
+                    return transform.forward * Force;
+                case EDirection.Right:
+                    return transform.right * Force;
+                case EDirection.Up:
+                    return transform.up * Force;
+            }
+            return Vector3.zero;
+        }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawLine(transform.position, transform.position + GetForceVector(Direction));
+            Gizmos.DrawWireSphere(transform.position + GetForceVector(Direction), 1f);
+        }
     }
+#endif
 }

@@ -33,7 +33,7 @@ namespace Combat
         #endregion
 
         public Statistic Health;
-        private float InvincibilityTime = 0f;
+        public float InvincibilityTime = 0f;
         public Statistic Stamina;
         public StaminaRecharge staminaRecharge;
 
