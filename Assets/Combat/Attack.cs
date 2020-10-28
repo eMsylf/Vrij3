@@ -77,7 +77,7 @@ namespace Combat {
         {
             if (HitsTheseLayers != (HitsTheseLayers.value | (1 << other.gameObject.layer)))
             {
-                Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
+                //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
                 return;
             }
 

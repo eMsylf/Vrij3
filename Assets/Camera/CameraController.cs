@@ -61,7 +61,7 @@ public class CameraController : Singleton<CameraController>
     {
         if (controlsSubscribed)
             return;
-        Debug.Log("Subscribe controls");
+        Debug.Log("Subscribe controls from " + name);
         Controls.Game.Enable();
         Controls.Game.CameraRotationHorizontal.performed += _ => SetRotationDelta(_.ReadValue<float>());
         Controls.Game.CameraRotationHorizontal.canceled += _ => SetRotationDelta(0f);
@@ -73,7 +73,7 @@ public class CameraController : Singleton<CameraController>
     {
         if (!controlsSubscribed)
             return;
-        Debug.Log("Unsubscribe controls");
+        Debug.Log("Unsubscribe controls from " + name);
         Controls.Game.Disable();
         Controls.Game.CameraRotationHorizontal.performed -= _ => SetRotationDelta(_.ReadValue<float>());
         Controls.Game.CameraRotationHorizontal.canceled -= _ => SetRotationDelta(0f);
