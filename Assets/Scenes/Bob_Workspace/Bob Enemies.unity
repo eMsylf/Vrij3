@@ -1665,28 +1665,6 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!1 &472071512 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8251544607731333093, guid: fc5a6d50b9535b54fbc25322817d21c9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1747028353}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &472071518
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 472071512}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &495584550
 GameObject:
   m_ObjectHideFlags: 0
@@ -7100,10 +7078,19 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1621315344, guid: fc5a6d50b9535b54fbc25322817d21c9, type: 3}
+      propertyPath: HitsTheseLayers.m_Bits
+      value: 4096
+      objectReference: {fileID: 0}
     - target: {fileID: 1787375062165181697, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884550631528542971, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: HitsTheseLayers.m_Bits
+      value: 4096
       objectReference: {fileID: 0}
     - target: {fileID: 2007109124036374736, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}
@@ -7434,6 +7421,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251544607731333093, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904904834403971683, guid: fc5a6d50b9535b54fbc25322817d21c9,
+        type: 3}
+      propertyPath: HitsTheseLayers.m_Bits
+      value: 4096
       objectReference: {fileID: 0}
     - target: {fileID: 8936290547870924735, guid: fc5a6d50b9535b54fbc25322817d21c9,
         type: 3}

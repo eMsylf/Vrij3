@@ -36,6 +36,8 @@ namespace Combat {
             Up
         }
         public EDirection Direction = EDirection.Forward;
+        [Tooltip("If ticked, physics objects will be hit away from the attack's pivot instead of just in the direction specified.")]
+        public bool AwayFromSelf;
 
         public Effect effect = Effect.Health;
         // if (effect != Effect.Health)
@@ -73,9 +75,9 @@ namespace Combat {
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer != HitsTheseLayers)
+            if (HitsTheseLayers != (HitsTheseLayers.value | (1 << other.gameObject.layer)))
             {
-                Debug.Log("Hit something on ignored layer: " + other.gameObject.layer, this);
+                Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
                 return;
             }
 
@@ -85,7 +87,12 @@ namespace Combat {
             
             if (other.attachedRigidbody != null)
             {
-                other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);
+                //other.attachedRigidbody.AddForce(Vector3.Scale(other.transform.position - transform.position, GetForceVector(Direction)), ForceMode.Impulse);
+                if (AwayFromSelf)
+                    other.attachedRigidbody.AddForce((other.transform.position - transform.position) + GetForceVector(Direction), ForceMode.Impulse);
+                else
+                    other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);
+                //other.attachedRigidbody.AddForce(other.transform.position - transform.position, ForceMode.Impulse);
             }
 
             if (fighterHit == null)
@@ -117,16 +124,20 @@ namespace Combat {
 
         Vector3 GetForceVector(EDirection direction)
         {
+            Vector3 returnForce = new Vector3();
             switch (direction)
             {
                 case EDirection.Forward:
-                    return transform.forward * Force;
+                    returnForce = transform.forward * Force;
+                    break;
                 case EDirection.Right:
-                    return transform.right * Force;
+                    returnForce = transform.right * Force;
+                    break;
                 case EDirection.Up:
-                    return transform.up * Force;
+                    returnForce = transform.up * Force;
+                    break;
             }
-            return Vector3.zero;
+            return returnForce;
         }
 
 #if UNITY_EDITOR
