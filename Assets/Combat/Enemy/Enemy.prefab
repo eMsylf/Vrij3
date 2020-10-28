@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 5575644691505147070}
   - component: {fileID: 5575644691505147067}
   - component: {fileID: 5575644691505147069}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +297,7 @@ Rigidbody:
   m_Drag: 1
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
@@ -322,6 +322,7 @@ MonoBehaviour:
     recoveryTime: 1
     syncCurrentToMax: 1
     Visualizer: {fileID: 4976917289497784945}
+  InvincibilityTime: 0
   Stamina:
     max: 0
     current: 0
@@ -333,6 +334,7 @@ MonoBehaviour:
     staminaRechargeWindupTime: 1
     allow: 1
   TouchDamage: 1
+  TouchDamageInvincibilityTime: 1
   HitObjects:
   - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
   DeathObjects:

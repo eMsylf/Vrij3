@@ -33,10 +33,12 @@ namespace Combat
         #endregion
 
         public Statistic Health;
+        public float InvincibilityTime = 0f;
         public Statistic Stamina;
         public StaminaRecharge staminaRecharge;
 
         public int TouchDamage = 0;
+        public float TouchDamageInvincibilityTime = 1f;
 
         public List<GameObject> HitObjects = new List<GameObject>();
         public List<GameObject> DeathObjects = new List<GameObject>();
@@ -73,6 +75,7 @@ namespace Combat
         private void Update()
         {
             ManageStaminaRecharge();
+            ManageInvincibility();
         }
 
         void ManageStaminaRecharge()
@@ -83,14 +86,14 @@ namespace Combat
             {
                 if (staminaRecharge.windup < staminaRecharge.staminaRechargeWindupTime)
                 {
-                    staminaRecharge.windup += Time.unscaledDeltaTime;
+                    staminaRecharge.windup += Time.deltaTime;
 
                 }
                 else
                 {
                     if (staminaRecharge.recharge < staminaRecharge.staminaRechargeTime)
                     {
-                        staminaRecharge.recharge += Time.unscaledDeltaTime;
+                        staminaRecharge.recharge += Time.deltaTime;
                     }
                     else
                     {
@@ -98,6 +101,14 @@ namespace Combat
                         staminaRecharge.recharge = 0f;
                     }
                 }
+            }
+        }
+
+        void ManageInvincibility()
+        {
+            if (InvincibilityTime > 0f)
+            {
+                InvincibilityTime -= Time.deltaTime;
             }
         }
 
@@ -130,6 +141,17 @@ namespace Combat
                 Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
                 //Instantiate(obj);
             }
+        }
+
+        public void TakeDamage(int damageTaken, float invincibilityTime)
+        {
+            if (InvincibilityTime > 0f)
+            {
+                Debug.Log(name + " is still invincible, can't take damage. Time remaining: " + InvincibilityTime);
+                return;
+            }
+            InvincibilityTime = invincibilityTime;
+            TakeDamage(damageTaken);
         }
 
         public void TakeDamage(int damageTaken, Fighter damageSource)
