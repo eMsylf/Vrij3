@@ -10,7 +10,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 3.5
+  m_Radius: 3.17
   m_Height: 13.16
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
@@ -54,11 +54,28 @@ MonoBehaviour:
   ShakeStrength: 0.6
   Force: 0
   Direction: 0
+  AwayFromSelf: 0
   effect: 0
   Damage: 1
   StaminaReduction: 1
   ChargeReduction: 1
   MovementSpeedReduction: 1
+--- !u!54 &3916245289778036441
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921615465491409630}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &4379071861394228787
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -150,14 +150,15 @@ namespace Combat
                 Debug.Log(name + " is still invincible, can't take damage. Time remaining: " + InvincibilityTime);
                 return;
             }
+            Debug.Log("Take damage and remain invincible for " + invincibilityTime, this);
             InvincibilityTime = invincibilityTime;
             TakeDamage(damageTaken);
         }
 
-        public void TakeDamage(int damageTaken, Fighter damageSource)
+        public void TakeDamage(int damageTaken, float invincibilityTime, Fighter damageSource)
         {
             Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.current, this);
-            TakeDamage(damageTaken);
+            TakeDamage(damageTaken, invincibilityTime);
             
         }
         [System.Serializable]

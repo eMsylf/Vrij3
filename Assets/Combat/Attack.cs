@@ -80,9 +80,11 @@ namespace Combat {
                 //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
                 return;
             }
+            Debug.Log(name + " hit " + other.name, this);
+            Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
 
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
-            Fighter parent = GetComponentInParent<Fighter>();
+            Fighter parentFighter = GetComponentInParent<Fighter>();
             
             
             if (other.attachedRigidbody != null)
@@ -98,9 +100,9 @@ namespace Combat {
             if (fighterHit == null)
                 return;
 
-            if (parent == fighterHit)
+            if (parentFighter == fighterHit)
             {
-                Debug.Log("Hit self", parent);
+                Debug.Log("Hit self", parentFighter);
                 return;
             }
 
@@ -118,7 +120,15 @@ namespace Combat {
                 fightersHit.Add(fighterHit);
             }
             Camera.main.DOShakePosition(ShakeDuration, ShakeStrength);
-            fighterHit.TakeDamage(Damage, InvincibilityTime);
+
+            if (parentFighter != null)
+            {
+                fighterHit.TakeDamage(Damage, InvincibilityTime, parentFighter);
+            }
+            else
+            {
+                fighterHit.TakeDamage(Damage, InvincibilityTime);
+            }
             TimeManager.Instance.DoSlowmotionWithDuration(HitStunSlowdown, HitStunDuration);
         }
 
