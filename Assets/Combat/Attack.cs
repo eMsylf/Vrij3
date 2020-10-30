@@ -75,7 +75,7 @@ namespace Combat {
             if (HitsTheseLayers != (HitsTheseLayers.value | (1 << other.gameObject.layer)))
             {
                 //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
-                Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);
+                //Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace Combat {
             }
 
             //Debug.Log(name + " hit " + other.name, this);
-            Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
+            //Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
 
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parentFighter = GetComponentInParent<Fighter>();
