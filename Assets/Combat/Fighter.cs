@@ -34,6 +34,13 @@ namespace Combat
 
         public Statistic Health;
         public float InvincibilityTime = 0f;
+        public bool Invincible
+        {
+            get
+            {
+                return InvincibilityTime > 0f;
+            }
+        }
         public Statistic Stamina;
         public StaminaRecharge staminaRecharge;
 
@@ -145,12 +152,7 @@ namespace Combat
 
         public void TakeDamage(int damageTaken, float invincibilityTime)
         {
-            if (InvincibilityTime > 0f)
-            {
-                Debug.Log(name + " is still invincible, can't take damage. Time remaining: " + InvincibilityTime);
-                return;
-            }
-            Debug.Log("Take damage and remain invincible for " + invincibilityTime, this);
+            //Debug.Log("Take damage and remain invincible for " + invincibilityTime, this);
             InvincibilityTime = invincibilityTime;
             TakeDamage(damageTaken);
         }

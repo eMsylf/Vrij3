@@ -20,6 +20,7 @@ namespace Combat {
 
         public float ShakeDuration = .5f;
         public float ShakeStrength = .6f;
+        public List<GameObject> HitEffects = new List<GameObject>();
 
         public enum Effect
         {
@@ -78,9 +79,17 @@ namespace Combat {
             if (HitsTheseLayers != (HitsTheseLayers.value | (1 << other.gameObject.layer)))
             {
                 //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
+                Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);
                 return;
             }
-            Debug.Log(name + " hit " + other.name, this);
+
+            // Hit something the attack can hit
+            foreach (GameObject obj in HitEffects)
+            {
+                Instantiate(obj, other.transform.position, Quaternion.identity);
+            }
+
+            //Debug.Log(name + " hit " + other.name, this);
             Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
 
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
@@ -89,12 +98,10 @@ namespace Combat {
             
             if (other.attachedRigidbody != null)
             {
-                //other.attachedRigidbody.AddForce(Vector3.Scale(other.transform.position - transform.position, GetForceVector(Direction)), ForceMode.Impulse);
                 if (AwayFromSelf)
                     other.attachedRigidbody.AddForce((other.transform.position - transform.position) + GetForceVector(Direction), ForceMode.Impulse);
                 else
                     other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);
-                //other.attachedRigidbody.AddForce(other.transform.position - transform.position, ForceMode.Impulse);
             }
 
             if (fighterHit == null)
@@ -106,19 +113,21 @@ namespace Combat {
                 return;
             }
 
+            if (fighterHit.Invincible)
+                return;
+
             if (fightersHit.Contains(fighterHit))
             {
-                //Debug.Log("Already hit this fighter");
+                Debug.Log(name + " tried to multihit" + fighterHit.name, this);
                 if (!CanMultiHit)
                 {
-                    //Debug.Log("Trying to multihit but is disabled", this);
                     return;
                 }
             }
-            else
-            {
-                fightersHit.Add(fighterHit);
-            }
+
+            fightersHit.Add(fighterHit);
+            
+            // The hit is succesful
             Camera.main.DOShakePosition(ShakeDuration, ShakeStrength);
 
             if (parentFighter != null)

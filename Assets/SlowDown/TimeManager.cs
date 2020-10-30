@@ -53,14 +53,14 @@ public class TimeManager : Singleton<TimeManager>
                 Time.timeScale = savedTimeScale;
                 Time.fixedDeltaTime = savedFixedDeltaTime;
                 slowmo = false;
-                Debug.Log("Stop slowmo");
+                //Debug.Log("Stop slowmo");
             }
         }
     }
 
     public void OverrideSavedTimeScale()
     {
-        Debug.Log("Saved timescale " + Time.timeScale);
+        //Debug.Log("Saved timescale " + Time.timeScale);
         savedTimeScale = Time.timeScale;
         savedFixedDeltaTime = Time.fixedDeltaTime;
     }
@@ -69,12 +69,12 @@ public class TimeManager : Singleton<TimeManager>
     {
         if (slowmo)
         {
-            Debug.Log("Slowmo attempted while already active");
+            //Debug.Log("Slowmo attempted while already active");
             return;
         }
 
         slowmo = true;
-        Debug.Log("Slowmo");
+        //Debug.Log("Slowmo");
         if (savedTimeScale == 0f || savedFixedDeltaTime == 0f)
         {
             OverrideSavedTimeScale();
@@ -87,10 +87,10 @@ public class TimeManager : Singleton<TimeManager>
     {
         if (slowmo)
         {
-            Debug.Log("Slowmo attempted while already active");
+            //Debug.Log("Slowmo attempted while already active");
             return;
         }
-        Debug.Log("Slowmo for " + duration + " seconds");
+        //Debug.Log("Slowmo for " + duration + " seconds");
         
         if (savedTimeScale == 0f || savedFixedDeltaTime == 0f)
         {
@@ -107,17 +107,17 @@ public class TimeManager : Singleton<TimeManager>
     {
         if (!slowmo)
         {
-            Debug.Log("Slowmo already stopped");
+            //Debug.Log("Slowmo already stopped");
             return;
         }
         slowmo = false;
 
-        Debug.Log("Unslomo");
+        //Debug.Log("Unslomo");
         Time.timeScale = savedTimeScale;
         Time.fixedDeltaTime = savedFixedDeltaTime;
         if (transitioning)
         {
-            Debug.Log("Transition cancelled");
+            //Debug.Log("Transition cancelled");
             StopAllCoroutines();
             transitioning = false;
         }

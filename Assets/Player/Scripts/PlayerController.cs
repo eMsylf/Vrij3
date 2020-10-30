@@ -295,7 +295,7 @@ public class PlayerController : Fighter
 
         if (!Stamina.Use())
         {
-            Debug.Log("Insufficient stamina to dodge");
+            //Debug.Log("Insufficient stamina to dodge");
             return;
         }
 
@@ -338,7 +338,7 @@ public class PlayerController : Fighter
     private void DirectionalDodge(Vector2 direction)
     {
         movement.DodgeDirection = direction;
-        Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
+        //Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
     }
 
     private void UpdateMoveInput()
@@ -581,7 +581,7 @@ public class PlayerController : Fighter
         attacking.WeaponAnimator.SetTrigger("Attack");
 
         Stop();
-        Debug.Log("OnAttack, set movement input to false");
+        //Debug.Log("OnAttack, set movement input to false");
         movement.AcceptMovementInput = false;
         attacking.attackState = Attacking.AttackState.Attacking;
         State = EState.Attacking;
@@ -596,7 +596,7 @@ public class PlayerController : Fighter
 
     private void OnAttackEndInstance()
     {
-        Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
+        //Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
         State = EState.Idle;
         movement.AcceptMovementInput = true;
         staminaRecharge.allow = true;
