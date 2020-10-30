@@ -5448,11 +5448,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.5
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects: []
   Force: 0
   Direction: 0
@@ -6497,11 +6500,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   InvincibilityTime: 0
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.4
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.4
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects:
   - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
   Force: -4
@@ -6825,11 +6831,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.5
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects: []
   Force: 0
   Direction: 0
@@ -7062,11 +7071,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   InvincibilityTime: 0
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.1
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.1
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects:
   - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
   Force: 2
@@ -7693,11 +7705,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   InvincibilityTime: 0
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.2
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.2
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects:
   - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
   Force: -3
@@ -7814,11 +7829,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.5
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects: []
   Force: 0
   Direction: 0
@@ -7934,11 +7952,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.5
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects: []
   Force: 0
   Direction: 0
@@ -8850,7 +8871,7 @@ PrefabInstance:
     - target: {fileID: 7210055107386569785, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8362025403191828382, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
         type: 3}
