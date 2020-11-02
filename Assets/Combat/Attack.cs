@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using BobJeltes.StandardUtilities;
 
 namespace Combat {
     public class Attack : MonoBehaviour
@@ -12,14 +13,9 @@ namespace Combat {
         [Min(0f)]
         public float InvincibilityTime = 0f;
 
-        public bool HitStun = true;
-        [Min(0.001f)]
-        public float HitStunSlowdown = .01f;
-        [Min(0.001f)]
-        public float HitStunDuration = .5f;
+        public HitStunSettings HitStun;
 
-        public float ShakeDuration = .5f;
-        public float ShakeStrength = .6f;
+        public CameraShakeSettings CameraShake;
         public List<GameObject> HitEffects = new List<GameObject>();
 
         public enum Effect
@@ -79,18 +75,18 @@ namespace Combat {
             if (HitsTheseLayers != (HitsTheseLayers.value | (1 << other.gameObject.layer)))
             {
                 //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
-                Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);
+                //Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);
                 return;
             }
 
             // Hit something the attack can hit
             foreach (GameObject obj in HitEffects)
             {
-                Instantiate(obj, other.transform.position, Quaternion.identity);
+                Instantiate(obj, other.transform.position, Camera.main.transform.rotation);
             }
 
             //Debug.Log(name + " hit " + other.name, this);
-            Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
+            //Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
 
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parentFighter = GetComponentInParent<Fighter>();
@@ -128,7 +124,6 @@ namespace Combat {
             fightersHit.Add(fighterHit);
             
             // The hit is succesful
-            Camera.main.DOShakePosition(ShakeDuration, ShakeStrength);
 
             if (parentFighter != null)
             {
@@ -138,7 +133,11 @@ namespace Combat {
             {
                 fighterHit.TakeDamage(Damage, InvincibilityTime);
             }
-            TimeManager.Instance.DoSlowmotionWithDuration(HitStunSlowdown, HitStunDuration);
+            
+            if (CameraShake.enabled)
+                Camera.main.DOShakePosition(CameraShake.Duration, CameraShake.Strength);
+            if (HitStun.enabled)
+                TimeManager.Instance.DoSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
         }
 
         Vector3 GetForceVector(EDirection direction)
