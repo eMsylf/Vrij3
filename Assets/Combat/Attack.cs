@@ -164,6 +164,6 @@ namespace Combat {
             Gizmos.DrawLine(transform.position, transform.position + GetForceVector(Direction));
             Gizmos.DrawWireSphere(transform.position + GetForceVector(Direction), 1f);
         }
-    }
 #endif
+    }
 }
