@@ -16,11 +16,23 @@ public class CameraFollow : MonoBehaviour
             if (target == null)
             {
                 Debug.LogWarning("No target assigned in " + name, this);
-                return transform;
             }
             return target;
         }
         set => target = value;
+    }
+
+    [SerializeField] private Vector3 targetPosition;
+    public Vector3 TargetPosition
+    {
+        get
+        {
+            if (Target != null)
+            {
+                targetPosition = Target.position;
+            }
+            return targetPosition;
+        }
     }
 
     [SerializeField] private Transform cameraResources;
@@ -128,7 +140,7 @@ public class CameraFollow : MonoBehaviour
 
     public void CalculatePivot()
     {
-        PositionPivot.position = Target.position + PositionOffset;
+        PositionPivot.position = TargetPosition + PositionOffset;
     }
 
     public Vector3 CalculatePosition()
@@ -164,7 +176,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 CalculateLook()
     {
         // Get camera look position
-        Vector3 desiredLook = Target.position + LookOffset;
+        Vector3 desiredLook = TargetPosition + LookOffset;
         if (LookSmoothing == 0f)
             LookTransform.position = desiredLook;
         else
@@ -190,13 +202,13 @@ public class CameraFollow : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        Vector3 targetPos = Target.position;
+        Vector3 targetPos = TargetPosition;
 
         Gizmos.DrawLine(transform.position, targetPos);
         Gizmos.DrawLine(PositionTransform.position, targetPos);
         Gizmos.DrawLine(LookTransform.position, targetPos);
         Gizmos.DrawLine(PositionTransform.position, PositionPivot.position);
-        Gizmos.DrawLine(PositionPivot.position, Target.position);
+        Gizmos.DrawLine(PositionPivot.position, TargetPosition);
     }
 #endif
 }
