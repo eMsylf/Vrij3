@@ -7188,7 +7188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7195744fc6eea4e9ff8193ab614252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Sprite: {fileID: 5738622204949074231}
+  spriteRenderer: {fileID: 5738622204949074231}
   WhiteflashOn: 0
   WhiteFlashDuration: 3
   Health:
@@ -7214,7 +7214,6 @@ MonoBehaviour:
   DeathObjects:
   - {fileID: 5158045116331438428, guid: dd127f65693ebc14ba65ef33bb2bf587, type: 3}
   dust: {fileID: 1593020624}
-  State: 0
   SpawnPosSet: 0
   Direction: {fileID: 3104575833432285019}
   movement:
@@ -7223,6 +7222,7 @@ MonoBehaviour:
     DodgeDuration: 0.2
     AcceptMovementInput: 1
     defaultDodgeDirection: 1
+    state: 0
   attacking:
     ChargeSlider: {fileID: 2499125909367898424}
     ChargeIndicators: {fileID: 5844970147177082628}
@@ -7266,7 +7266,7 @@ MonoBehaviour:
     ChargeTime: 2
     ChargeTimeDeadzone: 0.1
     ChargeEffectedBySlowdown: 0
-    attackState: 0
+    state: 0
   targeting:
     DebugTarget: {fileID: 0}
     Radius: 3
