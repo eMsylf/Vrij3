@@ -136,7 +136,7 @@ public class PlayerController : Fighter
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => AttemptDodge();
         Controls.Game.Attack.performed += _ => AttemptAttackCharge();
-        Controls.Game.Attack.canceled += _ => attacking.state = Attacking.State.Ready;
+        Controls.Game.Attack.canceled += _ => attacking.CompleteCharge();
         Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
         controlsSubscribed = true;
     }
@@ -149,7 +149,7 @@ public class PlayerController : Fighter
         Controls.Game.Movement.canceled -= _ => Stop();
         Controls.Game.Dodge.performed -= _ => AttemptDodge();
         Controls.Game.Attack.performed -= _ => AttemptAttackCharge();
-        Controls.Game.Attack.canceled -= _ => attacking.state = Attacking.State.Ready;
+        Controls.Game.Attack.canceled -= _ => attacking.CompleteCharge();
         Controls.Game.LockOn.performed -= _ => targeting.LockOn(transform.position);
         controlsSubscribed = false;
     }
@@ -293,9 +293,11 @@ public class PlayerController : Fighter
     {
         switch (movement.state)
         {
+            // Dodging is allowed when
             case Movement.State.Idle:
             case Movement.State.Moving:
                 break;
+            // Dodging is not allowed when
             case Movement.State.Dodging:
             case Movement.State.Hit:
             case Movement.State.Stunned:
@@ -303,18 +305,7 @@ public class PlayerController : Fighter
                 return;
         }
 
-        switch (attacking.state)
-        {
-            case Attacking.State.Ready:
-            case Attacking.State.OnCooldown:
-            case Attacking.State.Disabled:
-                break;
-            case Attacking.State.Charging:
-            case Attacking.State.Attacking:
-                return;
-        }
-
-        if (!Stamina.Use())
+        if (!Stamina.AttemptUse())
         {
             //Debug.Log("Insufficient stamina to dodge");
             return;
@@ -397,7 +388,8 @@ public class PlayerController : Fighter
         public enum EChargeType
         {
             Slider,
-            States
+            States = default,
+            Both
         }
         public EChargeType ChargeType;
         public Animator WeaponAnimator;
@@ -409,7 +401,6 @@ public class PlayerController : Fighter
         public float ChargeTimeDeadzone = .1f;
         public bool ChargeEffectedBySlowdown = false;
 
-        internal bool charging;
         internal float latestCharge;
         internal UnityAction attackLaunched;
         internal UnityAction attackEnd;
@@ -454,11 +445,10 @@ public class PlayerController : Fighter
             GameObject obj;
             switch (ChargeType)
             {
-                default:
                 case EChargeType.Slider:
                     obj = ChargeSlider.gameObject;
                     break;
-                case EChargeType.States:
+                default:
                     obj = ChargeIndicators.gameObject;
                     break;
             }
@@ -467,6 +457,19 @@ public class PlayerController : Fighter
                 Debug.LogWarning("Charge object " + ChargeType + " of Player is null!");
             }
             return obj;
+        }
+
+        GameObject[] GetChargeObjects()
+        {
+            switch (ChargeType)
+            {
+                case EChargeType.Slider:
+                    return new GameObject[] { ChargeSlider.gameObject };
+                default:
+                    return new GameObject[] { ChargeIndicators.gameObject };
+                case EChargeType.Both:
+                    return new GameObject[] { ChargeSlider.gameObject, ChargeIndicators.gameObject };
+            }
         }
 
         int GetChargeZoneIndex(float time)
@@ -493,16 +496,26 @@ public class PlayerController : Fighter
             state = State.Ready;
         }
 
+        public void CompleteCharge()
+        {
+            if (state != State.Charging)
+            {
+                Debug.Log("No charge to complete");
+                return;
+            }
+            state = State.Attacking;
+        }
+
         public IEnumerator StartCharge()
         {
             state = State.Charging;
             switch (ChargeType)
             {
                 case EChargeType.Slider:
-                    ChargeIndicator.SetCurrent(0, false);
+                    ChargeIndicator.SetCurrent(0, true);
                     break;
-                case EChargeType.States:
-                    ChargeIndicator.SetCurrent(0);
+                default:
+                    ChargeIndicator.SetCurrent(0, true);
                     break;
             }
             float chargeTime = 0f;
@@ -537,7 +550,7 @@ public class PlayerController : Fighter
                         ChargeSlider.value = chargeTimeClamped;
                         ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1, false);
                         break;
-                    case EChargeType.States:
+                    default:
                         ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
                         break;
                 }
@@ -587,30 +600,20 @@ public class PlayerController : Fighter
 
     public void AttemptAttackCharge()
     {
-        switch (movement.state)
-        {
-            case Movement.State.Idle:
-            case Movement.State.Moving:
-            case Movement.State.Disabled:
-                break;
-            case Movement.State.Dodging:
-            case Movement.State.Hit:
-            case Movement.State.Stunned:
-                return;
-        }
-
         switch (attacking.state)
         {
+            // Attack charge allowed when
             case Attacking.State.Ready:
             case Attacking.State.OnCooldown:
                 break;
+            // Attack charge not allowed when
             case Attacking.State.Disabled:
             case Attacking.State.Charging:
             case Attacking.State.Attacking:
                 return;
         }
 
-        if (!Stamina.Use())
+        if (!Stamina.AttemptUse())
         {
             Debug.Log("Not enough stamina to attack");
             return;

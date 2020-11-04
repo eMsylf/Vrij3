@@ -13,14 +13,14 @@ namespace Combat
         private Material MatWhite;
         private Material MatDefault;
         SpriteRenderer Sr;
-        public SpriteRenderer Sprite;
+        public SpriteRenderer spriteRenderer;
 
         public bool WhiteflashOn = true;
         
         public float WhiteFlashDuration = 0.1f;
 
         void Start(){
-            Sr = Sprite;
+            Sr = spriteRenderer;
             MatWhite = Resources.Load("WhiteFlash", typeof(Material)) as Material;
             MatDefault = Sr.material;
         }
