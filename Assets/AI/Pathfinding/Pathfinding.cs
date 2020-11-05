@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -42,6 +43,9 @@ public class Pathfinding : MonoBehaviour
     public Transform currentWaypoint;
     public int currentWaypointIndex;
 
+    public float waypointProximity;
+    public bool autoGetRandomWaypoint;
+
     private void Start()
     {
         currentWaypoint = WaypointManager.GetRandomWaypoint();
@@ -49,11 +53,34 @@ public class Pathfinding : MonoBehaviour
 
     private void Update()
     {
-        
+        if (currentWaypoint == null)
+        {
+            currentWaypoint = WaypointManager.GetRandomWaypoint();
+            return;
+        }
+        if (Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
+        {
+            currentWaypoint = null;
+        }
     }
 
     private void FixedUpdate()
     {
-        Rigidbody.AddForce((transform.position - currentWaypoint.position) * speed);
+        if (currentWaypoint == null)
+        {
+            return;
+        }
+        Rigidbody.AddForce((currentWaypoint.position - transform.position) * speed);
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        if (currentWaypoint != null)
+        {
+            Gizmos.DrawLine(transform.position, currentWaypoint.position);
+        }
+        Handles.DrawWireDisc(transform.position, transform.up, waypointProximity);
+    }
+#endif
 }
