@@ -49,6 +49,8 @@ public class Pathfinding : MonoBehaviour
 
     private void Start()
     {
+        if (WaypointManager == null)
+            return;
         currentWaypoint = WaypointManager.GetRandomWaypoint();
     }
 
@@ -56,6 +58,8 @@ public class Pathfinding : MonoBehaviour
     {
         if (currentWaypoint == null)
         {
+            if (WaypointManager == null)
+                return;
             switch (method)
             {
                 case Method.RandomWaypoint:
