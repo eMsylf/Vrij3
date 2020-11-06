@@ -49,8 +49,7 @@ public class CameraFollow : MonoBehaviour
         {
             return center;
         }
-
-        for (int i = 1; i < transforms.Count; i++)
+        for (int i = 0; i < transforms.Count; i++)
         {
             center += transforms[i].position;
         }
