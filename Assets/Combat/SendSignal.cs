@@ -9,7 +9,7 @@ public class SendSignal : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("Exit attack state");
+        //Debug.Log("Enter attack state");
         onEnter.Invoke();
     }
 
@@ -22,7 +22,7 @@ public class SendSignal : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("Exit attack state");
+        //Debug.Log("Exit attack state");
         onExit.Invoke();
     }
 

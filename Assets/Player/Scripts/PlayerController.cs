@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using Combat;
 using UnityEditor;
 using UnityEngine.UI;
+using UnityEditorInternal;
 
 public class PlayerController : Fighter
 {
@@ -16,17 +17,6 @@ public class PlayerController : Fighter
 }
 
     #endregion
-    public enum EState
-    {
-        Idle = default,
-        Moving,
-        Dodging,
-        Attacking,
-        Hit,
-        Stunned
-    }
-    public EState State = default;
-
     //public UnityEvent OnHit;
 
     Controls controls;
@@ -145,8 +135,8 @@ public class PlayerController : Fighter
         Controls.Game.Movement.performed += _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
         Controls.Game.Dodge.performed += _ => AttemptDodge();
-        Controls.Game.Attack.performed += _ => AttemptAttack();
-        Controls.Game.Attack.canceled += _ => attacking.charging = false;
+        Controls.Game.Attack.performed += _ => AttemptAttackCharge();
+        Controls.Game.Attack.canceled += _ => attacking.CompleteCharge();
         Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
         controlsSubscribed = true;
     }
@@ -158,15 +148,15 @@ public class PlayerController : Fighter
         Controls.Game.Movement.performed -= _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled -= _ => Stop();
         Controls.Game.Dodge.performed -= _ => AttemptDodge();
-        Controls.Game.Attack.performed -= _ => StartCoroutine(attacking.StartCharge());
-        Controls.Game.Attack.canceled -= _ => attacking.charging = false;
+        Controls.Game.Attack.performed -= _ => AttemptAttackCharge();
+        Controls.Game.Attack.canceled -= _ => attacking.CompleteCharge();
         Controls.Game.LockOn.performed -= _ => targeting.LockOn(transform.position);
         controlsSubscribed = false;
     }
 
     private void FixedUpdate()
     {
-        Vector3 playerMovement = movement.GetTopDownMovement(State) * movement.GetSpeedModifier(State);
+        Vector3 playerMovement = movement.GetTopDownMovement(movement.state) * movement.GetSpeedModifier(movement.state);
         
         Rigidbody.MovePosition(Rigidbody.position + ConvertToCameraRelative(playerMovement) * Time.fixedUnscaledDeltaTime);
     }
@@ -214,16 +204,27 @@ public class PlayerController : Fighter
         [SerializeField] internal DefaultDodgeDirection defaultDodgeDirection = DefaultDodgeDirection.Backward;
         internal Vector2 DodgeDirection;
 
+        public enum State
+        {
+            Idle = default,
+            Moving,
+            Dodging,
+            Hit,
+            Stunned,
+            Disabled
+        }
+        public State state = default;
+
         #region It would be nice if I could combine these somehow
-        internal Vector3 GetTopDownMovement(EState state)
+        internal Vector3 GetTopDownMovement(State state)
         {
             Vector3 movement = Vector3.zero;
             switch (state)
             {
-                case EState.Moving:
+                case State.Moving:
                     movement = new Vector3(Input.x, 0f, Input.y);
                     break;
-                case EState.Dodging:
+                case State.Dodging:
                     movement = new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
                     
                     break;
@@ -231,18 +232,18 @@ public class PlayerController : Fighter
             return movement;
         }
 
-        internal float GetSpeedModifier(EState state)
+        internal float GetSpeedModifier(State state)
         {
             switch (state)
             {
-                case EState.Moving:
+                case State.Moving:
                     return Speed;
-                case EState.Dodging:
+                case State.Dodging:
                     return DodgeSpeed;
-                case EState.Attacking:
-                case EState.Hit:
-                case EState.Stunned:
-                case EState.Idle:
+                case State.Hit:
+                case State.Stunned:
+                case State.Idle:
+                case State.Disabled:
                 default:
                     return 0f;
             }
@@ -260,16 +261,18 @@ public class PlayerController : Fighter
         }
         //Debug.Log("Input: " + input);
 
-        switch (State)
+        switch (movement.state)
         {
-            case EState.Dodging:
-            case EState.Attacking:
-            case EState.Hit:
-            case EState.Stunned:
-                Debug.Log("Player can't move while " + State.ToString());
+            case Movement.State.Dodging:
+            case Movement.State.Hit:
+            case Movement.State.Stunned:
+            case Movement.State.Disabled:
+                Debug.Log("Player can't move while " + movement.state.ToString());
                 return;
-            case EState.Idle:
-                State = EState.Moving;
+            case Movement.State.Idle:
+                movement.state = Movement.State.Moving;
+                break;
+            case Movement.State.Moving:
                 break;
         }
         movement.Input = input;
@@ -282,22 +285,33 @@ public class PlayerController : Fighter
         //Debug.Log("Stop!");
         movement.Input = Vector2.zero;
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
-        State = EState.Idle;
+        movement.state = Movement.State.Idle;
         Animator.SetBool("IsWalking", false);
     }
 
     private void AttemptDodge()
     {
-        if (State == EState.Dodging || State == EState.Attacking)
+        switch (movement.state)
         {
+            // Dodging is allowed when
+            case Movement.State.Idle:
+            case Movement.State.Moving:
+                break;
+            // Dodging is not allowed when
+            case Movement.State.Dodging:
+            case Movement.State.Hit:
+            case Movement.State.Stunned:
+            case Movement.State.Disabled:
+                return;
+        }
+
+        if (!Stamina.AttemptUse())
+        {
+            //Debug.Log("Insufficient stamina to dodge");
             return;
         }
 
-        if (!Stamina.Use())
-        {
-            Debug.Log("Insufficient stamina to dodge");
-            return;
-        }
+        attacking.state = Attacking.State.Disabled;
 
         StartCoroutine(Dodge(movement.DodgeDuration));
         CreateDust(); //Creates dust, added by Julia :^)
@@ -305,7 +319,7 @@ public class PlayerController : Fighter
 
     private IEnumerator Dodge(float duration)
     {
-        State = EState.Dodging;
+        movement.state = Movement.State.Dodging;
         movement.AcceptMovementInput = false;
         if (movement.Input == Vector2Int.zero)
         {
@@ -317,7 +331,8 @@ public class PlayerController : Fighter
         }
 
         yield return new WaitForSeconds(duration);
-        State = EState.Idle;
+        movement.state = Movement.State.Idle;
+        attacking.state = Attacking.State.Ready;
         movement.AcceptMovementInput = true;
         UpdateMoveInput();
     }
@@ -338,7 +353,7 @@ public class PlayerController : Fighter
     private void DirectionalDodge(Vector2 direction)
     {
         movement.DodgeDirection = direction;
-        Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
+        //Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
     }
 
     private void UpdateMoveInput()
@@ -373,7 +388,8 @@ public class PlayerController : Fighter
         public enum EChargeType
         {
             Slider,
-            States
+            States = default,
+            Both
         }
         public EChargeType ChargeType;
         public Animator WeaponAnimator;
@@ -385,19 +401,19 @@ public class PlayerController : Fighter
         public float ChargeTimeDeadzone = .1f;
         public bool ChargeEffectedBySlowdown = false;
 
-        internal bool charging;
         internal float latestCharge;
         internal UnityAction attackLaunched;
         internal UnityAction attackEnd;
 
-        public enum AttackState
+        public enum State
         {
             Ready,
             Charging,
             Attacking,
-            OnCooldown
+            OnCooldown,
+            Disabled
         }
-        public AttackState attackState;
+        public State state;
 
         internal void Launch(int chargeIndex)
         {
@@ -429,11 +445,10 @@ public class PlayerController : Fighter
             GameObject obj;
             switch (ChargeType)
             {
-                default:
                 case EChargeType.Slider:
                     obj = ChargeSlider.gameObject;
                     break;
-                case EChargeType.States:
+                default:
                     obj = ChargeIndicators.gameObject;
                     break;
             }
@@ -442,6 +457,19 @@ public class PlayerController : Fighter
                 Debug.LogWarning("Charge object " + ChargeType + " of Player is null!");
             }
             return obj;
+        }
+
+        GameObject[] GetChargeObjects()
+        {
+            switch (ChargeType)
+            {
+                case EChargeType.Slider:
+                    return new GameObject[] { ChargeSlider.gameObject };
+                default:
+                    return new GameObject[] { ChargeIndicators.gameObject };
+                case EChargeType.Both:
+                    return new GameObject[] { ChargeSlider.gameObject, ChargeIndicators.gameObject };
+            }
         }
 
         int GetChargeZoneIndex(float time)
@@ -460,24 +488,34 @@ public class PlayerController : Fighter
 
         public void InterruptCharge()
         {
-            if (!charging)
+            if (state != State.Charging)
             {
                 Debug.Log("No charge to interrupt");
                 return;
             }
-            charging = false;
+            state = State.Ready;
+        }
+
+        public void CompleteCharge()
+        {
+            if (state != State.Charging)
+            {
+                Debug.Log("No charge to complete");
+                return;
+            }
+            state = State.Attacking;
         }
 
         public IEnumerator StartCharge()
         {
-            charging = true;
+            state = State.Charging;
             switch (ChargeType)
             {
                 case EChargeType.Slider:
-                    ChargeIndicator.SetCurrent(0, false);
+                    ChargeIndicator.SetCurrent(0, true);
                     break;
-                case EChargeType.States:
-                    ChargeIndicator.SetCurrent(0);
+                default:
+                    ChargeIndicator.SetCurrent(0, true);
                     break;
             }
             float chargeTime = 0f;
@@ -491,7 +529,7 @@ public class PlayerController : Fighter
             Debug.Log("Charge deadzone passed");
             GetChargeObject().SetActive(true);
             bool slowmotionInitiated = false;
-            while (charging)
+            while (state == State.Charging)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime += Time.unscaledDeltaTime;
@@ -512,7 +550,7 @@ public class PlayerController : Fighter
                         ChargeSlider.value = chargeTimeClamped;
                         ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1, false);
                         break;
-                    case EChargeType.States:
+                    default:
                         ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
                         break;
                 }
@@ -560,11 +598,22 @@ public class PlayerController : Fighter
     }
     public Attacking attacking;
 
-    public void AttemptAttack()
+    public void AttemptAttackCharge()
     {
-        if (State == EState.Attacking || State == EState.Dodging)
-            return;
-        if (!Stamina.Use())
+        switch (attacking.state)
+        {
+            // Attack charge allowed when
+            case Attacking.State.Ready:
+            case Attacking.State.OnCooldown:
+                break;
+            // Attack charge not allowed when
+            case Attacking.State.Disabled:
+            case Attacking.State.Charging:
+            case Attacking.State.Attacking:
+                return;
+        }
+
+        if (!Stamina.AttemptUse())
         {
             Debug.Log("Not enough stamina to attack");
             return;
@@ -581,10 +630,10 @@ public class PlayerController : Fighter
         attacking.WeaponAnimator.SetTrigger("Attack");
 
         Stop();
-        Debug.Log("OnAttack, set movement input to false");
+        //Debug.Log("OnAttack, set movement input to false");
         movement.AcceptMovementInput = false;
-        attacking.attackState = Attacking.AttackState.Attacking;
-        State = EState.Attacking;
+        attacking.state = Attacking.State.Attacking;
+        movement.state = Movement.State.Disabled;
         //Animator.ResetTrigger("Attack");
         staminaRecharge.allow = false;
     }
@@ -596,11 +645,11 @@ public class PlayerController : Fighter
 
     private void OnAttackEndInstance()
     {
-        Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
-        State = EState.Idle;
+        //Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
+        attacking.state = Attacking.State.Ready;
+        movement.state = Movement.State.Idle;
         movement.AcceptMovementInput = true;
         staminaRecharge.allow = true;
-        attacking.attackState = Attacking.AttackState.OnCooldown;
         // Get walking direction at end of attack 
         UpdateMoveInput();
     }

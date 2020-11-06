@@ -13,14 +13,14 @@ namespace Combat
         private Material MatWhite;
         private Material MatDefault;
         SpriteRenderer Sr;
-        public SpriteRenderer Sprite;
+        public SpriteRenderer spriteRenderer;
 
         public bool WhiteflashOn = true;
         
         public float WhiteFlashDuration = 0.1f;
 
         void Start(){
-            Sr = Sprite;
+            Sr = spriteRenderer;
             MatWhite = Resources.Load("WhiteFlash", typeof(Material)) as Material;
             MatDefault = Sr.material;
         }
@@ -34,6 +34,13 @@ namespace Combat
 
         public Statistic Health;
         public float InvincibilityTime = 0f;
+        public bool Invincible
+        {
+            get
+            {
+                return InvincibilityTime > 0f;
+            }
+        }
         public Statistic Stamina;
         public StaminaRecharge staminaRecharge;
 
@@ -145,19 +152,15 @@ namespace Combat
 
         public void TakeDamage(int damageTaken, float invincibilityTime)
         {
-            if (InvincibilityTime > 0f)
-            {
-                Debug.Log(name + " is still invincible, can't take damage. Time remaining: " + InvincibilityTime);
-                return;
-            }
+            //Debug.Log("Take damage and remain invincible for " + invincibilityTime, this);
             InvincibilityTime = invincibilityTime;
             TakeDamage(damageTaken);
         }
 
-        public void TakeDamage(int damageTaken, Fighter damageSource)
+        public void TakeDamage(int damageTaken, float invincibilityTime, Fighter damageSource)
         {
             Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.current, this);
-            TakeDamage(damageTaken);
+            TakeDamage(damageTaken, invincibilityTime);
             
         }
         [System.Serializable]

@@ -34,7 +34,7 @@ namespace Combat
                 UpdateVisual();
         }
 
-        public bool Use()
+        public bool AttemptUse()
         {
             return Use(1);
         }

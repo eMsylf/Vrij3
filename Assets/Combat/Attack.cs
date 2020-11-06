@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using BobJeltes.StandardUtilities;
 
 namespace Combat {
     public class Attack : MonoBehaviour
@@ -12,14 +13,10 @@ namespace Combat {
         [Min(0f)]
         public float InvincibilityTime = 0f;
 
-        public bool HitStun = true;
-        [Min(0.001f)]
-        public float HitStunSlowdown = .01f;
-        [Min(0.001f)]
-        public float HitStunDuration = .5f;
+        public HitStunSettings HitStun;
 
-        public float ShakeDuration = .5f;
-        public float ShakeStrength = .6f;
+        public CameraShakeSettings CameraShake;
+        public List<GameObject> HitEffects = new List<GameObject>();
 
         public enum Effect
         {
@@ -36,6 +33,8 @@ namespace Combat {
             Up
         }
         public EDirection Direction = EDirection.Forward;
+        [Tooltip("If ticked, physics objects will be hit away from the attack's pivot instead of just in the direction specified.")]
+        public bool AwayFromSelf;
 
         public Effect effect = Effect.Health;
         // if (effect != Effect.Health)
@@ -73,60 +72,90 @@ namespace Combat {
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer != HitsTheseLayers)
+            if (HitsTheseLayers != (HitsTheseLayers.value | (1 << other.gameObject.layer)))
             {
-                Debug.Log("Hit something on ignored layer: " + other.gameObject.layer, this);
+                //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
+                //Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);
                 return;
             }
 
+            // Hit something the attack can hit
+            foreach (GameObject obj in HitEffects)
+            {
+                Instantiate(obj, other.transform.position, Camera.main.transform.rotation);
+            }
+
+            //Debug.Log(name + " hit " + other.name, this);
+            //Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
+
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
-            Fighter parent = GetComponentInParent<Fighter>();
+            Fighter parentFighter = GetComponentInParent<Fighter>();
             
             
             if (other.attachedRigidbody != null)
             {
-                other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);
+                if (AwayFromSelf)
+                    other.attachedRigidbody.AddForce((other.transform.position - transform.position) + GetForceVector(Direction), ForceMode.Impulse);
+                else
+                    other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);
             }
 
             if (fighterHit == null)
                 return;
 
-            if (parent == fighterHit)
+            if (parentFighter == fighterHit)
             {
-                Debug.Log("Hit self", parent);
+                Debug.Log("Hit self", parentFighter);
                 return;
             }
 
+            if (fighterHit.Invincible)
+                return;
+
             if (fightersHit.Contains(fighterHit))
             {
-                //Debug.Log("Already hit this fighter");
+                Debug.Log(name + " tried to multihit" + fighterHit.name, this);
                 if (!CanMultiHit)
                 {
-                    //Debug.Log("Trying to multihit but is disabled", this);
                     return;
                 }
             }
+
+            fightersHit.Add(fighterHit);
+            
+            // The hit is succesful
+
+            if (parentFighter != null)
+            {
+                fighterHit.TakeDamage(Damage, InvincibilityTime, parentFighter);
+            }
             else
             {
-                fightersHit.Add(fighterHit);
+                fighterHit.TakeDamage(Damage, InvincibilityTime);
             }
-            Camera.main.DOShakePosition(ShakeDuration, ShakeStrength);
-            fighterHit.TakeDamage(Damage, InvincibilityTime);
-            TimeManager.Instance.DoSlowmotionWithDuration(HitStunSlowdown, HitStunDuration);
+            
+            if (CameraShake.enabled)
+                Camera.main.DOShakePosition(CameraShake.Duration, CameraShake.Strength);
+            if (HitStun.enabled)
+                TimeManager.Instance.DoSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
         }
 
         Vector3 GetForceVector(EDirection direction)
         {
+            Vector3 returnForce = new Vector3();
             switch (direction)
             {
                 case EDirection.Forward:
-                    return transform.forward * Force;
+                    returnForce = transform.forward * Force;
+                    break;
                 case EDirection.Right:
-                    return transform.right * Force;
+                    returnForce = transform.right * Force;
+                    break;
                 case EDirection.Up:
-                    return transform.up * Force;
+                    returnForce = transform.up * Force;
+                    break;
             }
-            return Vector3.zero;
+            return returnForce;
         }
 
 #if UNITY_EDITOR
@@ -135,6 +164,6 @@ namespace Combat {
             Gizmos.DrawLine(transform.position, transform.position + GetForceVector(Direction));
             Gizmos.DrawWireSphere(transform.position + GetForceVector(Direction), 1f);
         }
-    }
 #endif
+    }
 }
