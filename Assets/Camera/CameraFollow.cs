@@ -22,17 +22,40 @@ public class CameraFollow : MonoBehaviour
         set => target = value;
     }
 
+    public List<Transform> Targets = new List<Transform>();
+
     [SerializeField] private Vector3 targetPosition;
     public Vector3 TargetPosition
     {
         get
         {
-            if (Target != null)
+            if (Targets != null)
             {
-                targetPosition = Target.position;
+                targetPosition = GetCenterPosition(Targets);
             }
             return targetPosition;
         }
+        set
+        {
+            targetPosition = value;
+        }
+    }
+
+    public Vector3 GetCenterPosition(List<Transform> transforms)
+    {
+        Vector3 center = new Vector3();
+        if (transforms == null || transforms.Count == 0)
+        {
+            return center;
+        }
+
+        for (int i = 1; i < transforms.Count; i++)
+        {
+            center += transforms[i].position;
+        }
+
+        center /= transforms.Count;
+        return center ;
     }
 
     [SerializeField] private Transform cameraResources;
