@@ -8,11 +8,11 @@ public class TinyMoveScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.z >= 54)
+        if (transform.position.y >= movespeed*2)
         {
             transform.Translate(0, 0, -movespeed);
         }
-        else if (transform.position.z <= 45) {
+        else if (transform.position.y <= movespeed*-2) {
             transform.Translate(0, 0, +movespeed);
         }
     }
