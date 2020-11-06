@@ -41,6 +41,7 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
+    // https://stackoverflow.com/questions/52375649/get-the-center-point-between-many-gameobjects-in-unity
     public Vector3 GetCenterPosition(List<Transform> transforms)
     {
         Vector3 center = new Vector3();
