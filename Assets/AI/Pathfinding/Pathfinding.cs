@@ -19,14 +19,6 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    public enum Method
-    {
-        Waypoints
-    }
-    public Method method;
-
-    public float speed;
-
     [SerializeField] protected WaypointManager waypointManager;
     public WaypointManager WaypointManager
     {
@@ -40,14 +32,25 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
+    public enum Method
+    {
+        RandomWaypoint,
+        OrderedWaypoint,
+        ReverseOrderedWaypoint
+    }
+    public Method method;
+    
+    public float speed;
+    public float waypointProximity;
+
     public Transform currentWaypoint;
     public int currentWaypointIndex;
 
-    public float waypointProximity;
-    public bool autoGetRandomWaypoint;
 
     private void Start()
     {
+        if (WaypointManager == null)
+            return;
         currentWaypoint = WaypointManager.GetRandomWaypoint();
     }
 
@@ -55,9 +58,22 @@ public class Pathfinding : MonoBehaviour
     {
         if (currentWaypoint == null)
         {
-            currentWaypoint = WaypointManager.GetRandomWaypoint();
-            return;
+            if (WaypointManager == null)
+                return;
+            switch (method)
+            {
+                case Method.RandomWaypoint:
+                    currentWaypoint = WaypointManager.GetRandomWaypoint();
+                    break;
+                case Method.OrderedWaypoint:
+                    currentWaypoint = WaypointManager.GetNextWaypoint(currentWaypointIndex, out currentWaypointIndex);
+                    break;
+                case Method.ReverseOrderedWaypoint:
+                    currentWaypoint = WaypointManager.GetPreviousWaypoint(currentWaypointIndex, out currentWaypointIndex);
+                    break;
+            }
         }
+
         if (Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
         {
             currentWaypoint = null;
@@ -74,13 +90,23 @@ public class Pathfinding : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+    [Header("Debug")]
+    public bool sphereIndicator;
+    public Color indicatorColor = Color.white;
     private void OnDrawGizmosSelected()
     {
+        Gizmos.color = indicatorColor;
         if (currentWaypoint != null)
         {
             Gizmos.DrawLine(transform.position, currentWaypoint.position);
         }
-        Handles.DrawWireDisc(transform.position, transform.up, waypointProximity);
+        if (sphereIndicator)
+            Gizmos.DrawWireSphere(transform.position, waypointProximity);
+        else
+        {
+            Handles.color = indicatorColor;
+            Handles.DrawWireDisc(transform.position, transform.up, waypointProximity);
+        }
     }
 #endif
 }
