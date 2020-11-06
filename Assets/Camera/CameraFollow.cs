@@ -8,31 +8,54 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] private Transform target;
-    public Transform Target
-    {
-        get
-        {
-            if (target == null)
-            {
-                Debug.LogWarning("No target assigned in " + name, this);
-            }
-            return target;
-        }
-        set => target = value;
-    }
+    //[SerializeField] private Transform target;
+    //public Transform Target
+    //{
+    //    get
+    //    {
+    //        if (target == null)
+    //        {
+    //            Debug.LogWarning("No target assigned in " + name, this);
+    //        }
+    //        return target;
+    //    }
+    //    set => target = value;
+    //}
+
+    public List<Transform> Targets = new List<Transform>();
 
     [SerializeField] private Vector3 targetPosition;
     public Vector3 TargetPosition
     {
         get
         {
-            if (Target != null)
+            if (Targets != null && Targets.Count != 0)
             {
-                targetPosition = Target.position;
+                targetPosition = GetCenterPosition(Targets);
             }
             return targetPosition;
         }
+        set
+        {
+            targetPosition = value;
+        }
+    }
+
+    // https://stackoverflow.com/questions/52375649/get-the-center-point-between-many-gameobjects-in-unity
+    public Vector3 GetCenterPosition(List<Transform> transforms)
+    {
+        Vector3 center = new Vector3();
+        if (transforms == null || transforms.Count == 0)
+        {
+            return center;
+        }
+        for (int i = 0; i < transforms.Count; i++)
+        {
+            center += transforms[i].position;
+        }
+
+        center /= transforms.Count;
+        return center ;
     }
 
     [SerializeField] private Transform cameraResources;
@@ -203,7 +226,7 @@ public class CameraFollow : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Vector3 targetPos = TargetPosition;
-
+        Gizmos.DrawWireSphere(targetPos, 1f);
         Gizmos.DrawLine(transform.position, targetPos);
         Gizmos.DrawLine(PositionTransform.position, targetPos);
         Gizmos.DrawLine(LookTransform.position, targetPos);
