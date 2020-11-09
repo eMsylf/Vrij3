@@ -95,12 +95,50 @@ public class Pathfinding : MonoBehaviour
 
         if (rotateTowardsWaypoint)
         {
-            Vector3 currentEuler = transform.rotation.eulerAngles;
+            Quaternion currentRotation = transform.rotation;
             Quaternion desiredRotation = Quaternion.LookRotation(heading);
+            Vector3 currentEuler = transform.rotation.eulerAngles;
             Vector3 desiredEuler = desiredRotation.eulerAngles;
-            Vector3 rotationForce = desiredEuler - currentEuler;
-            rotationForce *= rotationSpeed;
-            Rigidbody.AddRelativeTorque(rotationForce);
+            Vector3 eulerDifference = desiredEuler - currentEuler;
+
+            ClampToHalfCircles(ref eulerDifference);
+
+            Vector3 torque = eulerDifference * rotationSpeed;
+
+            Rigidbody.AddRelativeTorque(torque);
+            Debug.Log("Current euler: " + currentEuler + " Desired euler: " + desiredEuler + " difference: " + eulerDifference + " Multiplied difference (torque): " + torque);
+        }
+    }
+
+    public void ClampToHalfCircles(ref Vector3 euler)
+    {
+        euler.x %= 360f;
+        euler.y %= 360f;
+        euler.z %= 360f;
+
+        if (euler.x > 180f)
+        {
+            euler.x -= 360f;
+        }
+        if (euler.x < -180f)
+        {
+            euler.x += 360f;
+        }
+        if (euler.y > 180f)
+        {
+            euler.y -= 360f;
+        }
+        if (euler.y < -180f)
+        {
+            euler.y += 360f;
+        }
+        if (euler.z > 180f)
+        {
+            euler.z -= 360f;
+        }
+        if (euler.z < -180f)
+        {
+            euler.z += 360f;
         }
     }
 
@@ -117,6 +155,7 @@ public class Pathfinding : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = indicatorColor;
+        Handles.color = indicatorColor;
         if (currentWaypoint != null)
         {
             Gizmos.DrawLine(transform.position, currentWaypoint.position);
