@@ -3,33 +3,46 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class SpreadChildren : MonoBehaviour
+public class DistributeChildren : MonoBehaviour
 {
     public Vector3 Extents = Vector3.one;
     public float Radius = 1f;
-    public bool AccountForObjectScale = false;
+    //public bool DistributionInheritsScale = false;
+    //public bool DistributionInheritsRotation = false;
+    public bool OverwriteChildrenRotation = false;
 
     public Vector3 GetScaledExtents()
     {
-        if (AccountForObjectScale)
-        {
-            return Vector3.Scale(Extents, transform.localScale);
-        }
-        else
-        {
-            return Extents;
-        }
+        //if (DistributionInheritsScale)
+        //{
+        //    return Vector3.Scale(Extents, transform.localScale);
+        //}
+        //else
+        //{
+        //    return Extents;
+        //}
+        return Extents;
     }
     public Vector3 ScaledHalfExtents => GetScaledExtents() / 2f;
 
-    public float GetScaledRadius()
-    {
-        return GetScaledRadius(AccountForObjectScale);
-    }
+    //public float GetScaledRadius()
+    //{
+    //    return GetScaledRadius(DistributionInheritsScale);
+    //}
 
     public float GetScaledRadius(bool scaled)
     {
-        return scaled ? Radius: Radius / transform.localScale.magnitude;
+        //return scaled ? Radius: Radius / transform.localScale.magnitude;
+        if (scaled)
+        {
+            // Get scaled radius
+            return Radius;
+        }
+        else
+        {
+            // Get unscaled radius
+            return Radius;
+        }
     }
 
     public enum Distribution
@@ -37,10 +50,10 @@ public class SpreadChildren : MonoBehaviour
         CornerToCorner,
         RectangleXY,
         RectangleXZ,
-        RectangleYZ,
+        //RectangleYZ,
         CircularXY,
         CircularXZ,
-        CircularYZ
+        //CircularYZ
     }
     public Distribution distribution;
 
@@ -57,18 +70,18 @@ public class SpreadChildren : MonoBehaviour
             case Distribution.RectangleXZ:
                 DistributePerimeter(Vector3.right + Vector3.forward);
                 break;
-            case Distribution.RectangleYZ:
-                DistributePerimeter(Vector3.up + Vector3.forward);
-                break;
+            //case Distribution.RectangleYZ:
+            //    DistributePerimeter(Vector3.up + Vector3.forward);
+            //    break;
             case Distribution.CircularXY:
                 DistributeCircular(Vector3.right + Vector3.up);
                 break;
             case Distribution.CircularXZ:
                 DistributeCircular(Vector3.right + Vector3.forward);
                 break;
-            case Distribution.CircularYZ:
-                DistributeCircular(Vector3.up + Vector3.forward);
-                break;
+            //case Distribution.CircularYZ:
+            //    DistributeCircular(Vector3.up + Vector3.forward);
+            //    break;
         }
 
 
@@ -95,6 +108,7 @@ public class SpreadChildren : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform currentChild = transform.GetChild(i);
+            Quaternion originalChildRotation = currentChild.rotation;
             float progress = i / (float)(transform.childCount);
             // Circular distribution coordinates
             // 0.00 = (0, 0)
@@ -134,16 +148,19 @@ public class SpreadChildren : MonoBehaviour
             Vector3 newPosition = Vector3.Lerp(minPos, maxPos, partialProgress);
             currentChild.localPosition = newPosition;
             //Debug.Log("Min pos: " + minPos + " - Max pos: " + maxPos + " - Progress: " + progress + " - Partial Progress: " + partialProgress + " - output position: " + newPosition);
+
+            SetChildRotation(currentChild, originalChildRotation, OverwriteChildrenRotation);
         }
     }
 
     public void DistributeCircular(Vector3 axes)
     {
-        float radius = GetScaledRadius();
+        float radius = Radius;
         Debug.Log("Scaled radius: " + radius);
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform currentChild = transform.GetChild(i);
+            Quaternion originalChildRotation = currentChild.rotation;
             float progress = i / (float)(transform.childCount);
             progress *= Mathf.PI * 2f;
 
@@ -152,28 +169,78 @@ public class SpreadChildren : MonoBehaviour
             newPos *= radius;
             //newPos /= Radius;
             newPos.Scale(axes);
+
+            //if (DistributionInheritsScale)
+            //{
             currentChild.localPosition = newPos;
+            //}
+            //else
+            //{
+            //    currentChild.position = transform.position + newPos;
+            //    //currentChild.position = transform.position + newPos;
+            //}
+
+            SetChildRotation(currentChild, originalChildRotation, OverwriteChildrenRotation);
+        }
+    }
+
+    public void SetChildRotation(Transform child, Quaternion originalRotation, bool overwrite)
+    {
+        if (overwrite)
+        {
+            child.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            child.rotation = originalRotation;
         }
     }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        Gizmos.matrix = transform.localToWorldMatrix;
+        //Debug.Log("Gizmo matrix: " + Gizmos.matrix);
+        //Debug.Log("Gizmo matrix: " + Gizmos.matrix);
+        Vector3 handlesPos = new Vector3();
         Handles.matrix = transform.localToWorldMatrix;
+        //if (DistributionInheritsScale)
+        //{
+        //    handlesPos = transform.position;
+        //}
+        Vector3 extents = GetScaledExtents();
+        float radius = Radius;
+        //if (!DistributionInheritsScale)
+        //{
+        //    extents = ScaledHalfExtents;
+        //}
+
+        Vector3 up = Vector3.up;
+        Vector3 forward = Vector3.forward;
+        //if (DistributionInheritsRotation)
+        //{
+        //    up = transform.up;
+        //    forward = transform.forward;
+        //}
+
+        //Quaternion rotation = Quaternion.identity;
+        //if (ObjectsInheritRotation)
+        //{
+        //    rotation = transform.rotation;
+        //}
+
         switch (distribution)
         {
             case Distribution.CornerToCorner:
             case Distribution.RectangleXY:
             case Distribution.RectangleXZ:
-            case Distribution.RectangleYZ:
-                Gizmos.DrawWireCube(Vector3.zero, GetScaledExtents());
+            //case Distribution.RectangleYZ:
+                Handles.DrawWireCube(handlesPos, extents);
                 break;
             case Distribution.CircularXY:
-                Handles.DrawWireDisc(Vector3.zero, Vector3.forward, GetScaledRadius());
+                Handles.DrawWireDisc(handlesPos, forward, radius);
                 break;
             case Distribution.CircularXZ:
-                Handles.DrawWireDisc(Vector3.zero, Vector3.up, GetScaledRadius());
+                Handles.DrawWireDisc(handlesPos, up, radius);
                 break;
         }
     }
