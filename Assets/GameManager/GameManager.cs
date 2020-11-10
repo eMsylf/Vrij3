@@ -50,7 +50,11 @@ public class GameManager : Singleton<GameManager>
         //    MatchComplete();
         //}
         PlayerInstance = player;
-
+        if (DeathScreen == null)
+        {
+            Debug.LogError("Death screen not assigned to " + name, this);
+            return;
+        }
         DeathScreen.SetActive(true);
     }
 

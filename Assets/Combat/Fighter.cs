@@ -55,6 +55,7 @@ namespace Combat
         {
             public int damage = 0;
             public float invincibilityTime = 1f;
+            public LayerMask layers;
         }
         public TouchDamage touchDamage;
 
@@ -155,12 +156,11 @@ namespace Combat
             foreach (GameObject obj in HitObjects)
             {
                 Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
-                //Instantiate(obj);
             }
-            Debug.Log(name + " took damage", this);
+            //Debug.Log(name + " took damage", this);
             if (Health.current <= 0)
             {
-                Debug.Log(name + " should die now", this);
+                //Debug.Log(name + " should die now", this);
                 Die();
             }
             else
@@ -186,13 +186,20 @@ namespace Combat
         private void OnCollisionEnter(Collision collision)
         {
             Fighter otherFighter = collision.gameObject.GetComponent<Fighter>();
-            if (otherFighter != null)
+            if (otherFighter == null)
             {
-                if (touchDamage.damage != 0)
-                {
-                    otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
-                    Debug.Log(otherFighter + " takes touch damage");
-                }
+                return;
+            }
+
+            if (touchDamage.layers != (touchDamage.layers.value | (1 << otherFighter.gameObject.layer)))
+            {
+                return;
+            }
+
+            if (touchDamage.damage != 0)
+            {
+                otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
+                Debug.Log(otherFighter + " takes touch damage from " + name);
             }
         }
 
