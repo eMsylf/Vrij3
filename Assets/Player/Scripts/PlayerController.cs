@@ -387,8 +387,8 @@ public class PlayerController : Fighter
         public GameObject ChargeIndicators;
         public enum EChargeType
         {
+            States,
             Slider,
-            States = default,
             Both
         }
         public EChargeType ChargeType;
@@ -400,6 +400,11 @@ public class PlayerController : Fighter
         [Tooltip("Time below which a charge will not be initiated")]
         public float ChargeTimeDeadzone = .1f;
         public bool ChargeEffectedBySlowdown = false;
+
+        [Range(0f, 1f)]
+        public float startSlowmotionAt = .5f;
+        [Range(0f, 1f)]
+        public float slowmotionFactor = .25f;
 
         internal float latestCharge;
         internal UnityAction attackLaunched;
@@ -520,15 +525,17 @@ public class PlayerController : Fighter
             }
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
-            Debug.Log("Start charge");
+            //Debug.Log("Start charge");
             while (chargeTime < ChargeTimeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime += Time.unscaledDeltaTime;
             }
-            Debug.Log("Charge deadzone passed");
+            //Debug.Log("Charge deadzone passed");
             GetChargeObject().SetActive(true);
             bool slowmotionInitiated = false;
+            
+            int previousChargeState = 0;
             while (state == State.Charging)
             {
                 yield return new WaitForEndOfFrame();
@@ -544,20 +551,27 @@ public class PlayerController : Fighter
                 
                 chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
                 //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
+
+                int currentChargeState = GetChargeZoneIndex(chargeTimeClamped);
+                
                 switch (ChargeType)
                 {
                     case EChargeType.Slider:
                         ChargeSlider.value = chargeTimeClamped;
-                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1, false);
+                        ChargeIndicator.SetCurrent(currentChargeState + 1, false);
                         break;
-                    default:
-                        ChargeIndicator.SetCurrent(GetChargeZoneIndex(chargeTimeClamped) +1);
+                    case EChargeType.States:
+                        if (currentChargeState != previousChargeState)
+                        {
+                            ChargeIndicator.SetCurrent(currentChargeState + 1);
+                            previousChargeState = currentChargeState;
+                        }
                         break;
                 }
-                if (!slowmotionInitiated && chargeTimeClamped > .5f)
+                if (!slowmotionInitiated && chargeTimeClamped > startSlowmotionAt)
                 {
                     slowmotionInitiated = true;
-                    TimeManager.Instance.DoSlowmotion(.25f);
+                    TimeManager.Instance.DoSlowmotion(slowmotionFactor);
                 }
             }
             TimeManager.Instance.StopSlowmotion();

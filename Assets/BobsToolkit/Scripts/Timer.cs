@@ -26,7 +26,7 @@ public class Timer : MonoBehaviour
 
     public virtual void OnTimeOver()
     {
-        Debug.Log("Time over for " + name, this);
+        Debug.Log("Timer ran out for " + name, this);
         name = OriginalName;
     }
 
