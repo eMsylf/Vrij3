@@ -40,10 +40,15 @@ public class Pathfinding : MonoBehaviour
     }
     public Method method;
     
-    public float speed;
-    public float waypointProximity;
-    public bool rotateTowardsWaypoint;
-    public float rotationSpeed;
+    public float speed = 1f;
+    
+    [Space]
+    
+    public bool rotateTowardsWaypoint = true;
+    public float rotationSpeed = 1f;
+    public float waypointProximity = 1f;
+
+    [Space]
 
     public Transform currentWaypoint;
     public int currentWaypointIndex;
@@ -106,7 +111,7 @@ public class Pathfinding : MonoBehaviour
             Vector3 torque = eulerDifference * rotationSpeed;
 
             Rigidbody.AddRelativeTorque(torque);
-            Debug.Log("Current euler: " + currentEuler + " Desired euler: " + desiredEuler + " difference: " + eulerDifference + " Multiplied difference (torque): " + torque);
+            //Debug.Log("Current euler: " + currentEuler + " Desired euler: " + desiredEuler + " difference: " + eulerDifference + " Multiplied difference (torque): " + torque);
         }
     }
 

@@ -9,7 +9,7 @@ public class CameraController : Singleton<CameraController>
     public float RotationSpeed = 1f;
     public float ZoomSpeed = .01f;
     public float ZoomMin = 2f;
-    public float ZoomMax = 7f;
+    public float ZoomMax = 20f;
 
     private float rotationDelta = 0f;
 

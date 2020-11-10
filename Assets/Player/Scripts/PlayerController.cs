@@ -520,13 +520,13 @@ public class PlayerController : Fighter
             }
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
-            Debug.Log("Start charge");
+            //Debug.Log("Start charge");
             while (chargeTime < ChargeTimeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime += Time.unscaledDeltaTime;
             }
-            Debug.Log("Charge deadzone passed");
+            //Debug.Log("Charge deadzone passed");
             GetChargeObject().SetActive(true);
             bool slowmotionInitiated = false;
             while (state == State.Charging)
