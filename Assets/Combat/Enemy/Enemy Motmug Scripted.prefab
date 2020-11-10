@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!54 &1604575796975678615
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  serializedVersion: 2
+  m_Mass: 0.1
+  m_Drag: 1
+  m_AngularDrag: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 4
+  m_CollisionDetection: 0
 --- !u!114 &1523993872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40,6 +56,30 @@ MonoBehaviour:
       m_Bits: 2048
   HitObjects: []
   DeathObjects: []
+  movementJitter: 1
+  JitterAmount: {x: 2, y: 2, z: 2}
+--- !u!114 &1040695551342596002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d728e804df8ea645adc3ffa58233e59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waypointManager: {fileID: 0}
+  method: 0
+  speed: 0.2
+  rotateTowardsWaypoint: 1
+  rotationSpeed: 1
+  waypointProximity: 0
+  currentWaypoint: {fileID: 0}
+  currentWaypointIndex: 0
+  waypointProximityIndicator: 0
+  indicatorColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &6973520332333992933
 PrefabInstance:
   m_ObjectHideFlags: 0
