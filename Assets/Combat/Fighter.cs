@@ -21,8 +21,15 @@ namespace Combat
 
         void Start(){
             Sr = spriteRenderer;
-            MatWhite = Resources.Load("WhiteFlash", typeof(Material)) as Material;
-            MatDefault = Sr.material;
+            if (Sr == null)
+            {
+                Debug.LogError("Sprite renderer not assinged");
+            }
+            else
+            {
+                MatWhite = Resources.Load("WhiteFlash", typeof(Material)) as Material;
+                MatDefault = Sr.material;
+            }
         }
 
         void ResetMaterial() {
@@ -43,9 +50,14 @@ namespace Combat
         }
         public Statistic Stamina;
         public StaminaRecharge staminaRecharge;
-
-        public int TouchDamage = 0;
-        public float TouchDamageInvincibilityTime = 1f;
+        [System.Serializable]
+        public class TouchDamage
+        {
+            public int damage = 0;
+            public float invincibilityTime = 1f;
+            public LayerMask layers;
+        }
+        public TouchDamage touchDamage;
 
         public List<GameObject> HitObjects = new List<GameObject>();
         public List<GameObject> DeathObjects = new List<GameObject>();
@@ -113,7 +125,7 @@ namespace Combat
 
         void ManageInvincibility()
         {
-            if (InvincibilityTime > 0f)
+            if (Invincible)
             {
                 InvincibilityTime -= Time.deltaTime;
             }
@@ -138,15 +150,22 @@ namespace Combat
         public void TakeDamage(int damageTaken)
         {
             Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
-            Sr.material = MatWhite;
-
-            if (Health.current <= 0) Die();
-            else Invoke("ResetMaterial", WhiteFlashDuration);
+            if (Sr != null) 
+                Sr.material = MatWhite;
 
             foreach (GameObject obj in HitObjects)
             {
                 Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
-                //Instantiate(obj);
+            }
+            //Debug.Log(name + " took damage", this);
+            if (Health.current <= 0)
+            {
+                //Debug.Log(name + " should die now", this);
+                Die();
+            }
+            else
+            {
+                Invoke("ResetMaterial", WhiteFlashDuration);
             }
         }
 
@@ -163,6 +182,27 @@ namespace Combat
             TakeDamage(damageTaken, invincibilityTime);
             
         }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            Fighter otherFighter = collision.gameObject.GetComponent<Fighter>();
+            if (otherFighter == null)
+            {
+                return;
+            }
+
+            if (touchDamage.layers != (touchDamage.layers.value | (1 << otherFighter.gameObject.layer)))
+            {
+                return;
+            }
+
+            if (touchDamage.damage != 0)
+            {
+                otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
+                Debug.Log(otherFighter + " takes touch damage from " + name);
+            }
+        }
+
         [System.Serializable]
         public class StaminaRecharge
         {

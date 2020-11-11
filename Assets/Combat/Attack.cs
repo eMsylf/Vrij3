@@ -110,7 +110,10 @@ namespace Combat {
             }
 
             if (fighterHit.Invincible)
+            {
+                //Debug.Log("<color=yellow>Couldn't hit fighter because of invincibility</color>");
                 return;
+            }
 
             if (fightersHit.Contains(fighterHit))
             {

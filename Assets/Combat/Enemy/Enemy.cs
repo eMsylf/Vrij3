@@ -6,17 +6,12 @@ namespace Combat
 {
     public class Enemy : Fighter
     {
-        private void OnCollisionEnter(Collision collision)
+        public enum States
         {
-            Fighter otherFighter = collision.gameObject.GetComponent<Fighter>();
-            if (otherFighter != null)
-            {
-                if (TouchDamage != 0)
-                {
-                    otherFighter.TakeDamage(TouchDamage, TouchDamageInvincibilityTime, this);
-                    Debug.Log(otherFighter + " takes touch damage");
-                }
-            }
+            Idle,
+            Wander,
+            FollowSingleTarget,
+            Attack
         }
     }
 }
