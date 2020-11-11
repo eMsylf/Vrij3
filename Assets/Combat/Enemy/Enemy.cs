@@ -6,12 +6,5 @@ namespace Combat
 {
     public class Enemy : Fighter
     {
-        public enum States
-        {
-            Idle,
-            Wander,
-            FollowSingleTarget,
-            Attack
-        }
     }
 }

@@ -52,6 +52,23 @@ MonoBehaviour:
   LoadResult: 0
   FileSizes: []
   Exists: 1
+--- !u!114 &-7098558761375391921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/DUNGEON1/Curiousity
+  m_EditorClassIdentifier: 
+  Name: Curiousity
+  Min: 0
+  Max: 4
+  Default: 0
+  Exists: 1
 --- !u!114 &-5388066426861644589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,13 +154,13 @@ MonoBehaviour:
   guid: 9d492a171ef86d45b1b180f5c16571cc
   Banks:
   - {fileID: 4452056740644646798}
-  - {fileID: -5074089452872326100}
+  - {fileID: 524802017053785885}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 795914247486541287}
-  - {fileID: 586141855938724412}
+  - {fileID: -7098558761375391921}
+  - {fileID: 1838103717861327685}
   MinDistance: 0
   MaxDistance: 0
   Length: 140823
@@ -248,16 +265,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EditorBanks:
   - {fileID: 7330238316996701308}
-  - {fileID: -5074089452872326100}
+  - {fileID: 524802017053785885}
   EditorEvents:
   - {fileID: -4517624637788363444}
   EditorParameters: []
   MasterBanks:
-  - {fileID: -5074089452872326100}
+  - {fileID: 524802017053785885}
   StringsBanks:
   - {fileID: 7330238316996701308}
-  stringsBankWriteTime: 637406084917063148
+  stringsBankWriteTime: 637400880441399304
   cacheVersion: 3
+--- !u!114 &524802017053785885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Sound/DoMott/Build/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637400880441379360
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
 --- !u!114 &586141855938724412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,6 +341,23 @@ MonoBehaviour:
   m_Name: parameter:/DUNGEON1/Curiousity
   m_EditorClassIdentifier: 
   Name: Curiousity
+  Min: 0
+  Max: 4
+  Default: 0
+  Exists: 1
+--- !u!114 &1838103717861327685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/DUNGEON1/Anxiety
+  m_EditorClassIdentifier: 
+  Name: Anxiety
   Min: 0
   Max: 4
   Default: 0
@@ -359,7 +411,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: Assets/Sound/DoMott/Build/Desktop/Master.strings.bank
   SubDir: 
-  lastModified: 637406084917063148
+  lastModified: 637400880441399304
   LoadResult: 0
   FileSizes:
   - Name: Desktop
