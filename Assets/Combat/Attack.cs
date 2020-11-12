@@ -17,24 +17,30 @@ namespace Combat {
 
         public CameraShakeSettings CameraShake;
         public List<GameObject> HitEffects = new List<GameObject>();
+        [System.Serializable]
+        public class AttackForce
+        {
+            public enum EDirection
+            {
+                Forward,
+                Right,
+                Up
+            }
+            public EDirection Direction = EDirection.Forward;
+            public float Multiplier;
+            [Tooltip("If ticked, physics objects will be hit away from the attack's pivot instead of just in the direction specified.")]
+            public bool AwayFromSelf;
+        }
+        public AttackForce attackForce;
 
         public enum Effect
         {
             Health,
             Stamina,
             ChargeSpeed,
+            DisableCharge,
             MovementSpeed
         }
-        public float Force;
-        public enum EDirection
-        {
-            Forward,
-            Right,
-            Up
-        }
-        public EDirection Direction = EDirection.Forward;
-        [Tooltip("If ticked, physics objects will be hit away from the attack's pivot instead of just in the direction specified.")]
-        public bool AwayFromSelf;
 
         public Effect effect = Effect.Health;
         // if (effect != Effect.Health)
@@ -46,15 +52,14 @@ namespace Combat {
         // if (effect != Effect.ChargeReduction)
             [HideInInspector]
         [Range(0f, 1f)]
-        public float ChargeReduction = 1;
+        public float chargeSpeedReduction = 1f;
         // if (effect != Effect.MovementSpeedReduction
             [HideInInspector]
         [Range(0f, 1f)]
-        public float MovementSpeedReduction = 1;
-
+        public float MovementSpeedReduction = 1f;
 
         Fighter fighter;
-        Fighter GetFighter()
+        Fighter GetParentFighter()
         {
             if (fighter == null)
             {
@@ -79,25 +84,24 @@ namespace Combat {
                 return;
             }
 
+            //Debug.Log(name + " hit " + other.name, this);
+            //Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
+
             // Hit something the attack can hit
             foreach (GameObject obj in HitEffects)
             {
                 Instantiate(obj, other.transform.position, Camera.main.transform.rotation);
             }
 
-            //Debug.Log(name + " hit " + other.name, this);
-            //Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
-
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
-            Fighter parentFighter = GetComponentInParent<Fighter>();
-            
+            Fighter parentFighter = GetParentFighter();
             
             if (other.attachedRigidbody != null)
             {
-                if (AwayFromSelf)
-                    other.attachedRigidbody.AddForce((other.transform.position - transform.position) + GetForceVector(Direction), ForceMode.Impulse);
+                if (attackForce.AwayFromSelf)
+                    other.attachedRigidbody.AddForce((other.transform.position - transform.position) + GetForceVector(attackForce.Direction), ForceMode.Impulse);
                 else
-                    other.attachedRigidbody.AddForce(GetForceVector(Direction), ForceMode.Impulse);
+                    other.attachedRigidbody.AddForce(GetForceVector(attackForce.Direction), ForceMode.Impulse);
             }
 
             if (fighterHit == null)
@@ -124,17 +128,33 @@ namespace Combat {
                 }
             }
 
-            fightersHit.Add(fighterHit);
-            
             // The hit is succesful
 
-            if (parentFighter != null)
+            fightersHit.Add(fighterHit);
+
+
+            switch (effect)
             {
-                fighterHit.TakeDamage(Damage, InvincibilityTime, parentFighter);
-            }
-            else
-            {
-                fighterHit.TakeDamage(Damage, InvincibilityTime);
+                case Effect.Health:
+                    Debug.Log("Deal " + Damage + " health damage");
+                    DamageFighter(parentFighter, fighterHit);
+                    break;
+                case Effect.Stamina:
+                    Debug.Log("Drain " + StaminaReduction + " stamina");
+                    break;
+                case Effect.ChargeSpeed:
+                    Debug.Log("Reduce charge speed by " + chargeSpeedReduction);
+                    break;
+                case Effect.DisableCharge:
+                    Debug.Log("Disable charge");
+                    if (fighterHit is PlayerController)
+                    {
+                        fighterHit.GetComponent<PlayerController>().attacking.AllowCharging(false);
+                    }
+                    break;
+                case Effect.MovementSpeed:
+                    Debug.Log("Reduce movement speed by " + MovementSpeedReduction);
+                    break;
             }
             
             if (CameraShake.enabled)
@@ -143,19 +163,32 @@ namespace Combat {
                 TimeManager.Instance.DoSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
         }
 
-        Vector3 GetForceVector(EDirection direction)
+        public void DamageFighter(Fighter attacker, Fighter damaged)
+        {
+
+            if (attacker != null)
+            {
+                damaged.TakeDamage(Damage, InvincibilityTime, damaged);
+            }
+            else
+            {
+                damaged.TakeDamage(Damage, InvincibilityTime);
+            }
+        }
+
+        Vector3 GetForceVector(AttackForce.EDirection direction)
         {
             Vector3 returnForce = new Vector3();
             switch (direction)
             {
-                case EDirection.Forward:
-                    returnForce = transform.forward * Force;
+                case AttackForce.EDirection.Forward:
+                    returnForce = transform.forward * attackForce.Multiplier;
                     break;
-                case EDirection.Right:
-                    returnForce = transform.right * Force;
+                case AttackForce.EDirection.Right:
+                    returnForce = transform.right * attackForce.Multiplier;
                     break;
-                case EDirection.Up:
-                    returnForce = transform.up * Force;
+                case AttackForce.EDirection.Up:
+                    returnForce = transform.up * attackForce.Multiplier;
                     break;
             }
             return returnForce;
@@ -164,8 +197,8 @@ namespace Combat {
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            Gizmos.DrawLine(transform.position, transform.position + GetForceVector(Direction));
-            Gizmos.DrawWireSphere(transform.position + GetForceVector(Direction), 1f);
+            Gizmos.DrawLine(transform.position, transform.position + GetForceVector(attackForce.Direction));
+            Gizmos.DrawWireSphere(transform.position + GetForceVector(attackForce.Direction), 1f);
         }
 #endif
     }

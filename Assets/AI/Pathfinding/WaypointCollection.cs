@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class WaypointManager : MonoBehaviour
+public class WaypointCollection : MonoBehaviour
 {
     public Transform GetRandomWaypoint()
     {

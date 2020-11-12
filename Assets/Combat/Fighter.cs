@@ -60,7 +60,14 @@ namespace Combat
         public TouchDamage touchDamage;
 
         public List<GameObject> HitObjects = new List<GameObject>();
+        [Tooltip("If disabled, every hit object in the list is spawned upon hit.")]
+        public bool PickRandomHitObject;
         public List<GameObject> DeathObjects = new List<GameObject>();
+        [Tooltip("If disabled, every death object in the list is spawned upon death.")]
+        public bool PickRandomDeathObject;
+        public List<GameObject> BloodSplatters = new List<GameObject>();
+        [Tooltip("If enabled, only one bloodsplatter is instantiated upon death. If disabled, every bloodsplatter in the list is spawned upon death.")]
+        public bool PickRandomBloodSplatter;
 
         private void OnEnable()
         {
@@ -139,11 +146,30 @@ namespace Combat
         public virtual void Die()
         {
             Debug.Log(name + " died", this);
-            foreach (GameObject obj in DeathObjects)
+            if (PickRandomDeathObject)
             {
-                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
-                //Instantiate(obj);
+                Instantiate(DeathObjects[Random.Range(0, DeathObjects.Count)]);
             }
+            else
+            {
+                foreach (GameObject obj in DeathObjects)
+                {
+                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
+                    //Instantiate(obj);
+                }
+            }
+            if (PickRandomBloodSplatter)
+            {
+                Instantiate(BloodSplatters[Random.Range(0, BloodSplatters.Count)]);
+            }
+            else
+            {
+                foreach (GameObject obj in BloodSplatters)
+                {
+                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
+                }
+            }
+
             gameObject.SetActive(false);
         }
 
@@ -153,6 +179,10 @@ namespace Combat
             if (Sr != null) 
                 Sr.material = MatWhite;
 
+            if (PickRandomHitObject)
+            {
+                Instantiate(HitObjects[Random.Range(0, HitObjects.Count)]);
+            }
             foreach (GameObject obj in HitObjects)
             {
                 Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
