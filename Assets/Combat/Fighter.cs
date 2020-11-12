@@ -226,6 +226,11 @@ namespace Combat
                 return;
             }
 
+            if (otherFighter.Invincible)
+            {
+                return;
+            }
+
             if (touchDamage.damage != 0)
             {
                 otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);

@@ -86,7 +86,7 @@ public class Pathfinding : MonoBehaviour
         {
             return;
         }
-        currentWaypoint = WaypointManager.GetRandomWaypoint();
+        //currentWaypoint = WaypointManager.GetRandomWaypoint();
     }
 
     private void Update()
