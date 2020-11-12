@@ -4,29 +4,103 @@ using UnityEngine;
 
 public class PlayMusicScript : MonoBehaviour
 {
-    private static FMOD.Studio.EventInstance Music;
+    public static PlayMusicScript _instance;
+    public static PlayMusicScript Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.FindObjectOfType<PlayMusicScript>();
+
+                if (_instance == null)
+                {
+                    GameObject container = new GameObject("MusicManager");
+                    _instance = container.AddComponent<PlayMusicScript>();
+                }
+            }
+
+            return _instance;
+        }
+    }
+
+    public FMODUnity.StudioEventEmitter musicEmitter;
 
     void Start()
     {
-        Music = FMODUnity.RuntimeManager.CreateInstance("event:/DUNGEON1");
-        Music.start(); //If the instance was already playing then calling this function will restart the event.
-        Music.release(); //This function marks the event instance to be released. Event instances marked for release are destroyed by the asynchronous update when they are in the stopped state (FMOD_STUDIO_PLAYBACK_STOPPED).
-
+        musicEmitter.Play();
     }
 
     //Bind the two FMOD parameters to functions called "Anxiety" and "Curiousity"
-    public void Anxiety(int anxietyLevel)
+    public void SetAnxiety(float anxietyLevel) //Sets the Anxiety level to one exact number
     {
-        Music.setParameterByName("Anxiety", anxietyLevel);
+        musicEmitter.SetParameter("Anxiety", anxietyLevel);
     }
 
-    public void Curiousity(int curiousityLevel)
+    public void IncreaseAnxiety(float anxietyLevel)
     {
-        Music.setParameterByName("Curiousity", curiousityLevel);
+        float currentAnxietyLevel;
+        musicEmitter.EventInstance.getParameterByName("Anxiety", out currentAnxietyLevel );
+        float newAnxietyLevel = currentAnxietyLevel + anxietyLevel;
+        musicEmitter.SetParameter("Anxiety", newAnxietyLevel);
+    }
+
+    public void DecreaseAnxiety(float anxietyLevel) //Decrease the Anxiety level
+    {
+        float currentAnxietyLevel;
+        musicEmitter.EventInstance.getParameterByName("Anxiety", out currentAnxietyLevel);
+        float newAnxietyLevel = currentAnxietyLevel - anxietyLevel;
+        musicEmitter.SetParameter("Anxiety", newAnxietyLevel);
+    }
+
+    //Curriousity Level 
+
+    public void SetCuriousity(float curiousityLevel)
+    {
+        musicEmitter.SetParameter("Curiousity", curiousityLevel);
+    }
+
+    public void IncreaseCuriousity(float curiousityLevel)
+    {
+        float currentLevel;
+        musicEmitter.EventInstance.getParameterByName("Curiousity", out currentLevel);
+        float newLevel = currentLevel + curiousityLevel;
+        musicEmitter.SetParameter("Curiousity", newLevel);
+    }
+
+    public void DecreaseCuriousity(float curiousityLevel) //Decrease the Anxiety level
+    {
+        float currentLevel;
+        musicEmitter.EventInstance.getParameterByName("Curiousity", out currentLevel);
+        float newLevel = currentLevel - curiousityLevel;
+        musicEmitter.SetParameter("Curiousity", newLevel);
+    }
+
+    //Battle Music
+
+    public void SetBattle1(float battleLevel) //Sets the Anxiety level to one exact number
+    {
+        musicEmitter.SetParameter("BattleIntensity", battleLevel);
+    }
+
+    public void IncreaseBattle(float battleLevel)
+    {
+        float currentLevel;
+        musicEmitter.EventInstance.getParameterByName("BattleIntensity", out currentLevel);
+        float newLevel = currentLevel + battleLevel;
+        musicEmitter.SetParameter("BattleIntensity", newLevel);
+    }
+
+    public void DecreaseBattle(float battleLevel) //Decrease the Anxiety level
+    {
+        float currentLevel;
+        musicEmitter.EventInstance.getParameterByName("BattleIntensity", out currentLevel);
+        float newLevel = currentLevel - battleLevel;
+        musicEmitter.SetParameter("BattleIntensity", newLevel);
     }
 
     private void OnDestroy()
     {
-        Music.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT); //Let the track fade out instead of stopping immediately on destroy
+        musicEmitter.EventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT); //Let the track fade out instead of stopping immediately on destroy
     }
 }

@@ -19,8 +19,8 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    [SerializeField] protected WaypointManager waypointManager;
-    public WaypointManager WaypointManager
+    [SerializeField] protected WaypointCollection waypointManager;
+    public WaypointCollection WaypointManager
     {
         get
         {
@@ -30,6 +30,22 @@ public class Pathfinding : MonoBehaviour
             }
             return waypointManager;
         }
+        set
+        {
+            waypointManager = value;
+        }
+    }
+
+    [Tooltip("When looking for a new waypoint, the pathfinder will first look for the closest waypoint manager in the scene.")]
+    public bool SnapToClosestWaypointManager = true;
+
+    public WaypointCollection GetWaypointManager(bool getClosest)
+    {
+        if (getClosest)
+        {
+            WaypointManager = WaypointCollectionManager.Instance.GetClosestWaypointCollection(transform.position);
+        }
+        return WaypointManager;
     }
 
     public enum Method
@@ -38,26 +54,38 @@ public class Pathfinding : MonoBehaviour
         OrderedWaypoint,
         ReverseOrderedWaypoint
     }
+    [Tooltip("This is the method in which a new waypoint is chosen.")]
     public Method method;
     
+    [Tooltip("The speed with which the pathfinder moves.")]
     public float speed = 1f;
     
     [Space]
     
+    [Tooltip("When moving towards a waypoint, the pathfinder will gradually turn towards the waypoint.")]
     public bool rotateTowardsWaypoint = true;
+    [Tooltip("The speed with which the pathfinder will turn towards the waypoint.")]
     public float rotationSpeed = 1f;
-    public float waypointProximity = 1f;
 
     [Space]
-
+    
+    [Tooltip("How close the pathfinder has to be to their waypoint before choosing a new waypoint")]
+    public float waypointProximity = 1f;
+    
+    [Space]
+    
+    [Tooltip("Tip: to have a pathfinder constantly move towards 1 target, put the desired target in this field and set Waypoint Proximity to 0.")]
     public Transform currentWaypoint;
-    public int currentWaypointIndex;
+    private int currentWaypointIndex;
 
 
     private void Start()
     {
-        if (WaypointManager == null)
+        WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
+        if (wpManager == null)
+        {
             return;
+        }
         currentWaypoint = WaypointManager.GetRandomWaypoint();
     }
 
@@ -65,7 +93,8 @@ public class Pathfinding : MonoBehaviour
     {
         if (currentWaypoint == null)
         {
-            if (WaypointManager == null)
+            WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
+            if (wpManager == null)
                 return;
             switch (method)
             {
@@ -80,8 +109,7 @@ public class Pathfinding : MonoBehaviour
                     break;
             }
         }
-
-        if (Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
+        else if (Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
         {
             currentWaypoint = null;
         }

@@ -169,6 +169,11 @@ public class PlayerController : Fighter
         return cameraRelativeMovement;
     }
 
+    internal void AllowCharging(bool allow)
+    {
+        
+    }
+
     public override void Die()
     {
         GameManager.Instance.PlayerDeath(this);
@@ -406,6 +411,7 @@ public class PlayerController : Fighter
         [Range(0f, 1f)]
         public float slowmotionFactor = .25f;
 
+        internal bool allowCharging = true;
         internal float latestCharge;
         internal UnityAction attackLaunched;
         internal UnityAction attackEnd;
@@ -608,6 +614,11 @@ public class PlayerController : Fighter
                 //Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
                 graphic.color = currentColor;
             }
+        }
+
+        internal void AllowCharging(bool allow)
+        {
+            
         }
     }
     public Attacking attacking;
