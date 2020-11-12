@@ -6308,13 +6308,14 @@ MonoBehaviour:
     Strength: 0.6
   HitEffects:
   - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
-  Force: -4
-  Direction: 1
-  AwayFromSelf: 1
+  attackForce:
+    Direction: 0
+    Multiplier: 0
+    AwayFromSelf: 0
   effect: 0
   Damage: 4
   StaminaReduction: 1
-  ChargeReduction: 1
+  chargeSpeedReduction: 1
   MovementSpeedReduction: 1
 --- !u!1 &5631181386044643303
 GameObject:
@@ -6653,13 +6654,14 @@ MonoBehaviour:
     Strength: 0.6
   HitEffects:
   - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
-  Force: 2
-  Direction: 1
-  AwayFromSelf: 0
+  attackForce:
+    Direction: 0
+    Multiplier: 0
+    AwayFromSelf: 0
   effect: 3
   Damage: 1
   StaminaReduction: 14
-  ChargeReduction: 0.393
+  chargeSpeedReduction: 1
   MovementSpeedReduction: 1
 --- !u!111 &9152274505859889515
 Animation:
@@ -6783,9 +6785,17 @@ MonoBehaviour:
   touchDamage:
     damage: 0
     invincibilityTime: 1
+    layers:
+      serializedVersion: 2
+      m_Bits: 0
   HitObjects: []
+  PickRandomHitObject: 0
   DeathObjects:
   - {fileID: 5158045116331438428, guid: dd127f65693ebc14ba65ef33bb2bf587, type: 3}
+  - {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b, type: 3}
+  PickRandomDeathObject: 0
+  BloodSplatters: []
+  PickRandomBloodSplatter: 0
   dust: {fileID: 1593020624}
   SpawnPosSet: 0
   Direction: {fileID: 3104575833432285019}
@@ -6839,6 +6849,8 @@ MonoBehaviour:
     ChargeTime: 2
     ChargeTimeDeadzone: 0.1
     ChargeEffectedBySlowdown: 0
+    startSlowmotionAt: 0.5
+    slowmotionFactor: 0.25
     state: 0
   targeting:
     DebugTarget: {fileID: 0}
@@ -7288,13 +7300,14 @@ MonoBehaviour:
     Strength: 0.6
   HitEffects:
   - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
-  Force: -3
-  Direction: 0
-  AwayFromSelf: 1
+  attackForce:
+    Direction: 0
+    Multiplier: 0
+    AwayFromSelf: 0
   effect: 0
   Damage: 2
   StaminaReduction: 1
-  ChargeReduction: 1
+  chargeSpeedReduction: 1
   MovementSpeedReduction: 1
 --- !u!1 &8476828972935283940
 GameObject:

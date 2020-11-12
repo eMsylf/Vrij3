@@ -23,7 +23,7 @@ namespace Combat
             Sr = spriteRenderer;
             if (Sr == null)
             {
-                Debug.LogError("Sprite renderer not assinged");
+                Debug.LogError("Sprite renderer of " + name + " is not assinged", this);
             }
             else
             {
