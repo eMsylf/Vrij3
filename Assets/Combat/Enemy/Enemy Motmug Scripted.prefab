@@ -14,7 +14,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 4
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!114 &1523993872
 MonoBehaviour:
@@ -55,10 +55,14 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 2048
   HitObjects: []
+  PickRandomHitObject: 0
   DeathObjects:
   - {fileID: 4745142591786541650, guid: 50fe08b795d3c934187df25af82f02b0, type: 3}
   - {fileID: 2246161315229917419, guid: 71cf660223df8ba4a94c5b8aa9d796ac, type: 3}
   - {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b, type: 3}
+  PickRandomDeathObject: 0
+  BloodSplatters: []
+  PickRandomBloodSplatter: 0
   movementJitter: 1
   JitterAmount: {x: 2, y: 2, z: 2}
 --- !u!114 &1040695551342596002
@@ -80,9 +84,43 @@ MonoBehaviour:
   rotateTowardsWaypoint: 1
   rotationSpeed: 1
   waypointProximity: 2
+  useWaypointProximity: 1
   currentWaypoint: {fileID: 0}
+  WaypointReached:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 291142537}
+        m_MethodName: ToIdle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   waypointProximityIndicator: 0
   indicatorColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &291142537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ee2519a45d05414286db2736e95bf55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetingProximity: 7.51
+  AttackingProximity: 1
+  IdleTime: {x: 1, y: 5}
+  state: 0
+  playerOutOfRangeCooldown: 3
+  TargetingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  AttackColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &6973520332333992933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -363,22 +401,22 @@ PrefabInstance:
     - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.0000029504295
       objectReference: {fileID: 0}
     - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
@@ -399,6 +437,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.60020405
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.60020405
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997433632238127052, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.60020405
       objectReference: {fileID: 0}
     - target: {fileID: 8266896901759046662, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
