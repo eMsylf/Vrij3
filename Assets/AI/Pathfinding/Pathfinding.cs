@@ -19,8 +19,8 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    [SerializeField] protected WaypointManager waypointManager;
-    public WaypointManager WaypointManager
+    [SerializeField] protected WaypointCollection waypointManager;
+    public WaypointCollection WaypointManager
     {
         get
         {
@@ -39,11 +39,11 @@ public class Pathfinding : MonoBehaviour
     [Tooltip("When looking for a new waypoint, the pathfinder will first look for the closest waypoint manager in the scene.")]
     public bool SnapToClosestWaypointManager = true;
 
-    public WaypointManager GetWaypointManager(bool getClosest)
+    public WaypointCollection GetWaypointManager(bool getClosest)
     {
         if (getClosest)
         {
-            WaypointManager = WaypointManagerCollection.Instance.GetClosestWaypointManager(transform.position);
+            WaypointManager = WaypointCollectionManager.Instance.GetClosestWaypointCollection(transform.position);
         }
         return WaypointManager;
     }
@@ -81,7 +81,7 @@ public class Pathfinding : MonoBehaviour
 
     private void Start()
     {
-        WaypointManager wpManager = GetWaypointManager(SnapToClosestWaypointManager);
+        WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
         if (wpManager == null)
         {
             return;
@@ -93,7 +93,7 @@ public class Pathfinding : MonoBehaviour
     {
         if (currentWaypoint == null)
         {
-            WaypointManager wpManager = GetWaypointManager(SnapToClosestWaypointManager);
+            WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
             if (wpManager == null)
                 return;
             switch (method)
