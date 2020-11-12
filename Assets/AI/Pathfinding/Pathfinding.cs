@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Pathfinding : MonoBehaviour
@@ -71,6 +72,7 @@ public class Pathfinding : MonoBehaviour
     
     [Tooltip("How close the pathfinder has to be to their waypoint before choosing a new waypoint")]
     public float waypointProximity = 1f;
+    public bool useWaypointProximity = true;
     
     [Space]
     
@@ -86,7 +88,7 @@ public class Pathfinding : MonoBehaviour
         {
             return;
         }
-        currentWaypoint = WaypointManager.GetRandomWaypoint();
+        //currentWaypoint = WaypointManager.GetRandomWaypoint();
     }
 
     private void Update()
@@ -109,11 +111,14 @@ public class Pathfinding : MonoBehaviour
                     break;
             }
         }
-        else if (Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
+        else if (useWaypointProximity && Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
         {
             currentWaypoint = null;
+            WaypointReached.Invoke();
         }
     }
+
+    public UnityEvent WaypointReached;
 
     private void FixedUpdate()
     {
