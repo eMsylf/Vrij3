@@ -6,14 +6,5 @@ namespace Combat
 {
     public class Enemy : Fighter
     {
-        private void OnTriggerEnter(Collider other)
-        {
-            Fighter otherFighter = other.gameObject.GetComponent<Fighter>();
-            if (otherFighter != null)
-            {
-                if (TouchDamage != 0)
-                    otherFighter.TakeDamage(TouchDamage);
-            }
-        }
     }
 }

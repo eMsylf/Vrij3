@@ -4850,6 +4850,7 @@ GameObject:
   - component: {fileID: 3240275256612405404}
   - component: {fileID: 4241700737653050980}
   - component: {fileID: 1965924550188310039}
+  - component: {fileID: 2060358627026954346}
   m_Layer: 0
   m_Name: BloodSpurt_Effect
   m_TagString: Untagged
@@ -9609,7 +9610,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a5bec3d3aaeed6f49beeb0500ba69dfa, type: 2}
+  - {fileID: 2100000, guid: c3bd39feb9e1d714ea830c95c2a9681c, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -9654,6 +9655,19 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &2060358627026954346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2246161315229917419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42112c9725919844aa578cfb2e08b4f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Time: 5
 --- !u!1 &5755485522000794848
 GameObject:
   m_ObjectHideFlags: 0
@@ -19260,7 +19274,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 74cd73bb0e31af7418d6280f1808b753, type: 2}
+  - {fileID: 2100000, guid: 51a27f2f270d9454f94b88da7aa6272a, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

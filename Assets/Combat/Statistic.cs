@@ -35,7 +35,7 @@ namespace Combat
                 UpdateVisual();
         }
 
-        public bool Use()
+        public bool AttemptUse()
         {
             return Use(1);
         }
@@ -59,7 +59,21 @@ namespace Combat
                 Debug.LogError("Statistic visualizer is null");
                 return;
             }
-            //Debug.Log("Updating visual");
+
+            Animation animComponent = Visualizer.GetComponent<Animation>();
+            if (animComponent != null)
+            {
+                animComponent.Play();
+            }
+
+            FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
+            if (fadeOutComponent != null)
+            {
+                fadeOutComponent.ResetFade();
+                fadeOutComponent.StartFadeOut();
+            }
+
+            Debug.Log("Updating visual", Visualizer);
             for (int i = 0; i < Visualizer.transform.childCount; i++)
             {
                 GameObject child = Visualizer.transform.GetChild(i).gameObject;

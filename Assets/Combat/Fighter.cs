@@ -5,21 +5,76 @@ namespace Combat
 {
     public class Fighter : MonoBehaviour, CombatProperties.IKillable, CombatProperties.IDamagable<int>, CombatProperties.ICanAttack
     {
+        #region Julia Added
+        //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something- overall it's nothing very important, it's just for the game feel
+        //materials
+
+        //This is all to flicker white before returning to it's normal color Let's hope it works :')
+        private Material MatWhite;
+        private Material MatDefault;
+        SpriteRenderer Sr;
+        public SpriteRenderer spriteRenderer;
+
+        public bool WhiteflashOn = true;
+        
+        public float WhiteFlashDuration = 0.1f;
+
+        void Start(){
+            Sr = spriteRenderer;
+            if (Sr == null)
+            {
+                Debug.LogError("Sprite renderer of " + name + " is not assinged", this);
+            }
+            else
+            {
+                MatWhite = Resources.Load("WhiteFlash", typeof(Material)) as Material;
+                MatDefault = Sr.material;
+            }
+        }
+
+        void ResetMaterial() {
+            if (WhiteflashOn)Sr.material = MatDefault;
+            else Invoke("ResetMaterial", WhiteFlashDuration);
+        }
+
+        #endregion
+
         public Statistic Health;
+        public float InvincibilityTime = 0f;
+        public bool Invincible
+        {
+            get
+            {
+                return InvincibilityTime > 0f;
+            }
+        }
         public Statistic Stamina;
         public StaminaRecharge staminaRecharge;
-
-        public int TouchDamage = 0;
+        [System.Serializable]
+        public class TouchDamage
+        {
+            public int damage = 0;
+            public float invincibilityTime = 1f;
+            public LayerMask layers;
+        }
+        public TouchDamage touchDamage;
 
         public List<GameObject> HitObjects = new List<GameObject>();
+        [Tooltip("If disabled, every hit object in the list is spawned upon hit.")]
+        public bool PickRandomHitObject;
         public List<GameObject> DeathObjects = new List<GameObject>();
+        [Tooltip("If disabled, every death object in the list is spawned upon death.")]
+        public bool PickRandomDeathObject;
+        public List<GameObject> BloodSplatters = new List<GameObject>();
+        [Tooltip("If enabled, only one bloodsplatter is instantiated upon death. If disabled, every bloodsplatter in the list is spawned upon death.")]
+        public bool PickRandomBloodSplatter;
 
         private void OnEnable()
         {
-            EnableTasks();
+            OnEnableTasks();
         }
 
-        internal void EnableTasks()
+        internal void OnEnableTasks()
         {
             Debug.Log("Set current health and stamina of " + name + " to max", this);
             if (Health.max != 0 && Health.syncCurrentToMax)
@@ -33,10 +88,10 @@ namespace Combat
 
         private void OnDisable()
         {
-            DisableTasks();
+            OnDisableTasks();
         }
 
-        internal void DisableTasks()
+        internal void OnDisableTasks()
         {
             Stamina.OnUse -= () => staminaRecharge.windup = 0f;
             Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
@@ -46,22 +101,25 @@ namespace Combat
         private void Update()
         {
             ManageStaminaRecharge();
+            ManageInvincibility();
         }
 
         void ManageStaminaRecharge()
         {
+            if (!staminaRecharge.allow)
+                return;
             if (Stamina.Get() < Stamina.max)
             {
                 if (staminaRecharge.windup < staminaRecharge.staminaRechargeWindupTime)
                 {
-                    staminaRecharge.windup += Time.unscaledDeltaTime;
+                    staminaRecharge.windup += Time.deltaTime;
 
                 }
                 else
                 {
                     if (staminaRecharge.recharge < staminaRecharge.staminaRechargeTime)
                     {
-                        staminaRecharge.recharge += Time.unscaledDeltaTime;
+                        staminaRecharge.recharge += Time.deltaTime;
                     }
                     else
                     {
@@ -69,6 +127,14 @@ namespace Combat
                         staminaRecharge.recharge = 0f;
                     }
                 }
+            }
+        }
+
+        void ManageInvincibility()
+        {
+            if (Invincible)
+            {
+                InvincibilityTime -= Time.deltaTime;
             }
         }
 
@@ -80,31 +146,98 @@ namespace Combat
         public virtual void Die()
         {
             Debug.Log(name + " died", this);
-            foreach (GameObject obj in DeathObjects)
+            if (PickRandomDeathObject)
             {
-                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
-                //Instantiate(obj);
+                Instantiate(DeathObjects[Random.Range(0, DeathObjects.Count)]);
             }
+            else
+            {
+                foreach (GameObject obj in DeathObjects)
+                {
+                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
+                    //Instantiate(obj);
+                }
+            }
+            if (PickRandomBloodSplatter)
+            {
+                Instantiate(BloodSplatters[Random.Range(0, BloodSplatters.Count)]);
+            }
+            else
+            {
+                foreach (GameObject obj in BloodSplatters)
+                {
+                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
+                }
+            }
+
             gameObject.SetActive(false);
         }
 
         public void TakeDamage(int damageTaken)
         {
             Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
-            if (Health.current <= 0) Die();
+            if (Sr != null) 
+                Sr.material = MatWhite;
 
+            if (PickRandomHitObject)
+            {
+                Instantiate(HitObjects[Random.Range(0, HitObjects.Count)]);
+            }
             foreach (GameObject obj in HitObjects)
             {
                 Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
-                //Instantiate(obj);
+            }
+            //Debug.Log(name + " took damage", this);
+            if (Health.current <= 0)
+            {
+                //Debug.Log(name + " should die now", this);
+                Die();
+            }
+            else
+            {
+                Invoke("ResetMaterial", WhiteFlashDuration);
             }
         }
 
-        public void TakeDamage(int damageTaken, Fighter damageSource)
+        public void TakeDamage(int damageTaken, float invincibilityTime)
         {
-            Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.current, this);
+            //Debug.Log("Take damage and remain invincible for " + invincibilityTime, this);
+            InvincibilityTime = invincibilityTime;
             TakeDamage(damageTaken);
         }
+
+        public void TakeDamage(int damageTaken, float invincibilityTime, Fighter damageSource)
+        {
+            Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.current, this);
+            TakeDamage(damageTaken, invincibilityTime);
+            
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            Fighter otherFighter = collision.gameObject.GetComponent<Fighter>();
+            if (otherFighter == null)
+            {
+                return;
+            }
+
+            if (touchDamage.layers != (touchDamage.layers.value | (1 << otherFighter.gameObject.layer)))
+            {
+                return;
+            }
+
+            if (otherFighter.Invincible)
+            {
+                return;
+            }
+
+            if (touchDamage.damage != 0)
+            {
+                otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
+                Debug.Log(otherFighter + " takes touch damage from " + name);
+            }
+        }
+
         [System.Serializable]
         public class StaminaRecharge
         {
@@ -114,6 +247,7 @@ namespace Combat
             public float staminaRechargeWindupTime = 1f;
             internal float recharge = 0f;
             internal float windup = 0f;
+            public bool allow = true;
         }
     }
     
