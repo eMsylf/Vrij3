@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using BobJeltes;
 
 namespace Combat
 {
@@ -10,37 +11,16 @@ namespace Combat
         //materials
 
         //This is all to flicker white before returning to it's normal color Let's hope it works :')
-        private Material MatWhite;
-        private Material MatDefault;
-        SpriteRenderer Sr;
-        public SpriteRenderer spriteRenderer;
+        // Hallo Bob hier, ik kom ff dingen verpesten sorry alvast
+        public SpriteFlash spriteFlash = new SpriteFlash();
 
-        public bool WhiteflashOn = true;
-        
-        public float WhiteFlashDuration = 0.1f;
-
-        void Start(){
-            Sr = spriteRenderer;
-            if (Sr == null)
-            {
-                Debug.LogError("Sprite renderer of " + name + " is not assinged", this);
-            }
-            else
-            {
-                MatWhite = Resources.Load("WhiteFlash", typeof(Material)) as Material;
-                MatDefault = Sr.material;
-            }
+        void Awake(){
+            spriteFlash.SetupSpriteFlash(GetComponent<SpriteRenderer>());
         }
-
-        void ResetMaterial() {
-            if (WhiteflashOn)Sr.material = MatDefault;
-            else Invoke("ResetMaterial", WhiteFlashDuration);
-        }
-
         #endregion
 
         public Statistic Health;
-        public float InvincibilityTime = 0f;
+        private float InvincibilityTime = 0f;
         public bool Invincible
         {
             get
@@ -93,6 +73,7 @@ namespace Combat
 
         internal void OnDisableTasks()
         {
+            Debug.Log(name + " disbled", this);
             Stamina.OnUse -= () => staminaRecharge.windup = 0f;
             Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
         }
@@ -176,8 +157,8 @@ namespace Combat
         public void TakeDamage(int damageTaken)
         {
             Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
-            if (Sr != null) 
-                Sr.material = MatWhite;
+            StartCoroutine(spriteFlash.DoFlashColor());
+            Debug.Log("Flash sprite");
 
             if (PickRandomHitObject)
             {
@@ -192,10 +173,6 @@ namespace Combat
             {
                 //Debug.Log(name + " should die now", this);
                 Die();
-            }
-            else
-            {
-                Invoke("ResetMaterial", WhiteFlashDuration);
             }
         }
 

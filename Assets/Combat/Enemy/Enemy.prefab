@@ -197,9 +197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adcb7da20534fc46844756057b92db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 2100497108051904649}
-  WhiteflashOn: 1
-  WhiteFlashDuration: 0.05
+  spriteFlash:
+    spriteRenderer: {fileID: 2100497108051904649}
+    SpriteFlashEnabled: 1
+    color: {r: 1, g: 0, b: 0, a: 1}
+    SpriteFlashDuration: 0.1
   Health:
     max: 4
     current: 0
@@ -220,12 +222,18 @@ MonoBehaviour:
   touchDamage:
     damage: 0
     invincibilityTime: 1
-  HitObjects:
-  - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
+    layers:
+      serializedVersion: 2
+      m_Bits: 0
+  HitObjects: []
+  PickRandomHitObject: 0
   DeathObjects:
   - {fileID: 2246161315229917419, guid: 71cf660223df8ba4a94c5b8aa9d796ac, type: 3}
   - {fileID: 4745142591786541650, guid: 50fe08b795d3c934187df25af82f02b0, type: 3}
   - {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b, type: 3}
+  PickRandomDeathObject: 0
+  BloodSplatters: []
+  PickRandomBloodSplatter: 0
 --- !u!1 &5605460725966255300
 GameObject:
   m_ObjectHideFlags: 0
