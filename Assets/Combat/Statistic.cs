@@ -16,6 +16,7 @@ namespace Combat
         public GameObject Visualizer;
 
         public UnityAction OnUse;
+        public UnityAction OnDepleted;
 
         public int Get()
         {
@@ -47,6 +48,7 @@ namespace Combat
                 OnUse.Invoke();
                 return true;
             }
+            OnDepleted.Invoke();
             return false;
         }
 
