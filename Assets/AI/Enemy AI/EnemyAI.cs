@@ -140,7 +140,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (state == States.FollowSingleTarget)
         {
-            Debug.Log("Already following single target");
+            //Debug.Log("Already following single target");
             return;
         }
 

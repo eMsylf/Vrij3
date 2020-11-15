@@ -6762,9 +6762,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7195744fc6eea4e9ff8193ab614252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 5738622204949074231}
-  WhiteflashOn: 0
-  WhiteFlashDuration: 3
+  spriteFlash:
+    MatWhite: {fileID: 0}
+    MatDefault: {fileID: 0}
+    spriteRenderer: {fileID: 5738622204949074231}
+    SpriteFlashEnabled: 1
+    color: {r: 0, g: 0, b: 0, a: 0}
+    SpriteFlashDuration: 0.1
   Health:
     max: 4
     current: 0
