@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Enemy))]
-[RequireComponent(typeof(Pathfinding))]
+//[RequireComponent(typeof(Pathfinding))]
 public class EnemyAI : MonoBehaviour
 {
     Enemy enemy;
@@ -48,11 +48,6 @@ public class EnemyAI : MonoBehaviour
         Attack
     }
     public States state;
-
-    private void Awake()
-    {
-        Pathfinding.WaypointReached.AddListener(ToIdle);
-    }
 
     void Update()
     {
