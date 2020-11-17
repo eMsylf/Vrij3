@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1593020624}
   - component: {fileID: 1593020623}
   m_Layer: 11
-  m_Name: Dust
+  m_Name: Dodge Dust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4799,7 +4799,7 @@ ParticleSystemRenderer:
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_ShadowBias: 0
-  m_RenderAlignment: 1
+  m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
   m_UseCustomVertexStreams: 0
@@ -5995,9 +5995,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OverrideTarget: {fileID: 3104575834882688424}
-  method: 0
+  method: 1
   reverse: 0
-  StayUpright: 0
+  StayUpright: 1
 --- !u!1 &3104575834882688425
 GameObject:
   m_ObjectHideFlags: 0
@@ -6317,6 +6317,34 @@ MonoBehaviour:
   StaminaReduction: 1
   chargeSpeedReduction: 1
   MovementSpeedReduction: 1
+  OnAttackLaunched:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7717233248994819647}
+        m_MethodName: DoGamepadRumble
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.4
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnHitEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7717233248994819647}
+        m_MethodName: DoGamepadRumble
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.4
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5631181386044643303
 GameObject:
   m_ObjectHideFlags: 0
@@ -6663,6 +6691,34 @@ MonoBehaviour:
   StaminaReduction: 14
   chargeSpeedReduction: 1
   MovementSpeedReduction: 1
+  OnAttackLaunched:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7717233248994819647}
+        m_MethodName: DoGamepadRumble
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.1
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnHitEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7717233248994819647}
+        m_MethodName: DoGamepadRumble
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.1
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!111 &9152274505859889515
 Animation:
   m_ObjectHideFlags: 0
@@ -6745,7 +6801,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 5
   m_AngularDrag: 0.05
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 116
@@ -6765,7 +6821,7 @@ MonoBehaviour:
   spriteFlash:
     enabled: 1
     spriteRenderer: {fileID: 5738622204949074231}
-    color: {r: 0, g: 0, b: 0, a: 0}
+    color: {r: 1, g: 0, b: 0, a: 1}
     duration: 0.1
   Health:
     max: 4
@@ -6798,6 +6854,20 @@ MonoBehaviour:
   PickRandomDeathObject: 0
   BloodSplatters: []
   PickRandomBloodSplatter: 0
+  OnHitEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7717233248994819647}
+        m_MethodName: DoGamepadRumble
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.25
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   dust: {fileID: 1593020624}
   SpawnPosSet: 0
   Direction: {fileID: 3104575833432285019}
@@ -7311,6 +7381,34 @@ MonoBehaviour:
   StaminaReduction: 1
   chargeSpeedReduction: 1
   MovementSpeedReduction: 1
+  OnAttackLaunched:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7717233248994819647}
+        m_MethodName: DoGamepadRumble
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.2
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnHitEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7717233248994819647}
+        m_MethodName: DoGamepadRumble
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.2
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8476828972935283940
 GameObject:
   m_ObjectHideFlags: 0

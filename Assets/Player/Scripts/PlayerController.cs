@@ -6,6 +6,7 @@ using Combat;
 using UnityEditor;
 using UnityEngine.UI;
 using UnityEditorInternal;
+using UnityEngine.InputSystem;
 
 public class PlayerController : Fighter
 {
@@ -158,7 +159,7 @@ public class PlayerController : Fighter
     {
         Vector3 playerMovement = movement.GetTopDownMovement(movement.state) * movement.GetSpeedModifier(movement.state);
         
-        Rigidbody.MovePosition(Rigidbody.position + ConvertToCameraRelative(playerMovement) * Time.fixedUnscaledDeltaTime);
+        Rigidbody.MovePosition(Rigidbody.position + ConvertToCameraRelative(playerMovement) * Time.fixedDeltaTime);
     }
 
     private Vector3 ConvertToCameraRelative(Vector3 vector3)
@@ -167,11 +168,6 @@ public class PlayerController : Fighter
         Vector3 cameraRight = Camera.main.transform.right;
         Vector3 cameraRelativeMovement = cameraForward * vector3.z + cameraRight * vector3.x;
         return cameraRelativeMovement;
-    }
-
-    internal void AllowCharging(bool allow)
-    {
-        
     }
 
     public override void Die()
@@ -710,6 +706,18 @@ public class PlayerController : Fighter
 
     }
     #endregion
+
+    public void DoGamepadRumble(float duration = .25f)
+    {
+        Instance.StartCoroutine(GamepadRumble(duration));
+    }
+
+    public IEnumerator GamepadRumble(float duration)
+    {
+        Gamepad.current.SetMotorSpeeds(0.25f, 0.75f);
+        yield return new WaitForSeconds(duration);
+        Gamepad.current.SetMotorSpeeds(0f, 0f);
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

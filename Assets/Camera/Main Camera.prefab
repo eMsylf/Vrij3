@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &73135739
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 73135740}
+  - component: {fileID: 73135741}
+  m_Layer: 0
+  m_Name: MusicPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &73135740
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73135739}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3103253425258458974}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &73135741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73135739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997189d9d260d184ab76b75937864b58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicEmitter: {fileID: 0}
 --- !u!1 &3103253424302546567
 GameObject:
   m_ObjectHideFlags: 0
@@ -24,8 +68,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3103253424302546567}
-  m_LocalRotation: {x: -0.27841255, y: -0, z: -0, w: 0.96046156}
-  m_LocalPosition: {x: 6.0200806, y: 3.345152, z: -7.6963863}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3103253425258458974}
@@ -142,6 +186,7 @@ GameObject:
   - component: {fileID: 3103253425258458962}
   - component: {fileID: 3103253425258458972}
   - component: {fileID: 3103253425258458973}
+  - component: {fileID: 3103253424878273069}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -156,14 +201,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3103253425258458971}
-  m_LocalRotation: {x: 0.17593807, y: 0, z: 0, w: 0.9844013}
+  m_LocalRotation: {x: 0.1759423, y: 0, z: 0, w: 0.9844005}
   m_LocalPosition: {x: 1.2, y: 5.4, z: -61.497623}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3103253424302546564}
+  - {fileID: 73135740}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -179.99998, z: 0}
+  m_LocalEulerAnglesHint: {x: 20.267, y: 0, z: 0}
 --- !u!20 &3103253425258458969
 Camera:
   m_ObjectHideFlags: 0
@@ -274,8 +320,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ba27051b608df4aba2910c88caad4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Targets: []
-  targetPosition: {x: 0, y: 0, z: 0}
+  Targets:
+  - {fileID: 0}
+  targetPosition: {x: -1.1, y: 1.4, z: -51.2}
   cameraResources: {fileID: 0}
   positionPivot: {fileID: 0}
   positionTransform: {fileID: 0}
@@ -290,7 +337,7 @@ MonoBehaviour:
   Distance: 7.6
   LookOffset: {x: 0, y: 1.49, z: 0}
   LookSmoothing: 0.125
-  LivePreview: 0
+  LivePreview: 1
 --- !u!114 &3103253425258458973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,9 +350,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c9b06f4009d79e47829af42cfaa8267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationSpeed: 0.4
+  RotationSpeed: 1
   ZoomSpeed: 0.01
   ZoomMin: 6
   ZoomMax: 12
   xRotationMax: 20
   AllowControls: 1
+--- !u!114 &3103253424878273069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103253425258458971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ListenerNumber: -1
