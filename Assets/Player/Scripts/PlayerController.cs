@@ -2,11 +2,12 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using Combat;
-using UnityEditor;
 using UnityEngine.UI;
-using UnityEditorInternal;
 using UnityEngine.InputSystem;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using Combat;
 
 public class PlayerController : Fighter
 {
@@ -720,6 +721,7 @@ public class PlayerController : Fighter
     }
 
 #if UNITY_EDITOR
+
     private void OnDrawGizmosSelected()
     {
         Handles.color = targeting.RadiusColor;
