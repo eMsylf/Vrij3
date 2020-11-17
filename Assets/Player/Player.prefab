@@ -5587,7 +5587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OverrideTarget: {fileID: 0}
-  Method: 0
+  method: 0
   reverse: 0
   StayUpright: 0
 --- !u!1 &3104575833432285017
@@ -5995,7 +5995,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OverrideTarget: {fileID: 3104575834882688424}
-  Method: 1
+  method: 0
   reverse: 0
   StayUpright: 0
 --- !u!1 &3104575834882688425
@@ -6763,19 +6763,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteFlash:
-    MatWhite: {fileID: 0}
-    MatDefault: {fileID: 0}
+    enabled: 1
     spriteRenderer: {fileID: 5738622204949074231}
-    SpriteFlashEnabled: 1
     color: {r: 0, g: 0, b: 0, a: 0}
-    SpriteFlashDuration: 0.1
+    duration: 0.1
   Health:
     max: 4
     current: 0
     recoveryTime: 1
     syncCurrentToMax: 1
     Visualizer: {fileID: 115260576832400730}
-  InvincibilityTime: 0
   Stamina:
     max: 6
     current: 0
@@ -6946,7 +6943,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OverrideTarget: {fileID: 0}
-  Method: 1
+  method: 1
   reverse: 0
   StayUpright: 1
 --- !u!1 &7724749264071693243

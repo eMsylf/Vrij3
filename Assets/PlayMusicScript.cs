@@ -101,6 +101,8 @@ public class PlayMusicScript : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (musicEmitter == null)
+            return;
         musicEmitter.EventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT); //Let the track fade out instead of stopping immediately on destroy
     }
 }

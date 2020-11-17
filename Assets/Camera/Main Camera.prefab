@@ -274,7 +274,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ba27051b608df4aba2910c88caad4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  Targets: []
+  targetPosition: {x: 0, y: 0, z: 0}
   cameraResources: {fileID: 0}
   positionPivot: {fileID: 0}
   positionTransform: {fileID: 0}
@@ -306,3 +307,5 @@ MonoBehaviour:
   ZoomSpeed: 0.01
   ZoomMin: 6
   ZoomMax: 12
+  xRotationMax: 20
+  AllowControls: 1

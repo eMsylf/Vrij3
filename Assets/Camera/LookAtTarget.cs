@@ -18,23 +18,23 @@ public class LookAtTarget : MonoBehaviour
         return target;
     }
 
-    public enum EMethod
+    public enum Method
     {
         AlignRotation = default,
         Forward
     }
-    public EMethod Method = default;
-    [Tooltip("Only takes effect when Forward is selected")]
+    public Method method = default;
+    [Header("Only works with 'Forward'")]
     public bool reverse;
-    private Vector3 lookVector;
-    [Tooltip("Only takes effect when Forward is selected")]
     public bool StayUpright;
+
+    private Vector3 lookVector;
 
     private void Update()
     {
-        switch (Method)
+        switch (method)
         {
-            case EMethod.AlignRotation:
+            case Method.AlignRotation:
                 transform.rotation = GetTarget().transform.rotation;
                 return;
         }
@@ -45,9 +45,9 @@ public class LookAtTarget : MonoBehaviour
 
         lookVector = transform.position - targetPosition;
         if (reverse) lookVector *= -1f;
-        switch (Method)
+        switch (method)
         {
-            case EMethod.Forward:
+            case Method.Forward:
                 transform.forward = lookVector;
                 break;
         };
