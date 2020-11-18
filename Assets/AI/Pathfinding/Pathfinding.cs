@@ -80,6 +80,7 @@ public class Pathfinding : MonoBehaviour
     public Transform currentWaypoint;
     private int currentWaypointIndex;
 
+    public UnityEvent WaypointReached;
 
     private void Start()
     {
@@ -118,7 +119,6 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    public UnityEvent WaypointReached;
 
     private void FixedUpdate()
     {
@@ -129,7 +129,7 @@ public class Pathfinding : MonoBehaviour
 
         Vector3 heading = currentWaypoint.position - Rigidbody.position;
 
-        Rigidbody.AddForce(heading * speed);
+        Rigidbody.AddForce(heading.normalized * speed);
 
         if (rotateTowardsWaypoint)
         {
@@ -158,7 +158,7 @@ public class Pathfinding : MonoBehaviour
         {
             euler.x -= 360f;
         }
-        if (euler.x < -180f)
+        else if (euler.x < -180f)
         {
             euler.x += 360f;
         }
@@ -166,7 +166,7 @@ public class Pathfinding : MonoBehaviour
         {
             euler.y -= 360f;
         }
-        if (euler.y < -180f)
+        else if (euler.y < -180f)
         {
             euler.y += 360f;
         }
@@ -174,7 +174,7 @@ public class Pathfinding : MonoBehaviour
         {
             euler.z -= 360f;
         }
-        if (euler.z < -180f)
+        else if (euler.z < -180f)
         {
             euler.z += 360f;
         }
