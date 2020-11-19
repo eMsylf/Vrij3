@@ -169,10 +169,12 @@ namespace Combat
             if (PickRandomHitObject)
             {
                 Instantiate(HitObjects[Random.Range(0, HitObjects.Count)]);
-            }
-            foreach (GameObject obj in HitObjects)
+            } else
             {
-                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
+                foreach (GameObject obj in HitObjects)
+                {
+                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
+                }
             }
             //Debug.Log(name + " took damage", this);
             if (Health.current <= 0)
