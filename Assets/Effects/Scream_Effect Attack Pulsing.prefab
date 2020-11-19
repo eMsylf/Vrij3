@@ -62,20 +62,24 @@ MonoBehaviour:
   HitsTheseLayers:
     serializedVersion: 2
     m_Bits: 2048
-  InvincibilityTime: 5
-  HitStun: 1
-  HitStunSlowdown: 0.01
-  HitStunDuration: 0.5
-  ShakeDuration: 0.5
-  ShakeStrength: 0.6
+  InvincibilityTime: 1
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
   HitEffects: []
-  Force: 0
-  Direction: 0
-  AwayFromSelf: 0
+  attackForce:
+    Direction: 0
+    Multiplier: 0
+    AwayFromSelf: 0
   effect: 0
   Damage: 1
   StaminaReduction: 1
-  ChargeReduction: 1
+  chargeSpeedReduction: 1
   MovementSpeedReduction: 1
 --- !u!1001 &4379071861394228787
 PrefabInstance:

@@ -72,6 +72,9 @@ public class Pathfinding : MonoBehaviour
     
     [Tooltip("How close the pathfinder has to be to their waypoint before choosing a new waypoint")]
     public float waypointProximity = 1f;
+    /// <summary>
+    /// When enabled, pathfinding finds a new waypoint when the object is close enough to its waypoint
+    /// </summary>
     public bool useWaypointProximity = true;
     
     [Space]
@@ -181,14 +184,16 @@ public class Pathfinding : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+
+    [Header("Debug")]
+    public IndicatorType waypointProximityIndicator;
     public enum IndicatorType
     {
         Circle,
         Sphere,
         Off
     }
-    [Header("Debug")]
-    public IndicatorType waypointProximityIndicator;
+
     public Color indicatorColor = Color.white;
     private void OnDrawGizmosSelected()
     {
@@ -203,10 +208,7 @@ public class Pathfinding : MonoBehaviour
                 float dot = Quaternion.Dot(transform.rotation, desiredRotation);
                 float angle = Quaternion.Angle(transform.rotation, desiredRotation);
                 Vector3 angles = transform.rotation.eulerAngles - desiredRotation.eulerAngles;
-                float anglesMag = angles.magnitude;
-
-
-                Vector3 heading = currentWaypoint.position - transform.position;
+                float distance = Vector3.Distance(transform.position, currentWaypoint.position);
 
                 Vector3 from = transform.forward;
                 if (angles.y > 0f && angles.y < 180f)
@@ -215,14 +217,12 @@ public class Pathfinding : MonoBehaviour
                 }
 
                 //Debug.Log("Angles: " + angles);
-                //Debug.Log("Angles magnitude: " + anglesMag);
-                //Debug.Log("Dot: " + dot);
                 Handles.DrawSolidArc(
                     transform.position, 
                     transform.up, 
                     from, 
                     angle, 
-                    Vector3.Distance(transform.position, currentWaypoint.position));
+                    distance);
             }
         }
 
