@@ -354,7 +354,7 @@ public class PlayerController : Fighter
 
     private void DirectionalDodge(Vector2 direction)
     {
-        movement.DodgeDirection = direction;
+        movement.DodgeDirection = direction.normalized;
         //Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
     }
 
