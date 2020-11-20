@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using BobJeltes.StandardUtilities;
+using UnityEngine.Events;
 
 namespace Combat {
     public class Attack : MonoBehaviour
@@ -70,10 +71,15 @@ namespace Combat {
 
         private List<Fighter> fightersHit = new List<Fighter>();
 
+        public UnityEvent OnAttackLaunched;
+
         private void OnEnable()
         {
+            OnAttackLaunched.Invoke();
             fightersHit.Clear();
         }
+
+        public UnityEvent OnHitEvent;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -88,10 +94,13 @@ namespace Combat {
             //Debug.DrawLine(transform.position, other.transform.position, Color.white, 2f);
 
             // Hit something the attack can hit
+
             foreach (GameObject obj in HitEffects)
             {
                 Instantiate(obj, other.transform.position, Camera.main.transform.rotation);
             }
+
+            OnHitEvent.Invoke();
 
             Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parentFighter = GetParentFighter();
@@ -131,7 +140,6 @@ namespace Combat {
             // The hit is succesful
 
             fightersHit.Add(fighterHit);
-
 
             switch (effect)
             {

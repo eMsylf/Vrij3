@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using BobJeltes;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 namespace Combat
 {
@@ -154,19 +156,25 @@ namespace Combat
             gameObject.SetActive(false);
         }
 
+        public UnityEvent OnHitEvent;
+
         public void TakeDamage(int damageTaken)
         {
             Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
             StartCoroutine(spriteFlash.DoFlashColor());
             Debug.Log("Flash sprite");
 
+            OnHitEvent.Invoke();
+
             if (PickRandomHitObject)
             {
                 Instantiate(HitObjects[Random.Range(0, HitObjects.Count)]);
-            }
-            foreach (GameObject obj in HitObjects)
+            } else
             {
-                Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
+                foreach (GameObject obj in HitObjects)
+                {
+                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
+                }
             }
             //Debug.Log(name + " took damage", this);
             if (Health.current <= 0)

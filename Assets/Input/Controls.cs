@@ -59,9 +59,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""CameraRotationHorizontal"",
+                    ""name"": ""Look"",
                     ""type"": ""Value"",
-                    ""id"": ""3f441776-7b99-4570-a9b8-4e69e25e0e1b"",
+                    ""id"": ""2cfbc086-9528-485d-9832-11d032c8f4c0"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CameraZoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""4e655597-5473-4ebf-be25-2cac26900e52"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -79,14 +87,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""b429cfaa-5bda-482e-8ce2-4633662e7b1f"",
                     ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""CameraZoom"",
-                    ""type"": ""Value"",
-                    ""id"": ""4e655597-5473-4ebf-be25-2cac26900e52"",
-                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -346,61 +346,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""QE"",
-                    ""id"": ""056af49d-c01f-493e-8e2b-e6b4f4bc7d3d"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""CameraRotationHorizontal"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""ef6f648d-b115-4460-86cb-5f0da067dcb7"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard & Mouse"",
-                    ""action"": ""CameraRotationHorizontal"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""3928051c-0c82-4cbd-aff1-3b1d7b56adf2"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard & Mouse"",
-                    ""action"": ""CameraRotationHorizontal"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0c14fe05-3d13-4a6d-a38f-758c80fb2896"",
-                    ""path"": ""<Mouse>/delta/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard & Mouse"",
-                    ""action"": ""CameraRotationHorizontal"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""96d19acf-6fab-43d0-9136-1d6effd983f7"",
-                    ""path"": ""<Gamepad>/rightStick/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""CameraRotationHorizontal"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": """",
                     ""id"": ""44a75ce6-4199-4a20-ba9f-5f123ca747d8"",
                     ""path"": ""<Keyboard>/escape"",
@@ -446,6 +391,28 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5c77726b-cd6c-49fa-b099-998a57e83c7b"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": ""ScaleVector2(x=0.3,y=0.1)"",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a13c7bc8-555b-49e2-9a03-dadefbd3ec20"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": ""Hold(duration=0.01,pressPoint=0.5)"",
+                    ""processors"": ""StickDeadzone,ScaleVector2(x=4,y=2)"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""3d1218eb-56ef-47f3-b244-ad2498323b84"",
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
@@ -459,8 +426,8 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""c38d52c0-603d-4cf8-9012-1bb73d25a46b"",
                     ""path"": ""<Gamepad>/rightStick/y"",
-                    ""interactions"": ""Press"",
-                    ""processors"": ""Scale(factor=5),Invert"",
+                    ""interactions"": ""Hold(duration=0.01)"",
+                    ""processors"": ""Scale(factor=7),Invert"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""CameraZoom"",
                     ""isComposite"": false,
@@ -762,10 +729,10 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Game_Interact = m_Game.FindAction("Interact", throwIfNotFound: true);
         m_Game_Attack = m_Game.FindAction("Attack", throwIfNotFound: true);
         m_Game_LockOn = m_Game.FindAction("LockOn", throwIfNotFound: true);
-        m_Game_CameraRotationHorizontal = m_Game.FindAction("CameraRotationHorizontal", throwIfNotFound: true);
+        m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
+        m_Game_CameraZoom = m_Game.FindAction("CameraZoom", throwIfNotFound: true);
         m_Game_Quit = m_Game.FindAction("Quit", throwIfNotFound: true);
         m_Game_Reload = m_Game.FindAction("Reload", throwIfNotFound: true);
-        m_Game_CameraZoom = m_Game.FindAction("CameraZoom", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
@@ -833,10 +800,10 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Game_Interact;
     private readonly InputAction m_Game_Attack;
     private readonly InputAction m_Game_LockOn;
-    private readonly InputAction m_Game_CameraRotationHorizontal;
+    private readonly InputAction m_Game_Look;
+    private readonly InputAction m_Game_CameraZoom;
     private readonly InputAction m_Game_Quit;
     private readonly InputAction m_Game_Reload;
-    private readonly InputAction m_Game_CameraZoom;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -846,10 +813,10 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Interact => m_Wrapper.m_Game_Interact;
         public InputAction @Attack => m_Wrapper.m_Game_Attack;
         public InputAction @LockOn => m_Wrapper.m_Game_LockOn;
-        public InputAction @CameraRotationHorizontal => m_Wrapper.m_Game_CameraRotationHorizontal;
+        public InputAction @Look => m_Wrapper.m_Game_Look;
+        public InputAction @CameraZoom => m_Wrapper.m_Game_CameraZoom;
         public InputAction @Quit => m_Wrapper.m_Game_Quit;
         public InputAction @Reload => m_Wrapper.m_Game_Reload;
-        public InputAction @CameraZoom => m_Wrapper.m_Game_CameraZoom;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -874,18 +841,18 @@ public class @Controls : IInputActionCollection, IDisposable
                 @LockOn.started -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
                 @LockOn.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
                 @LockOn.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
-                @CameraRotationHorizontal.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraRotationHorizontal;
-                @CameraRotationHorizontal.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraRotationHorizontal;
-                @CameraRotationHorizontal.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraRotationHorizontal;
+                @Look.started -= m_Wrapper.m_GameActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnLook;
+                @CameraZoom.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
+                @CameraZoom.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
+                @CameraZoom.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
                 @Quit.started -= m_Wrapper.m_GameActionsCallbackInterface.OnQuit;
                 @Quit.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnQuit;
                 @Quit.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnQuit;
                 @Reload.started -= m_Wrapper.m_GameActionsCallbackInterface.OnReload;
                 @Reload.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnReload;
                 @Reload.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnReload;
-                @CameraZoom.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
-                @CameraZoom.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
-                @CameraZoom.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -905,18 +872,18 @@ public class @Controls : IInputActionCollection, IDisposable
                 @LockOn.started += instance.OnLockOn;
                 @LockOn.performed += instance.OnLockOn;
                 @LockOn.canceled += instance.OnLockOn;
-                @CameraRotationHorizontal.started += instance.OnCameraRotationHorizontal;
-                @CameraRotationHorizontal.performed += instance.OnCameraRotationHorizontal;
-                @CameraRotationHorizontal.canceled += instance.OnCameraRotationHorizontal;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
+                @CameraZoom.started += instance.OnCameraZoom;
+                @CameraZoom.performed += instance.OnCameraZoom;
+                @CameraZoom.canceled += instance.OnCameraZoom;
                 @Quit.started += instance.OnQuit;
                 @Quit.performed += instance.OnQuit;
                 @Quit.canceled += instance.OnQuit;
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
-                @CameraZoom.started += instance.OnCameraZoom;
-                @CameraZoom.performed += instance.OnCameraZoom;
-                @CameraZoom.canceled += instance.OnCameraZoom;
             }
         }
     }
@@ -1077,10 +1044,10 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnLockOn(InputAction.CallbackContext context);
-        void OnCameraRotationHorizontal(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        void OnCameraZoom(InputAction.CallbackContext context);
         void OnQuit(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
-        void OnCameraZoom(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

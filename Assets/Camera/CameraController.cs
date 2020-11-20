@@ -10,8 +10,9 @@ public class CameraController : Singleton<CameraController>
     public float ZoomSpeed = .01f;
     public float ZoomMin = 2f;
     public float ZoomMax = 20f;
+    public float xRotationMax = 20f;
 
-    private float rotationDelta = 0f;
+    private Vector2 rotationDelta = new Vector2();
 
     public bool AllowControls = true;
 
@@ -48,58 +49,49 @@ public class CameraController : Singleton<CameraController>
 
     private void OnEnable()
     {
-        SubscribeControls();
+        Controls.Game.Enable();
     }
 
     private void OnDisable()
     {
-        UnsubControls();
-    }
-
-    bool controlsSubscribed;
-    private void SubscribeControls()
-    {
-        if (controlsSubscribed)
-            return;
-        Debug.Log("Subscribe controls from " + name);
-        Controls.Game.Enable();
-        Controls.Game.CameraRotationHorizontal.performed += _ => SetRotationDelta(_.ReadValue<float>());
-        Controls.Game.CameraRotationHorizontal.canceled += _ => SetRotationDelta(0f);
-        Controls.Game.CameraZoom.performed += _ => SetZoomDelta(_.ReadValue<float>());
-        controlsSubscribed = true;
-    }
-
-    private void UnsubControls()
-    {
-        if (!controlsSubscribed)
-            return;
-        Debug.Log("Unsubscribe controls from " + name);
         Controls.Game.Disable();
-        Controls.Game.CameraRotationHorizontal.performed -= _ => SetRotationDelta(_.ReadValue<float>());
-        Controls.Game.CameraRotationHorizontal.canceled -= _ => SetRotationDelta(0f);
-        Controls.Game.CameraZoom.performed -= _ => SetZoomDelta(_.ReadValue<float>());
-        controlsSubscribed = false;
     }
 
-    private void SetRotationDelta(float input)
+    private Vector3 GetRotationDelta(Vector2 input)
     {
         //Debug.Log("Set camera rotation delta: " + input);
         if (!AllowControls)
-            return;
+            return Vector3.zero;
+
+        if (input == Vector2.zero)
+        {
+            return Vector3.zero;
+        }
+
+        // Swap the axes (y should govern the x-axis rotation, and vice versa)
+        float x = input.x;
+        input.x = input.y;
+        input.y = x;
+
         rotationDelta = input * RotationSpeed;
+
+        return rotationDelta;
     }
 
-    private void SetZoomDelta(float input)
+    private float GetZoomDelta(float input)
     {
         if (!AllowControls)
-            return;
-        CameraFollow.Distance = Mathf.Clamp(CameraFollow.Distance + (input * ZoomSpeed), ZoomMin, ZoomMax);
+            return 0f;
+        //Debug.Log("Zoom input: " + input);
+        return input * ZoomSpeed;
     }
 
     private void Update()
     {
-        if (!AllowControls)
-            return;
-        CameraFollow.RotationAroundTarget.y += rotationDelta;
+        CameraFollow.RotationAroundTarget += GetRotationDelta(Controls.Game.Look.ReadValue<Vector2>());
+        CameraFollow.RotationAroundTarget.x = Mathf.Clamp(CameraFollow.RotationAroundTarget.x, -xRotationMax, xRotationMax);
+
+        CameraFollow.Distance += GetZoomDelta(Controls.Game.CameraZoom.ReadValue<float>());
+        CameraFollow.Distance = Mathf.Clamp(CameraFollow.Distance, ZoomMin, ZoomMax);
     }
 }

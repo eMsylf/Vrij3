@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Enemy))]
-[RequireComponent(typeof(Pathfinding))]
+//[RequireComponent(typeof(Pathfinding))]
 public class EnemyAI : MonoBehaviour
 {
     Enemy enemy;
@@ -48,11 +48,6 @@ public class EnemyAI : MonoBehaviour
         Attack
     }
     public States state;
-
-    private void Awake()
-    {
-        Pathfinding.WaypointReached.AddListener(ToIdle);
-    }
 
     void Update()
     {
@@ -104,12 +99,12 @@ public class EnemyAI : MonoBehaviour
     {
         if (state == States.Idle)
         {
-            Debug.Log("Already in idle state");
+            //Debug.Log("Already in idle state");
             return;
         }
 
         idleTimeCurrent = Random.Range(IdleTime.x, IdleTime.y);
-        Debug.Log("To Idle for " + idleTimeCurrent);
+        //Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
         Pathfinding.enabled = false;
     }
@@ -127,7 +122,7 @@ public class EnemyAI : MonoBehaviour
 
     public void ToWander()
     {
-        Debug.Log("Transition to Wander");
+        //Debug.Log("Transition to Wander");
         state = States.Wander;
         Pathfinding.enabled = true;
         Pathfinding.useWaypointProximity = true;
@@ -144,7 +139,7 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        Debug.Log("Transition to Follow Single Target");
+        //Debug.Log("Transition to Follow Single Target");
         state = States.FollowSingleTarget;
         Pathfinding.enabled = true;
         Pathfinding.currentWaypoint = PlayerController.Instance.transform;
@@ -176,10 +171,10 @@ public class EnemyAI : MonoBehaviour
     {
         if (state == States.Attack)
         {
-            Debug.Log("Already in attack state");
+            //Debug.Log("Already in attack state");
             return;
         }
-        Debug.Log("Transition to Attack");
+        //Debug.Log("Transition to Attack");
         state = States.Attack;
         Pathfinding.enabled = false;
     }
