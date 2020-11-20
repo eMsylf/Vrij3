@@ -48,17 +48,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteFlash:
+    enabled: 1
     spriteRenderer: {fileID: 4730019149756001208}
-    SpriteFlashEnabled: 1
     color: {r: 1, g: 0, b: 0, a: 1}
-    SpriteFlashDuration: 0.1
+    duration: 0.1
   Health:
     max: 4
     current: 0
     recoveryTime: 1
     syncCurrentToMax: 1
     Visualizer: {fileID: 3859354214996576901}
-  InvincibilityTime: 0
   Stamina:
     max: 4
     current: 0
@@ -75,15 +74,22 @@ MonoBehaviour:
     layers:
       serializedVersion: 2
       m_Bits: 2048
-  HitObjects: []
+  HitObjects:
+  - {fileID: 2913519006564444698, guid: 4445da975e00db346b37501a10c261cf, type: 3}
+  - {fileID: 2246161315229917419, guid: 71cf660223df8ba4a94c5b8aa9d796ac, type: 3}
   PickRandomHitObject: 0
   DeathObjects:
   - {fileID: 4745142591786541650, guid: 50fe08b795d3c934187df25af82f02b0, type: 3}
   - {fileID: 2246161315229917419, guid: 71cf660223df8ba4a94c5b8aa9d796ac, type: 3}
-  - {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b, type: 3}
   PickRandomDeathObject: 0
-  BloodSplatters: []
-  PickRandomBloodSplatter: 0
+  BloodSplatters:
+  - {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b, type: 3}
+  - {fileID: 3528660993287388928, guid: cd0f0f728e27a1a439bd8577b826f43e, type: 3}
+  - {fileID: 4479523672457256539, guid: 2c095ab16c18a15449a2ee94ef49f652, type: 3}
+  - {fileID: 3761459849731792479, guid: 068fb2eb2c147774bb1f18e10b69ddb4, type: 3}
+  - {fileID: 2241056697663819894, guid: 63af1a46acb7dea4d9952a1ec01c6fae, type: 3}
+  - {fileID: 1455019262398392099, guid: 673084d408db57f41ae45e331cdf9979, type: 3}
+  PickRandomBloodSplatter: 1
   movementJitter: 1
   JitterAmount: {x: 2, y: 2, z: 2}
 --- !u!114 &1040695551342596002
