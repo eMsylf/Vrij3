@@ -1,34 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BobJeltes.StandardUtilities;
 
-public class PlayMusicScript : MonoBehaviour
+public class PlayMusicScript : Singleton<PlayMusicScript>
 {
-    public static PlayMusicScript _instance;
-    public static PlayMusicScript Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<PlayMusicScript>();
-
-                if (_instance == null)
-                {
-                    GameObject container = new GameObject("MusicManager");
-                    _instance = container.AddComponent<PlayMusicScript>();
-                }
-            }
-
-            return _instance;
-        }
-    }
-
     public FMODUnity.StudioEventEmitter musicEmitter;
 
     void Start()
     {
-        musicEmitter.Play();
+        if (musicEmitter == null) Debug.LogError("MusicEmitter is Missing");
+        else musicEmitter.Play();
     }
 
     //Bind the two FMOD parameters to functions called "Anxiety" and "Curiousity"
@@ -74,6 +56,8 @@ public class PlayMusicScript : MonoBehaviour
         musicEmitter.EventInstance.getParameterByName("Curiousity", out currentLevel);
         float newLevel = currentLevel - curiousityLevel;
         musicEmitter.SetParameter("Curiousity", newLevel);
+
+        //Debug.Log("CuriousityLevel: "curiousityLevel);
     }
 
     //Battle Music
@@ -89,6 +73,8 @@ public class PlayMusicScript : MonoBehaviour
         musicEmitter.EventInstance.getParameterByName("BattleIntensity", out currentLevel);
         float newLevel = currentLevel + battleLevel;
         musicEmitter.SetParameter("BattleIntensity", newLevel);
+
+        Debug.Log(battleLevel);
     }
 
     public void DecreaseBattle(float battleLevel) //Decrease the Anxiety level
