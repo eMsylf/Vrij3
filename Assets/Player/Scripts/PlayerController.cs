@@ -8,15 +8,20 @@ using UnityEngine.InputSystem;
 using UnityEditor;
 #endif
 using Combat;
+using UnityEngine.Audio;
 
 public class PlayerController : Fighter
 {
     #region Julia Added
-    //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something- overall it's nothing very important, it's just for the game feel
+    //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something.
     public ParticleSystem dust;
     public void CreateDust(){
         dust.Play();
-}
+} 
+
+    //Later to be replaced by FMOD elements For now it's hard coded :^) You can find where I added something using the following indicator VVV
+    //---------------------------------------------------------     (What it's about)
+    //public
 
     #endregion
     //public UnityEvent OnHit;
@@ -174,6 +179,7 @@ public class PlayerController : Fighter
     public override void Die()
     {
         GameManager.Instance.PlayerDeath(this);
+        //----------------------------------------------------------- Player dies
         base.Die();
     }
 
@@ -310,19 +316,21 @@ public class PlayerController : Fighter
         if (!Stamina.AttemptUse())
         {
             //Debug.Log("Insufficient stamina to dodge");
+            //-----------------------------------------------   Out of Stamina
             return;
         }
 
         attacking.state = Attacking.State.Disabled;
 
         StartCoroutine(Dodge(movement.DodgeDuration));
-        CreateDust(); //Creates dust, added by Julia :^)
+        CreateDust(); //-------------------------------------   Creates dust, added by Julia :^)
     }
 
     private IEnumerator Dodge(float duration)
     {
         movement.state = Movement.State.Dodging;
         movement.AcceptMovementInput = false;
+        // ---------------------------------------------    Dodge sound
         if (movement.Input == Vector2Int.zero)
         {
             NeutralDodge();
@@ -363,6 +371,8 @@ public class PlayerController : Fighter
         Vector2 readMovement = Controls.Game.Movement.ReadValue<Vector2>();
         if (readMovement != Vector2.zero)
             SetMoveInput(readMovement);
+        // ---------------------------------------------    Footsteps
+
         else
         {
             Stop();
@@ -435,6 +445,7 @@ public class PlayerController : Fighter
         {
             if (chargeTime == 0f)
             {
+                //----------------------------------------- Attack 1 hit
                 Debug.Log("Launch uncharged attack!");
             }
             else
@@ -638,6 +649,8 @@ public class PlayerController : Fighter
         if (!Stamina.AttemptUse())
         {
             Debug.Log("Not enough stamina to attack");
+            //-------------------------------------------------- Out of stamina
+            //Julia: Hey Bob, is dit komt ook voor als de player dodged, is het niet slimmer die 2 te combineren?
             return;
         }
         StartCoroutine(attacking.StartCharge());
@@ -658,11 +671,14 @@ public class PlayerController : Fighter
         movement.state = Movement.State.Disabled;
         //Animator.ResetTrigger("Attack");
         staminaRecharge.allow = false;
+
+        //-------------------------------------------------- Attack sound, according to latestCharge 2 to 3/4
     }
 
     public void OnAttackEnd()
     {
         Instance.OnAttackEndInstance();
+        //-------------------------------------------------- stop attack sound
     }
 
     private void OnAttackEndInstance()
