@@ -6,7 +6,8 @@ using UnityEngine.Events;
 public class TriggerEvent : MonoBehaviour
 {
     public LayerMask layers;
-    public UnityEvent triggerEffect;
+    public UnityEvent onTriggerEnter;
+    public UnityEvent onTriggerExit;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,6 +15,15 @@ public class TriggerEvent : MonoBehaviour
         {
             return;
         }
-        triggerEffect.Invoke();
+        onTriggerEnter.Invoke();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (layers != (layers.value | (1 << other.gameObject.layer)))
+        {
+            return;
+        }
+        onTriggerExit.Invoke();
     }
 }
