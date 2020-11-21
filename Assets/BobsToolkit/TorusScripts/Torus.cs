@@ -5,88 +5,50 @@
  * It was shortened by about 30 lines (and possibly sped up by a factor of 2) by consolidating math & loops and removing intermediate Collections.
  */
 using UnityEngine;
-using UnityEditor;
 
 [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
-public class Torus : MonoBehaviour {
+public class Torus: MonoBehaviour {
+    [Min(0.001f)]
+	public float radius = 1f;
+    [Min(0.001f)]
+	public float thickness = 0.4f;
+    [Min(3)]
+	public int segments = 32;
+    [Min(3)]
+	public int segmentDetail = 12;
 
-	public float segmentRadius = 1f;
-	public float tubeRadius = 0.1f;
-	public int numSegments = 32;
-	public int numTubes = 12;
-
-    public Torus()
+    Mesh mesh;
+    public Mesh GetMesh()
     {
-        int totalVertices = numSegments * numTubes;
-
-        int totalPrimitives = totalVertices * 2;
-
-        int totalIndices = totalPrimitives * 3;
-
-        Mesh mesh = new Mesh(); // Hier gaat het fout
-
-        Vector3[] vertices = new Vector3[totalVertices];
-        int[] triangleIndices = new int[totalIndices];
-
-        // Calculate size of a segment and a tube
-        float segmentSize = 2 * Mathf.PI / numSegments;
-        float tubeSize = 2 * Mathf.PI / numTubes;
-
-        // Create floats for our xyz coordinates
-        float x, y, z;
-
-        // Begin loop that fills in both arrays
-        for (int i = 0; i < numSegments; i++)
+        if (mesh == null)
         {
-            // Find next (or first) segment offset
-            int n = (i + 1) % numSegments; // changed segmentList.Count to numSegments
-
-            // Find the current and next segments
-            int currentTubeOffset = i * numTubes;
-            int nextTubeOffset = n * numTubes;
-
-            for (int j = 0; j < numTubes; j++)
+            mesh = GetComponent<MeshFilter>().sharedMesh;
+            if (mesh == null)
             {
-                // Find next (or first) vertex offset
-                int m = (j + 1) % numTubes; // changed currentTube.Count to numTubes
-
-                // Find the 4 vertices that make up a quad
-                int iv1 = currentTubeOffset + j;
-                int iv2 = currentTubeOffset + m;
-                int iv3 = nextTubeOffset + m;
-                int iv4 = nextTubeOffset + j;
-
-                // Calculate X, Y, Z coordinates.
-                x = (segmentRadius + tubeRadius * Mathf.Cos(j * tubeSize)) * Mathf.Cos(i * segmentSize);
-                z = (segmentRadius + tubeRadius * Mathf.Cos(j * tubeSize)) * Mathf.Sin(i * segmentSize);
-                y = tubeRadius * Mathf.Sin(j * tubeSize);
-
-                // Add the vertex to the vertex array
-                vertices[iv1] = new Vector3(x, y, z);
-
-                // "Draw" the first triangle involving this vertex
-                triangleIndices[iv1 * 6] = iv1;
-                triangleIndices[iv1 * 6 + 1] = iv2;
-                triangleIndices[iv1 * 6 + 2] = iv3;
-                // Finish the quad
-                triangleIndices[iv1 * 6 + 3] = iv3;
-                triangleIndices[iv1 * 6 + 4] = iv4;
-                triangleIndices[iv1 * 6 + 5] = iv1;
+                mesh = new Mesh();
+                mesh.name = "Torus";
             }
         }
-        mesh.vertices = vertices;
-        mesh.triangles = triangleIndices;
-
-        mesh.RecalculateBounds();
-        mesh.RecalculateNormals();
-        mesh.Optimize();
-        MeshFilter filter = GetComponent<MeshFilter>();
-        filter.mesh = mesh;
+        return mesh;
     }
 
-    public void RefreshTorus() {
+    public void UpdateMesh(Vector3[] vertices, int[] triangleIndices)
+    {
+        Mesh _mesh = GetMesh();
+        _mesh.vertices = vertices;
+        _mesh.triangles = triangleIndices;
+
+        _mesh.RecalculateBounds();
+        _mesh.RecalculateNormals();
+        _mesh.Optimize();
+        MeshFilter filter = GetComponent<MeshFilter>();
+        filter.mesh = _mesh;
+    }
+
+    public void Recalculate(out Vector3[] vertices, out int[] triangleIndices)
+    {
         // Total vertices
-        int totalVertices = numSegments * numTubes;
+        int totalVertices = segments * segmentDetail;
 
         // Total primitives
         int totalPrimitives = totalVertices * 2;
@@ -94,34 +56,31 @@ public class Torus : MonoBehaviour {
         // Total indices
         int totalIndices = totalPrimitives * 3;
 
-        // Init the mesh
-        Mesh mesh = new Mesh();
-
         // Init the vertex and triangle arrays
-        Vector3[] vertices = new Vector3[totalVertices];
-        int[] triangleIndices = new int[totalIndices];
+        vertices = new Vector3[totalVertices];
+        triangleIndices = new int[totalIndices];
 
         // Calculate size of a segment and a tube
-        float segmentSize = 2 * Mathf.PI / (float)numSegments;
-        float tubeSize = 2 * Mathf.PI / (float)numTubes;
+        float segmentSize = 2 * Mathf.PI / (float)segments;
+        float tubeSize = 2 * Mathf.PI / (float)segmentDetail;
 
         // Create floats for our xyz coordinates
         float x, y, z;
 
-   		// Begin loop that fills in both arrays
-        for (int i = 0; i < numSegments; i++)
+        // Begin loop that fills in both arrays
+        for (int i = 0; i < segments; i++)
         {
             // Find next (or first) segment offset
-            int n = (i + 1) % numSegments; // changed segmentList.Count to numSegments
+            int n = (i + 1) % segments; // changed segmentList.Count to numSegments
 
             // Find the current and next segments
-            int currentTubeOffset = i * numTubes;
-            int nextTubeOffset = n * numTubes;
+            int currentTubeOffset = i * segmentDetail;
+            int nextTubeOffset = n * segmentDetail;
 
-            for (int j = 0; j < numTubes; j++)
+            for (int j = 0; j < segmentDetail; j++)
             {
                 // Find next (or first) vertex offset
-                int m = (j + 1) % numTubes; // changed currentTube.Count to numTubes
+                int m = (j + 1) % segmentDetail; // changed currentTube.Count to numTubes
 
                 // Find the 4 vertices that make up a quad
                 int iv1 = currentTubeOffset + j;
@@ -130,9 +89,9 @@ public class Torus : MonoBehaviour {
                 int iv4 = nextTubeOffset + j;
 
                 // Calculate X, Y, Z coordinates.
-                x = (segmentRadius + tubeRadius * Mathf.Cos(j * tubeSize)) * Mathf.Cos(i * segmentSize);
-                z = (segmentRadius + tubeRadius * Mathf.Cos(j * tubeSize)) * Mathf.Sin(i * segmentSize);
-                y = tubeRadius * Mathf.Sin(j * tubeSize);
+                x = (radius + thickness * Mathf.Cos(j * tubeSize)) * Mathf.Cos(i * segmentSize);
+                z = (radius + thickness * Mathf.Cos(j * tubeSize)) * Mathf.Sin(i * segmentSize);
+                y = thickness * Mathf.Sin(j * tubeSize);
 
                 // Add the vertex to the vertex array
                 vertices[iv1] = new Vector3(x, y, z);
@@ -147,13 +106,5 @@ public class Torus : MonoBehaviour {
                 triangleIndices[iv1 * 6 + 5] = iv1;
             }
         }
-        mesh.vertices = vertices;
-        mesh.triangles = triangleIndices;
-
-        mesh.RecalculateBounds();
-        mesh.RecalculateNormals(); // added on suggestion of Eric5h5 & joaeba in the forum thread
-        mesh.Optimize();
-        MeshFilter mFilter = GetComponent<MeshFilter>(); // tweaked to Generic
-        mFilter.mesh = mesh;
     }
 }

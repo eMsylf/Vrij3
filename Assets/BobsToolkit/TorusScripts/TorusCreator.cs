@@ -24,18 +24,9 @@ using UnityEngine;
 using UnityEditor;
 
 public class TorusCreator : MonoBehaviour {
-
-	#region Manipulate Torus
-    // If you don't need to see what values they were assigned, these can be made non-public
-	public float segmentRadius = 1f;
-	public float tubeRadius = 0.1f;
-	public int numSegments = 32;
-	public int numTubes = 12;
-
     [MenuItem("GameObject/3D Object/Torus", false, 10)]
     public static void CreateTorus()
     {
-        //new Torus(new GameObject("New torus", typeof(MeshFilter), typeof(MeshRenderer)), 1f, .1f, 32, 12);
         GameObject torus = new GameObject("New torus", typeof(Torus));
         Shader shader = Shader.Find("Universal Render Pipeline/Lit");
         if (shader == null)
@@ -44,49 +35,5 @@ public class TorusCreator : MonoBehaviour {
             shader = Shader.Find("Lit");
         Material mat = new Material(shader);
         torus.GetComponent<MeshRenderer>().sharedMaterial = mat;
-        //torus.GetComponent<MeshRenderer>().sharedMaterial = AssetDatabase.GetBuiltinExtraResource<Material>("Lit");
-    }
-
-    public void torus(GameObject torusMesh, float segmentRadius, float tubeRadius, int numSegments, int numTubes)
-    {
-        
-    }
-	#endregion
-
-    public string torusGameObjectName = "TorusMesh";
-    public Color color = Color.blue;
-	GameObject torusMesh;
-	Vector3 oldScale = Vector3.zero;
-    Color oldColor = Color.clear;
-
-	void Start () {
-		torusMesh = new GameObject(torusGameObjectName);
-        torusMesh.transform.parent = this.transform.parent;
-		torusMesh.AddComponent<MeshFilter>();
-		torusMesh.AddComponent<MeshRenderer>();
-        Update(); // to allow other Script's Start() methods to change the color
-	}
-	
-	void Update () {
-		if (oldScale != transform.localScale) { // Chech if the parameters changed to improve performance
-			segmentRadius = transform.localScale.x;
-			tubeRadius = transform.localScale.y;
-            numSegments = Mathf.RoundToInt(32 * (1 + segmentRadius / 10.0f));
-			numTubes = Mathf.RoundToInt(transform.localScale.z);
-			torus (torusMesh, segmentRadius, tubeRadius, numSegments, numTubes);
-			oldScale = transform.localScale;
-		}
-        if (oldColor != color)
-        {
-            torusMesh.GetComponent<Renderer>().material.color = color;
-            oldColor = color;
-        }
-		torusMesh.transform.position = transform.position;
-		torusMesh.transform.rotation = transform.rotation;
-	}
-
-    public void UpdateTorus()
-    {
-
     }
 }
