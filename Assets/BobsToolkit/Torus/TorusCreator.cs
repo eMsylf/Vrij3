@@ -17,12 +17,10 @@
  * 
  * Outside the script, the transform.scale of Main can be accessed by: GameObject.Find(name_of_the_Main_Game_Object)
  * 
- * Edit by Bob Jeltes https://github.com/emsylf on November 22, 2020: 
- * This script used to do everything torus-related. 
- * I converted it to a creator script. 
+ * Edit by Bob Jeltes https://github.com/emsylf on November 23, 2020: 
+ * TorusCreator.cs is the class that allows the user to create a torus shape like any other basic Unity3D shape, through the GameObject/3D Object menu at the top of the window
  * Torus.cs is now its own class governing everything that has to do with the instance of a torus. 
  * TorusEditor.cs creates a custom inspector that allows you to see the effect of the changing variables in real-time.
- * This script was converted to an editor-script by Bob Jeltes https://github.com/emsylf
  */
 using UnityEngine;
 using UnityEditor;
@@ -31,22 +29,12 @@ public class TorusCreator : MonoBehaviour {
     [MenuItem("GameObject/3D Object/Torus", false, 10)]
     public static void CreateTorus()
     {
-        GameObject torus = new GameObject("Torus", typeof(Torus));
-        Material mat = getMaterial();
-        torus.GetComponent<MeshRenderer>().sharedMaterial = mat;
-        torus.GetComponent<Torus>().UpdateTorus();
-
-        Selection.activeObject = torus;
-    }
-
-    public static Material getMaterial()
-    {
-        Shader shader = Shader.Find("Universal Render Pipeline/Lit");
-        if (shader == null)
-            shader = Shader.Find("High-Definition Render Pipeline/Lit");
-        if (shader == null)
-            shader = Shader.Find("Lit");
-        Material mat = new Material(shader);
-        return mat;
+        GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        obj.name = "Torus";
+        Torus torus = obj.AddComponent<Torus>();
+        torus.Mf.sharedMesh = new Mesh();
+        torus.Mf.sharedMesh.name = "Torus (custom)";
+        torus.UpdateTorus();
+        Selection.activeObject = obj;
     }
 }

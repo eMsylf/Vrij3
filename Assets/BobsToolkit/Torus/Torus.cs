@@ -3,6 +3,11 @@
  *
  * Editted by Michael Zoller on December 6, 2015.
  * It was shortened by about 30 lines (and possibly sped up by a factor of 2) by consolidating math & loops and removing intermediate Collections.
+ * 
+ * Edit by Bob Jeltes https://github.com/emsylf on November 23, 2020: 
+ * TorusCreator.cs is the class that allows the user to create a torus shape like any other basic Unity3D shape, through the GameObject/3D Object menu at the top of the window
+ * Torus.cs is now its own class governing everything that has to do with the instance of a torus. 
+ * TorusEditor.cs creates a custom inspector that allows you to see the effect of the changing variables in real-time.
  */
 using UnityEngine;
 
@@ -12,8 +17,6 @@ public class Torus: MonoBehaviour {
 	public float thickness = 0.4f;
 	public int segments = 32;
 	public int segmentDetail = 12;
-
-    private string meshName = "Torus";
 
     private int vertices { get => segments * segmentDetail; }
     private int primitives { get => vertices * 2; }
@@ -38,8 +41,16 @@ public class Torus: MonoBehaviour {
         mesh = Mf.sharedMesh;
         if (mesh == null)
         {
-            mesh = new Mesh();
+            mesh = CreateNewMesh();
         }
+        return mesh;
+    }
+
+    public Mesh CreateNewMesh()
+    {
+        mesh = new Mesh();
+        mesh.name = "Torus";
+        Mf.sharedMesh = mesh;
         return mesh;
     }
 
@@ -106,7 +117,6 @@ public class Torus: MonoBehaviour {
     public void UpdateMesh(Vector3[] vertices, int[] triangleIndices)
     {
         Mesh _mesh = GetMesh();
-        _mesh.name = meshName;
         //_mesh.vertices = new Vector3[this.vertices];
         if (_mesh.vertices.Length > vertices.Length)
         {
@@ -123,7 +133,6 @@ public class Torus: MonoBehaviour {
         _mesh.RecalculateNormals();
         _mesh.Optimize();
         Mf.sharedMesh = _mesh;
-        Mf.sharedMesh.name = meshName;
     }
 
     public void UpdateMeshCollider()
@@ -135,5 +144,11 @@ public class Torus: MonoBehaviour {
         }
 
         collider.sharedMesh = Mf.sharedMesh;
+    }
+
+    public void NewMesh()
+    {
+        Mf.sharedMesh = CreateNewMesh();
+        UpdateTorus();
     }
 }
