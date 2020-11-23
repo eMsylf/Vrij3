@@ -8,61 +8,56 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
 public class Torus: MonoBehaviour {
-    [Min(0.001f)]
 	public float radius = 1f;
-    [Min(0.001f)]
 	public float thickness = 0.4f;
-    [Min(3)]
 	public int segments = 32;
-    [Min(3)]
 	public int segmentDetail = 12;
+
+    private string meshName = "Torus";
+
+    private int vertices { get => segments * segmentDetail; }
+    private int primitives { get => vertices * 2; }
+    private int triangleIndices { get => primitives * 3; }
+
+    MeshFilter mf;
+    public MeshFilter Mf
+    {
+        get
+        {
+            if (mf == null)
+            {
+                mf = GetComponent<MeshFilter>();
+            }
+            return mf;
+        }
+    }
 
     Mesh mesh;
     public Mesh GetMesh()
     {
+        mesh = Mf.sharedMesh;
         if (mesh == null)
         {
-            mesh = GetComponent<MeshFilter>().sharedMesh;
-            if (mesh == null)
-            {
-                mesh = new Mesh();
-                mesh.name = "Torus";
-            }
+            mesh = new Mesh();
         }
         return mesh;
     }
 
-    public void UpdateMesh(Vector3[] vertices, int[] triangleIndices)
+    public void UpdateTorus()
     {
-        Mesh _mesh = GetMesh();
-        _mesh.vertices = vertices;
-        _mesh.triangles = triangleIndices;
-
-        _mesh.RecalculateBounds();
-        _mesh.RecalculateNormals();
-        _mesh.Optimize();
-        MeshFilter filter = GetComponent<MeshFilter>();
-        filter.mesh = _mesh;
+        Recalculate(out Vector3[] verts, out int[] indices);
+        UpdateMesh(verts, indices);
+        UpdateMeshCollider();
     }
 
     public void Recalculate(out Vector3[] vertices, out int[] triangleIndices)
     {
-        // Total vertices
-        int totalVertices = segments * segmentDetail;
-
-        // Total primitives
-        int totalPrimitives = totalVertices * 2;
-
-        // Total indices
-        int totalIndices = totalPrimitives * 3;
-
-        // Init the vertex and triangle arrays
-        vertices = new Vector3[totalVertices];
-        triangleIndices = new int[totalIndices];
+        vertices = new Vector3[this.vertices];
+        triangleIndices = new int[this.triangleIndices];
 
         // Calculate size of a segment and a tube
-        float segmentSize = 2 * Mathf.PI / (float)segments;
-        float tubeSize = 2 * Mathf.PI / (float)segmentDetail;
+        float segmentSize = 2 * Mathf.PI / segments;
+        float tubeSize = 2 * Mathf.PI / segmentDetail;
 
         // Create floats for our xyz coordinates
         float x, y, z;
@@ -106,5 +101,39 @@ public class Torus: MonoBehaviour {
                 triangleIndices[iv1 * 6 + 5] = iv1;
             }
         }
+    }
+
+    public void UpdateMesh(Vector3[] vertices, int[] triangleIndices)
+    {
+        Mesh _mesh = GetMesh();
+        _mesh.name = meshName;
+        //_mesh.vertices = new Vector3[this.vertices];
+        if (_mesh.vertices.Length > vertices.Length)
+        {
+            _mesh.triangles = triangleIndices;
+            _mesh.vertices = vertices;
+        }
+        else
+        {
+            _mesh.vertices = vertices;
+            _mesh.triangles = triangleIndices;
+        }
+
+        _mesh.RecalculateBounds();
+        _mesh.RecalculateNormals();
+        _mesh.Optimize();
+        Mf.sharedMesh = _mesh;
+        Mf.sharedMesh.name = meshName;
+    }
+
+    public void UpdateMeshCollider()
+    {
+        MeshCollider collider = GetComponent<MeshCollider>();
+        if (collider == null)
+        {
+            return;
+        }
+
+        collider.sharedMesh = Mf.sharedMesh;
     }
 }

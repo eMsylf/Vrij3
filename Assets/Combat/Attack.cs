@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using BobJeltes.StandardUtilities;
 using UnityEngine.Events;
+using UnityEditor;
 
 namespace Combat {
     public class Attack : MonoBehaviour
@@ -27,10 +28,11 @@ namespace Combat {
                 Right,
                 Up
             }
-            public EDirection Direction = EDirection.Forward;
-            public float Multiplier;
-            [Tooltip("If ticked, physics objects will be hit away from the attack's pivot instead of just in the direction specified.")]
-            public bool AwayFromSelf;
+            public EDirection direction = EDirection.Forward;
+            public float multiplier = 1f;
+            [Tooltip("If ticked, a force away from the attack's pivot will be applied.")]
+            public float outwardForceMultiplier = 1f;
+            public Color debugColor = Color.white;
         }
         public AttackForce attackForce;
 
@@ -107,10 +109,15 @@ namespace Combat {
             
             if (other.attachedRigidbody != null)
             {
-                if (attackForce.AwayFromSelf)
-                    other.attachedRigidbody.AddForce((other.transform.position - transform.position) + GetForceVector(attackForce.Direction), ForceMode.Impulse);
-                else
-                    other.attachedRigidbody.AddForce(GetForceVector(attackForce.Direction), ForceMode.Impulse);
+                Vector3 forceVector = new Vector3();
+
+                if (attackForce.outwardForceMultiplier != 0f)
+                    forceVector += (other.transform.position - transform.position) * attackForce.outwardForceMultiplier;
+                if (attackForce.multiplier != 0f)
+                    forceVector += GetForceVector(attackForce.direction);
+
+
+                other.attachedRigidbody.AddForce(forceVector, ForceMode.Impulse);
             }
 
             if (fighterHit == null)
@@ -130,7 +137,7 @@ namespace Combat {
 
             if (fightersHit.Contains(fighterHit))
             {
-                Debug.Log(name + " tried to multihit" + fighterHit.name, this);
+                Debug.Log(name + " tried to multihit " + fighterHit.name, this);
                 if (!CanMultiHit)
                 {
                     return;
@@ -190,13 +197,13 @@ namespace Combat {
             switch (direction)
             {
                 case AttackForce.EDirection.Forward:
-                    returnForce = transform.forward * attackForce.Multiplier;
+                    returnForce = transform.forward * attackForce.multiplier;
                     break;
                 case AttackForce.EDirection.Right:
-                    returnForce = transform.right * attackForce.Multiplier;
+                    returnForce = transform.right * attackForce.multiplier;
                     break;
                 case AttackForce.EDirection.Up:
-                    returnForce = transform.up * attackForce.Multiplier;
+                    returnForce = transform.up * attackForce.multiplier;
                     break;
             }
             return returnForce;
@@ -205,8 +212,23 @@ namespace Combat {
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            Gizmos.DrawLine(transform.position, transform.position + GetForceVector(attackForce.Direction));
-            Gizmos.DrawWireSphere(transform.position + GetForceVector(attackForce.Direction), 1f);
+            if (attackForce.multiplier != 0f)
+            {
+                Handles.color = attackForce.debugColor;
+                Vector3 forceVector = GetForceVector(attackForce.direction);
+
+                Vector3 toPosition = transform.position + forceVector;
+                Handles.DrawLine(transform.position, toPosition);
+
+                Vector3 lookDir = forceVector * (attackForce.multiplier >= 0f ? 1f : -1f);
+                Handles.ArrowHandleCap(0, toPosition, Quaternion.LookRotation(lookDir), attackForce.multiplier, EventType.Repaint);
+                
+            }
+            if (attackForce.outwardForceMultiplier != 0f)
+            {
+                Gizmos.color = attackForce.debugColor;
+                Gizmos.DrawWireSphere(transform.position, attackForce.outwardForceMultiplier);
+            }
         }
 #endif
     }
