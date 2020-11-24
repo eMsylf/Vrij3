@@ -164,7 +164,8 @@ namespace Combat {
                     Debug.Log("Disable charge");
                     if (fighterHit is PlayerController)
                     {
-                        fighterHit.GetComponent<PlayerController>().attacking.AllowCharging(false);
+                        // TODO BOB: Hier nog disable charge opnieuw aankoppelen
+                        //fighterHit.GetComponent<PlayerController>().attacking.AllowCharging(false);
                     }
                     break;
                 case Effect.MovementSpeed:

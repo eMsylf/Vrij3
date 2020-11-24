@@ -132,6 +132,9 @@ public class PlayerController : Fighter
         attacking.attackEnd -= () => OnAttackEnd();
 
         OnDisableTasks();
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     bool controlsSubscribed = false;
@@ -165,15 +168,19 @@ public class PlayerController : Fighter
     {
         Vector3 playerMovement = movement.GetTopDownMovement(movement.state) * movement.GetSpeedModifier(movement.state);
         
-        Rigidbody.MovePosition(Rigidbody.position + ConvertToCameraRelative(playerMovement) * Time.fixedDeltaTime);
+        Rigidbody.MovePosition(Rigidbody.position + ConvertToObjectRelative(Camera.main.transform, playerMovement, true, true) * Time.fixedDeltaTime);
     }
 
-    private Vector3 ConvertToCameraRelative(Vector3 vector3)
+    public static Vector3 ConvertToObjectRelative(Transform reference, Vector3 vector3, bool flatten = false, bool normalize = false)
     {
-        Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 cameraRight = Camera.main.transform.right;
-        Vector3 cameraRelativeMovement = cameraForward * vector3.z + cameraRight * vector3.x;
-        return cameraRelativeMovement;
+        Vector3 referenceForward = reference.forward;
+        if (flatten) 
+            referenceForward.Scale(new Vector3(1, 0, 1));
+        if (normalize)
+            referenceForward.Normalize();
+        Vector3 referenceRight = reference.right;
+        Vector3 referenceRelativeVector3 = referenceForward * vector3.z + referenceRight * vector3.x;
+        return referenceRelativeVector3;
     }
 
     public override void Die()
@@ -525,7 +532,26 @@ public class PlayerController : Fighter
             state = State.Attacking;
         }
 
-        public IEnumerator StartCharge()
+        [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
+        public int chargeProhibitors = 0;
+        public bool ChargingAllowed()
+        {
+            return chargeProhibitors == 0;
+        }
+
+        public void increaseChargingProhibitors()
+        {
+            Debug.Log("Increase charge prohibitors");
+            chargeProhibitors++;
+        }
+
+        public void decreaseChargingProhibitors()
+        {
+            Debug.Log("Decrease charge prohibitors");
+            chargeProhibitors--;
+        }
+
+        public IEnumerator DoCharge()
         {
             state = State.Charging;
             switch (ChargeType)
@@ -553,16 +579,15 @@ public class PlayerController : Fighter
             while (state == State.Charging)
             {
                 yield return new WaitForEndOfFrame();
-                chargeTime += Time.unscaledDeltaTime;
-                //if (ChargeEffectedBySlowdown)
-                //{
-                //    chargeTime = Time.time - chargeStart;
-                //}
-                //else
-                //{
-                //    chargeTime = Time.unscaledTime - chargeStart;
-                //}
-                
+                if (ChargeEffectedBySlowdown)
+                {
+                    chargeTime += Time.deltaTime;
+                }
+                else
+                {
+                    chargeTime += Time.unscaledDeltaTime;
+                }
+
                 chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
                 //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
 
@@ -623,11 +648,6 @@ public class PlayerController : Fighter
                 graphic.color = currentColor;
             }
         }
-
-        internal void AllowCharging(bool allow)
-        {
-            
-        }
     }
     public Attacking attacking;
 
@@ -653,7 +673,7 @@ public class PlayerController : Fighter
             //Julia: Hey Bob, is dit komt ook voor als de player dodged, is het niet slimmer die 2 te combineren?
             return;
         }
-        StartCoroutine(attacking.StartCharge());
+        StartCoroutine(attacking.DoCharge());
         staminaRecharge.allow = false;
     }
 
@@ -690,6 +710,16 @@ public class PlayerController : Fighter
         staminaRecharge.allow = true;
         // Get walking direction at end of attack 
         UpdateMoveInput();
+    }
+
+    public void NoChargeZoneIncrease()
+    {
+        Instance.attacking.increaseChargingProhibitors();
+    }
+
+    public void NoChargeZoneDecrease()
+    {
+        Instance.attacking.decreaseChargingProhibitors();
     }
     #endregion
 
