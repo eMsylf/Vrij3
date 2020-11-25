@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEditor;
 #endif
 using Combat;
-using UnityEngine.Audio;
+using BobJeltes.Extensions;
 
 public class PlayerController : Fighter
 {
@@ -168,19 +168,7 @@ public class PlayerController : Fighter
     {
         Vector3 playerMovement = movement.GetTopDownMovement(movement.state) * movement.GetSpeedModifier(movement.state);
         
-        Rigidbody.MovePosition(Rigidbody.position + ConvertToObjectRelative(Camera.main.transform, playerMovement, true, true) * Time.fixedDeltaTime);
-    }
-
-    public static Vector3 ConvertToObjectRelative(Transform reference, Vector3 vector3, bool flatten = false, bool normalize = false)
-    {
-        Vector3 referenceForward = reference.forward;
-        if (flatten) 
-            referenceForward.Scale(new Vector3(1, 0, 1));
-        if (normalize)
-            referenceForward.Normalize();
-        Vector3 referenceRight = reference.right;
-        Vector3 referenceRelativeVector3 = referenceForward * vector3.z + referenceRight * vector3.x;
-        return referenceRelativeVector3;
+        Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
     }
 
     public override void Die()
