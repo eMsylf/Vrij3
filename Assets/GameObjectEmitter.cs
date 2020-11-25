@@ -16,6 +16,9 @@ public class GameObjectEmitter : MonoBehaviour
     public float Interval = 1f;
     public bool makeEmittedChildren = false;
 
+    [Tooltip("Objects are destroyed after this many seconds")]
+    public float objectLifetime = 1f;
+
     private float interval;
     private void Update()
     {
@@ -49,6 +52,9 @@ public class GameObjectEmitter : MonoBehaviour
                 emittedObject = Instantiate(prefab);
                 emittedObject.transform.position = transform.position;
             }
+
+            Destroy(emittedObject, objectLifetime);
+            Debug.Log("Hallo");
 
             Vector3 direction = directions[i];
             Rigidbody objRigidbody = emittedObject.GetComponent<Rigidbody>();
