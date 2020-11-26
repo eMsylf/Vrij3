@@ -49,7 +49,7 @@ namespace BobJeltes
                 GameObject addition = Instantiate(prefab);
                 objPool.Add(addition);
 
-                Debug.Log("Added new gameobject");
+                Debug.Log("Object pool expanded to " + objPool.Count, this);
 
                 addition.SetActive(false);
                 return addition;

@@ -23,11 +23,12 @@ public class Timer : MonoBehaviour
         if (currentTime <= 0f) OnTimeOver();
     }
 
+    public UnityEvent OnStart;
     public UnityEvent OnEnd;
 
     public virtual void OnTimeOver()
     {
-        Debug.Log("Timer ran out for " + name, this);
+        //Debug.Log("Timer ran out for " + name, this);
         name = OriginalName;
         OnEnd.Invoke();
     }
@@ -37,6 +38,7 @@ public class Timer : MonoBehaviour
         if (string.IsNullOrEmpty(OriginalName))
             OriginalName = name;
         currentTime = time;
+        OnStart.Invoke();
     }
 
 #if UNITY_EDITOR
