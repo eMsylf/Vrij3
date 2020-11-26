@@ -5,6 +5,7 @@ using UnityEngine;
 public class Grow : MonoBehaviour
 {
     public Vector3 growth = Vector3.one;
+
     public enum Method
     {
         Multiply,
@@ -12,6 +13,10 @@ public class Grow : MonoBehaviour
         Logarithmic
     }
     public Method method;
+
+    public bool resetScaleOnEnable = true;
+    public Vector3 referenceScale = Vector3.one;
+
     private void Update()
     {
         switch (method)
@@ -25,5 +30,11 @@ public class Grow : MonoBehaviour
             case Method.Logarithmic:
                 break;
         }
+    }
+
+    private void OnEnable()
+    {
+        if (resetScaleOnEnable)
+            transform.localScale = referenceScale;
     }
 }
