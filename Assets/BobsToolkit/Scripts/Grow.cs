@@ -10,14 +10,17 @@ public class Grow : MonoBehaviour
     {
         Multiply,
         Add,
-        Logarithmic
+        GrowTowardsLinear
     }
     public Method method;
-
+    public float speed = 1f;
+    [Space]
     public bool resetScaleOnEnable = true;
     public Vector3 referenceScale = Vector3.one;
 
-    private void Update()
+    private float progress = 0f;
+
+    private void FixedUpdate()
     {
         switch (method)
         {
@@ -27,7 +30,10 @@ public class Grow : MonoBehaviour
             case Method.Add:
                 transform.localScale += growth;
                 break;
-            case Method.Logarithmic:
+            case Method.GrowTowardsLinear:
+                transform.localScale = Vector3.Lerp(transform.localScale, growth, progress);
+                progress += Time.fixedDeltaTime * speed;
+                progress = Mathf.Clamp(progress, 0f, 1f);
                 break;
         }
     }
@@ -35,6 +41,9 @@ public class Grow : MonoBehaviour
     private void OnEnable()
     {
         if (resetScaleOnEnable)
+        {
+            progress = 0f;
             transform.localScale = referenceScale;
+        }
     }
 }

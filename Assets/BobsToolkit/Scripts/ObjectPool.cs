@@ -9,9 +9,9 @@ namespace BobJeltes
         public GameObject prefab;
 
         [Min(1)]
-        public int objectPoolSize = 10;
-        [Tooltip("If ticked, the object pool will expand to fit the demands")]
-        public bool flexible;
+        public int initialPoolSize = 10;
+        [Tooltip("If ticked, the object pool will expand to fit the demands.")]
+        public bool flexible = true;
         public List<GameObject> objectPool;
 
         public List<GameObject> GetObjectPool()
@@ -20,9 +20,9 @@ namespace BobJeltes
             {
                 objectPool = new List<GameObject>();
             }
-            if (objectPool.Count < objectPoolSize)
+            if (objectPool.Count < initialPoolSize)
             {
-                for (int i = objectPool.Count; i < objectPoolSize; i++)
+                for (int i = objectPool.Count; i < initialPoolSize; i++)
                 {
                     GameObject addition = Instantiate(prefab);
                     objectPool.Add(addition);
@@ -40,7 +40,7 @@ namespace BobJeltes
             {
                 if (!objPool[i].activeInHierarchy)
                 {
-                    Debug.Log("Object at index " + i + " returned");
+                    //Debug.Log("Object at index " + i + " returned");
                     return objPool[i];
                 }
             }
@@ -54,7 +54,7 @@ namespace BobJeltes
                 addition.SetActive(false);
                 return addition;
             }
-            Debug.LogWarning("Object pool exhausted. "
+            Debug.LogWarning("Object pool exhausted."
                 + "Set to 'flexible' to allow dynamic expansion."
                 );
             return null;

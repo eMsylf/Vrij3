@@ -79,14 +79,13 @@ public class GameObjectEmitter : MonoBehaviour
 
     public void Emit()
     {
-        Debug.Log("Emit");
+        //Debug.Log("Emit");
 
         Vector3[] directions = GetDirections();
         ObjectPool objPool = GetObjectPool();
         for (int i = 0; i < directions.Length; i++)
         {
             GameObject emittedObject;
-            //Vector3 emissionPos;
 
             if (useObjectPool)
             {
