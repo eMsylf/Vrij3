@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
 {
@@ -9,9 +10,7 @@ public class Timer : MonoBehaviour
     private string OriginalName;
     public void OnEnable()
     {
-        if (string.IsNullOrEmpty(OriginalName))
-            OriginalName = name;
-        currentTime = time;
+        Restart();
     }
 
     void Update()
@@ -24,10 +23,22 @@ public class Timer : MonoBehaviour
         if (currentTime <= 0f) OnTimeOver();
     }
 
+    public UnityEvent OnStart;
+    public UnityEvent OnEnd;
+
     public virtual void OnTimeOver()
     {
-        Debug.Log("Timer ran out for " + name, this);
+        //Debug.Log("Timer ran out for " + name, this);
         name = OriginalName;
+        OnEnd.Invoke();
+    }
+
+    public void Restart()
+    {
+        if (string.IsNullOrEmpty(OriginalName))
+            OriginalName = name;
+        currentTime = time;
+        OnStart.Invoke();
     }
 
 #if UNITY_EDITOR

@@ -113,9 +113,6 @@ public class PlayerController : Fighter
         Controls.Game.Enable();
         SubscribeControls();
 
-        attacking.attackLaunched += () => OnAttack();
-        attacking.attackEnd += () => OnAttackEnd();
-
         OnEnableTasks();
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -127,9 +124,6 @@ public class PlayerController : Fighter
         //Debug.Log("Player disabled");
         Controls.Game.Disable();
         UnsubControls();
-
-        attacking.attackLaunched -= () => OnAttack();
-        attacking.attackEnd -= () => OnAttackEnd();
 
         OnDisableTasks();
 
@@ -414,9 +408,10 @@ public class PlayerController : Fighter
         public float slowmotionFactor = .25f;
 
         internal bool allowCharging = true;
+        public GameObject ChargeDisabledIndicator;
         internal float latestCharge;
-        internal UnityAction attackLaunched;
-        internal UnityAction attackEnd;
+        public UnityEvent attackLaunched;
+        public UnityEvent attackEnd;
 
         public enum State
         {
@@ -522,6 +517,14 @@ public class PlayerController : Fighter
 
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
         public int chargeProhibitors = 0;
+
+        public void SetChargingProhibitors(int amount)
+        {
+            Debug.Log("Adjust charge prohibitors from " + chargeProhibitors + ". New amount: " + amount);
+            chargeProhibitors = amount;
+            ChargeDisabledIndicator.SetActive(chargeProhibitors != 0);
+        }
+
         public bool ChargingAllowed()
         {
             return chargeProhibitors == 0;
@@ -530,13 +533,12 @@ public class PlayerController : Fighter
         public void increaseChargingProhibitors()
         {
             Debug.Log("Increase charge prohibitors");
-            chargeProhibitors++;
+            SetChargingProhibitors(chargeProhibitors+1);
         }
 
         public void decreaseChargingProhibitors()
         {
-            Debug.Log("Decrease charge prohibitors");
-            chargeProhibitors--;
+            SetChargingProhibitors(chargeProhibitors - 1);
         }
 
         public IEnumerator DoCharge()
@@ -576,8 +578,16 @@ public class PlayerController : Fighter
                     chargeTime += Time.unscaledDeltaTime;
                 }
 
-                chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
-                //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
+                if (ChargingAllowed())
+                {
+                    chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
+                }
+                else
+                {
+                    chargeTimeClamped = Mathf.Clamp(chargeTime, 0f, ChargeTimeDeadzone);
+                }
+
+                Debug.Log("Chargetime clamped: " + chargeTimeClamped);
 
                 int currentChargeState = GetChargeZoneIndex(chargeTimeClamped);
                 
