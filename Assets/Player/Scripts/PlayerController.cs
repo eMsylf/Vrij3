@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -403,7 +404,7 @@ public class PlayerController : Fighter
         public bool ChargeEffectedBySlowdown = false;
 
         [Range(0f, 1f)]
-        public float startSlowmotionAt = .5f;
+        public float slowmotionTrigger = .5f;
         [Range(0f, 1f)]
         public float slowmotionFactor = .25f;
 
@@ -516,29 +517,23 @@ public class PlayerController : Fighter
         }
 
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
-        public int chargeProhibitors = 0;
+        private List<GameObject> chargeProhibitors = new List<GameObject>();
 
-        public void SetChargingProhibitors(int amount)
+        internal void AddChargingProhibitor(GameObject prohibitor)
         {
-            Debug.Log("Adjust charge prohibitors from " + chargeProhibitors + ". New amount: " + amount);
-            chargeProhibitors = amount;
-            ChargeDisabledIndicator.SetActive(chargeProhibitors != 0);
+            chargeProhibitors.Add(prohibitor);
+            ChargeDisabledIndicator.SetActive(chargeProhibitors.Count != 0);
         }
 
-        public bool ChargingAllowed()
+        internal void RemoveChargingProhibitor(GameObject prohibitor)
         {
-            return chargeProhibitors == 0;
+            chargeProhibitors.Remove(prohibitor);
+            ChargeDisabledIndicator.SetActive(chargeProhibitors.Count != 0);
         }
 
-        public void increaseChargingProhibitors()
+        internal bool ChargingAllowed()
         {
-            Debug.Log("Increase charge prohibitors");
-            SetChargingProhibitors(chargeProhibitors+1);
-        }
-
-        public void decreaseChargingProhibitors()
-        {
-            SetChargingProhibitors(chargeProhibitors - 1);
+            return chargeProhibitors.Count == 0;
         }
 
         public IEnumerator DoCharge()
@@ -585,6 +580,7 @@ public class PlayerController : Fighter
                 else
                 {
                     chargeTimeClamped = Mathf.Clamp(chargeTime, 0f, ChargeTimeDeadzone);
+                    chargeTime = chargeTimeClamped;
                 }
 
                 Debug.Log("Chargetime clamped: " + chargeTimeClamped);
@@ -605,10 +601,21 @@ public class PlayerController : Fighter
                         }
                         break;
                 }
-                if (!slowmotionInitiated && chargeTimeClamped > startSlowmotionAt)
+                if (!slowmotionInitiated)
                 {
-                    slowmotionInitiated = true;
-                    TimeManager.Instance.DoSlowmotion(slowmotionFactor);
+                    if (chargeTimeClamped > slowmotionTrigger)
+                    {
+                        slowmotionInitiated = true;
+                        TimeManager.Instance.DoSlowmotion(slowmotionFactor);
+                    }
+                }
+                else
+                {
+                    if (chargeTimeClamped < slowmotionTrigger)
+                    {
+                        slowmotionInitiated = false;
+                        TimeManager.Instance.StopSlowmotion();
+                    }
                 }
             }
             TimeManager.Instance.StopSlowmotion();
@@ -675,6 +682,16 @@ public class PlayerController : Fighter
         staminaRecharge.allow = false;
     }
 
+    public void AddNoChargeZone(GameObject zone)
+    {
+        Instance.attacking.AddChargingProhibitor(zone);
+    }
+
+    public void RemoveNoChargeZone(GameObject zone)
+    {
+        Instance.attacking.RemoveChargingProhibitor(zone);
+    }
+
     public void OnAttack()
     {
         Animator.SetFloat("AttackCharge", attacking.latestCharge);
@@ -708,16 +725,6 @@ public class PlayerController : Fighter
         staminaRecharge.allow = true;
         // Get walking direction at end of attack 
         UpdateMoveInput();
-    }
-
-    public void NoChargeZoneIncrease()
-    {
-        Instance.attacking.increaseChargingProhibitors();
-    }
-
-    public void NoChargeZoneDecrease()
-    {
-        Instance.attacking.decreaseChargingProhibitors();
     }
     #endregion
 
