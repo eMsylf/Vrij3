@@ -3,10 +3,8 @@ using UnityEngine;
 
 namespace BobJeltes
 {
-    [System.Serializable]
-    public class SpriteFlash
+    public class SpriteFlash : MonoBehaviour
     {
-        public bool enabled = true;
         public SpriteRenderer spriteRenderer;
         public Color color = Color.red;
         public float duration = 0.1f;
@@ -14,11 +12,13 @@ namespace BobJeltes
         private Color originalColor;
         private bool originalColorSet = false;
 
-        public void SetupSpriteFlash(SpriteRenderer parent)
+        private void Awake()
         {
-            if (parent != null)
-                spriteRenderer = parent;
+            SetupSpriteFlash();
+        }
 
+        public void SetupSpriteFlash()
+        {
             if (spriteRenderer == null)
             {
                 Debug.LogError("Sprite renderer of " + spriteRenderer.name + " is not assinged", spriteRenderer);
@@ -26,10 +26,13 @@ namespace BobJeltes
             }
         }
 
+        public void DoSpriteFlash()
+        {
+            StartCoroutine(DoFlashColor());
+        }
+
         public IEnumerator DoFlashColor()
         {
-            if (!enabled)
-                yield break;
             SetSpriteColor();
             yield return new WaitForSeconds(duration);
             ResetSpriteColor();

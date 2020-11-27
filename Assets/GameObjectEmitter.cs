@@ -69,6 +69,8 @@ public class GameObjectEmitter : MonoBehaviour
             ObjectPool objPool = GetObjectPool();
             foreach (GameObject obj in objPool.objectPool)
             {
+                if (obj == null)
+                    continue;
                 obj.SetActive(false);
             }
         }

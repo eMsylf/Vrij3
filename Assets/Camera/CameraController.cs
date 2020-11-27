@@ -18,7 +18,7 @@ public class CameraController : Singleton<CameraController>
 
     public void EnableControlsInstance(bool enabled)
     {
-        Debug.Log("Camera controls disabled");
+        //Debug.Log("Camera controls disabled");
         Instance.AllowControls = enabled;
     }
 

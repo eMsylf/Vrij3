@@ -56,7 +56,7 @@ namespace Combat
         {
             if (Visualizer == null)
             {
-                Debug.LogError("Statistic visualizer is null");
+                //Debug.LogError("Statistic visualizer is null");
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace Combat
                 fadeOutComponent.StartFadeOut();
             }
 
-            Debug.Log("Updating visual", Visualizer);
+            //Debug.Log("Updating visual", Visualizer);
             for (int i = 0; i < Visualizer.transform.childCount; i++)
             {
                 GameObject child = Visualizer.transform.GetChild(i).gameObject;
