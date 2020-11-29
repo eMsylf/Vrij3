@@ -8,20 +8,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class CameraFollow : MonoBehaviour
 {
-    //[SerializeField] private Transform target;
-    //public Transform Target
-    //{
-    //    get
-    //    {
-    //        if (target == null)
-    //        {
-    //            Debug.LogWarning("No target assigned in " + name, this);
-    //        }
-    //        return target;
-    //    }
-    //    set => target = value;
-    //}
-
     public List<Transform> Targets = new List<Transform>();
 
     [SerializeField] private Vector3 targetPosition;
@@ -51,6 +37,14 @@ public class CameraFollow : MonoBehaviour
         }
         for (int i = 0; i < transforms.Count; i++)
         {
+            if (transforms[i] == null)
+            {
+                Debug.LogError("CameraFollow target transform at list position " + i + " was null, and has been removed from the list.");
+                transforms.RemoveAt(i);
+                i--;
+                continue;
+            }
+
             center += transforms[i].position;
         }
 
