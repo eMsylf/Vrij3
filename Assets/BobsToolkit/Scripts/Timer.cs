@@ -7,6 +7,8 @@ public class Timer : MonoBehaviour
     private float currentTime = 1f;
     [Tooltip("Whether the timer should use scaled or unscaled time. Unscaled time is unaffected by slowmotion.")]
     public bool ScaledTime = true;
+    public bool DisplayTimeInObjectName = false;
+
     private string OriginalName;
     public void OnEnable()
     {
@@ -17,8 +19,8 @@ public class Timer : MonoBehaviour
     {
         if (ScaledTime) currentTime -= Time.deltaTime;
         else currentTime -= Time.unscaledDeltaTime;
-
-        name = OriginalName + " (" + currentTime.ToString(StringFormats.TwoDecimals) + ")";
+        if (DisplayTimeInObjectName) 
+            name = OriginalName + " (" + currentTime.ToString(StringFormats.TwoDecimals) + ")";
 
         if (currentTime <= 0f) OnTimeOver();
     }

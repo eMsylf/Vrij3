@@ -38,6 +38,12 @@ public partial class EnemyAIStationary : MonoBehaviour
     private float attackTimeCurrent = 0f;
     public UnityEvent OnAttack;
 
+    public struct State
+    {
+        public States state;
+        public float time;
+        public float currentTime;
+    }
 
     void Update()
     {
@@ -84,10 +90,10 @@ public partial class EnemyAIStationary : MonoBehaviour
         }
 
         idleTimeCurrent = Random.Range(IdleTime.x, IdleTime.y);
-        Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
         OnIdle.Invoke();
         animator.SetBool("Scream", false);
+        Debug.Log("To Idle for " + idleTimeCurrent);
     }
     private void Idle()
     {
@@ -108,6 +114,8 @@ public partial class EnemyAIStationary : MonoBehaviour
         }
         OnAttackAnnouncement.Invoke();
         attackAnnouncementTimeCurrent = attackAnnouncementTime;
+        state = States.AttackAnnouncement;
+        Debug.Log("Transition to attack announcement for " + attackAnnouncementTimeCurrent);
     }
     private void AttackAnnouncement()
     {
@@ -126,21 +134,27 @@ public partial class EnemyAIStationary : MonoBehaviour
             Debug.Log("Already in attack state");
             return;
         }
-        Debug.Log("Transition to Attack");
         state = States.Attack;
         OnAttack.Invoke();
         attackTimeCurrent = attackTime;
         animator.SetBool("Scream", true);
+        Debug.Log("Transition to attack for " + attackTimeCurrent);
     }
     private void Attack()
     {
         if (attackTimeCurrent <= 0f)
         {
-            ToAttack();
+            ToIdle();
             return;
         }
         if (!PlayerController.Instance.enabled)
             ToIdle();
         attackTimeCurrent -= Time.deltaTime;
+    }
+
+    public void ToState(States _state)
+    {
+        Debug.Log("Transition to " + state.ToString(), this);
+        state = _state;
     }
 }
