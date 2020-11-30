@@ -40,7 +40,7 @@ PrefabInstance:
     - target: {fileID: 3456882489655288325, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: OnIdle.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3456882489655288325, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
@@ -87,15 +87,50 @@ PrefabInstance:
       propertyPath: OnAttack.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3456882489655288325, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: OnAttackAnnouncement.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3926539363848746749}
     - target: {fileID: 5575644691505147066, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_Name
       value: Enemy Screature
       objectReference: {fileID: 0}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3016081794107983545}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetTrigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5575644691505147069, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Hit
+      objectReference: {fileID: 0}
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -5.017
       objectReference: {fileID: 0}
     - target: {fileID: 5575644691505147071, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
@@ -297,6 +332,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8290578814883503195, guid: 582f66759dfd6c5469d7b5764e001485,
+        type: 3}
+      propertyPath: overrideColor.r
+      value: 766.9961
+      objectReference: {fileID: 0}
     - target: {fileID: 8378937611346263422, guid: 582f66759dfd6c5469d7b5764e001485,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -353,6 +393,18 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 4117218166207638714}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3926539363848746749 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1107483795098802759, guid: 582f66759dfd6c5469d7b5764e001485,
+    type: 3}
+  m_PrefabInstance: {fileID: 4117218166207638714}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61bff17b4f690e54b8df18a07622b58c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3066379435649678877 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1418277374631432871, guid: 582f66759dfd6c5469d7b5764e001485,

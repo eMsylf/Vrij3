@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1049880800}
   - component: {fileID: 1049880802}
   - component: {fileID: 1049880801}
+  - component: {fileID: 3153838916810612488}
   m_Layer: 0
   m_Name: Audio Events Up Close
   m_TagString: Untagged
@@ -63,9 +64,9 @@ MonoBehaviour:
   onTriggerEnter:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3659915325835644870, guid: deb83064a4a743f46bd75d3c79cae81d,
+      - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
           type: 3}
-        m_MethodName: ChangeBattleIntensity
+        m_MethodName: AdjustBattle
         m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -78,9 +79,9 @@ MonoBehaviour:
   onTriggerExit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3659915325835644870, guid: deb83064a4a743f46bd75d3c79cae81d,
+      - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
           type: 3}
-        m_MethodName: ChangeBattleIntensity
+        m_MethodName: AdjustBattle
         m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -91,6 +92,20 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   exitOnDisable: 1
+--- !u!114 &3153838916810612488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049880799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3d3e7dc0105e84429b07d9e0b2f360b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjects: []
+  allowDuplicates: 0
 --- !u!1 &1593020621
 GameObject:
   m_ObjectHideFlags: 0
@@ -7075,7 +7090,6 @@ MonoBehaviour:
   effect: 0
   Damage: 4
   StaminaReduction: 1
-  chargeSpeedReduction: 1
   MovementSpeedReduction: 1
   OnAttackLaunched:
     m_PersistentCalls:
@@ -7451,7 +7465,6 @@ MonoBehaviour:
   effect: 0
   Damage: 1
   StaminaReduction: 14
-  chargeSpeedReduction: 1
   MovementSpeedReduction: 1
   OnAttackLaunched:
     m_PersistentCalls:
@@ -7560,9 +7573,9 @@ MonoBehaviour:
   onTriggerEnter:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3659915325835644870, guid: deb83064a4a743f46bd75d3c79cae81d,
+      - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
           type: 3}
-        m_MethodName: ChangeBattleIntensity
+        m_MethodName: AdjustBattle
         m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7575,9 +7588,9 @@ MonoBehaviour:
   onTriggerExit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3659915325835644870, guid: deb83064a4a743f46bd75d3c79cae81d,
+      - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
           type: 3}
-        m_MethodName: ChangeBattleIntensity
+        m_MethodName: AdjustBattle
         m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7777,7 +7790,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7717233248994819637}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 9076902502654944415}
@@ -8080,7 +8093,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 5738622204949074231}
-  color: {r: 1, g: 0, b: 0, a: 1}
+  overrideColor: {r: 4, g: 4, b: 4, a: 0}
   duration: 0.1
 --- !u!1 &7724749264071693243
 GameObject:
@@ -8445,7 +8458,6 @@ MonoBehaviour:
   effect: 0
   Damage: 2
   StaminaReduction: 1
-  chargeSpeedReduction: 1
   MovementSpeedReduction: 1
   OnAttackLaunched:
     m_PersistentCalls:
@@ -9118,15 +9130,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad9648736b8b68043aed5a13068784d0, type: 3}
---- !u!1 &6455570727373104480 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4717615782920449815, guid: ad9648736b8b68043aed5a13068784d0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1796546820810476151}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6455570727373104511 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4717615782920449800, guid: ad9648736b8b68043aed5a13068784d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1796546820810476151}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6455570727373104480 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4717615782920449815, guid: ad9648736b8b68043aed5a13068784d0,
     type: 3}
   m_PrefabInstance: {fileID: 1796546820810476151}
   m_PrefabAsset: {fileID: 0}

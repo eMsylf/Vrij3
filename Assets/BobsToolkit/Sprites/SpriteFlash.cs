@@ -7,6 +7,8 @@ namespace BobJeltes
     {
         [Header("FloodColor shader required on sprite material")]
         public SpriteRenderer spriteRenderer;
+        [ColorUsage(true, true)]
+        public Color overrideColor = Color.white;
         public float duration = 0.1f;
         
         private void Awake()
@@ -25,13 +27,18 @@ namespace BobJeltes
 
         public void DoSpriteFlash()
         {
-            StartCoroutine(DoFlashColor());
+            StartCoroutine(DoFlashColor(duration));
         }
 
-        public IEnumerator DoFlashColor()
+        public void DoSpriteFlash(float newDuration)
+        {
+            StartCoroutine(DoFlashColor(newDuration));
+        }
+
+        public IEnumerator DoFlashColor(float _duration)
         {
             SetSpriteColor();
-            yield return new WaitForSeconds(duration);
+            yield return new WaitForSeconds(_duration);
             ResetSpriteColor();
         }
 
@@ -42,7 +49,16 @@ namespace BobJeltes
                 Debug.LogError("Sprite renderer is null");
                 return;
             }
-            spriteRenderer.material.SetFloat("FloodAmount", 1f);
+            Material spriteMaterial = spriteRenderer.material;
+            spriteMaterial.SetFloat("FloodAmount", 1f);
+
+            Color color = spriteMaterial.GetColor("FloodColor");
+            Debug.Log("Color was " + color);
+            
+            spriteMaterial.SetColor("FloodColor", overrideColor);
+            
+            color = spriteMaterial.GetColor("FloodColor");
+            Debug.Log("Color is now " + color);
         }
 
         public void ResetSpriteColor()
@@ -53,14 +69,9 @@ namespace BobJeltes
                 return;
             }
 
-            Material spriteMaterial = spriteRenderer.sharedMaterial;
+            Material spriteMaterial = spriteRenderer.material;
 
-
-            float floodAmount = spriteMaterial.GetFloat("FloodAmount");
-            Debug.Log("Flood amount: " + floodAmount);
             spriteMaterial.SetFloat("FloodAmount", 0f);
-            floodAmount = spriteMaterial.GetFloat("FloodAmount");
-            Debug.Log("Flood amount: " + floodAmount);
         }
     }
 }

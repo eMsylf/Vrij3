@@ -47,8 +47,8 @@ public class CameraFollow : MonoBehaviour
 
             center += transforms[i].position;
         }
-
-        center /= transforms.Count;
+        if (transforms.Count != 0)
+            center /= transforms.Count;
         return center ;
     }
 

@@ -27,7 +27,10 @@ public class PlayMusicScript : Singleton<PlayMusicScript>
     void Start()
     {
         if (Instance.GetMusicEmitter() == null) Debug.LogError("MusicEmitter is missing", this);
-        else Instance.musicEmitter.Play();
+        else
+        {
+            Instance.musicEmitter.Play();
+        }
     }
 
     public MusicTrack anxiety = new MusicTrack("Anxiety");
@@ -73,6 +76,8 @@ public class PlayMusicScript : Singleton<PlayMusicScript>
 
     private void OnDestroy()
     {
+        if (Instance == null)
+            return;
         if (Instance.musicEmitter == null)
             return;
         if (!Instance.musicEmitter.EventInstance.isValid())

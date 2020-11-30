@@ -9,10 +9,15 @@ public class Timer : MonoBehaviour
     public bool ScaledTime = true;
     public bool DisplayTimeInObjectName = false;
 
+    public bool RestartOnEnable = true;
+
     private string OriginalName;
     public void OnEnable()
     {
-        Restart();
+        if (RestartOnEnable)
+        {
+            Restart();
+        }
     }
 
     void Update()
@@ -41,6 +46,12 @@ public class Timer : MonoBehaviour
             OriginalName = name;
         currentTime = time;
         OnStart.Invoke();
+    }
+
+    public void Restart(float _time)
+    {
+        time = _time;
+        Restart();
     }
 
 #if UNITY_EDITOR

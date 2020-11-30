@@ -24,6 +24,6 @@ public class MusicTrack
         Debug.Log("Set " + name + " level to " + newLevel);
         musicEmitter.SetParameter(name, newLevel);
         FMOD.RESULT rESULT = musicEmitter.EventInstance.getParameterByName(name, out _);
-        Debug.Log("Result: " + rESULT);
+        Debug.Log("Result from " + name + ": " + rESULT.ToString());
     }
 }
