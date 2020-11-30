@@ -16,6 +16,7 @@ public class TriggerEvent : MonoBehaviour
         {
             return;
         }
+        Debug.Log(other.name + " entered trigger of " + name, this);
         onTriggerEnter.Invoke();
     }
 
@@ -25,6 +26,7 @@ public class TriggerEvent : MonoBehaviour
         {
             return;
         }
+        Debug.Log(other.name + " left trigger of " + name, this);
         onTriggerExit.Invoke();
     }
 

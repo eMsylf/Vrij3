@@ -40,7 +40,8 @@ public class PlayerController : Fighter
         }
     }
 
-    new Rigidbody rigidbody;
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
+    Rigidbody rigidbody;
     Rigidbody Rigidbody
     {
         get
@@ -254,7 +255,7 @@ public class PlayerController : Fighter
     {
         if (!movement.AcceptMovementInput)
         {
-            Debug.LogWarning("Tried to move while input was not accepted");
+            //Debug.LogWarning("Tried to move while input was not accepted");
             return;
         }
         //Debug.Log("Input: " + input);
@@ -583,7 +584,7 @@ public class PlayerController : Fighter
                     chargeTime = chargeTimeClamped;
                 }
 
-                Debug.Log("Chargetime clamped: " + chargeTimeClamped);
+                //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
 
                 int currentChargeState = GetChargeZoneIndex(chargeTimeClamped);
                 
@@ -766,6 +767,11 @@ public class PlayerController : Fighter
 
     public IEnumerator GamepadRumble(float duration)
     {
+        if (Gamepad.current == null)
+        {
+            yield break;
+        }
+
         Gamepad.current.SetMotorSpeeds(0.25f, 0.75f);
         yield return new WaitForSeconds(duration);
         Gamepad.current.SetMotorSpeeds(0f, 0f);

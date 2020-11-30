@@ -151,7 +151,7 @@ namespace Combat {
             switch (effect)
             {
                 case Effect.Health:
-                    Debug.Log("Deal " + Damage + " health damage");
+                    //Debug.Log("Deal " + Damage + " health damage");
                     DamageFighter(parentFighter, fighterHit);
                     break;
                 case Effect.Stamina:

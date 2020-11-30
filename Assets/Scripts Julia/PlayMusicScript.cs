@@ -6,95 +6,76 @@ using BobJeltes.StandardUtilities;
 public class PlayMusicScript : Singleton<PlayMusicScript>
 {
     public FMODUnity.StudioEventEmitter musicEmitter;
+    public string fallbackEventName = "event:/DUNGEON1";
+    public FMODUnity.StudioEventEmitter GetMusicEmitter()
+    {
+        if (musicEmitter == null)
+        {
+            musicEmitter = GetComponent<FMODUnity.StudioEventEmitter>();
+            if (musicEmitter == null) { 
+                musicEmitter = gameObject.AddComponent<FMODUnity.StudioEventEmitter>();
+                musicEmitter.Event = fallbackEventName;
+                if (string.IsNullOrWhiteSpace(fallbackEventName))
+                {
+                    Debug.LogError("Fallback event name not set", this);
+                }
+            }
+        }
+        return musicEmitter;
+    }
 
     void Start()
     {
-        if (Instance.musicEmitter == null) Debug.LogError("MusicEmitter is Missing");
+        if (Instance.GetMusicEmitter() == null) Debug.LogError("MusicEmitter is missing", this);
         else Instance.musicEmitter.Play();
     }
 
+    public MusicTrack anxiety = new MusicTrack("Anxiety");
+    public MusicTrack curiosity = new MusicTrack("Curiosity");
+    public MusicTrack battleIntensity = new MusicTrack("BattleIntensity");
+
     //Bind the two FMOD parameters to functions called "Anxiety" and "Curiousity"
     #region Anxiety Music
-
-    public void SetAnxiety(float anxietyLevel) //Sets the Anxiety level to one exact number
+    public void SetAnxiety(float newLevel) //Sets the Anxiety level to one exact number
     {
-        Instance.musicEmitter.SetParameter("Anxiety", anxietyLevel);
+        Instance.anxiety.SetLevel(musicEmitter, newLevel);
     }
 
-    public void IncreaseAnxiety(float anxietyLevel)
+    public void AdjustAnxiety(float level)
     {
-        float currentAnxietyLevel;
-        Instance.musicEmitter.EventInstance.getParameterByName("Anxiety", out currentAnxietyLevel );
-        float newAnxietyLevel = currentAnxietyLevel + anxietyLevel;
-        Instance.musicEmitter.SetParameter("Anxiety", newAnxietyLevel);
-    }
-
-    public void DecreaseAnxiety(float anxietyLevel) //Decrease the Anxiety level
-    {
-        float currentAnxietyLevel;
-        Instance.musicEmitter.EventInstance.getParameterByName("Anxiety", out currentAnxietyLevel);
-        float newAnxietyLevel = currentAnxietyLevel - anxietyLevel;
-        Instance.musicEmitter.SetParameter("Anxiety", newAnxietyLevel);
+        Instance.anxiety.AdjustLevel(musicEmitter, level);
     }
     #endregion
 
     #region Curiosity Music
-
-    public void SetCuriousity(float curiousityLevel)
+    public void SetCuriosity(float newLevel)
     {
-        Instance.musicEmitter.SetParameter("Curiousity", curiousityLevel);
+        Instance.curiosity.SetLevel(musicEmitter, newLevel);
     }
 
-    public void IncreaseCuriousity(float curiousityLevel)
+    public void AdjustCuriosity(float level)
     {
-        float currentLevel;
-        Instance.musicEmitter.EventInstance.getParameterByName("Curiousity", out currentLevel);
-        float newLevel = currentLevel + curiousityLevel;
-        Instance.musicEmitter.SetParameter("Curiousity", newLevel);
-    }
-
-    public void DecreaseCuriousity(float curiousityLevel) //Decrease the Anxiety level
-    {
-        float currentLevel;
-        Instance.musicEmitter.EventInstance.getParameterByName("Curiousity", out currentLevel);
-        float newLevel = currentLevel - curiousityLevel;
-        Instance.musicEmitter.SetParameter("Curiousity", newLevel);
-
-        Debug.Log(newLevel);
+        Instance.curiosity.AdjustLevel(musicEmitter, level);
     }
     #endregion
 
     #region Battle Music
-
-    public void SetBattle(float battleLevel) //Sets the Anxiety level to one exact number
+    public void SetBattle(float newLevel)
     {
-        Instance.musicEmitter.SetParameter("BattleIntensity", battleLevel);
+        Instance.battleIntensity.SetLevel(musicEmitter, newLevel);
     }
 
-    public void IncreaseBattle(float battleLevel)
+    public void AdjustBattle(float level)
     {
-        float currentLevel;
-        Instance.musicEmitter.EventInstance.getParameterByName("BattleIntensity", out currentLevel);
-        float newLevel = currentLevel + battleLevel;
-        Instance.musicEmitter.SetParameter("BattleIntensity", newLevel);
-
-        Debug.Log(newLevel);
-    }
-
-    public void DecreaseBattle(float battleLevel) //Decrease the Anxiety level
-    {
-        float currentLevel;
-        Instance.musicEmitter.EventInstance.getParameterByName("BattleIntensity", out currentLevel);
-        float newLevel = currentLevel - battleLevel;
-        Instance.musicEmitter.SetParameter("BattleIntensity", newLevel);
-        
-        Debug.Log(newLevel);
+        Instance.battleIntensity.AdjustLevel(musicEmitter, level);
     }
     #endregion
 
     private void OnDestroy()
     {
         if (Instance.musicEmitter == null)
+            return;
+        if (!Instance.musicEmitter.EventInstance.isValid())
             return;
         Instance.musicEmitter.EventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT); //Let the track fade out instead of stopping immediately on destroy
     }

@@ -45,6 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicEmitter: {fileID: 6610563377779501687}
+  fallbackEventName: event:/DUNGEON1
+  anxiety:
+    name: Anxiety
+  curiosity:
+    name: Curiosity
+  battleIntensity:
+    name: BattleIntensity
 --- !u!114 &6610563377779501687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,6 +76,8 @@ MonoBehaviour:
     Value: 2
   - Name: Anxiety
     Value: 0
+  - Name: BattleIntensity
+    Value: 1
   OverrideAttenuation: 0
   OverrideMinDistance: 0
   OverrideMaxDistance: 0
