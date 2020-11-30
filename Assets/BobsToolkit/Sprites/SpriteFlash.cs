@@ -5,13 +5,10 @@ namespace BobJeltes
 {
     public class SpriteFlash : MonoBehaviour
     {
+        [Header("FloodColor shader required on sprite material")]
         public SpriteRenderer spriteRenderer;
-        public Color color = Color.red;
         public float duration = 0.1f;
         
-        private Color originalColor;
-        private bool originalColorSet = false;
-
         private void Awake()
         {
             SetupSpriteFlash();
@@ -45,12 +42,7 @@ namespace BobJeltes
                 Debug.LogError("Sprite renderer is null");
                 return;
             }
-            if (!originalColorSet)
-            {
-                originalColor = spriteRenderer.color;
-                originalColorSet = true;
-            }
-            spriteRenderer.color = color;
+            spriteRenderer.material.SetFloat("FloodAmount", 1f);
         }
 
         public void ResetSpriteColor()
@@ -60,7 +52,15 @@ namespace BobJeltes
                 Debug.LogError("Sprite renderer is null");
                 return;
             }
-            spriteRenderer.color = originalColor;
+
+            Material spriteMaterial = spriteRenderer.sharedMaterial;
+
+
+            float floodAmount = spriteMaterial.GetFloat("FloodAmount");
+            Debug.Log("Flood amount: " + floodAmount);
+            spriteMaterial.SetFloat("FloodAmount", 0f);
+            floodAmount = spriteMaterial.GetFloat("FloodAmount");
+            Debug.Log("Flood amount: " + floodAmount);
         }
     }
 }

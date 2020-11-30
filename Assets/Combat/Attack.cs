@@ -41,7 +41,6 @@ namespace Combat {
             Health,
             Stamina,
             ChargeSpeed,
-            DisableCharge,
             MovementSpeed
         }
 
@@ -52,10 +51,6 @@ namespace Combat {
         // if (effect != Effect.Stamina)
             [HideInInspector]
         public int StaminaReduction = 1;
-        // if (effect != Effect.ChargeReduction)
-            [HideInInspector]
-        [Range(0f, 1f)]
-        public float chargeSpeedReduction = 1f;
         // if (effect != Effect.MovementSpeedReduction
             [HideInInspector]
         [Range(0f, 1f)]
@@ -156,17 +151,6 @@ namespace Combat {
                     break;
                 case Effect.Stamina:
                     Debug.Log("Drain " + StaminaReduction + " stamina");
-                    break;
-                case Effect.ChargeSpeed:
-                    Debug.Log("Reduce charge speed by " + chargeSpeedReduction);
-                    break;
-                case Effect.DisableCharge:
-                    Debug.Log("Disable charge");
-                    if (fighterHit is PlayerController)
-                    {
-                        // TODO BOB: Hier nog disable charge opnieuw aankoppelen
-                        //fighterHit.GetComponent<PlayerController>().attacking.AllowCharging(false);
-                    }
                     break;
                 case Effect.MovementSpeed:
                     Debug.Log("Reduce movement speed by " + MovementSpeedReduction);
