@@ -5,9 +5,11 @@ using UnityEngine.Events;
 
 public class OnDestroyEvent : MonoBehaviour
 {
-    public UnityEvent onDestroy;
+    public UnityEvent onDestroy = new UnityEvent();
     private void OnDestroy()
     {
-        onDestroy.Invoke();
+        
+        if (onDestroy != null && onDestroy.GetPersistentEventCount() > 0)
+            onDestroy.Invoke();
     }
 }

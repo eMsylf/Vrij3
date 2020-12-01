@@ -93,7 +93,7 @@ public partial class EnemyAIStationary : MonoBehaviour
         state = States.Idle;
         OnIdle.Invoke();
         animator.SetBool("Scream", false);
-        Debug.Log("To Idle for " + idleTimeCurrent);
+        //Debug.Log("To Idle for " + idleTimeCurrent);
     }
     private void Idle()
     {
@@ -115,7 +115,7 @@ public partial class EnemyAIStationary : MonoBehaviour
         OnAttackAnnouncement.Invoke();
         attackAnnouncementTimeCurrent = attackAnnouncementTime;
         state = States.AttackAnnouncement;
-        Debug.Log("Transition to attack announcement for " + attackAnnouncementTimeCurrent);
+        //Debug.Log("Transition to attack announcement for " + attackAnnouncementTimeCurrent);
     }
     private void AttackAnnouncement()
     {
@@ -138,7 +138,7 @@ public partial class EnemyAIStationary : MonoBehaviour
         OnAttack.Invoke();
         attackTimeCurrent = attackTime;
         animator.SetBool("Scream", true);
-        Debug.Log("Transition to attack for " + attackTimeCurrent);
+        //Debug.Log("Transition to attack for " + attackTimeCurrent);
     }
     private void Attack()
     {

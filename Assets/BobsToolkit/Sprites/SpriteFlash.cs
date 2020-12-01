@@ -52,13 +52,13 @@ namespace BobJeltes
             Material spriteMaterial = spriteRenderer.material;
             spriteMaterial.SetFloat("FloodAmount", 1f);
 
-            Color color = spriteMaterial.GetColor("FloodColor");
-            Debug.Log("Color was " + color);
+            //Color color = spriteMaterial.GetColor("FloodColor");
+            //Debug.Log("Color was " + color);
             
             spriteMaterial.SetColor("FloodColor", overrideColor);
             
-            color = spriteMaterial.GetColor("FloodColor");
-            Debug.Log("Color is now " + color);
+            //color = spriteMaterial.GetColor("FloodColor");
+            //Debug.Log("Color is now " + color);
         }
 
         public void ResetSpriteColor()

@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1049880800}
   - component: {fileID: 1049880802}
-  - component: {fileID: 1049880801}
-  - component: {fileID: 3153838916810612488}
+  - component: {fileID: 2291363331754204189}
   m_Layer: 0
   m_Name: Audio Events Up Close
   m_TagString: Untagged
@@ -46,7 +45,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 8
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1049880801
+--- !u!114 &2291363331754204189
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -55,13 +54,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049880799}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2efd9bcc995193747a595dbf7c8e4d60, type: 3}
+  m_Script: {fileID: 11500000, guid: 09eb135ea8d25d3408d27adc3fe54140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layers:
-    serializedVersion: 2
-    m_Bits: 4096
-  onTriggerEnter:
+  gameObjects: []
+  allowDuplicates: 0
+  OnAdd:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
@@ -76,7 +74,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onTriggerExit:
+  OnRemove:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
@@ -91,21 +89,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  exitOnDisable: 1
---- !u!114 &3153838916810612488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1049880799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3d3e7dc0105e84429b07d9e0b2f360b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjects: []
-  allowDuplicates: 0
+  layers:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!1 &1593020621
 GameObject:
   m_ObjectHideFlags: 0
@@ -7520,7 +7506,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4943651617056692367}
   - component: {fileID: 582766951315880571}
-  - component: {fileID: 9153093936222706303}
+  - component: {fileID: 1495452058622220975}
   m_Layer: 0
   m_Name: Audio Events
   m_TagString: Untagged
@@ -7555,7 +7541,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 16
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9153093936222706303
+--- !u!114 &1495452058622220975
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7564,13 +7550,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6756889244343887802}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2efd9bcc995193747a595dbf7c8e4d60, type: 3}
+  m_Script: {fileID: 11500000, guid: 09eb135ea8d25d3408d27adc3fe54140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layers:
-    serializedVersion: 2
-    m_Bits: 4096
-  onTriggerEnter:
+  gameObjects: []
+  allowDuplicates: 0
+  OnAdd:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
@@ -7585,7 +7570,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onTriggerExit:
+  OnRemove:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 76940448673600974, guid: deb83064a4a743f46bd75d3c79cae81d,
@@ -7600,7 +7585,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  exitOnDisable: 1
+  layers:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!1 &7123543273584339910
 GameObject:
   m_ObjectHideFlags: 0
@@ -8012,7 +7999,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 14da887be84afb544b1b5e1b06feabfd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8093,7 +8080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 5738622204949074231}
-  overrideColor: {r: 4, g: 4, b: 4, a: 0}
+  overrideColor: {r: 5.3403134, g: 0, b: 0, a: 0}
   duration: 0.1
 --- !u!1 &7724749264071693243
 GameObject:
@@ -9130,15 +9117,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad9648736b8b68043aed5a13068784d0, type: 3}
---- !u!4 &6455570727373104511 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4717615782920449800, guid: ad9648736b8b68043aed5a13068784d0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1796546820810476151}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6455570727373104480 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4717615782920449815, guid: ad9648736b8b68043aed5a13068784d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1796546820810476151}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6455570727373104511 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4717615782920449800, guid: ad9648736b8b68043aed5a13068784d0,
     type: 3}
   m_PrefabInstance: {fileID: 1796546820810476151}
   m_PrefabAsset: {fileID: 0}

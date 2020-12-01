@@ -69,7 +69,7 @@ namespace Combat
 
         internal void OnDisableTasks()
         {
-            Debug.Log(name + " disbled", this);
+            Debug.Log(name + " disabled", this);
             Stamina.OnUse -= () => staminaRecharge.windup = 0f;
             Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
         }
