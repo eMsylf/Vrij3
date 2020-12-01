@@ -424,6 +424,17 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""89a88136-fe8f-4e12-adfc-6d0a02721417"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""44a75ce6-4199-4a20-ba9f-5f123ca747d8"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",

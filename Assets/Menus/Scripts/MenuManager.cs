@@ -12,7 +12,7 @@ using BobJeltes.StandardUtilities;
 namespace BobJeltes.Menu
 {
     [RequireComponent(typeof(Canvas))]
-    public class MenuManager : Singleton<MenuManager>
+    public class MenuManager : MonoBehaviour
     {
         private Controls controls;
         private Controls Controls
@@ -57,7 +57,6 @@ namespace BobJeltes.Menu
             }
             return activeEventSystem;
         }
-
         public void GoToScreen(Transform newScreen)
         {
             if (Screens == null)
@@ -159,14 +158,18 @@ namespace BobJeltes.Menu
 
         public bool IsOpen { get { return GetComponent<Canvas>().enabled; } }
 
+        public bool toggleable = true;
         public void Toggle()
         {
+            if (!toggleable)
+                return;
             if (IsOpen)
                 Close();
             else
                 Open();
         }
 
+        [Tooltip("When true, the menu will re-open to the same screen it was last closed on.")]
         public bool rememberLastScreen = false;
         public void Open()
         {
@@ -218,9 +221,9 @@ namespace BobJeltes.Menu
         private void OnEnable()
         {
             Debug.Log("Menu enabled");
-            Controls.Menu.Toggle.performed += _ => Instance.Toggle();
+            Controls.Menu.Toggle.performed += _ => Toggle();
             Controls.Menu.Enable();
-            Instance.FindActiveEventSystem();
+            FindActiveEventSystem();
         }
 
         public void Quit()

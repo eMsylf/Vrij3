@@ -18,7 +18,7 @@ public class AudioSettings : Singleton<AudioSettings>
 
     private void Awake()
     {
-        Master = FMODUnity.RuntimeManager.GetBus("bus:/Master/Fader");
+        Master = FMODUnity.RuntimeManager.GetBus("bus:/Master");
     }
 
     public void SetMaster(float value)
@@ -29,15 +29,5 @@ public class AudioSettings : Singleton<AudioSettings>
     private void SetMasterPrivate(float value)
     {
         Master.setVolume(value);
-    }
-
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
     }
 }
