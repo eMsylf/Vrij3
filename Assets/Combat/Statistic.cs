@@ -48,7 +48,8 @@ namespace Combat
                 OnUse.Invoke();
                 return true;
             }
-            OnDepleted.Invoke();
+            if (OnDepleted != null)
+                OnDepleted.Invoke();
             return false;
         }
 
