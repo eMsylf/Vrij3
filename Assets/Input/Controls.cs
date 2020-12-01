@@ -75,17 +75,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Quit"",
+                    ""name"": ""Reload"",
                     ""type"": ""Button"",
-                    ""id"": ""bbaeefac-f447-4c8f-81fa-cf7fc1e7a183"",
+                    ""id"": ""b429cfaa-5bda-482e-8ce2-4633662e7b1f"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Reload"",
+                    ""name"": ""Pause"",
                     ""type"": ""Button"",
-                    ""id"": ""b429cfaa-5bda-482e-8ce2-4633662e7b1f"",
+                    ""id"": ""466f4fd8-223d-4945-a69a-6a4c3b9a82f9"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -347,28 +347,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""44a75ce6-4199-4a20-ba9f-5f123ca747d8"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard & Mouse"",
-                    ""action"": ""Quit"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""875f966c-bab8-4dc3-b57c-11f465df7bab"",
-                    ""path"": ""<Gamepad>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Quit"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""67040d35-6c80-48f0-bac8-5831146bb725"",
                     ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
@@ -430,6 +408,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": ""Scale(factor=7),Invert"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""CameraZoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""875f966c-bab8-4dc3-b57c-11f465df7bab"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44a75ce6-4199-4a20-ba9f-5f123ca747d8"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -731,8 +731,8 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Game_LockOn = m_Game.FindAction("LockOn", throwIfNotFound: true);
         m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
         m_Game_CameraZoom = m_Game.FindAction("CameraZoom", throwIfNotFound: true);
-        m_Game_Quit = m_Game.FindAction("Quit", throwIfNotFound: true);
         m_Game_Reload = m_Game.FindAction("Reload", throwIfNotFound: true);
+        m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
@@ -802,8 +802,8 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Game_LockOn;
     private readonly InputAction m_Game_Look;
     private readonly InputAction m_Game_CameraZoom;
-    private readonly InputAction m_Game_Quit;
     private readonly InputAction m_Game_Reload;
+    private readonly InputAction m_Game_Pause;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -815,8 +815,8 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @LockOn => m_Wrapper.m_Game_LockOn;
         public InputAction @Look => m_Wrapper.m_Game_Look;
         public InputAction @CameraZoom => m_Wrapper.m_Game_CameraZoom;
-        public InputAction @Quit => m_Wrapper.m_Game_Quit;
         public InputAction @Reload => m_Wrapper.m_Game_Reload;
+        public InputAction @Pause => m_Wrapper.m_Game_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -847,12 +847,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @CameraZoom.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
                 @CameraZoom.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
                 @CameraZoom.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCameraZoom;
-                @Quit.started -= m_Wrapper.m_GameActionsCallbackInterface.OnQuit;
-                @Quit.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnQuit;
-                @Quit.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnQuit;
                 @Reload.started -= m_Wrapper.m_GameActionsCallbackInterface.OnReload;
                 @Reload.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnReload;
                 @Reload.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnReload;
+                @Pause.started -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -878,12 +878,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @CameraZoom.started += instance.OnCameraZoom;
                 @CameraZoom.performed += instance.OnCameraZoom;
                 @CameraZoom.canceled += instance.OnCameraZoom;
-                @Quit.started += instance.OnQuit;
-                @Quit.performed += instance.OnQuit;
-                @Quit.canceled += instance.OnQuit;
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
         }
     }
@@ -1046,8 +1046,8 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnLockOn(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnCameraZoom(InputAction.CallbackContext context);
-        void OnQuit(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

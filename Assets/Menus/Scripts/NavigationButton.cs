@@ -38,7 +38,7 @@ namespace BobJeltes.Menu
                 if (TargetMenuScreen == null)
                     Debug.LogError("Target of button has not been set", gameObject);
                 else
-                    MenuManager.GoToScreen(TargetMenuScreen);
+                    menu.GoToScreen(TargetMenuScreen);
             }
         }
 #if UNITY_EDITOR

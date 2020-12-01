@@ -7,11 +7,12 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using BobJeltes.StandardUtilities;
 
 namespace BobJeltes.Menu
 {
     [RequireComponent(typeof(Canvas))]
-    public class MenuManager : MonoBehaviour
+    public class MenuManager : Singleton<MenuManager>
     {
         private Controls controls;
         private Controls Controls
@@ -160,17 +161,28 @@ namespace BobJeltes.Menu
 
         public void Toggle()
         {
-            GetComponent<Canvas>().enabled = !GetComponent<Canvas>().enabled;
+            if (IsOpen)
+                Close();
+            else
+                Open();
         }
 
+        public bool rememberLastScreen = false;
         public void Open()
         {
             GetComponent<Canvas>().enabled = true;
+            GameManager.Instance.Pause(IsOpen);
         }
 
         public void Close()
         {
             GetComponent<Canvas>().enabled = false;
+            GameManager.Instance.Pause(IsOpen);
+            if (!rememberLastScreen)
+            {
+                while (PreviousScreens.Count > 0)
+                    GoToPreviousScreen();
+            }
         }
 
         void Start()
@@ -206,9 +218,9 @@ namespace BobJeltes.Menu
         private void OnEnable()
         {
             Debug.Log("Menu enabled");
-            Controls.Menu.Toggle.performed += _ => Toggle();
+            Controls.Menu.Toggle.performed += _ => Instance.Toggle();
             Controls.Menu.Enable();
-            FindActiveEventSystem();
+            Instance.FindActiveEventSystem();
         }
 
         public void Quit()
