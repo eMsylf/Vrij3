@@ -61,6 +61,8 @@ namespace Combat
                 return;
             }
 
+            Visualizer.SetActive(true);
+
             Animation animComponent = Visualizer.GetComponent<Animation>();
             if (animComponent != null)
             {
@@ -70,6 +72,7 @@ namespace Combat
             FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
             if (fadeOutComponent != null)
             {
+                fadeOutComponent.gameObject.SetActive(true);
                 fadeOutComponent.ResetFade();
                 fadeOutComponent.StartFadeOut();
             }

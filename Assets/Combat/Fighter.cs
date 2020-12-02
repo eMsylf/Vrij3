@@ -50,12 +50,12 @@ namespace Combat
             if (Health != null)
             {
                 if (Health.max != 0 && Health.syncCurrentToMax)
-                    Health.SetCurrent(Health.max);
+                    Health.SetCurrent(Health.max, false);
             }
             if (Stamina != null)
             {
                 if (Stamina.max != 0 && Stamina.syncCurrentToMax)
-                Stamina.SetCurrent(Stamina.max);
+                Stamina.SetCurrent(Stamina.max, false);
 
                 Stamina.OnUse += () => staminaRecharge.windup = 0f;
                 Stamina.OnUse += () => staminaRecharge.recharge = 0f;
