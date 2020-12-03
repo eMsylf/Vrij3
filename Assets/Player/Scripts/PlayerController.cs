@@ -685,12 +685,20 @@ public class PlayerController : Fighter
 
     public void AddNoChargeZone(GameObject zone)
     {
-        Instance.attacking.AddChargingProhibitor(zone);
+        if (Instance == null)
+            return;
+        if (Instance.attacking == null)
+            return;
+            Instance.attacking.AddChargingProhibitor(zone);
     }
 
     public void RemoveNoChargeZone(GameObject zone)
     {
-        Instance.attacking.RemoveChargingProhibitor(zone);
+        if (Instance == null)
+            return;
+        if (Instance.attacking == null)
+            return;
+            Instance.attacking.RemoveChargingProhibitor(zone);
     }
 
     public void OnAttack()

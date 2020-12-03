@@ -29,8 +29,9 @@ namespace BobJeltes.Menu
 
         void UpdateValue()
         {
-            Debug.Log("Update value to " + slider.value);
-            GetTMPComponent().text = slider.value.ToString(); //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
+            string formattedSliderValue = slider.value.ToString("##0%");
+            GetTMPComponent().text = formattedSliderValue; //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
+            Debug.Log("Update value to " + formattedSliderValue);
         }
     }
 }

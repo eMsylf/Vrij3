@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class FadeOut : MonoBehaviour
 {
@@ -35,6 +36,9 @@ public class FadeOut : MonoBehaviour
             StartFadeOut();
     }
 
+    public UnityEvent OnStartFadeOut = new UnityEvent();
+    public UnityEvent OnEndFadeOut = new UnityEvent();
+
     public void StartFadeOut()
     {
         StopAllCoroutines();
@@ -44,8 +48,11 @@ public class FadeOut : MonoBehaviour
     private IEnumerator FadeOutRoutine()
     {
         //Debug.Log("Start fade out with delay " + Delay);
+        OnStartFadeOut.Invoke();
         yield return new WaitForSeconds(Delay);
         Fade();
+        yield return new WaitForSeconds(Duration);
+        OnEndFadeOut.Invoke();
     }
 
     public void Fade()

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using BobJeltes.StandardUtilities;
 
 namespace BobJeltes.Menu
 {
@@ -56,7 +57,6 @@ namespace BobJeltes.Menu
             }
             return activeEventSystem;
         }
-
         public void GoToScreen(Transform newScreen)
         {
             if (Screens == null)
@@ -158,19 +158,34 @@ namespace BobJeltes.Menu
 
         public bool IsOpen { get { return GetComponent<Canvas>().enabled; } }
 
+        public bool toggleable = true;
         public void Toggle()
         {
-            GetComponent<Canvas>().enabled = !GetComponent<Canvas>().enabled;
+            if (!toggleable)
+                return;
+            if (IsOpen)
+                Close();
+            else
+                Open();
         }
 
+        [Tooltip("When true, the menu will re-open to the same screen it was last closed on.")]
+        public bool rememberLastScreen = false;
         public void Open()
         {
             GetComponent<Canvas>().enabled = true;
+            GameManager.Instance.Pause(IsOpen);
         }
 
         public void Close()
         {
             GetComponent<Canvas>().enabled = false;
+            GameManager.Instance.Pause(IsOpen);
+            if (!rememberLastScreen)
+            {
+                while (PreviousScreens.Count > 0)
+                    GoToPreviousScreen();
+            }
         }
 
         void Start()

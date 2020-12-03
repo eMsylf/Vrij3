@@ -62,17 +62,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Quit",
+                    "name": "Reload",
                     "type": "Button",
-                    "id": "bbaeefac-f447-4c8f-81fa-cf7fc1e7a183",
+                    "id": "b429cfaa-5bda-482e-8ce2-4633662e7b1f",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 },
                 {
-                    "name": "Reload",
+                    "name": "Pause",
                     "type": "Button",
-                    "id": "b429cfaa-5bda-482e-8ce2-4633662e7b1f",
+                    "id": "466f4fd8-223d-4945-a69a-6a4c3b9a82f9",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -334,28 +334,6 @@
                 },
                 {
                     "name": "",
-                    "id": "44a75ce6-4199-4a20-ba9f-5f123ca747d8",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard & Mouse",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "875f966c-bab8-4dc3-b57c-11f465df7bab",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "67040d35-6c80-48f0-bac8-5831146bb725",
                     "path": "<Keyboard>/r",
                     "interactions": "",
@@ -417,6 +395,39 @@
                     "processors": "Scale(factor=7),Invert",
                     "groups": "Gamepad",
                     "action": "CameraZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "875f966c-bab8-4dc3-b57c-11f465df7bab",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89a88136-fe8f-4e12-adfc-6d0a02721417",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44a75ce6-4199-4a20-ba9f-5f123ca747d8",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard & Mouse",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

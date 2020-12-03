@@ -7,10 +7,31 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
 {
     public FMODUnity.StudioEventEmitter musicEmitter;
 
+    public float AnxStart = 0f;
+    public float BattleStart = 0f;
+    public float CurStart = 0f;
+    public bool useStartValues;
+    public void ApplyStartValues()
+    {
+        Instance.Set(AnxietyName, AnxStart);
+        Instance.Set(BattleName, BattleStart);
+        Instance.Set(CuriosityName, CurStart);
+    }
+
     void Start()
     {
-        if (Instance.musicEmitter == null) Debug.LogError("MusicEmitter is Missing");
-        else Instance.musicEmitter.Play();
+        if (Instance.musicEmitter == null)
+        {
+            Debug.LogError("MusicEmitter is Missing");
+            return;
+        }
+        
+        Instance.musicEmitter.Play();
+
+        if (useStartValues)
+        {
+            ApplyStartValues();
+        }
     }
 
     private void Set(string parameterName, float level)
