@@ -31,7 +31,7 @@ namespace BobJeltes.Menu
         {
             string formattedSliderValue = slider.value.ToString("##0%");
             GetTMPComponent().text = formattedSliderValue; //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
-            Debug.Log("Update value to " + formattedSliderValue);
+            Debug.Log("Update value to " + formattedSliderValue, this);
         }
     }
 }

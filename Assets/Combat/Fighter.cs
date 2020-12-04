@@ -17,7 +17,7 @@ namespace Combat
                 return InvincibilityTime > 0f;
             }
         }
-        public Statistic Stamina;
+        public Statistic Stamina = new Statistic();
         public StaminaRecharge staminaRecharge;
         [System.Serializable]
         public class TouchDamage
@@ -75,7 +75,7 @@ namespace Combat
         }
 
 
-        private void Update()
+        public virtual void Update()
         {
             ManageStaminaRecharge();
             ManageInvincibility();

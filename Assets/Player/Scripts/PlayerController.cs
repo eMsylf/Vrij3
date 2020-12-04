@@ -117,8 +117,7 @@ public class PlayerController : Fighter
 
         OnEnableTasks();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        LockCursor(true);
     }
 
     private void OnDisable()
@@ -129,8 +128,21 @@ public class PlayerController : Fighter
 
         OnDisableTasks();
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        LockCursor(false);
+    }
+
+    private void LockCursor(bool locked)
+    {
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            return;
+        }
+#endif
+        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !locked;
     }
 
     bool controlsSubscribed = false;
@@ -140,10 +152,18 @@ public class PlayerController : Fighter
             return;
         Controls.Game.Movement.performed += _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled += _ => Stop();
+
         Controls.Game.Dodge.performed += _ => AttemptDodge();
+
         Controls.Game.Attack.performed += _ => AttemptAttackCharge();
         Controls.Game.Attack.canceled += _ => attacking.CompleteCharge();
+
         Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
+
+        Controls.Game.Run.started += _ => Run(true);
+        //Controls.Game.Run.performed -= _ => Run(false);
+        Controls.Game.Run.canceled += _ => Run(false);
+
         controlsSubscribed = true;
     }
 
@@ -153,18 +173,31 @@ public class PlayerController : Fighter
             return;
         Controls.Game.Movement.performed -= _ => SetMoveInput(_.ReadValue<Vector2>());
         Controls.Game.Movement.canceled -= _ => Stop();
+        
         Controls.Game.Dodge.performed -= _ => AttemptDodge();
+        
         Controls.Game.Attack.performed -= _ => AttemptAttackCharge();
         Controls.Game.Attack.canceled -= _ => attacking.CompleteCharge();
+        
         Controls.Game.LockOn.performed -= _ => targeting.LockOn(transform.position);
+        
+        Controls.Game.Run.started -= _ => Run(true);
+        //Controls.Game.Run.performed -= _ => Run(false);
+        Controls.Game.Run.canceled -= _ => Run(false);
+
         controlsSubscribed = false;
     }
 
     private void FixedUpdate()
     {
         Vector3 playerMovement = movement.GetTopDownMovement(movement.state) * movement.GetSpeedModifier(movement.state);
-        
         Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        ManageRunStaminaDrain(movement.running);
     }
 
     public override void Die()
@@ -197,6 +230,11 @@ public class PlayerController : Fighter
         public float DodgeSpeed = 2f;
         public float DodgeDuration = 1f;
         public bool AcceptMovementInput = true;
+        public float RunSpeedMultiplier = 1.5f;
+        [Tooltip("The amount of time it takes for running to take a point of stamina. (seconds)")]
+        public float RunStaminaDrainTime = 1f;
+        internal float runStaminaDrainTime = 0f;
+        internal bool running = false;
         internal Vector2 Input;
         internal Vector2 FacingDirection = new Vector2(0f, 1f);
         internal enum DefaultDodgeDirection { Backward, ToCamera} 
@@ -236,7 +274,8 @@ public class PlayerController : Fighter
             switch (state)
             {
                 case State.Moving:
-                    return Speed;
+                    float speed = Speed * (running ? RunSpeedMultiplier : 1f);
+                    return speed;
                 case State.Dodging:
                     return DodgeSpeed;
                 case State.Hit:
@@ -286,6 +325,37 @@ public class PlayerController : Fighter
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
         movement.state = Movement.State.Idle;
         Animator.SetBool("IsWalking", false);
+    }
+
+    private void Run(bool enabled)
+    {
+        if (enabled && Stamina.current <= 0)
+            return; 
+
+        movement.running = enabled;
+        staminaRecharge.allow = !enabled;
+        //Debug.Log("Running: " + enabled, this);
+        if (enabled)
+            movement.runStaminaDrainTime = movement.RunStaminaDrainTime;
+    }
+
+    private void ManageRunStaminaDrain(bool running)
+    {
+        if (!running)
+            return;
+
+        movement.runStaminaDrainTime -= Time.deltaTime;
+
+        if (movement.runStaminaDrainTime <= 0f)
+        {
+            movement.runStaminaDrainTime = movement.RunStaminaDrainTime;
+            Stamina.AttemptUse();
+
+            if (Stamina.current <= 0)
+            {
+                Run(false);
+            }
+        }
     }
 
     private void AttemptDodge()

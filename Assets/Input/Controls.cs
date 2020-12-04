@@ -89,6 +89,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""dc494ec4-8df4-493a-998d-7c21622c1000"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -443,6 +451,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ea2204e9-d1db-45b3-aaa2-570d5e79ba39"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": ""Hold(duration=Infinity)"",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6d407da2-fadb-4acb-ae93-3243cb55ab6c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""Hold(duration=Infinity)"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -744,6 +774,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Game_CameraZoom = m_Game.FindAction("CameraZoom", throwIfNotFound: true);
         m_Game_Reload = m_Game.FindAction("Reload", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
+        m_Game_Run = m_Game.FindAction("Run", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
@@ -815,6 +846,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Game_CameraZoom;
     private readonly InputAction m_Game_Reload;
     private readonly InputAction m_Game_Pause;
+    private readonly InputAction m_Game_Run;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -828,6 +860,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @CameraZoom => m_Wrapper.m_Game_CameraZoom;
         public InputAction @Reload => m_Wrapper.m_Game_Reload;
         public InputAction @Pause => m_Wrapper.m_Game_Pause;
+        public InputAction @Run => m_Wrapper.m_Game_Run;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -864,6 +897,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Pause.started -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
+                @Run.started -= m_Wrapper.m_GameActionsCallbackInterface.OnRun;
+                @Run.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnRun;
+                @Run.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnRun;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -895,6 +931,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @Run.started += instance.OnRun;
+                @Run.performed += instance.OnRun;
+                @Run.canceled += instance.OnRun;
             }
         }
     }
@@ -1059,6 +1098,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnCameraZoom(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnRun(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

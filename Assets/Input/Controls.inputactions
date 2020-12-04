@@ -76,6 +76,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Run",
+                    "type": "Button",
+                    "id": "dc494ec4-8df4-493a-998d-7c21622c1000",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -428,6 +436,28 @@
                     "processors": "",
                     "groups": "Keyboard & Mouse",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ea2204e9-d1db-45b3-aaa2-570d5e79ba39",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "Hold(duration=Infinity)",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d407da2-fadb-4acb-ae93-3243cb55ab6c",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Hold(duration=Infinity)",
+                    "processors": "",
+                    "groups": "Keyboard & Mouse",
+                    "action": "Run",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
