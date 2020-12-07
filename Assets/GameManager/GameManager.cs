@@ -83,6 +83,11 @@ public class GameManager : Singleton<GameManager>
         PlayerInstance.gameObject.SetActive(true);
     }
 
+    public void RespawnPlayer()
+    {
+        PlayerInstance.Respawn();
+    }
+
     private void Start()
     {
         Players = FindObjectsOfType<PlayerController>().ToList();

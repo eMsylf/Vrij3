@@ -80,16 +80,16 @@ public class PlayerController : Fighter
                 instance = (PlayerController)FindObjectOfType(typeof(PlayerController));
 
                 // Create new instance if one doesn't already exist.
-                if (instance == null)
-                {
-                    // Need to create a new GameObject to attach the singleton to.
-                    var singletonObject = new GameObject();
-                    instance = singletonObject.AddComponent<PlayerController>();
-                    singletonObject.name = typeof(PlayerController).ToString() + " (Singleton)";
+                //if (instance == null)
+                //{
+                //    // Need to create a new GameObject to attach the singleton to.
+                //    var singletonObject = new GameObject();
+                //    instance = singletonObject.AddComponent<PlayerController>();
+                //    singletonObject.name = typeof(PlayerController).ToString() + " (Singleton)";
 
-                    // Make instance persistent.
-                    DontDestroyOnLoad(singletonObject);
-                }
+                //    // Make instance persistent.
+                //    DontDestroyOnLoad(singletonObject);
+                //}
             }
 
             return instance;
@@ -102,6 +102,21 @@ public class PlayerController : Fighter
 
     private void OnEnable()
     {
+        Controls.Game.Enable();
+        SubscribeControls();
+
+        OnEnableTasks();
+
+        LockCursor(true);
+    }
+
+    public void Respawn()
+    {
+        Instance._Respawn();
+    }
+
+    private void _Respawn()
+    {
         //Debug.Log("Player enabled");
         if (!SpawnPosSet)
         {
@@ -112,12 +127,6 @@ public class PlayerController : Fighter
         {
             transform.position = SpawnPos;
         }
-        Controls.Game.Enable();
-        SubscribeControls();
-
-        OnEnableTasks();
-
-        LockCursor(true);
     }
 
     private void OnDisable()
@@ -134,8 +143,9 @@ public class PlayerController : Fighter
     private void LockCursor(bool locked)
     {
 #if UNITY_EDITOR
-        if (!Application.isPlaying)
+        if (!EditorApplication.isPlaying)
         {
+            Debug.Log("Editor application is not playing. Unlocking cursor.");
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             return;
