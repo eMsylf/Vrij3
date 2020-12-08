@@ -1,33 +1,35 @@
 ﻿using BobJeltes.StandardUtilities;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class AudioSettings : Singleton<AudioSettings>
 {
     FMOD.Studio.EventInstance SFXVolumeTestEvent;
 
-    //FMOD.Studio.Bus SFX;
-    //FMOD.Studio.Bus Music;
+    FMOD.Studio.Bus SFX;
+    FMOD.Studio.Bus Music;
     FMOD.Studio.Bus Master;
-
-    //float MusicVolume = .5f;
-    //float SFXVolume = .5f;
-    //float MasterVolume = .5f;
 
     private void Awake()
     {
         Master = FMODUnity.RuntimeManager.GetBus("bus:/Master");
+        Music = FMODUnity.RuntimeManager.GetBus("bus:/Master/Music");
+        SFX = FMODUnity.RuntimeManager.GetBus("bus:/Master/SFX");
     }
 
     public void SetMaster(float value)
     {
-        Instance.SetMasterPrivate(value);
+        if (Instance == null) return;
+        Instance.Master.setVolume(value);
     }
 
-    private void SetMasterPrivate(float value)
+    public void SetMusic(float value)
     {
-        Master.setVolume(value);
+        if (Instance == null) return;
+        Instance.Music.setVolume(value);
+    }
+
+    public void SetSFX(float value)
+    {
+        if (Instance == null) return;
+        Instance.SFX.setVolume(value);
     }
 }
