@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 812827817485337261}
   - component: {fileID: 812827817485337260}
   - component: {fileID: 812827817485337263}
-  - component: {fileID: 7993210764192869469}
+  - component: {fileID: 5801398775747640921}
   m_Layer: 5
-  m_Name: MenuButton
+  m_Name: NavigationButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7993210764192869469}
+      - m_Target: {fileID: 5801398775747640921}
         m_MethodName: GoToTarget
         m_Mode: 1
         m_Arguments:
@@ -131,7 +131,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7993210764192869469
+--- !u!114 &5801398775747640921
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4d441a8f45ef834ba84827ab80aa942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 0}
+  TargetMenuScreen: {fileID: 0}
   IsBackButton: 0
 --- !u!1 &812827817623936564
 GameObject:
@@ -211,8 +211,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Menu Button
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
-  m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_fontAsset: {fileID: 0}
+  m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

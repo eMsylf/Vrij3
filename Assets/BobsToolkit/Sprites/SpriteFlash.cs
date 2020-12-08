@@ -3,22 +3,21 @@ using UnityEngine;
 
 namespace BobJeltes
 {
-    [System.Serializable]
-    public class SpriteFlash
+    public class SpriteFlash : MonoBehaviour
     {
-        public bool enabled = true;
+        [Header("FloodColor shader required on sprite material")]
         public SpriteRenderer spriteRenderer;
-        public Color color = Color.red;
+        [ColorUsage(true, true)]
+        public Color overrideColor = Color.white;
         public float duration = 0.1f;
         
-        private Color originalColor;
-        private bool originalColorSet = false;
-
-        public void SetupSpriteFlash(SpriteRenderer parent)
+        private void Awake()
         {
-            if (parent != null)
-                spriteRenderer = parent;
+            SetupSpriteFlash();
+        }
 
+        public void SetupSpriteFlash()
+        {
             if (spriteRenderer == null)
             {
                 Debug.LogError("Sprite renderer of " + spriteRenderer.name + " is not assinged", spriteRenderer);
@@ -26,12 +25,20 @@ namespace BobJeltes
             }
         }
 
-        public IEnumerator DoFlashColor()
+        public void DoSpriteFlash()
         {
-            if (!enabled)
-                yield break;
+            StartCoroutine(DoFlashColor(duration));
+        }
+
+        public void DoSpriteFlash(float newDuration)
+        {
+            StartCoroutine(DoFlashColor(newDuration));
+        }
+
+        public IEnumerator DoFlashColor(float _duration)
+        {
             SetSpriteColor();
-            yield return new WaitForSeconds(duration);
+            yield return new WaitForSeconds(_duration);
             ResetSpriteColor();
         }
 
@@ -42,12 +49,16 @@ namespace BobJeltes
                 Debug.LogError("Sprite renderer is null");
                 return;
             }
-            if (!originalColorSet)
-            {
-                originalColor = spriteRenderer.color;
-                originalColorSet = true;
-            }
-            spriteRenderer.color = color;
+            Material spriteMaterial = spriteRenderer.material;
+            spriteMaterial.SetFloat("FloodAmount", 1f);
+
+            //Color color = spriteMaterial.GetColor("FloodColor");
+            //Debug.Log("Color was " + color);
+            
+            spriteMaterial.SetColor("FloodColor", overrideColor);
+            
+            //color = spriteMaterial.GetColor("FloodColor");
+            //Debug.Log("Color is now " + color);
         }
 
         public void ResetSpriteColor()
@@ -57,7 +68,10 @@ namespace BobJeltes
                 Debug.LogError("Sprite renderer is null");
                 return;
             }
-            spriteRenderer.color = originalColor;
+
+            Material spriteMaterial = spriteRenderer.material;
+
+            spriteMaterial.SetFloat("FloodAmount", 0f);
         }
     }
 }

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4327144748443980668}
+  - component: {fileID: 6476405582478208169}
   m_Layer: 0
   m_Name: Anxi_Prop_Cabinet
   m_TagString: Untagged
@@ -31,6 +32,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6476405582478208169
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4454560535079221982}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.8036798, y: 5.788938, z: 5.5072336}
+  m_Center: {x: 0.1035673, y: 2.8915904, z: -0.008285046}
 --- !u!1001 &1118052772150496254
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108,6 +122,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a95bc20cc2f320346b3ad1c20df72ac8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 827d8c584f9bfb84291b26021e5a07b9, type: 2}
     - target: {fileID: 919132149155446097, guid: a95bc20cc2f320346b3ad1c20df72ac8,
         type: 3}
       propertyPath: m_Name

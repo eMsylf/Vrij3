@@ -35,6 +35,7 @@ public class GameObjectEmitter : MonoBehaviour
     [Min(0)]
     public float objectLifetime = 1f;
     public bool objectsBecomeChildren = false;
+    public bool syncDeactivation = true;
 
     public bool useObjectPool = true;
     public ObjectPool objectPool;
@@ -61,6 +62,20 @@ public class GameObjectEmitter : MonoBehaviour
             Emit();
     }
 
+    private void OnDisable()
+    {
+        if (syncDeactivation)
+        {
+            ObjectPool objPool = GetObjectPool();
+            foreach (GameObject obj in objPool.objectPool)
+            {
+                if (obj == null)
+                    continue;
+                obj.SetActive(false);
+            }
+        }
+    }
+
     private void FixedUpdate()
     {
         if (!play)
@@ -79,14 +94,13 @@ public class GameObjectEmitter : MonoBehaviour
 
     public void Emit()
     {
-        Debug.Log("Emit");
+        //Debug.Log("Emit");
 
         Vector3[] directions = GetDirections();
         ObjectPool objPool = GetObjectPool();
         for (int i = 0; i < directions.Length; i++)
         {
             GameObject emittedObject;
-            //Vector3 emissionPos;
 
             if (useObjectPool)
             {
@@ -117,6 +131,7 @@ public class GameObjectEmitter : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         Handles.matrix = transform.localToWorldMatrix;
@@ -137,7 +152,7 @@ public class GameObjectEmitter : MonoBehaviour
             Handles.DrawWireArc(Vector3.zero, Vector3.up, directions[0], emissionAngle, 1f);
         }
     }
-
+#endif
     public Vector3[] GetDirections()
     {
         Vector3[] directions = new Vector3[numberOfObjects];

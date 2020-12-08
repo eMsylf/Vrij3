@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 150356319956469021}
+  - component: {fileID: 642650857172049471}
+  - component: {fileID: 6327283660594239641}
   m_Layer: 0
   m_Name: Anxi_Prop_pipe_A
   m_TagString: Untagged
@@ -31,6 +33,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &642650857172049471
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6867801812415314123}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.7314773, y: 3.4236598, z: 3.9515884}
+  m_Center: {x: -0.0059998035, y: 1.71576, z: 1.9797231}
+--- !u!65 &6327283660594239641
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6867801812415314123}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.1956918, y: 8.618933, z: 3.8436012}
+  m_Center: {x: 0.16197717, y: 4.3013983, z: 2.0337138}
 --- !u!1001 &2790968909974407385
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108,6 +136,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: fd6fd960e8b84484daaf3faa1e8a9dd0,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0e1f788be231d4a4f8fa415355aea50e, type: 2}
     - target: {fileID: 919132149155446097, guid: fd6fd960e8b84484daaf3faa1e8a9dd0,
         type: 3}
       propertyPath: m_Name

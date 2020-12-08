@@ -8,21 +8,17 @@ namespace BobJeltes.Menu
     [RequireComponent(typeof(Button))]
     public class NavigationButton : MonoBehaviour
     {
-        private MenuManager MenuManager;
         public Transform TargetMenuScreen;
         public bool IsBackButton;
 
-        private MenuManager GetMenuManager()
+        private MenuManager menuManager;
+        public MenuManager GetMenuManager()
         {
-            if (MenuManager == null)
+            if (menuManager == null)
             {
-                MenuManager = GetComponentInParent<MenuManager>();
-                if (MenuManager == null)
-                {
-                    Debug.LogError("Menu Manager is missing", gameObject);
-                }
+                menuManager = GetComponentInParent<MenuManager>();
             }
-            return MenuManager;
+            return menuManager;
         }
 
         public void GoToTarget()
@@ -31,14 +27,17 @@ namespace BobJeltes.Menu
             if (menu == null) return;
             if (IsBackButton)
             {
-                MenuManager.GoToPreviousScreen();
+                menu.GoToPreviousScreen();
             }
             else
             {
                 if (TargetMenuScreen == null)
                     Debug.LogError("Target of button has not been set", gameObject);
                 else
-                    MenuManager.GoToScreen(TargetMenuScreen);
+                {
+                    Debug.Log("GO TO THIS SCREEN: " + TargetMenuScreen);
+                    menu.GoToScreen(TargetMenuScreen);
+                }
             }
         }
 #if UNITY_EDITOR

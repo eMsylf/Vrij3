@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
 {
@@ -6,28 +7,51 @@ public class Timer : MonoBehaviour
     private float currentTime = 1f;
     [Tooltip("Whether the timer should use scaled or unscaled time. Unscaled time is unaffected by slowmotion.")]
     public bool ScaledTime = true;
+    public bool DisplayTimeInObjectName = false;
+
+    public bool RestartOnEnable = true;
+
     private string OriginalName;
     public void OnEnable()
     {
-        if (string.IsNullOrEmpty(OriginalName))
-            OriginalName = name;
-        currentTime = time;
+        if (RestartOnEnable)
+        {
+            Restart();
+        }
     }
 
     void Update()
     {
         if (ScaledTime) currentTime -= Time.deltaTime;
         else currentTime -= Time.unscaledDeltaTime;
-
-        name = OriginalName + " (" + currentTime.ToString(StringFormats.TwoDecimals) + ")";
+        if (DisplayTimeInObjectName) 
+            name = OriginalName + " (" + currentTime.ToString(StringFormats.TwoDecimals) + ")";
 
         if (currentTime <= 0f) OnTimeOver();
     }
 
+    public UnityEvent OnStart;
+    public UnityEvent OnEnd;
+
     public virtual void OnTimeOver()
     {
-        Debug.Log("Timer ran out for " + name, this);
+        //Debug.Log("Timer ran out for " + name, this);
         name = OriginalName;
+        OnEnd.Invoke();
+    }
+
+    public void Restart()
+    {
+        if (string.IsNullOrEmpty(OriginalName))
+            OriginalName = name;
+        currentTime = time;
+        OnStart.Invoke();
+    }
+
+    public void Restart(float _time)
+    {
+        time = _time;
+        Restart();
     }
 
 #if UNITY_EDITOR

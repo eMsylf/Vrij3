@@ -29,6 +29,15 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public void Pause(bool enabled)
+    {
+        foreach (PlayerController player in Players)
+        {
+            player.enabled = !enabled;
+        }
+        CameraController.Instance.enabled = !enabled;
+    }
+
     public void Quit()
     {
         Debug.Log("Quit game");
@@ -74,6 +83,11 @@ public class GameManager : Singleton<GameManager>
         PlayerInstance.gameObject.SetActive(true);
     }
 
+    public void RespawnPlayer()
+    {
+        PlayerInstance.Respawn();
+    }
+
     private void Start()
     {
         Players = FindObjectsOfType<PlayerController>().ToList();
@@ -92,23 +106,12 @@ public class GameManager : Singleton<GameManager>
     void SubscribeControls()
     {
         Controls.Game.Enable();
-#if !UNITY_EDITOR
-        Controls.Game.Quit.performed += _ => Quit();
-#endif
         Controls.Game.Reload.performed += _ => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     void UnsubControls()
     {
         Controls.Game.Disable();
-#if !UNITY_EDITOR
-        Controls.Game.Quit.performed -= _ => Quit();
-#endif
         Controls.Game.Reload.performed -= _ => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
-    //public void LoadScene(string sceneName)
-    //{
-    //    SceneManager.LoadScene(sceneName);
-    //}
 }

@@ -48,7 +48,8 @@ namespace Combat
                 OnUse.Invoke();
                 return true;
             }
-            OnDepleted.Invoke();
+            if (OnDepleted != null)
+                OnDepleted.Invoke();
             return false;
         }
 
@@ -56,9 +57,11 @@ namespace Combat
         {
             if (Visualizer == null)
             {
-                Debug.LogError("Statistic visualizer is null");
+                //Debug.LogError("Statistic visualizer is null");
                 return;
             }
+
+            Visualizer.SetActive(true);
 
             Animation animComponent = Visualizer.GetComponent<Animation>();
             if (animComponent != null)
@@ -69,11 +72,12 @@ namespace Combat
             FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
             if (fadeOutComponent != null)
             {
+                fadeOutComponent.gameObject.SetActive(true);
                 fadeOutComponent.ResetFade();
                 fadeOutComponent.StartFadeOut();
             }
 
-            Debug.Log("Updating visual", Visualizer);
+            //Debug.Log("Updating visual", Visualizer);
             for (int i = 0; i < Visualizer.transform.childCount; i++)
             {
                 GameObject child = Visualizer.transform.GetChild(i).gameObject;

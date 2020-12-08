@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Enemy))]
 //[RequireComponent(typeof(Pathfinding))]
-public class EnemyAIStationary : MonoBehaviour
+public partial class EnemyAIStationary : MonoBehaviour
 {
     Enemy enemy;
     Enemy Enemy
@@ -21,18 +21,29 @@ public class EnemyAIStationary : MonoBehaviour
         }
     }
 
+    public Animator animator;
     [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. X = min, y = max")]
+    public States state;
+    [Header("Idle")]
     public Vector2 IdleTime = new Vector2(1f, 5f);
     private float idleTimeCurrent = 0f;
+    public UnityEvent OnIdle;
+    [Header("Attack announcement")]
+    [Min(0)]
+    public float attackAnnouncementTime = .5f;
+    private float attackAnnouncementTimeCurrent;
+    public UnityEvent OnAttackAnnouncement;
+    [Header("Attack")]
+    public float attackTime = 5f;
+    private float attackTimeCurrent = 0f;
+    public UnityEvent OnAttack;
 
-    public SpriteFlash AttackAnnouncement = new SpriteFlash();
-
-    public enum States
+    public struct State
     {
-        Idle,
-        Attack
+        public States state;
+        public float time;
+        public float currentTime;
     }
-    public States state;
 
     void Update()
     {
@@ -45,11 +56,11 @@ public class EnemyAIStationary : MonoBehaviour
             case States.Attack:
                 Attack();
                 break;
+            case States.AttackAnnouncement:
+                AttackAnnouncement();
+                break;
         }
     }
-
-
-    public UnityEvent onPlayerClose;
 
     public void GoToState(int _state)
     {
@@ -65,7 +76,6 @@ public class EnemyAIStationary : MonoBehaviour
         return Vector3.Distance(transform.position, PlayerController.Instance.transform.position);
     }
 
-    #region States
     private void AnyState()
     {
     }
@@ -80,19 +90,41 @@ public class EnemyAIStationary : MonoBehaviour
         }
 
         idleTimeCurrent = Random.Range(IdleTime.x, IdleTime.y);
-        Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
+        OnIdle.Invoke();
+        animator.SetBool("Scream", false);
+        //Debug.Log("To Idle for " + idleTimeCurrent);
     }
     private void Idle()
     {
-        if (idleTimeCurrent > 0f)
+        if (idleTimeCurrent <= 0f)
         {
-            idleTimeCurrent -= Time.deltaTime;
+            ToAttackAnnouncement();
+            return;
         }
-        else
+        idleTimeCurrent -= Time.deltaTime;
+    }
+
+    public void ToAttackAnnouncement()
+    {
+        if (state == States.AttackAnnouncement)
+        {
+            Debug.Log("Already in attack announcement state");
+            return;
+        }
+        OnAttackAnnouncement.Invoke();
+        attackAnnouncementTimeCurrent = attackAnnouncementTime;
+        state = States.AttackAnnouncement;
+        //Debug.Log("Transition to attack announcement for " + attackAnnouncementTimeCurrent);
+    }
+    private void AttackAnnouncement()
+    {
+        if (attackAnnouncementTimeCurrent <= 0f)
         {
             ToAttack();
+            return;
         }
+        attackAnnouncementTimeCurrent -= Time.deltaTime;
     }
 
     public void ToAttack()
@@ -102,25 +134,27 @@ public class EnemyAIStationary : MonoBehaviour
             Debug.Log("Already in attack state");
             return;
         }
-        Debug.Log("Transition to Attack");
         state = States.Attack;
+        OnAttack.Invoke();
+        attackTimeCurrent = attackTime;
+        animator.SetBool("Scream", true);
+        //Debug.Log("Transition to attack for " + attackTimeCurrent);
     }
     private void Attack()
     {
+        if (attackTimeCurrent <= 0f)
+        {
+            ToIdle();
+            return;
+        }
         if (!PlayerController.Instance.enabled)
             ToIdle();
+        attackTimeCurrent -= Time.deltaTime;
     }
-    #endregion
 
-//#if UNITY_EDITOR
-//    public Color TargetingColor = Color.yellow;
-//    public Color AttackColor = Color.red;
-//    private void OnDrawGizmosSelected()
-//    {
-//        Handles.color = TargetingColor;
-//        Handles.DrawWireDisc(transform.position, transform.up, TargetingProximity);
-//        Handles.color = AttackColor;
-//        Handles.DrawWireDisc(transform.position, transform.up, AttackingProximity);
-//    }
-//#endif
+    public void ToState(States _state)
+    {
+        Debug.Log("Transition to " + state.ToString(), this);
+        state = _state;
+    }
 }

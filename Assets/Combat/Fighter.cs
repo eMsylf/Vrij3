@@ -8,20 +8,7 @@ namespace Combat
 {
     public class Fighter : MonoBehaviour, CombatProperties.IKillable, CombatProperties.IDamagable<int>, CombatProperties.ICanAttack
     {
-        #region Julia Added
-        //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something- overall it's nothing very important, it's just for the game feel
-        //materials
-
-        //This is all to flicker white before returning to it's normal color Let's hope it works :')
-        // Hallo Bob hier, ik kom ff dingen verpesten sorry alvast
-        public SpriteFlash spriteFlash = new SpriteFlash();
-
-        void Awake(){
-            spriteFlash.SetupSpriteFlash(GetComponent<SpriteRenderer>());
-        }
-        #endregion
-
-        public Statistic Health;
+        public Statistic Health = new Statistic();
         private float InvincibilityTime = 0f;
         public bool Invincible
         {
@@ -30,7 +17,7 @@ namespace Combat
                 return InvincibilityTime > 0f;
             }
         }
-        public Statistic Stamina;
+        public Statistic Stamina = new Statistic();
         public StaminaRecharge staminaRecharge;
         [System.Serializable]
         public class TouchDamage
@@ -38,6 +25,7 @@ namespace Combat
             public int damage = 0;
             public float invincibilityTime = 1f;
             public LayerMask layers;
+            public float force = 1f;
         }
         public TouchDamage touchDamage;
 
@@ -58,14 +46,20 @@ namespace Combat
 
         internal void OnEnableTasks()
         {
-            Debug.Log("Set current health and stamina of " + name + " to max", this);
-            if (Health.max != 0 && Health.syncCurrentToMax)
-                Health.SetCurrent(Health.max);
-            if (Stamina.max != 0 && Stamina.syncCurrentToMax)
-                Stamina.SetCurrent(Stamina.max);
+            //Debug.Log("Set current health and stamina of " + name + " to max", this);
+            if (Health != null)
+            {
+                if (Health.max != 0 && Health.syncCurrentToMax)
+                    Health.SetCurrent(Health.max, false);
+            }
+            if (Stamina != null)
+            {
+                if (Stamina.max != 0 && Stamina.syncCurrentToMax)
+                Stamina.SetCurrent(Stamina.max, false);
 
-            Stamina.OnUse += () => staminaRecharge.windup = 0f;
-            Stamina.OnUse += () => staminaRecharge.recharge = 0f;
+                Stamina.OnUse += () => staminaRecharge.windup = 0f;
+                Stamina.OnUse += () => staminaRecharge.recharge = 0f;
+            }
         }
 
         private void OnDisable()
@@ -75,13 +69,13 @@ namespace Combat
 
         internal void OnDisableTasks()
         {
-            Debug.Log(name + " disbled", this);
+            Debug.Log(name + " disabled", this);
             Stamina.OnUse -= () => staminaRecharge.windup = 0f;
             Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
         }
 
 
-        private void Update()
+        public virtual void Update()
         {
             ManageStaminaRecharge();
             ManageInvincibility();
@@ -131,29 +125,33 @@ namespace Combat
             Debug.Log(name + " died", this);
             if (PickRandomDeathObject)
             {
-                Instantiate(DeathObjects[Random.Range(0, DeathObjects.Count)]);
+                SpawnObjectAtOwnHeight(DeathObjects[Random.Range(0, DeathObjects.Count)]);
             }
             else
             {
                 foreach (GameObject obj in DeathObjects)
                 {
-                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
-                    //Instantiate(obj);
+                    SpawnObjectAtOwnHeight(obj);
                 }
             }
             if (PickRandomBloodSplatter)
             {
-                Instantiate(BloodSplatters[Random.Range(0, BloodSplatters.Count)]);
+                SpawnObjectAtOwnHeight(BloodSplatters[Random.Range(0, BloodSplatters.Count)]);
             }
             else
             {
                 foreach (GameObject obj in BloodSplatters)
                 {
-                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation).transform.localScale = transform.localScale;
+                    SpawnObjectAtOwnHeight(obj);
                 }
             }
 
             gameObject.SetActive(false);
+        }
+
+        public void SpawnObjectAtOwnHeight(GameObject prefab)
+        {
+            Instantiate(prefab, new Vector3(transform.position.x, prefab.transform.position.y, transform.position.z), prefab.transform.rotation).transform.localScale = transform.localScale;
         }
 
         public UnityEvent OnHitEvent;
@@ -161,8 +159,6 @@ namespace Combat
         public void TakeDamage(int damageTaken)
         {
             Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
-            StartCoroutine(spriteFlash.DoFlashColor());
-            Debug.Log("Flash sprite");
 
             OnHitEvent.Invoke();
 
@@ -218,6 +214,12 @@ namespace Combat
 
             if (touchDamage.damage != 0)
             {
+                if (collision.rigidbody != null)
+                {
+                    Vector3 forceVector = collision.rigidbody.position - transform.position;
+                    forceVector.Normalize();
+                    collision.rigidbody.AddForce(touchDamage.force * forceVector, ForceMode.Impulse);
+                }
                 otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
                 Debug.Log(otherFighter + " takes touch damage from " + name);
             }

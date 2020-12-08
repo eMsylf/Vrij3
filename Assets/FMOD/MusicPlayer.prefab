@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3659915325835644871}
-  - component: {fileID: 3659915325835644870}
+  - component: {fileID: 76940448673600974}
   - component: {fileID: 6610563377779501687}
   m_Layer: 0
   m_Name: MusicPlayer
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3659915325835644870
+--- !u!114 &76940448673600974
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,10 +41,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 3659915325835644864}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 997189d9d260d184ab76b75937864b58, type: 3}
+  m_Script: {fileID: 11500000, guid: ee6cd1ef51230294fa8af730b739f263, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   musicEmitter: {fileID: 6610563377779501687}
+  AnxStart: 0
+  BattleStart: 0
+  CurStart: 0
+  useStartValues: 1
+  AnxietyName: Anxiety
+  CuriosityName: Curiosity
+  BattleName: BattleIntensity
 --- !u!114 &6610563377779501687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,6 +76,8 @@ MonoBehaviour:
     Value: 2
   - Name: Anxiety
     Value: 0
+  - Name: BattleIntensity
+    Value: 1
   OverrideAttenuation: 0
   OverrideMinDistance: 0
   OverrideMaxDistance: 0

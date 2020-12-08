@@ -21,9 +21,6 @@ public class AttackInspector : Editor
             case Attack.Effect.Stamina:
                 targetScript.StaminaReduction = EditorGUILayout.IntField("Stamina Reduction", targetScript.StaminaReduction);
                 break;
-            case Attack.Effect.ChargeSpeed:
-                targetScript.chargeSpeedReduction = EditorGUILayout.Slider(targetScript.chargeSpeedReduction, 0f, 1f);
-                break;
             case Attack.Effect.MovementSpeed:
                 targetScript.MovementSpeedReduction = EditorGUILayout.Slider(targetScript.MovementSpeedReduction, 0f, 1f);
                 break;
