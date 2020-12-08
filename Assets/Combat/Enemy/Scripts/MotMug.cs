@@ -18,8 +18,9 @@ public class MotMug : Enemy
     public bool movementJitter = true;
     public Vector3 JitterAmount = Vector3.one;
 
-    private void Update()
+    public override void Update()
     {
+        base.Update();
         ManagePathfinding();
     }
 

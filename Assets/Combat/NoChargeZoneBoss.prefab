@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 3239587713172713894}
   - component: {fileID: 3239587713172713889}
   - component: {fileID: 2836766596679401923}
+  - component: {fileID: 7069833717438900163}
+  - component: {fileID: 8667516934935356966}
   m_Layer: 13
   m_Name: NoChargeZoneBoss
   m_TagString: Untagged
@@ -175,3 +177,39 @@ MonoBehaviour:
   speed: 0.2
   resetScaleOnEnable: 1
   referenceScale: {x: 1, y: 1, z: 1}
+--- !u!114 &7069833717438900163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3239587713172713895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d22e6eeda04eccf4dbae9aa3f6535fd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Force: 50
+--- !u!114 &8667516934935356966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3239587713172713895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09eb135ea8d25d3408d27adc3fe54140, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjects: []
+  allowDuplicates: 0
+  OnAdd:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRemove:
+    m_PersistentCalls:
+      m_Calls: []
+  layers:
+    serializedVersion: 2
+    m_Bits: 22528
