@@ -75,11 +75,13 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
     public string BattleName = "BattleIntensity";
     public void SetBattle(float battleLevel) //Sets the Anxiety level to one exact number
     {
+        if (Instance == null) return;
         Instance.Set(BattleName, battleLevel);
     }
 
     public void AdjustBattle(float battleLevel)
     {
+        if (Instance == null) return;
         Instance.musicEmitter.EventInstance.getParameterByName(BattleName, out float currentLevel);
         Instance.Set(BattleName, currentLevel + battleLevel);
     }
