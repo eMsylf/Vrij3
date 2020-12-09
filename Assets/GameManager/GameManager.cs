@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using BobJeltes.Menu;
 using BobJeltes.StandardUtilities;
-using System;
 
 public class GameManager : Singleton<GameManager>
 {
