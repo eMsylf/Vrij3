@@ -96,9 +96,17 @@ public class PlayerController : Fighter
         }
     }
 
-    private Vector3 SpawnPos;
-    [Tooltip("If unticked, the player's position will be saved as its new spawn position the next time the player is enabled.")]
-    public bool SpawnPosSet = false;
+    [SerializeField] private Vector3 respawnPoint = new Vector3();
+    public Vector3 RespawnPoint
+    {
+        get
+        {
+            if (OverrideRespawn == null)
+                return respawnPoint;
+            return OverrideRespawn.position;
+        }
+    }
+    public Transform OverrideRespawn;
 
     public override void OnEnable()
     {
@@ -121,16 +129,7 @@ public class PlayerController : Fighter
 
     private void _Respawn()
     {
-        //Debug.Log("Player enabled");
-        if (!SpawnPosSet)
-        {
-            SpawnPos = transform.position;
-            SpawnPosSet = true;
-        }
-        else
-        {
-            transform.position = SpawnPos;
-        }
+        transform.position = RespawnPoint;
     }
 
     private void OnDisable()
@@ -854,19 +853,7 @@ public class PlayerController : Fighter
 
     public void DoGamepadRumble(float duration = .25f)
     {
-        Instance.StartCoroutine(GamepadRumble(duration));
-    }
-
-    public IEnumerator GamepadRumble(float duration)
-    {
-        if (Gamepad.current == null)
-        {
-            yield break;
-        }
-
-        Gamepad.current.SetMotorSpeeds(0.25f, 0.75f);
-        yield return new WaitForSeconds(duration);
-        Gamepad.current.SetMotorSpeeds(0f, 0f);
+        GamePadFunctions.Instance.DoGamepadRumble(duration);
     }
 
 #if UNITY_EDITOR
@@ -875,6 +862,9 @@ public class PlayerController : Fighter
     {
         Handles.color = targeting.RadiusColor;
         Handles.DrawWireDisc(transform.position, transform.up, targeting.Radius);
+        Handles.color = Color.white;
+        Handles.DrawLine(transform.position, RespawnPoint);
+        Gizmos.DrawIcon(RespawnPoint, "Player Spawn Pos");
     }
 #endif
 }
