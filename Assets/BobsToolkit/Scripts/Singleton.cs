@@ -64,7 +64,8 @@ namespace BobJeltes.StandardUtilities
 
         private void OnDestroy()
         {
-            m_ShuttingDown = true;
+            Debug.Log("Destroyed instance: " + name);
+            //m_ShuttingDown = true;
         }
     }
 }

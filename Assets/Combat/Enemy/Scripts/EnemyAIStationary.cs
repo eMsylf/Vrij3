@@ -92,7 +92,8 @@ public partial class EnemyAIStationary : MonoBehaviour
         idleTimeCurrent = Random.Range(IdleTime.x, IdleTime.y);
         state = States.Idle;
         OnIdle.Invoke();
-        animator.SetBool("Scream", false);
+        if (animator.isActiveAndEnabled)
+            animator.SetBool("Scream", false);
         //Debug.Log("To Idle for " + idleTimeCurrent);
     }
     private void Idle()
@@ -137,7 +138,8 @@ public partial class EnemyAIStationary : MonoBehaviour
         state = States.Attack;
         OnAttack.Invoke();
         attackTimeCurrent = attackTime;
-        animator.SetBool("Scream", true);
+        if (animator.isActiveAndEnabled)
+            animator.SetBool("Scream", true);
         //Debug.Log("Transition to attack for " + attackTimeCurrent);
     }
     private void Attack()

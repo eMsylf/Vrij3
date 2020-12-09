@@ -25,14 +25,14 @@ namespace Combat
 
         public void SetCurrent(int value)
         {
-            SetCurrent(value, true);
+            SetCurrent(value, true, true);
         }
 
-        public void SetCurrent(int value, bool updateVisual)
+        public void SetCurrent(int value, bool updateVisual, bool animate)
         {
             current = value;
             if (updateVisual) 
-                UpdateVisual();
+                UpdateVisual(animate);
         }
 
         public bool AttemptUse()
@@ -53,7 +53,7 @@ namespace Combat
             return false;
         }
 
-        public void UpdateVisual()
+        public void UpdateVisual(bool animate)
         {
             if (Visualizer == null)
             {
@@ -63,10 +63,13 @@ namespace Combat
 
             Visualizer.SetActive(true);
 
-            Animation animComponent = Visualizer.GetComponent<Animation>();
-            if (animComponent != null)
+            if (animate)
             {
-                animComponent.Play();
+                Animation animComponent = Visualizer.GetComponent<Animation>();
+                if (animComponent != null)
+                {
+                    animComponent.Play();
+                }
             }
 
             FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();

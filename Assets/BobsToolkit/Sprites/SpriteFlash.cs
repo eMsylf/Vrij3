@@ -73,5 +73,10 @@ namespace BobJeltes
 
             spriteMaterial.SetFloat("FloodAmount", 0f);
         }
+
+        private void OnDisable()
+        {
+            ResetSpriteColor();
+        }
     }
 }

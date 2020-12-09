@@ -156,6 +156,8 @@ namespace BobJeltes.Menu
                 Debug.LogWarning("Input Blocker is not set in " + name + " but was attempted to set active. Have you disabled BlockInputsDuringTransitions?", this);
         }
 
+        public bool CloseOnStart = true;
+
         public bool IsOpen { get { return GetComponent<Canvas>().enabled; } }
 
         public bool toggleable = true;
@@ -164,23 +166,25 @@ namespace BobJeltes.Menu
             if (!toggleable)
                 return;
             if (IsOpen)
-                Close();
+                Close(true);
             else
-                Open();
+                Open(true);
         }
 
         [Tooltip("When true, the menu will re-open to the same screen it was last closed on.")]
         public bool rememberLastScreen = false;
-        public void Open()
+        public void Open(bool pause)
         {
             GetComponent<Canvas>().enabled = true;
-            GameManager.Instance.Pause(IsOpen);
+            if (pause)
+                GameManager.Instance.Pause(IsOpen);
         }
 
-        public void Close()
+        public void Close(bool pause)
         {
             GetComponent<Canvas>().enabled = false;
-            GameManager.Instance.Pause(IsOpen);
+            if (pause)
+                GameManager.Instance.Pause(IsOpen);
             if (!rememberLastScreen)
             {
                 while (PreviousScreens.Count > 0)
@@ -200,12 +204,19 @@ namespace BobJeltes.Menu
                 }
             }
             CurrentScreen = StartScreen.Screen;
+
+            if (CloseOnStart)
+            {
+                Close(false);
+            }
         }
 
         public bool VisualizeScreenNavigation = true;
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
+            if (!VisualizeScreenNavigation)
+                return;
             if (Screens != null)
             {
                 return;
@@ -222,8 +233,15 @@ namespace BobJeltes.Menu
         {
             Debug.Log("Menu enabled");
             Controls.Menu.Toggle.performed += _ => Toggle();
-            Controls.Menu.Enable();
             FindActiveEventSystem();
+            Controls.Menu.Enable();
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log("Menu disabled");
+            Controls.Menu.Toggle.performed -= _ => Toggle();
+            Controls.Menu.Disable();
         }
 
         public void Quit()

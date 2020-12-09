@@ -19,8 +19,10 @@ public class ListKeeper : MonoBehaviour
         if (contains)
         {
             if (!allowDuplicates)
-                Debug.Log(name + " already contains " + obj.name, this);
-            return;
+            {
+                return;
+                //Debug.Log(name + " already contains " + obj.name, this);
+            }
         }
         gameObjects.Add(obj);
         OnAdd.Invoke();

@@ -100,12 +100,16 @@ public class PlayerController : Fighter
     [Tooltip("If unticked, the player's position will be saved as its new spawn position the next time the player is enabled.")]
     public bool SpawnPosSet = false;
 
-    private void OnEnable()
+    public override void OnEnable()
     {
+        base.OnEnable();
         Controls.Game.Enable();
         SubscribeControls();
 
-        OnEnableTasks();
+        Health.UpdateVisual(false);
+        Stamina.UpdateVisual(false);
+
+        //Debug.Log("Set current health and stamina of " + name + " to max", this);
 
         LockCursor(true);
     }
@@ -623,10 +627,10 @@ public class PlayerController : Fighter
             switch (ChargeType)
             {
                 case EChargeType.Slider:
-                    ChargeIndicator.SetCurrent(0, true);
+                    ChargeIndicator.SetCurrent(0, true, true);
                     break;
                 default:
-                    ChargeIndicator.SetCurrent(0, true);
+                    ChargeIndicator.SetCurrent(0, true, true);
                     break;
             }
             float chargeTime = 0f;
@@ -672,7 +676,7 @@ public class PlayerController : Fighter
                 {
                     case EChargeType.Slider:
                         ChargeSlider.value = chargeTimeClamped;
-                        ChargeIndicator.SetCurrent(currentChargeState + 1, false);
+                        ChargeIndicator.SetCurrent(currentChargeState + 1, false, false);
                         break;
                     case EChargeType.States:
                         if (currentChargeState != previousChargeState)

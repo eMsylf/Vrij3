@@ -39,7 +39,7 @@ namespace Combat
         [Tooltip("If enabled, only one bloodsplatter is instantiated upon death. If disabled, every bloodsplatter in the list is spawned upon death.")]
         public bool PickRandomBloodSplatter;
 
-        private void OnEnable()
+        public virtual void OnEnable()
         {
             OnEnableTasks();
         }
@@ -50,12 +50,12 @@ namespace Combat
             if (Health != null)
             {
                 if (Health.max != 0 && Health.syncCurrentToMax)
-                    Health.SetCurrent(Health.max, false);
+                    Health.SetCurrent(Health.max, false, false);
             }
             if (Stamina != null)
             {
                 if (Stamina.max != 0 && Stamina.syncCurrentToMax)
-                Stamina.SetCurrent(Stamina.max, false);
+                Stamina.SetCurrent(Stamina.max, false, false);
 
                 Stamina.OnUse += () => staminaRecharge.windup = 0f;
                 Stamina.OnUse += () => staminaRecharge.recharge = 0f;
@@ -69,7 +69,7 @@ namespace Combat
 
         internal void OnDisableTasks()
         {
-            Debug.Log(name + " disabled", this);
+            //Debug.Log(name + " disabled", this);
             Stamina.OnUse -= () => staminaRecharge.windup = 0f;
             Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
         }

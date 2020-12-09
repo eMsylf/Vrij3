@@ -29,7 +29,7 @@ public class HealthPickup : MonoBehaviour
             return;
         }
 
-        fighter.Health.SetCurrent(fighter.Health.current + 1, true);
+        fighter.Health.SetCurrent(fighter.Health.current + 1, true, true);
 
         foreach (GameObject obj in DisappearanceObjects)
         {
