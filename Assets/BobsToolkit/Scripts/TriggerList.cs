@@ -13,7 +13,7 @@ public class TriggerList : ListKeeper
         {
             return;
         }
-        Debug.Log(other.name + " entered trigger of " + name, this);
+        //Debug.Log(other.name + " entered trigger of " + name, this);
         
         Add(other.gameObject);
     }
@@ -24,7 +24,7 @@ public class TriggerList : ListKeeper
         {
             return;
         }
-        Debug.Log(other.name + " left trigger of " + name, this);
+        //Debug.Log(other.name + " left trigger of " + name, this);
         Remove(other.gameObject);
     }
 }

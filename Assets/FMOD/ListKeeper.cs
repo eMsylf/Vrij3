@@ -38,7 +38,7 @@ public class ListKeeper : MonoBehaviour
         bool contains = gameObjects.Contains(obj);
         if (!contains)
         {
-            Debug.LogWarning(name + " does not contain " + obj.name + ", therefore it cannot be removed from the trigger list", this);
+            //Debug.LogWarning(name + " does not contain " + obj.name + ", therefore it cannot be removed from the trigger list", this);
             return;
         }
         int instancesRemoved = 0;
@@ -65,7 +65,7 @@ public class ListKeeper : MonoBehaviour
             instancesRemoved++;
         }
 
-        Debug.Log(instancesRemoved + " instances of " + obj.name + " + removed", this);
+        //Debug.Log(instancesRemoved + " instances of " + obj.name + " + removed from " + name, this);
     }
 
     public void Clear()
