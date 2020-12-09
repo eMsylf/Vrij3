@@ -266,21 +266,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45c26aaff159ac4438d69352cb9c2fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Body: {fileID: 985427829}
-  Speed: 3
-  RotationSpeed: 1
-  boostSpeedMultiplier: 2
-  Animation: 1
-  AnimationTiltAngle: {x: 0, y: 0}
-  AnimationRollAngle: {x: 0, y: 0}
-  AnimationRigidity: 0.5
-  UpwardsThrust: 9.81
-  ContinuouslyResetAnimationY: 1
-  GimbalWeapons: 1
-  GimbalRigidity: 1
-  PauseEditorUponFiring: 0
-  HoverJets: []
-  DeathEffectObjects: []
 --- !u!54 &985427828
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -476,6 +461,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3126918848911054010, guid: 15aa156e71133be4fbf82b81f0079cf0,
+        type: 3}
+      propertyPath: m_Transition
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126918848911054010, guid: 15aa156e71133be4fbf82b81f0079cf0,
+        type: 3}
+      propertyPath: m_SpriteState.m_SelectedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 95ae2446416c58c45bc174974fc15e43,
+        type: 3}
     - target: {fileID: 3126918849663813047, guid: 15aa156e71133be4fbf82b81f0079cf0,
         type: 3}
       propertyPath: m_LocalPosition.x
