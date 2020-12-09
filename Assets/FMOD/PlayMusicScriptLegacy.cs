@@ -37,9 +37,9 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
     private void Set(string parameterName, float level)
     {
         musicEmitter.SetParameter(parameterName, level);
-        Debug.Log("Attempt to set " + parameterName + " level to " + level);
+        //Debug.Log("Attempt to set " + parameterName + " level to " + level);
         musicEmitter.EventInstance.getParameterByName(parameterName, out float newValue);
-        Debug.Log(parameterName + " level set to " + newValue);
+        //Debug.Log(parameterName + " level set to " + newValue);
     }
 
     //Bind the two FMOD parameters to functions called "Anxiety" and "Curiousity"
