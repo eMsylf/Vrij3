@@ -20,16 +20,26 @@ namespace BobJeltes.Menu
             return TMPComponent;
         }
 
+        [Tooltip("If auto-update is true, you DO NOT need to reference UpdateValue in the OnValueChanged of the Slider component.")]
+        public bool autoUpdate = true;
 
         void Awake()
         {
-            UpdateValue();
-            slider.onValueChanged.AddListener(_ => UpdateValue());
+            if (autoUpdate)
+            {
+                UpdateValue();
+                slider.onValueChanged.AddListener(_ => UpdateValue());
+            }
         }
 
-        void UpdateValue()
+        public void UpdateValue()
         {
-            string formattedSliderValue = slider.value.ToString("##0%");
+            UpdateValue(slider.value);
+        }
+
+        public void UpdateValue(float value)
+        {
+            string formattedSliderValue = value.ToString("##0%");
             GetTMPComponent().text = formattedSliderValue; //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
             //Debug.Log("Update value to " + formattedSliderValue, this);
         }
