@@ -212,13 +212,13 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -7169210476464618790}
-    m_Position: {x: 460, y: 180, z: 0}
+    m_Position: {x: 470, y: 170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5179481227726148435}
-    m_Position: {x: 460, y: -10, z: 0}
+    m_Position: {x: 470, y: -10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2267898558520954231}
-    m_Position: {x: 460, y: 90, z: 0}
+    m_Position: {x: 470, y: 80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5245671421621146765}
     m_Position: {x: 190, y: 100, z: 0}
@@ -1249,9 +1249,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 6
+  - m_ConditionMode: 3
     m_ConditionEvent: AttackIndex
-    m_EventTreshold: 1
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2267898558520954231}
   m_Solo: 0
@@ -1421,9 +1421,9 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
+  - {fileID: -7902327500132494145}
   - {fileID: 3942514514557647998}
   - {fileID: 5029603192155008902}
-  - {fileID: -7902327500132494145}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
