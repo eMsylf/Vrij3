@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using BobJeltes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(StepSlider))]
 public class StepSliderVisualizer : MonoBehaviour
 {
     public void SetValue(int value)

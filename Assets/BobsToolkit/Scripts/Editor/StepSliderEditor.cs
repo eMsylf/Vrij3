@@ -9,6 +9,7 @@ namespace BobJeltes
     public class StepSliderEditor : Editor
     {
         private int newMax;
+        private int newCurrent;
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -23,10 +24,10 @@ namespace BobJeltes
 
 
             EditorGUI.BeginChangeCheck();
-            targetScript.Current = EditorGUILayout.IntSlider("Value", targetScript.Current, 0, targetScript.Max);
+            newCurrent = EditorGUILayout.IntSlider("Value", targetScript.Current, 0, targetScript.Max);
             if (EditorGUI.EndChangeCheck())
             {
-                targetScript.UpdateCurrent();
+                targetScript.UpdateCurrent(newCurrent);
             }
         }
     }

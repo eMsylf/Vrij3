@@ -26,6 +26,12 @@ public class LookAtTargetGroup : MonoBehaviour
 
     private void Update()
     {
+        DoLookAt();
+    }
+
+    public void DoLookAt()
+    {
+
         switch (method)
         {
             case Method.AlignRotation:

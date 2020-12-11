@@ -12,23 +12,23 @@ namespace BobJeltes
         public int Max = 1;
         [HideInInspector]
         public int Current;
-        public float Ratio
-        {
-            get
-            {
-                return Current / Max;
-            }
-        }
+        public bool invertCurrent;
 
         //==========================================
 
         public IntEvent OnValueUpdate;
         public IntEvent OnMaxChanged;
 
-        public void UpdateCurrent()
+        public void UpdateCurrent(int newCurrent)
         {
-            Debug.Log("Update value: " + Current);
-            OnValueUpdate.Invoke(Current);
+            int hiddenCurrent;
+            if (invertCurrent)
+                hiddenCurrent = Max - newCurrent;
+            else
+                hiddenCurrent = Current;
+            //Debug.Log("Update value: " + Current);
+            Current = newCurrent;
+            OnValueUpdate.Invoke(hiddenCurrent);
         }
 
         public void UpdateMax(int newMax)
@@ -44,13 +44,14 @@ namespace BobJeltes
             }
             else if (difference < 0)
             {
-
+                // Maximum omlaag
             }
 
-            int newCurrent = Current * (newMax / oldMax);
-            Current = newCurrent;
+            Current = Mathf.RoundToInt(newMax * (Current / (float)oldMax));
+
+
             OnMaxChanged.Invoke(Max);
-            UpdateCurrent();
+            UpdateCurrent(Current);
         }
     }
 
