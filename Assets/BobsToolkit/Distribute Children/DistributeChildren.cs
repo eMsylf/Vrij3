@@ -156,7 +156,7 @@ public class DistributeChildren : MonoBehaviour
     public void DistributeCircular(Vector3 axes)
     {
         float radius = Radius;
-        Debug.Log("Scaled radius: " + radius);
+        //Debug.Log("Scaled radius: " + radius);
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform currentChild = transform.GetChild(i);
