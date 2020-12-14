@@ -8,7 +8,9 @@ namespace Combat
 {
     public class Fighter : MonoBehaviour, CombatProperties.IKillable, CombatProperties.IDamagable<int>, CombatProperties.ICanAttack
     {
-        public Statistic Health = new Statistic();
+        public Stat Health;
+        public Stat Stamina;
+        public StaminaRecharge staminaRecharge;
         private float InvincibilityTime = 0f;
         public bool Invincible
         {
@@ -17,8 +19,6 @@ namespace Combat
                 return InvincibilityTime > 0f;
             }
         }
-        public Statistic Stamina = new Statistic();
-        public StaminaRecharge staminaRecharge;
         [System.Serializable]
         public class TouchDamage
         {
@@ -49,16 +49,11 @@ namespace Combat
             //Debug.Log("Set current health and stamina of " + name + " to max", this);
             if (Health != null)
             {
-                if (Health.max != 0 && Health.syncCurrentToMax)
-                    Health.SetCurrent(Health.max, false, false);
+                Health.SetCurrent(Health.maxValue);
             }
             if (Stamina != null)
             {
-                if (Stamina.max != 0 && Stamina.syncCurrentToMax)
-                Stamina.SetCurrent(Stamina.max, false, false);
-
-                Stamina.OnUse += () => staminaRecharge.windup = 0f;
-                Stamina.OnUse += () => staminaRecharge.recharge = 0f;
+                Stamina.SetCurrent(Stamina.maxValue);
             }
         }
 
@@ -70,8 +65,6 @@ namespace Combat
         internal void OnDisableTasks()
         {
             //Debug.Log(name + " disabled", this);
-            Stamina.OnUse -= () => staminaRecharge.windup = 0f;
-            Stamina.OnUse -= () => staminaRecharge.recharge = 0f;
         }
 
 
@@ -85,7 +78,7 @@ namespace Combat
         {
             if (!staminaRecharge.allow)
                 return;
-            if (Stamina.Get() < Stamina.max)
+            if (Stamina.value < Stamina.maxValue)
             {
                 if (staminaRecharge.windup < staminaRecharge.staminaRechargeWindupTime)
                 {
@@ -100,7 +93,7 @@ namespace Combat
                     }
                     else
                     {
-                        Stamina.SetCurrent(Stamina.current + 1);
+                        Stamina.SetCurrent(Stamina.value + 1);
                         staminaRecharge.recharge = 0f;
                     }
                 }
@@ -158,7 +151,7 @@ namespace Combat
 
         public void TakeDamage(int damageTaken)
         {
-            Health.SetCurrent(Mathf.Clamp(Health.current - damageTaken, 0, Health.max));
+            Health.SetCurrent(Mathf.Clamp(Health.value - damageTaken, 0, Health.maxValue));
 
             OnHitEvent.Invoke();
 
@@ -173,7 +166,7 @@ namespace Combat
                 }
             }
             //Debug.Log(name + " took damage", this);
-            if (Health.current <= 0)
+            if (Health.value <= 0)
             {
                 //Debug.Log(name + " should die now", this);
                 Die();
@@ -189,7 +182,7 @@ namespace Combat
 
         public void TakeDamage(int damageTaken, float invincibilityTime, Fighter damageSource)
         {
-            Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.current, this);
+            Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.value, this);
             TakeDamage(damageTaken, invincibilityTime);
             
         }

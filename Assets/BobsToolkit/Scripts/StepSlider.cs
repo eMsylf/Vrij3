@@ -9,32 +9,31 @@ namespace BobJeltes
     public class StepSlider : MonoBehaviour
     {
         [HideInInspector]
-        public int Max = 1;
+        public int maxValue = 1;
         [HideInInspector]
-        public int Current;
-        public bool invertCurrent;
+        public int value;
+        public bool invertValue;
+        public int InvertedValue
+        {
+            get => maxValue - value;
+        }
 
         //==========================================
 
         public IntEvent OnValueUpdate;
         public IntEvent OnMaxChanged;
 
-        public void UpdateCurrent(int newCurrent)
+        public void SetCurrent(int newCurrent)
         {
-            int hiddenCurrent;
-            if (invertCurrent)
-                hiddenCurrent = Max - newCurrent;
-            else
-                hiddenCurrent = Current;
+            value = newCurrent;
             //Debug.Log("Update value: " + Current);
-            Current = newCurrent;
-            OnValueUpdate.Invoke(hiddenCurrent);
+            OnValueUpdate.Invoke(invertValue?InvertedValue:value);
         }
 
-        public void UpdateMax(int newMax)
+        public void SetMax(int newMax)
         {
-            int oldMax = Max;
-            Max = newMax;
+            int oldMax = maxValue;
+            maxValue = newMax;
             //Debug.Log("Update max: " + Max);
 
             int difference = newMax - oldMax;
@@ -47,11 +46,11 @@ namespace BobJeltes
                 // Maximum omlaag
             }
 
-            Current = Mathf.RoundToInt(newMax * (Current / (float)oldMax));
+            value = Mathf.RoundToInt(newMax * (value / (float)oldMax));
 
 
-            OnMaxChanged.Invoke(Max);
-            UpdateCurrent(Current);
+            OnMaxChanged.Invoke(maxValue);
+            SetCurrent(value);
         }
     }
 

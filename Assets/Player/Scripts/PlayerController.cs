@@ -114,9 +114,6 @@ public class PlayerController : Fighter
         Controls.Game.Enable();
         SubscribeControls();
 
-        Health.UpdateVisual(false);
-        Stamina.UpdateVisual(false);
-
         //Debug.Log("Set current health and stamina of " + name + " to max", this);
 
         LockCursor(true);
@@ -210,7 +207,7 @@ public class PlayerController : Fighter
     public override void Update()
     {
         base.Update();
-        ManageRunStaminaDrain(movement.running);
+        ManageRuningStaminaDrain(movement.running);
     }
 
     public override void Die()
@@ -342,7 +339,7 @@ public class PlayerController : Fighter
 
     private void Run(bool enabled)
     {
-        if (enabled && Stamina.current <= 0)
+        if (enabled && Stamina.value <= 0)
             return; 
 
         movement.running = enabled;
@@ -352,7 +349,7 @@ public class PlayerController : Fighter
             movement.runStaminaDrainTime = movement.RunStaminaDrainTime;
     }
 
-    private void ManageRunStaminaDrain(bool running)
+    private void ManageRuningStaminaDrain(bool running)
     {
         if (!running)
             return;
@@ -362,9 +359,9 @@ public class PlayerController : Fighter
         if (movement.runStaminaDrainTime <= 0f)
         {
             movement.runStaminaDrainTime = movement.RunStaminaDrainTime;
-            Stamina.AttemptUse();
+            Stamina.value -= 1;
 
-            if (Stamina.current <= 0)
+            if (Stamina.value <= 0)
             {
                 Run(false);
             }
@@ -387,12 +384,13 @@ public class PlayerController : Fighter
                 return;
         }
 
-        if (!Stamina.AttemptUse())
+        if (Stamina.value <= 0)
         {
             //Debug.Log("Insufficient stamina to dodge");
             //-----------------------------------------------   Out of Stamina
             return;
         }
+        Stamina.value -= 1;
 
         attacking.state = Attacking.State.Disabled;
 
@@ -755,13 +753,15 @@ public class PlayerController : Fighter
                 return;
         }
 
-        if (!Stamina.AttemptUse())
+        if (Stamina.value <= 0)
         {
             Debug.Log("Not enough stamina to attack");
             //-------------------------------------------------- Out of stamina
             //Julia: Hey Bob, is dit komt ook voor als de player dodged, is het niet slimmer die 2 te combineren?
             return;
         }
+        Stamina.value -= 1;
+
         StartCoroutine(attacking.DoCharge());
         staminaRecharge.allow = false;
     }

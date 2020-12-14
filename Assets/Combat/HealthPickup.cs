@@ -24,12 +24,12 @@ public class HealthPickup : MonoBehaviour
             return;
         }
 
-        if (fighter.Health.current == fighter.Health.max)
+        if (fighter.Health.value == fighter.Health.maxValue)
         {
             return;
         }
 
-        fighter.Health.SetCurrent(fighter.Health.current + 1, true, true);
+        fighter.Health.SetCurrent(fighter.Health.value + 1);
 
         foreach (GameObject obj in DisappearanceObjects)
         {

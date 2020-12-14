@@ -12,23 +12,23 @@ namespace BobJeltes
         private int newCurrent;
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
             StepSlider targetScript = (StepSlider)target;
 
             EditorGUI.BeginChangeCheck();
-            newMax = Mathf.Max(1, EditorGUILayout.IntField("Slider max", targetScript.Max));
+            newMax = Mathf.Max(1, EditorGUILayout.IntField("Slider max", targetScript.maxValue));
             if (EditorGUI.EndChangeCheck())
             {
-                targetScript.UpdateMax(newMax);
+                targetScript.SetMax(newMax);
             }
 
 
             EditorGUI.BeginChangeCheck();
-            newCurrent = EditorGUILayout.IntSlider("Value", targetScript.Current, 0, targetScript.Max);
+            newCurrent = EditorGUILayout.IntSlider("Value", targetScript.value, 0, targetScript.maxValue);
             if (EditorGUI.EndChangeCheck())
             {
-                targetScript.UpdateCurrent(newCurrent);
+                targetScript.SetCurrent(newCurrent);
             }
+            base.OnInspectorGUI();
         }
     }
 }
