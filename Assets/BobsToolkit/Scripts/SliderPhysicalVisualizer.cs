@@ -1,11 +1,14 @@
-﻿using BobJeltes;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using BobJeltes;
 
-[RequireComponent(typeof(StepSlider))]
-public class StepSliderVisualizer : MonoBehaviour
+[RequireComponent(typeof(SliderExtension))]
+public class SliderPhysicalVisualizer : MonoBehaviour
 {
+    public void SetValue(float value)
+    {
+        SetValue(Mathf.RoundToInt(value));
+    }
+
     public void SetValue(int value)
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -14,6 +17,11 @@ public class StepSliderVisualizer : MonoBehaviour
             //Debug.Log("Set child " + i);
             child.SetActive(value >= i + 1);
         }
+    }
+
+    public void SetMax(float value)
+    {
+        SetMax(Mathf.RoundToInt(value));
     }
 
     public void SetMax(int value)

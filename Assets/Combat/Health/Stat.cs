@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BobJeltes;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,81 +8,99 @@ namespace Combat
     [System.Serializable]
     public class Stat : MonoBehaviour
     {
-        public int maxValue = 4;
-        public int value;
-        [Tooltip("The time it takes for a point to be recovered. 0 = no recovery.")]
+        public float m_maxValue = 4;
+        public float m_value;
+        [Header("Recovery")]
+        [Tooltip("The time it takes for a point to be recovered..")]
         public float recoveryTime = 1f;
+        public float recoveryWindup = 1f;
+        private float windup;
+        private float recovery;
+        public bool allowRecovery = false;
+        [Header("Other")]
         [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
         public bool syncCurrentToMax = true;
-        public GameObject Visualizer;
 
-        public UnityAction<float> OnUse;
-        public UnityAction OnDepleted;
-
-        public int Get()
+        public float MaxValue
         {
-            return value;
-        }
-
-        public void SetCurrent(int _value)
-        {
-            value = _value;
-        }
-
-        public bool AttemptUse()
-        {
-            return Use(1);
-        }
-
-        public bool Use(int amount)
-        {
-            if (value - amount >= 0)
+            get => m_maxValue;
+            set
             {
-                SetCurrent(value - amount);
-                OnUse.Invoke(amount);
-                return true;
+                m_maxValue = value;
             }
-            if (OnDepleted != null)
+        }
+
+        public float Value
+        {
+            get => m_value;
+            set
+            {
+                m_value = value;
+            }
+        }
+
+        public FloatEvent OnSet;
+        public UnityEvent OnDepleted;
+
+        public float Get()
+        {
+            return m_value;
+        }
+
+        public void SetCurrent(float _value)
+        {
+            m_value = _value;
+            Debug.Log("Set" + name + " to " + _value + " points");
+            OnSet.Invoke(_value);
+        }
+
+        public void Use(float amount)
+        {
+            if (m_value - amount >= 0)
+            {
+                SetCurrent(m_value - amount);
+            }
+
+            if (m_value <= 0 && OnDepleted != null)
                 OnDepleted.Invoke();
-            return false;
         }
 
-        public void UpdateVisual(bool animate)
+        private void Start()
         {
-            if (Visualizer == null)
+            if (syncCurrentToMax)
             {
-                //Debug.LogError("Statistic visualizer is null");
+                Value = MaxValue;
+            }
+        }
+
+        private void Update()
+        {
+            ManageRecharge();
+        }
+
+        void ManageRecharge()
+        {
+            if (!allowRecovery)
                 return;
-            }
-
-            Visualizer.SetActive(true);
-
-            if (animate)
+            if (m_value < m_maxValue)
             {
-                Animation animComponent = Visualizer.GetComponent<Animation>();
-                if (animComponent != null)
+                if (windup < recoveryWindup)
                 {
-                    animComponent.Play();
+                    windup += Time.deltaTime;
                 }
-            }
-
-            FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
-            if (fadeOutComponent != null)
-            {
-                fadeOutComponent.gameObject.SetActive(true);
-                fadeOutComponent.ResetFade();
-                fadeOutComponent.StartFadeOut();
-            }
-
-            //Debug.Log("Updating visual", Visualizer);
-            for (int i = 0; i < Visualizer.transform.childCount; i++)
-            {
-                GameObject child = Visualizer.transform.GetChild(i).gameObject;
-                bool shouldBeActive = value >= i + 1;
-                child.SetActive(shouldBeActive);
-                //Debug.Log("This child (" + i + ") should be active: " + shouldBeActive);
+                else
+                {
+                    if (recovery < recoveryTime)
+                    {
+                        recovery += Time.deltaTime;
+                    }
+                    else
+                    {
+                        SetCurrent(m_value + 1);
+                        recovery = 0f;
+                    }
+                }
             }
         }
     }
-
 }
