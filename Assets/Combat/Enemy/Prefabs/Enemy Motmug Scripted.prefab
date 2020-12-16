@@ -37,6 +37,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1040695551342596002, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: speed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1040695551342596002, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: waypointProximity
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1040695551342596002, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1538037133480758679, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
       propertyPath: m_Name
@@ -116,6 +131,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546137308744217825, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546137308744217825, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: m_Value
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5664807168171561388, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
@@ -330,7 +355,22 @@ PrefabInstance:
     - target: {fileID: 9120639510312642474, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
       propertyPath: TargetingProximity
-      value: 8
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9120639510312642474, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: playerOutOfRangeCooldown
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9120639510312642474, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: AttackingProximity
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9120639510312642474, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: state
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 941182fbd2fd2664393896f7d7f572cf, type: 3}
