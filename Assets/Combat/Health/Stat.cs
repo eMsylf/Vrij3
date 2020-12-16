@@ -19,7 +19,7 @@ namespace Combat
         public bool allowRecovery = false;
         [Header("Other")]
         [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
-        public bool syncCurrentToMax = true;
+        public bool syncValueToMax = true;
 
         public float MaxValue
         {
@@ -67,7 +67,7 @@ namespace Combat
 
         private void Start()
         {
-            if (syncCurrentToMax)
+            if (syncValueToMax)
             {
                 Value = MaxValue;
             }
