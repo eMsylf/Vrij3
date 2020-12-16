@@ -10,7 +10,6 @@ namespace Combat
     {
         public Stat Health;
         public Stat Stamina;
-        public StaminaRecharge staminaRecharge;
         private float InvincibilityTime = 0f;
         public bool Invincible
         {
@@ -49,11 +48,11 @@ namespace Combat
             //Debug.Log("Set current health and stamina of " + name + " to max", this);
             if (Health != null)
             {
-                Health.SetCurrent(Health.maxValue);
+                Health.SetCurrent(Health.m_maxValue);
             }
             if (Stamina != null)
             {
-                Stamina.SetCurrent(Stamina.maxValue);
+                Stamina.SetCurrent(Stamina.m_maxValue);
             }
         }
 
@@ -70,34 +69,7 @@ namespace Combat
 
         public virtual void Update()
         {
-            ManageStaminaRecharge();
             ManageInvincibility();
-        }
-
-        void ManageStaminaRecharge()
-        {
-            if (!staminaRecharge.allow)
-                return;
-            if (Stamina.value < Stamina.maxValue)
-            {
-                if (staminaRecharge.windup < staminaRecharge.staminaRechargeWindupTime)
-                {
-                    staminaRecharge.windup += Time.deltaTime;
-
-                }
-                else
-                {
-                    if (staminaRecharge.recharge < staminaRecharge.staminaRechargeTime)
-                    {
-                        staminaRecharge.recharge += Time.deltaTime;
-                    }
-                    else
-                    {
-                        Stamina.SetCurrent(Stamina.value + 1);
-                        staminaRecharge.recharge = 0f;
-                    }
-                }
-            }
         }
 
         void ManageInvincibility()
@@ -151,7 +123,7 @@ namespace Combat
 
         public void TakeDamage(int damageTaken)
         {
-            Health.SetCurrent(Mathf.Clamp(Health.value - damageTaken, 0, Health.maxValue));
+            Health.SetCurrent(Mathf.Clamp(Health.m_value - damageTaken, 0, Health.m_maxValue));
 
             OnHitEvent.Invoke();
 
@@ -165,8 +137,8 @@ namespace Combat
                     Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
                 }
             }
-            //Debug.Log(name + " took damage", this);
-            if (Health.value <= 0)
+            //Debug.Log(name + " took " + damageTaken + " damage", this);
+            if (Health.m_value <= 0)
             {
                 //Debug.Log(name + " should die now", this);
                 Die();
@@ -182,7 +154,7 @@ namespace Combat
 
         public void TakeDamage(int damageTaken, float invincibilityTime, Fighter damageSource)
         {
-            Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage. New health: " + Health.value, this);
+            Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage.");
             TakeDamage(damageTaken, invincibilityTime);
             
         }

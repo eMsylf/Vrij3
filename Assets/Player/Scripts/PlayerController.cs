@@ -339,11 +339,11 @@ public class PlayerController : Fighter
 
     private void Run(bool enabled)
     {
-        if (enabled && Stamina.value <= 0)
+        if (enabled && Stamina.m_value <= 0)
             return; 
 
         movement.running = enabled;
-        staminaRecharge.allow = !enabled;
+        Stamina.allowRecovery = !enabled;
         //Debug.Log("Running: " + enabled, this);
         if (enabled)
             movement.runStaminaDrainTime = movement.RunStaminaDrainTime;
@@ -359,9 +359,9 @@ public class PlayerController : Fighter
         if (movement.runStaminaDrainTime <= 0f)
         {
             movement.runStaminaDrainTime = movement.RunStaminaDrainTime;
-            Stamina.value -= 1;
+            Stamina.Use(1);
 
-            if (Stamina.value <= 0)
+            if (Stamina.m_value <= 0)
             {
                 Run(false);
             }
@@ -384,13 +384,13 @@ public class PlayerController : Fighter
                 return;
         }
 
-        if (Stamina.value <= 0)
+        if (Stamina.m_value <= 0)
         {
             //Debug.Log("Insufficient stamina to dodge");
             //-----------------------------------------------   Out of Stamina
             return;
         }
-        Stamina.value -= 1;
+        Stamina.Use(1);
 
         attacking.state = Attacking.State.Disabled;
 
@@ -753,17 +753,17 @@ public class PlayerController : Fighter
                 return;
         }
 
-        if (Stamina.value <= 0)
+        if (Stamina.m_value <= 0)
         {
             Debug.Log("Not enough stamina to attack");
             //-------------------------------------------------- Out of stamina
             //Julia: Hey Bob, is dit komt ook voor als de player dodged, is het niet slimmer die 2 te combineren?
             return;
         }
-        Stamina.value -= 1;
+        Stamina.Use(1);
 
         StartCoroutine(attacking.DoCharge());
-        staminaRecharge.allow = false;
+        Stamina.allowRecovery = false;
     }
 
     public void AddNoChargeZone(GameObject zone)
@@ -797,7 +797,7 @@ public class PlayerController : Fighter
         attacking.state = Attacking.State.Attacking;
         movement.state = Movement.State.Disabled;
         //Animator.ResetTrigger("Attack");
-        staminaRecharge.allow = false;
+        Stamina.allowRecovery = false;
 
         //-------------------------------------------------- Attack sound, according to latestCharge 2 to 3/4
     }
@@ -814,7 +814,7 @@ public class PlayerController : Fighter
         attacking.state = Attacking.State.Ready;
         movement.state = Movement.State.Idle;
         movement.AcceptMovementInput = true;
-        staminaRecharge.allow = true;
+        Stamina.allowRecovery = true;
         // Get walking direction at end of attack 
         UpdateMoveInput();
     }

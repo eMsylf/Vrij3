@@ -23,6 +23,14 @@ public class LookAtTargetGroup : MonoBehaviour
     [Header("Only works with 'Forward'")]
     public bool reverse;
     public bool StayUpright;
+    public enum UpOrientation
+    {
+        Up,
+        Right,
+        Forward
+    }
+    public UpOrientation upOrientation;
+    public bool ReverseUp;
 
     private void Update()
     {
@@ -31,7 +39,6 @@ public class LookAtTargetGroup : MonoBehaviour
 
     public void DoLookAt()
     {
-
         switch (method)
         {
             case Method.AlignRotation:
@@ -43,13 +50,31 @@ public class LookAtTargetGroup : MonoBehaviour
 
             case Method.Forward:
                 Vector3 targetPosition = GetTarget().position;
-
+                Vector3 up;
+                switch (upOrientation)
+                {
+                    case UpOrientation.Up:
+                        up = Vector3.up;
+                        break;
+                    case UpOrientation.Right:
+                        up = Vector3.right;
+                        break;
+                    case UpOrientation.Forward:
+                        up = Vector3.forward;
+                        break;
+                    default:
+                        up = Vector3.up;
+                        break;
+                }
+                if (ReverseUp) up *= -1f;
                 foreach (Transform trans in transform)
                 {
-                    Vector3 lookVector = trans.position - targetPosition;
-                    if (StayUpright) lookVector.y = 0f;
-                    if (reverse) lookVector *= -1f;
-                    trans.forward = lookVector;
+                    Vector3 lookPos = targetPosition;
+                    if (StayUpright) lookPos.y = 0f;
+                    
+                    if (reverse) lookPos = trans.position + target.position;
+
+                    trans.LookAt(lookPos, up);
                 }
                 break;
         }

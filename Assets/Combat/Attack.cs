@@ -163,16 +163,16 @@ namespace Combat {
                 TimeManager.Instance.DoSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
         }
 
-        public void DamageFighter(Fighter attacker, Fighter damaged)
+        public void DamageFighter(Fighter attacker, Fighter victim)
         {
 
             if (attacker != null)
             {
-                damaged.TakeDamage(Damage, InvincibilityTime, damaged);
+                victim.TakeDamage(Damage, InvincibilityTime, attacker);
             }
             else
             {
-                damaged.TakeDamage(Damage, InvincibilityTime);
+                victim.TakeDamage(Damage, InvincibilityTime);
             }
         }
 

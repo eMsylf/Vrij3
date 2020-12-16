@@ -5,17 +5,17 @@ using UnityEditor;
 
 namespace BobJeltes
 {
-    [CustomEditor(typeof(StepSlider))]
-    public class StepSliderEditor : Editor
+    [CustomEditor(typeof(SliderExtension))]
+    public class SliderExtensionEditor : Editor
     {
-        private int newMax;
-        private int newCurrent;
+        private float newMax;
+        private float newCurrent;
         public override void OnInspectorGUI()
         {
-            StepSlider targetScript = (StepSlider)target;
+            SliderExtension targetScript = (SliderExtension)target;
 
             EditorGUI.BeginChangeCheck();
-            newMax = Mathf.Max(1, EditorGUILayout.IntField("Slider max", targetScript.maxValue));
+            newMax = Mathf.Max(1, EditorGUILayout.FloatField("Slider max", targetScript.maxValue));
             if (EditorGUI.EndChangeCheck())
             {
                 targetScript.SetMax(newMax);
@@ -23,10 +23,10 @@ namespace BobJeltes
 
 
             EditorGUI.BeginChangeCheck();
-            newCurrent = EditorGUILayout.IntSlider("Value", targetScript.value, 0, targetScript.maxValue);
+            newCurrent = EditorGUILayout.Slider("Value", targetScript.value, 0, targetScript.maxValue);
             if (EditorGUI.EndChangeCheck())
             {
-                targetScript.SetCurrent(newCurrent);
+                targetScript.SetValue(newCurrent);
             }
             base.OnInspectorGUI();
         }
