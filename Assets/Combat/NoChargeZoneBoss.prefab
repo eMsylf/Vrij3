@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2836766596679401923}
   - component: {fileID: 7069833717438900163}
   - component: {fileID: 8667516934935356966}
+  - component: {fileID: 4461265370531221800}
   m_Layer: 13
   m_Name: NoChargeZoneBoss
   m_TagString: Untagged
@@ -119,10 +120,10 @@ MonoBehaviour:
       - m_Target: {fileID: 7717233248994819647, guid: c89ba7e25b127174395dcdb70dc52f61,
           type: 3}
         m_MethodName: AddNoChargeZone
-        m_Mode: 2
+        m_Mode: 0
         m_Arguments:
-          m_ObjectArgument: {fileID: 3239587713172713895}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -133,17 +134,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7717233248994819647, guid: c89ba7e25b127174395dcdb70dc52f61,
           type: 3}
-        m_MethodName: RemoveNoChargeZone
-        m_Mode: 2
+        m_MethodName: AddNoChargeZone
+        m_Mode: 0
         m_Arguments:
-          m_ObjectArgument: {fileID: 3239587713172713895}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onDisableExit: 1
+  onDisableExit: 0
 --- !u!54 &3239587713172713889
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -213,3 +214,29 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 22528
+--- !u!114 &4461265370531221800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3239587713172713895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3457089d0e66944981b02528d428c7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onDisable:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8667516934935356966}
+        m_MethodName: Clear
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
