@@ -19,12 +19,21 @@ public class PlayerController : Fighter
     public void CreateDust(){
         dust.Play();
 }
-    public FMODUnity.StudioEventEmitter hitSounds;
-    public FMODUnity.StudioEventEmitter attackSound;
+
+    public FMODUnity.StudioEventEmitter getHitSound;
+    public FMODUnity.StudioEventEmitter attackChargeSound;
+    public FMODUnity.StudioEventEmitter attack1Sound;
+    public FMODUnity.StudioEventEmitter attack2Sound;
+    public FMODUnity.StudioEventEmitter attack3Sound;
     public FMODUnity.StudioEventEmitter dieSound;
+
     public FMODUnity.StudioEventEmitter footstepsSound;
-    public FMODUnity.StudioEventEmitter staminaSound;
-    public FMODUnity.StudioEventEmitter healthSound;
+    public FMODUnity.StudioEventEmitter dodgeSound;
+
+    public FMODUnity.StudioEventEmitter staminaLowSound;
+    public FMODUnity.StudioEventEmitter staminaRegainSound;
+    public FMODUnity.StudioEventEmitter healthLowSound;
+
 
     //Later to be replaced by FMOD elements For now it's hard coded :^) You can find where I added something using the following indicator VVV
     //---------------------------------------------------------     (What it's about)
@@ -343,6 +352,7 @@ public class PlayerController : Fighter
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
         movement.state = Movement.State.Idle;
         Animator.SetBool("IsWalking", false);
+        attackChargeSound.Stop();
     }
 
     private void Run(bool enabled)
@@ -407,6 +417,7 @@ public class PlayerController : Fighter
         {
             //Debug.Log("Insufficient stamina to dodge");
             //-----------------------------------------------   Out of Stamina
+            staminaLowSound.Play();
             return;
         }
         Stamina.Use(1);
@@ -422,6 +433,8 @@ public class PlayerController : Fighter
         movement.state = Movement.State.Dodging;
         movement.AcceptMovementInput = false;
         // ---------------------------------------------    Dodge sound
+        dodgeSound.Play();
+
         if (movement.Input == Vector2Int.zero)
         {
             NeutralDodge();
@@ -452,19 +465,24 @@ public class PlayerController : Fighter
 
     private void DirectionalDodge(Vector2 direction)
     {
-        movement.DodgeDirection = direction.normalized;
+        movement.DodgeDirection = direction.normalized; 
         //Debug.Log("Input detected. Dodge direction = " + movement.DodgeDirection.ToString());
+
     }
 
     private void UpdateMoveInput()
     {
         Vector2 readMovement = Controls.Game.Movement.ReadValue<Vector2>();
         if (readMovement != Vector2.zero)
+        {
             SetMoveInput(readMovement);
-        // ---------------------------------------------    Footsteps
+            // ---------------------------------------------    Footsteps
+            footstepsSound.Play();
+        }
 
         else
         {
+            footstepsSound.Stop();
             Stop();
         }
     }
@@ -784,6 +802,7 @@ public class PlayerController : Fighter
             Debug.Log("Not enough stamina to attack");
             //-------------------------------------------------- Out of stamina
             //Julia: Hey Bob, is dit komt ook voor als de player dodged, is het niet slimmer die 2 te combineren?
+            staminaLowSound.Play();
             return;
         }
         Stamina.Use(1);
@@ -826,6 +845,11 @@ public class PlayerController : Fighter
         Stamina.allowRecovery = false;
 
         //-------------------------------------------------- Attack sound, according to latestCharge 2 to 3/4
+        if (attacking.latestCharge == 0) attack1Sound.Play();
+        else if (attacking.latestCharge == 1) attack2Sound.Play();
+        else if (attacking.latestCharge == 2) attack3Sound.Play();
+
+
     }
 
     public void OnAttackEnd()
