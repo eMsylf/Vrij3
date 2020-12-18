@@ -6,8 +6,10 @@ using UnityEngine.Events;
 public class TriggerEvent : MonoBehaviour
 {
     public LayerMask layers;
-    public UnityEvent onTriggerEnter;
-    public UnityEvent onTriggerExit;
+    //public UnityEvent onTriggerEnter;
+    public UnityEventGameObject onTriggerEnter;
+    //public UnityEvent onTriggerExit;
+    public UnityEventGameObject onTriggerExit;
     public bool onDisableExit = true;
 
     private void OnTriggerEnter(Collider other)
@@ -17,7 +19,7 @@ public class TriggerEvent : MonoBehaviour
             return;
         }
         Debug.Log(other.name + " entered trigger of " + name, this);
-        onTriggerEnter.Invoke();
+        onTriggerEnter.Invoke(other.gameObject);
     }
 
     private void OnTriggerExit(Collider other)
@@ -27,13 +29,12 @@ public class TriggerEvent : MonoBehaviour
             return;
         }
         Debug.Log(other.name + " left trigger of " + name, this);
-        onTriggerExit.Invoke();
+        onTriggerExit.Invoke(other.gameObject);
     }
 
-
-    private void OnDisable()
+    [System.Serializable]
+    public class UnityEventGameObject : UnityEvent<GameObject>
     {
-        if (onDisableExit)
-            onTriggerExit.Invoke();
+
     }
 }

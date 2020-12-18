@@ -19,7 +19,7 @@ namespace Combat
         public bool allowRecovery = false;
         [Header("Other")]
         [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
-        public bool syncCurrentToMax = true;
+        public bool syncValueToMax = true;
 
         public float MaxValue
         {
@@ -39,7 +39,7 @@ namespace Combat
             }
         }
 
-        public FloatEvent OnSet;
+        public FloatEvent OnValueChanged;
         public UnityEvent OnDepleted;
 
         public float Get()
@@ -49,9 +49,11 @@ namespace Combat
 
         public void SetCurrent(float _value)
         {
+            if (m_value == _value)
+                return;
             m_value = _value;
             Debug.Log("Set" + name + " to " + _value + " points");
-            OnSet.Invoke(_value);
+            OnValueChanged.Invoke(_value);
         }
 
         public void Use(float amount)
@@ -67,7 +69,7 @@ namespace Combat
 
         private void Start()
         {
-            if (syncCurrentToMax)
+            if (syncValueToMax)
             {
                 Value = MaxValue;
             }

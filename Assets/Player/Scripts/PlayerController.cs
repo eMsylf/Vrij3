@@ -117,6 +117,7 @@ public class PlayerController : Fighter
         //Debug.Log("Set current health and stamina of " + name + " to max", this);
 
         LockCursor(true);
+        attacking.ClearChargingProhibitors();
     }
 
     public void Respawn()
@@ -384,6 +385,17 @@ public class PlayerController : Fighter
                 return;
         }
 
+        switch (attacking.state)
+        {
+            case Attacking.State.Ready:
+            case Attacking.State.OnCooldown:
+            case Attacking.State.Disabled:
+            case Attacking.State.Charging:
+                break;
+            case Attacking.State.Attacking:
+                return;
+        }
+
         if (Stamina.m_value <= 0)
         {
             //Debug.Log("Insufficient stamina to dodge");
@@ -392,7 +404,7 @@ public class PlayerController : Fighter
         }
         Stamina.Use(1);
 
-        attacking.state = Attacking.State.Disabled;
+        //attacking.state = Attacking.State.Disabled;
 
         StartCoroutine(Dodge(movement.DodgeDuration));
         CreateDust(); //-------------------------------------   Creates dust, added by Julia :^)
@@ -414,7 +426,6 @@ public class PlayerController : Fighter
 
         yield return new WaitForSeconds(duration);
         movement.state = Movement.State.Idle;
-        attacking.state = Attacking.State.Ready;
         movement.AcceptMovementInput = true;
         UpdateMoveInput();
     }
@@ -599,7 +610,7 @@ public class PlayerController : Fighter
         }
 
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
-        private List<GameObject> chargeProhibitors = new List<GameObject>();
+        internal List<GameObject> chargeProhibitors = new List<GameObject>();
 
         internal void AddChargingProhibitor(GameObject prohibitor)
         {
@@ -611,6 +622,12 @@ public class PlayerController : Fighter
         {
             chargeProhibitors.Remove(prohibitor);
             ChargeDisabledIndicator.SetActive(chargeProhibitors.Count != 0);
+        }
+
+        internal void ClearChargingProhibitors()
+        {
+            chargeProhibitors.Clear();
+            ChargeDisabledIndicator.SetActive(false);
         }
 
         internal bool ChargingAllowed()

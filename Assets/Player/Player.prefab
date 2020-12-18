@@ -5634,12 +5634,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_maxValue: 8
-  m_value: 0
+  m_value: 8
   recoveryTime: 1
   recoveryWindup: 1
   allowRecovery: 1
-  syncCurrentToMax: 1
-  OnSet:
+  syncValueToMax: 1
+  OnValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1064604015700537092}
@@ -6985,12 +6985,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_maxValue: 4
-  m_value: 0
+  m_value: 4
   recoveryTime: 1
   recoveryWindup: 1
   allowRecovery: 0
-  syncCurrentToMax: 1
-  OnSet:
+  syncValueToMax: 1
+  OnValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4180678295942639267}
@@ -7112,7 +7112,7 @@ MonoBehaviour:
   CanMultiHit: 0
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 20480
+    m_Bits: 21504
   InvincibilityTime: 0
   HitStun:
     enabled: 1
@@ -7485,7 +7485,7 @@ MonoBehaviour:
   CanMultiHit: 0
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 20480
+    m_Bits: 21504
   InvincibilityTime: 0
   HitStun:
     enabled: 1
@@ -7565,7 +7565,7 @@ MonoBehaviour:
   CanMultiHit: 1
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 20480
+    m_Bits: 21504
   InvincibilityTime: 0
   HitStun:
     enabled: 1
@@ -8532,7 +8532,7 @@ MonoBehaviour:
   CanMultiHit: 1
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 20480
+    m_Bits: 21504
   InvincibilityTime: 0
   HitStun:
     enabled: 1
@@ -9491,7 +9491,7 @@ PrefabInstance:
     - target: {fileID: 731021298605858576, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 731021298605858576, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
@@ -9501,7 +9501,7 @@ PrefabInstance:
     - target: {fileID: 731021298605858576, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetCurrent
+      value: set_Value
       objectReference: {fileID: 0}
     - target: {fileID: 731021298605858576, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
@@ -9661,17 +9661,17 @@ PrefabInstance:
     - target: {fileID: 4532838440818302647, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4532838440818302647, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 6059562609268281831}
+      objectReference: {fileID: 6372173870489999893}
     - target: {fileID: 4532838440818302647, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetCurrent
+      value: set_Value
       objectReference: {fileID: 0}
     - target: {fileID: 4532838440818302647, guid: e567ebb91a8fb544caba96c4be7459b6,
         type: 3}
