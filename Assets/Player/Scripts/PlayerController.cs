@@ -18,7 +18,13 @@ public class PlayerController : Fighter
     public ParticleSystem dust;
     public void CreateDust(){
         dust.Play();
-} 
+}
+    public FMODUnity.StudioEventEmitter hitSounds;
+    public FMODUnity.StudioEventEmitter attackSound;
+    public FMODUnity.StudioEventEmitter dieSound;
+    public FMODUnity.StudioEventEmitter footstepsSound;
+    public FMODUnity.StudioEventEmitter staminaSound;
+    public FMODUnity.StudioEventEmitter healthSound;
 
     //Later to be replaced by FMOD elements For now it's hard coded :^) You can find where I added something using the following indicator VVV
     //---------------------------------------------------------     (What it's about)
@@ -215,6 +221,7 @@ public class PlayerController : Fighter
     {
         GameManager.Instance.PlayerDeath(this);
         //----------------------------------------------------------- Player dies
+        dieSound.Play();
         base.Die();
     }
 
@@ -530,6 +537,8 @@ public class PlayerController : Fighter
             if (chargeTime == 0f)
             {
                 //----------------------------------------- Attack 1 hit
+
+
                 Debug.Log("Launch uncharged attack!");
             }
             else
