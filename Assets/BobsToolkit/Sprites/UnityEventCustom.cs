@@ -1,20 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
-
-public class UnityEventCustom : MonoBehaviour
+[System.Serializable]
+public class UnityEventCustom : UnityEvent<EventData>
 {
-    public OnClickData onClickData;
-    public MyOnClickEvent myOnClickEvent;
-
-    public void OnClick()
-    {
-        myOnClickEvent.Invoke(onClickData);
-    }
+    public EventData eventData;
 }
 
 [System.Serializable]
-public class OnClickData
+public class EventData
 {
     public Color myColor;
     public int myInt;
@@ -22,5 +16,5 @@ public class OnClickData
     //etc.
 }
 
-[System.Serializable]
-public class MyOnClickEvent : UnityEvent<OnClickData> { }
+//[System.Serializable]
+//public class CustomUnityEvent : UnityEvent<EventData> { }

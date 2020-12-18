@@ -19,7 +19,6 @@ public class GridLayoutGroupAutoScalerInspector : Editor
             targetScripts[i] = (GridLayoutGroupAutoScaler)targets[i];
         }
 
-        Undo.RecordObject(targetScript.GetComponent<GridLayoutGroup>(), "Fit into padding");
 
         if (GUILayout.Button("Fit into padding"))
         {

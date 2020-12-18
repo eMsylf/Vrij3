@@ -94,7 +94,7 @@ namespace Combat {
 
             foreach (GameObject obj in HitEffects)
             {
-                Instantiate(obj, other.transform.position, Camera.main.transform.rotation);
+                Instantiate(obj, transform.position, Camera.main.transform.rotation);
             }
 
             OnHitEvent.Invoke();

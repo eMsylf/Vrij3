@@ -114,6 +114,7 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 2048
+  triggerObject: 0
   onTriggerEnter:
     m_PersistentCalls:
       m_Calls:
@@ -134,7 +135,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7717233248994819647, guid: c89ba7e25b127174395dcdb70dc52f61,
           type: 3}
-        m_MethodName: AddNoChargeZone
+        m_MethodName: RemoveNoChargeZone
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -144,7 +145,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onDisableExit: 0
+  onDisableTriggerExit: 1
 --- !u!54 &3239587713172713889
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -229,8 +230,7 @@ MonoBehaviour:
   onDisable:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8667516934935356966, guid: b51f4e55030d85c45b003c8bc625f6d2,
-          type: 3}
+      - m_Target: {fileID: 2304196245796421966}
         m_MethodName: Clear
         m_Mode: 1
         m_Arguments:

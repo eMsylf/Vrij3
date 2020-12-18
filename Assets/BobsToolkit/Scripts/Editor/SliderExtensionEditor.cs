@@ -14,18 +14,22 @@ namespace BobJeltes
         {
             SliderExtension targetScript = (SliderExtension)target;
 
+            //Undo.RecordObject(target, "Set slider max");
             EditorGUI.BeginChangeCheck();
             newMax = Mathf.Max(1, EditorGUILayout.FloatField("Slider max", targetScript.maxValue));
             if (EditorGUI.EndChangeCheck())
             {
+                EditorUtility.SetDirty(target);
                 targetScript.SetMax(newMax);
             }
 
 
+            //Undo.RecordObject(target, "Set slider value");
             EditorGUI.BeginChangeCheck();
             newCurrent = EditorGUILayout.Slider("Value", targetScript.value, 0, targetScript.maxValue);
             if (EditorGUI.EndChangeCheck())
             {
+                EditorUtility.SetDirty(target);
                 targetScript.SetValue(newCurrent);
             }
             base.OnInspectorGUI();

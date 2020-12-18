@@ -1,16 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine;
+using BobJeltes.Events;
 
 public class TriggerEvent : MonoBehaviour
 {
     public LayerMask layers;
-    //public UnityEvent onTriggerEnter;
+    [Tooltip("The game object that is passed with the events listed below")]
+    public TriggerObject triggerObject;
     public UnityEventGameObject onTriggerEnter;
-    //public UnityEvent onTriggerExit;
     public UnityEventGameObject onTriggerExit;
-    public bool onDisableExit = true;
+    public bool onDisableTriggerExit;
+    public enum TriggerObject
+    {
+        This,
+        Other
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,7 +22,18 @@ public class TriggerEvent : MonoBehaviour
             return;
         }
         Debug.Log(other.name + " entered trigger of " + name, this);
-        onTriggerEnter.Invoke(other.gameObject);
+        switch (triggerObject)
+        {
+            case TriggerObject.This:
+                onTriggerEnter.Invoke(gameObject);
+                break;
+            case TriggerObject.Other:
+                onTriggerEnter.Invoke(other.gameObject);
+                break;
+            default:
+                break;
+        }
+        latestEntered = gameObject;
     }
 
     private void OnTriggerExit(Collider other)
@@ -28,13 +42,37 @@ public class TriggerEvent : MonoBehaviour
         {
             return;
         }
-        Debug.Log(other.name + " left trigger of " + name, this);
-        onTriggerExit.Invoke(other.gameObject);
+        Debug.Log(other.name + " left trigger of " + name, this); 
+        switch (triggerObject)
+        {
+            case TriggerObject.This:
+                onTriggerExit.Invoke(gameObject);
+                break;
+            case TriggerObject.Other:
+                onTriggerExit.Invoke(other.gameObject);
+                break;
+            default:
+                break;
+        }
     }
 
-    [System.Serializable]
-    public class UnityEventGameObject : UnityEvent<GameObject>
-    {
+    private GameObject latestEntered;
 
+    private void OnDisable()
+    {
+        if (onDisableTriggerExit)
+        {
+            switch (triggerObject)
+            {
+                case TriggerObject.This:
+                    onTriggerExit.Invoke(gameObject);
+                    break;
+                case TriggerObject.Other:
+                    onTriggerExit.Invoke(latestEntered);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

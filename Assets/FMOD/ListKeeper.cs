@@ -1,4 +1,5 @@
-﻿using BobJeltes.Extensions;
+﻿using BobJeltes.Events;
+using BobJeltes.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,8 @@ public class ListKeeper : MonoBehaviour
 
     public bool allowDuplicates;
 
-    public UnityEvent OnAdd;
-    public UnityEvent OnRemove;
+    public UnityEventGameObject OnAdd;
+    public UnityEventGameObject OnRemove;
 
     public void Add(GameObject obj)
     {
@@ -25,7 +26,7 @@ public class ListKeeper : MonoBehaviour
             }
         }
         gameObjects.Add(obj);
-        OnAdd.Invoke();
+        OnAdd.Invoke(obj);
         
         // Automatically remove on disable
         OnDisableEvent disableEvent = obj.GetComponent<OnDisableEvent>();
@@ -50,7 +51,7 @@ public class ListKeeper : MonoBehaviour
             {
                 if (gameObjects.Remove(obj))
                 {
-                    OnRemove.Invoke();
+                    OnRemove.Invoke(obj);
                     instancesRemoved++;
                     continue;
                 }
@@ -61,7 +62,7 @@ public class ListKeeper : MonoBehaviour
         {
             if (gameObjects.Remove(obj))
             {
-                OnRemove.Invoke();
+                OnRemove.Invoke(obj);
             }
 
             instancesRemoved++;
