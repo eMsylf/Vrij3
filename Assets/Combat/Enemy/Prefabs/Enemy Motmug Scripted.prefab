@@ -148,6 +148,40 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 4.2
+--- !u!114 &8819434613393817835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a442a3592648fe34e8219f1051633042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Energy: 20
+--- !u!114 &5755118504398582152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 648fe5aa54ba9404c9253a06920055b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Visual: {fileID: 0}
+  EnergyAbsorbedRatio: 0.1
+  InstantiateParticles: 1
+  FreePrefab: {fileID: 4533091867458702230, guid: 243034a74ff369545b4362ce55d95a73,
+    type: 3}
+  AbsorbedPrefab: {fileID: 2865376917913340384, guid: ba39aa6c41f8321489dc637b48b53d8d,
+    type: 3}
+  freeParticles: {fileID: 0}
+  absorbedParticles: {fileID: 0}
 --- !u!1 &7359593437552795049
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,6 +320,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3876374712636960560, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
+      propertyPath: OnDeathEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3876374712636960560, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
       propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
@@ -293,6 +332,31 @@ PrefabInstance:
         type: 3}
       propertyPath: OnHitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3876374712636960560, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: OnDeathEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3876374712636960560, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: OnDeathEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3876374712636960560, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: OnDeathEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5755118504398582152}
+    - target: {fileID: 3876374712636960560, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: OnDeathEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReleaseEnergy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3876374712636960560, guid: 941182fbd2fd2664393896f7d7f572cf,
+        type: 3}
+      propertyPath: OnDeathEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4747679260036218540, guid: 941182fbd2fd2664393896f7d7f572cf,
         type: 3}
@@ -626,6 +690,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 941182fbd2fd2664393896f7d7f572cf, type: 3}
+--- !u!1 &8475457101559693662 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1538037133480758679, guid: 941182fbd2fd2664393896f7d7f572cf,
+    type: 3}
+  m_PrefabInstance: {fileID: 6973520334301170889}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7542514880627191277 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 606453890218303780, guid: 941182fbd2fd2664393896f7d7f572cf,

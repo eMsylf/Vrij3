@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -305,6 +305,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1637246357201743322, guid: ac070517f7ecace499d984c9020b4077,
+        type: 3}
+      propertyPath: freeParticles
+      value: 
+      objectReference: {fileID: 492211585}
     - target: {fileID: 1637246357201743323, guid: ac070517f7ecace499d984c9020b4077,
         type: 3}
       propertyPath: m_Name
@@ -312,6 +317,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac070517f7ecace499d984c9020b4077, type: 3}
+--- !u!1 &492211584 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1637246357201743323, guid: ac070517f7ecace499d984c9020b4077,
+    type: 3}
+  m_PrefabInstance: {fileID: 492211583}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &492211585 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1637246356562740851, guid: ac070517f7ecace499d984c9020b4077,
+    type: 3}
+  m_PrefabInstance: {fileID: 492211583}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &492211586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492211584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6818f159d4c3024086988728c41b4ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
+  play: 1
+  playOnAwake: 0
+  emitOnAwake: 0
+  numberOfObjects: 5
+  emissionAngle: 360
+  exactAngle: 0
+  emissionSpeed: 1
+  Interval: 1
+  objectLifetime: 1
+  objectsBecomeChildren: 0
+  syncDeactivation: 1
+  useObjectPool: 1
+  objectPool: {fileID: 0}
 --- !u!1 &562219013
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,12 +572,6 @@ Transform:
   m_Father: {fileID: 1099458073}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1581792857 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4852652939888308858, guid: 4d836448b1dd9ed409f6e96080d1ebe0,
-    type: 3}
-  m_PrefabInstance: {fileID: 4852652938605545090}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1937342305
 GameObject:
   m_ObjectHideFlags: 0
@@ -664,7 +701,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ba27051b608df4aba2910c88caad4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1581792857}
+  Targets: []
+  targetPosition: {x: 0, y: 0, z: 0}
   cameraResources: {fileID: 1150861121}
   positionPivot: {fileID: 1099458073}
   positionTransform: {fileID: 1389453888}

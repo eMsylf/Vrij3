@@ -19,6 +19,12 @@ public class GameObjectEmitter : MonoBehaviour
     [Space]
     [Min(0)]
     public int numberOfObjects = 5;
+    [Min(0)]
+    public float startDistance;
+    [Min(0)]
+    public Vector3 startWidth = Vector3.one;
+    [Range(-90f, 90f)]
+    public float verticalAngle = 0f;
     [Range(0f, 360f)]
     public float emissionAngle = 360f;
     [Tooltip("If ticked, the directions will be exactly distributed over the entire angle. " +
@@ -31,6 +37,7 @@ public class GameObjectEmitter : MonoBehaviour
     public float Interval = 1f;
     private float interval;
     [Space]
+    public bool useLifetime = true;
     [Tooltip("Objects are destroyed after this many seconds.")]
     [Min(0)]
     public float objectLifetime = 1f;
@@ -95,19 +102,31 @@ public class GameObjectEmitter : MonoBehaviour
     public void Emit()
     {
         //Debug.Log("Emit");
-
         Vector3[] directions = GetDirections();
         ObjectPool objPool = GetObjectPool();
         for (int i = 0; i < directions.Length; i++)
         {
             GameObject emittedObject;
+            Vector3 direction = directions[i];
 
             if (useObjectPool)
             {
                 emittedObject = objPool.GetInactive();
                 emittedObject.SetActive(true);
                 // Deactivate object after its lifetime has ended
-                StartCoroutine(emittedObject.SetActive(false, objectLifetime));
+                //StopCoroutine(emittedObject.SetActive(false, objectLifetime));
+                if (useLifetime)
+                {
+                    DeactivateAfter deactivate = emittedObject.GetComponent<DeactivateAfter>();
+                    if (deactivate == null)
+                        Debug.LogError("Deactivate After component is missing on the prefab!", prefab);
+                    else
+                    {
+                        deactivate.enabled = true;
+                        deactivate.Restart(objectLifetime);
+                    }
+                    //StartCoroutine(emittedObject.SetActive(false, objectLifetime));
+                }
             }
             else
             {
@@ -115,16 +134,19 @@ public class GameObjectEmitter : MonoBehaviour
                 Destroy(emittedObject, objectLifetime);
             }
 
-            emittedObject.transform.position = transform.position;
+            Vector3 objStart = directions[i];
+            Vector3.Scale(objStart, startWidth);
+            
+            emittedObject.transform.position = transform.position + objStart.ConvertToObjectRelative(transform);
             if (objectsBecomeChildren)
             {
                 emittedObject.transform.SetParent(transform);
             }
 
-            Vector3 direction = directions[i];
             Rigidbody objRigidbody = emittedObject.GetComponent<Rigidbody>();
             if (objRigidbody != null)
             {
+                objRigidbody.angularVelocity = Vector3.zero;
                 objRigidbody.velocity = Vector3.zero;
                 objRigidbody.AddForce(direction.ConvertToObjectRelative(transform, false) * emissionSpeed, ForceMode.VelocityChange);
             }
@@ -135,24 +157,31 @@ public class GameObjectEmitter : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Handles.matrix = transform.localToWorldMatrix;
+        Gizmos.matrix = transform.localToWorldMatrix;
         Vector3[] directions = GetDirections();
         for (int i = 0; i < directions.Length; i++)
         {
-            Vector3 objEnd = directions[i] * emissionSpeed;
+            Vector3 objStart = directions[i];
+            objStart.Scale(startWidth);
+            objStart *= startDistance;
+            Vector3 objEnd = objStart * emissionSpeed;
             if (objectLifetime > 0f)
             {
-                objEnd *= objectLifetime; // Hier was ik
+                objEnd *= objectLifetime;
             }
             //Debug.Log("Direction: " + directions[i]);
-            Handles.DrawLine(Vector3.zero, objEnd);
-            Handles.ArrowHandleCap(0, objEnd, Quaternion.LookRotation(directions[i]), 1f, EventType.Repaint);
+            Handles.DrawLine(objStart, objEnd);
+            Handles.ArrowHandleCap(0, objEnd, Quaternion.LookRotation(objEnd - objStart), 1f, EventType.Repaint);
         }
-        if (numberOfObjects > 0f && emissionAngle > 0f)
-        {
-            Handles.DrawWireArc(Vector3.zero, Vector3.up, directions[0], emissionAngle, 1f);
-        }
+        //if (numberOfObjects > 0f && emissionAngle > 0f)
+        //{
+        //    //Handles.DrawWireArc(Vector3.zero, Vector3.up, Vector3.Scale(directions[0], startWidth), emissionAngle, Mathf.Sqrt(startDistance) * startWidth.magnitude);
+        //    //Gizmos.DrawWireSphere(Vector3.zero, startWidth.magnitude);
+            
+        //}
     }
 #endif
+
     public Vector3[] GetDirections()
     {
         Vector3[] directions = new Vector3[numberOfObjects];
@@ -166,10 +195,13 @@ public class GameObjectEmitter : MonoBehaviour
         for (int i = 0; i < numberOfObjects; i++)
         {
             float prog = (i / whole) * Mathf.PI * (emissionAngle / 360f) * 2f;
-            float xOffset = Mathf.Sin(prog);
-            float zOffzet = Mathf.Cos(prog);
-            Vector3 direction = new Vector3(xOffset, 0f, zOffzet);
-            directions[i] = direction;
+            float yMagic = 1f - (Mathf.Abs(verticalAngle) / 90f);
+            yMagic = Mathf.Sin(yMagic);
+            float xOffset = Mathf.Sin(prog) * yMagic + Mathf.Sin(prog) * startWidth.x;
+            float yOffset = (verticalAngle/90f);
+            float zOffzet = Mathf.Cos(prog) * yMagic + Mathf.Sin(prog) * startWidth.z;
+            Vector3 direction = new Vector3(xOffset, yOffset, zOffzet);
+            directions[i] = direction.normalized;
             //Debug.Log("i: " + i + " Progress: " + prog + " Direction: " + direction);
         }
 

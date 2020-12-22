@@ -5,11 +5,11 @@ public class TriggerEvent : MonoBehaviour
 {
     public LayerMask layers;
     [Tooltip("The game object that is passed with the events listed below")]
-    public TriggerObject triggerObject;
+    public EventObject passedEventObject;
     public UnityEventGameObject onTriggerEnter;
     public UnityEventGameObject onTriggerExit;
     public bool onDisableTriggerExit;
-    public enum TriggerObject
+    public enum EventObject
     {
         This,
         Other
@@ -22,12 +22,12 @@ public class TriggerEvent : MonoBehaviour
             return;
         }
         Debug.Log(other.name + " entered trigger of " + name, this);
-        switch (triggerObject)
+        switch (passedEventObject)
         {
-            case TriggerObject.This:
+            case EventObject.This:
                 onTriggerEnter.Invoke(gameObject);
                 break;
-            case TriggerObject.Other:
+            case EventObject.Other:
                 onTriggerEnter.Invoke(other.gameObject);
                 break;
             default:
@@ -43,12 +43,12 @@ public class TriggerEvent : MonoBehaviour
             return;
         }
         Debug.Log(other.name + " left trigger of " + name, this); 
-        switch (triggerObject)
+        switch (passedEventObject)
         {
-            case TriggerObject.This:
+            case EventObject.This:
                 onTriggerExit.Invoke(gameObject);
                 break;
-            case TriggerObject.Other:
+            case EventObject.Other:
                 onTriggerExit.Invoke(other.gameObject);
                 break;
             default:
@@ -62,12 +62,12 @@ public class TriggerEvent : MonoBehaviour
     {
         if (onDisableTriggerExit)
         {
-            switch (triggerObject)
+            switch (passedEventObject)
             {
-                case TriggerObject.This:
+                case EventObject.This:
                     onTriggerExit.Invoke(gameObject);
                     break;
-                case TriggerObject.Other:
+                case EventObject.Other:
                     onTriggerExit.Invoke(latestEntered);
                     break;
                 default:

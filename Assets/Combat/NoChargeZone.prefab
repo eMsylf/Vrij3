@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 2304196245796421966}
   - component: {fileID: -4344828575685409989}
   - component: {fileID: -175192430385623716}
+  - component: {fileID: 3287345663919903977}
   m_Layer: 13
   m_Name: NoChargeZone
   m_TagString: Untagged
@@ -114,7 +115,7 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 2048
-  triggerObject: 0
+  passedEventObject: 0
   onTriggerEnter:
     m_PersistentCalls:
       m_Calls:
@@ -215,6 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Force: 50
+  mode: 0
 --- !u!114 &-175192430385623716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,3 +243,31 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3287345663919903977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3239587713172713895}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 1
+  ScaledTime: 1
+  DisplayTimeInObjectName: 0
+  RestartOnEnable: 1
+  OnStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  indicator:
+    IndicatorWidth: 0.3
+    IndicatorHeight: 1
+    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
+    direction: 0
+    invertDirection: 0
