@@ -8,6 +8,7 @@ namespace Combat
 {
     public class Fighter : MonoBehaviour, CombatProperties.IKillable, CombatProperties.IDamagable<int>, CombatProperties.ICanAttack
     {
+        public FMODUnity.StudioEventEmitter dieSound;
         public Stat Health;
         public Stat Stamina;
         private float InvincibilityTime = 0f;
@@ -88,6 +89,7 @@ namespace Combat
         public virtual void Die()
         {
             Debug.Log(name + " died", this);
+            dieSound.Play();
             if (PickRandomDeathObject)
             {
                 SpawnObjectAtOwnHeight(DeathObjects[Random.Range(0, DeathObjects.Count)]);
