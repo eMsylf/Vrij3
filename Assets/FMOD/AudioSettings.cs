@@ -10,9 +10,9 @@ public class AudioSettings : Singleton<AudioSettings>
 
     private void Awake()
     {
-        Master = FMODUnity.RuntimeManager.GetBus("bus:/Master");
-        Music = FMODUnity.RuntimeManager.GetBus("bus:/Master/Music");
-        SFX = FMODUnity.RuntimeManager.GetBus("bus:/Master/SFX");
+        Master = FMODUnity.RuntimeManager.GetBus("bus:/");
+        Music = FMODUnity.RuntimeManager.GetBus("bus:/Music");
+        SFX = FMODUnity.RuntimeManager.GetBus("bus:/SFX");
     }
 
     public void SetMaster(float value)

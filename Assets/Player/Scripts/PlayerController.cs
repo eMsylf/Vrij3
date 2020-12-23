@@ -25,7 +25,6 @@ public class PlayerController : Fighter
     public FMODUnity.StudioEventEmitter attack1Sound;
     public FMODUnity.StudioEventEmitter attack2Sound;
     public FMODUnity.StudioEventEmitter attack3Sound;
-    public FMODUnity.StudioEventEmitter dieSound;
 
     public FMODUnity.StudioEventEmitter footstepsSound;
     public FMODUnity.StudioEventEmitter dodgeSound;
