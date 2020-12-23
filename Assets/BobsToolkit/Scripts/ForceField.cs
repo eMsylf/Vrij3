@@ -5,8 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(TriggerList))]
 public class ForceField : MonoBehaviour
 {
+    [Tooltip("Positive pushes outwards, negative pulls inwards")]
     public float Force = 1f;
-
+    public ForceMode mode = ForceMode.Acceleration;
     private TriggerList triggerList;
     public TriggerList GetTriggerList()
     {
@@ -51,7 +52,7 @@ public class ForceField : MonoBehaviour
 
             //Debug.Log("Applying " + calculatedForce + " force to: " + rigidbody.name + " in " + name, this);
 
-            rigidbody.AddForce(calculatedForce, ForceMode.Acceleration);
+            rigidbody.AddForce(calculatedForce, mode);
         }
     }
 }

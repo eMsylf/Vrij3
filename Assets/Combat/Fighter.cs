@@ -113,6 +113,9 @@ namespace Combat
                 }
             }
 
+            if (OnDeathEvent != null)
+                OnDeathEvent.Invoke();
+
             gameObject.SetActive(false);
         }
 
@@ -122,6 +125,7 @@ namespace Combat
         }
 
         public UnityEvent OnHitEvent;
+        public UnityEvent OnDeathEvent;
 
         public void TakeDamage(int damageTaken)
         {
