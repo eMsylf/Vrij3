@@ -4,12 +4,13 @@ using UnityEditor;
 using UnityEngine;
 using BobJeltes;
 using BobJeltes.Extensions;
+using UnityEngine.Rendering;
 
 public class GameObjectEmitter : MonoBehaviour
 {
     [Tooltip("To make the emission speed work, make sure the object has a rigidbody assigned")]
     public GameObject prefab;
-    
+
     [Space]
     public bool play = true;
     [Tooltip("'Play' will be set to true upon awakening")]
@@ -102,6 +103,7 @@ public class GameObjectEmitter : MonoBehaviour
     public void Emit()
     {
         //Debug.Log("Emit");
+        Vector3[] starts = GetStartPositions();
         Vector3[] directions = GetDirections();
         ObjectPool objPool = GetObjectPool();
         for (int i = 0; i < directions.Length; i++)
@@ -134,9 +136,8 @@ public class GameObjectEmitter : MonoBehaviour
                 Destroy(emittedObject, objectLifetime);
             }
 
-            Vector3 objStart = directions[i];
-            Vector3.Scale(objStart, startWidth);
-            
+            Vector3 objStart = starts[i];
+
             emittedObject.transform.position = transform.position + objStart.ConvertToObjectRelative(transform);
             if (objectsBecomeChildren)
             {
@@ -158,17 +159,17 @@ public class GameObjectEmitter : MonoBehaviour
     {
         Handles.matrix = transform.localToWorldMatrix;
         Gizmos.matrix = transform.localToWorldMatrix;
+        Vector3[] starts = GetStartPositions();
         Vector3[] directions = GetDirections();
         for (int i = 0; i < directions.Length; i++)
         {
-            Vector3 objStart = directions[i];
-            objStart.Scale(startWidth);
-            objStart *= startDistance;
-            Vector3 objEnd = objStart * emissionSpeed;
+            Vector3 objStart = starts[i];
+            Vector3 objEnd = directions[i]* emissionSpeed;
             if (objectLifetime > 0f)
             {
                 objEnd *= objectLifetime;
             }
+            objEnd += objStart;
             //Debug.Log("Direction: " + directions[i]);
             Handles.DrawLine(objStart, objEnd);
             Handles.ArrowHandleCap(0, objEnd, Quaternion.LookRotation(objEnd - objStart), 1f, EventType.Repaint);
@@ -177,10 +178,34 @@ public class GameObjectEmitter : MonoBehaviour
         //{
         //    //Handles.DrawWireArc(Vector3.zero, Vector3.up, Vector3.Scale(directions[0], startWidth), emissionAngle, Mathf.Sqrt(startDistance) * startWidth.magnitude);
         //    //Gizmos.DrawWireSphere(Vector3.zero, startWidth.magnitude);
-            
+
         //}
     }
 #endif
+
+    public Vector3[] GetStartPositions()
+    {
+        Vector3[] starts = new Vector3[numberOfObjects];
+
+        float whole = numberOfObjects;
+        if (exactAngle)
+        {
+            whole -= 1f;
+        }
+
+        for (int i = 0; i < numberOfObjects; i++)
+        {
+            float prog = (i / whole) * Mathf.PI * (emissionAngle / 360f) * 2f;
+            
+            float xOffset = Mathf.Sin(prog) * startWidth.x;
+            float zOffzet = Mathf.Cos(prog) * startWidth.z;
+            Vector3 start = new Vector3(xOffset, 0f, zOffzet);
+            starts[i] = start;
+            //Debug.Log("i: " + i + " Progress: " + prog + " Direction: " + direction);
+        }
+
+        return starts;
+    }
 
     public Vector3[] GetDirections()
     {
@@ -197,9 +222,9 @@ public class GameObjectEmitter : MonoBehaviour
             float prog = (i / whole) * Mathf.PI * (emissionAngle / 360f) * 2f;
             float yMagic = 1f - (Mathf.Abs(verticalAngle) / 90f);
             yMagic = Mathf.Sin(yMagic);
-            float xOffset = Mathf.Sin(prog) * yMagic + Mathf.Sin(prog) * startWidth.x;
+            float xOffset = Mathf.Sin(prog) * yMagic;
             float yOffset = (verticalAngle/90f);
-            float zOffzet = Mathf.Cos(prog) * yMagic + Mathf.Sin(prog) * startWidth.z;
+            float zOffzet = Mathf.Cos(prog) * yMagic;
             Vector3 direction = new Vector3(xOffset, yOffset, zOffzet);
             directions[i] = direction.normalized;
             //Debug.Log("i: " + i + " Progress: " + prog + " Direction: " + direction);

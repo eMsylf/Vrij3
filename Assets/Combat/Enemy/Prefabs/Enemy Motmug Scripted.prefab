@@ -148,19 +148,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 4.2
---- !u!114 &8819434613393817835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8475457101559693662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a442a3592648fe34e8219f1051633042, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Energy: 20
 --- !u!114 &5755118504398582152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,8 +167,23 @@ MonoBehaviour:
     type: 3}
   AbsorbedPrefab: {fileID: 2865376917913340384, guid: ba39aa6c41f8321489dc637b48b53d8d,
     type: 3}
+  EnergyEmitter: {fileID: 8040823487251005647, guid: a1a9bd48ea38cae49a73b7944ce69b2c,
+    type: 3}
   freeParticles: {fileID: 0}
   absorbedParticles: {fileID: 0}
+--- !u!114 &8819434613393817835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a442a3592648fe34e8219f1051633042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Energy: 20
 --- !u!1 &7359593437552795049
 GameObject:
   m_ObjectHideFlags: 0

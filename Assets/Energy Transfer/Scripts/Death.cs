@@ -14,6 +14,7 @@ public class Death : MonoBehaviour
     [Header("Instantiate")]
     public ParticleSystem FreePrefab;
     public ParticleSystem AbsorbedPrefab;
+    public GameObjectEmitter EnergyEmitter;
     [Header("No instantiation")]
     [SerializeField] private ParticleSystem freeParticles = null;
     public ParticleSystem GetNonAbsorbedParticles()
@@ -85,6 +86,10 @@ public class Death : MonoBehaviour
             instantiatedFree.emission.SetBursts(new ParticleSystem.Burst[] { nonAbsorbedBurst });
             instantiatedAbsorb.Play();
             instantiatedFree.Play();
+            GameObjectEmitter energyEmitter = Instantiate(EnergyEmitter, transform.position, Quaternion.identity);
+
+            energyEmitter.numberOfObjects = GetComponent<EnergyBeing>().Energy;
+            energyEmitter.Emit();
         }
         else
         {
