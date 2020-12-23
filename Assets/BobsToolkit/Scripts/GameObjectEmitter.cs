@@ -20,8 +20,8 @@ public class GameObjectEmitter : MonoBehaviour
     [Space]
     [Min(0)]
     public int numberOfObjects = 5;
-    [Min(0)]
-    public float startDistance;
+    //[Min(0)]
+    //public float startDistance;
     [Min(0)]
     public Vector3 startWidth = Vector3.one;
     [Range(-90f, 90f)]
@@ -100,7 +100,7 @@ public class GameObjectEmitter : MonoBehaviour
         Emit();
     }
 
-    public void Emit()
+    public virtual void Emit()
     {
         //Debug.Log("Emit");
         Vector3[] starts = GetStartPositions();
@@ -164,11 +164,9 @@ public class GameObjectEmitter : MonoBehaviour
         for (int i = 0; i < directions.Length; i++)
         {
             Vector3 objStart = starts[i];
-            Vector3 objEnd = directions[i]* emissionSpeed;
-            if (objectLifetime > 0f)
-            {
-                objEnd *= objectLifetime;
-            }
+            Vector3 objEnd = directions[i];
+            if (!Mathf.Approximately(emissionSpeed, 0f)) objEnd *= emissionSpeed;
+            if (useLifetime && objectLifetime > 0f) objEnd *= objectLifetime;
             objEnd += objStart;
             //Debug.Log("Direction: " + directions[i]);
             Handles.DrawLine(objStart, objEnd);
