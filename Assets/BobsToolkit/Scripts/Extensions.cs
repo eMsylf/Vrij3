@@ -19,8 +19,7 @@ namespace BobJeltes.Extensions
                 referenceForward.Scale(new Vector3(1, 0, 1));
             if (normalize)
                 referenceForward.Normalize();
-            Vector3 referenceRight = reference.right;
-            Vector3 referenceRelativeVector3 = referenceForward * vector3.z + referenceRight * vector3.x;
+            Vector3 referenceRelativeVector3 = reference.forward * vector3.z + reference.right * vector3.x + reference.up * vector3.y;
             return referenceRelativeVector3;
         }
     }

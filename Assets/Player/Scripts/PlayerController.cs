@@ -25,7 +25,6 @@ public class PlayerController : Fighter
     public FMODUnity.StudioEventEmitter attack1Sound;
     public FMODUnity.StudioEventEmitter attack2Sound;
     public FMODUnity.StudioEventEmitter attack3Sound;
-    public FMODUnity.StudioEventEmitter dieSound;
 
     public FMODUnity.StudioEventEmitter footstepsSound;
     public FMODUnity.StudioEventEmitter dodgeSound;
@@ -33,6 +32,13 @@ public class PlayerController : Fighter
     public FMODUnity.StudioEventEmitter staminaLowSound;
     public FMODUnity.StudioEventEmitter staminaRegainSound;
     public FMODUnity.StudioEventEmitter healthLowSound;
+
+    public void PlayAttackSound(int index) {
+        if (index == 0) attack1Sound.Play();
+        else if (index == 1) attack2Sound.Play();
+        else if (index == 2)attack3Sound.Play();
+
+    }
 
 
     //Later to be replaced by FMOD elements For now it's hard coded :^) You can find where I added something using the following indicator VVV
@@ -845,11 +851,10 @@ public class PlayerController : Fighter
         Stamina.allowRecovery = false;
 
         //-------------------------------------------------- Attack sound, according to latestCharge 2 to 3/4
-        if (attacking.latestCharge == 0) attack1Sound.Play();
-        else if (attacking.latestCharge == 1) attack2Sound.Play();
-        else if (attacking.latestCharge == 2) attack3Sound.Play();
-
-
+        //Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + attacking.latestCharge);
+        //if (attacking.latestCharge <= 0) attack1Sound.Play();
+        //else if (attacking.latestCharge <= 2) attack2Sound.Play();
+        //else attack3Sound.Play();
     }
 
     public void OnAttackEnd()

@@ -7,6 +7,10 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     Enemy enemy;
+
+    public FMODUnity.StudioEventEmitter attackSound;
+    public FMODUnity.StudioEventEmitter idleSound;
+
     Enemy Enemy
     {
         get
@@ -107,11 +111,14 @@ public class EnemyAI : MonoBehaviour
         //Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
         Pathfinding.enabled = false;
+        idleSound.Play();
+        
     }
     private void Idle()
     {
         if (idleTimeCurrent > 0f)
         {
+            //idleSound.Play();
             idleTimeCurrent -= Time.deltaTime;
         }
         else
@@ -122,7 +129,6 @@ public class EnemyAI : MonoBehaviour
 
     public void ToWander()
     {
-        //Debug.Log("Transition to Wander");
         state = States.Wander;
         Pathfinding.enabled = true;
         Pathfinding.useWaypointProximity = true;
@@ -180,6 +186,7 @@ public class EnemyAI : MonoBehaviour
     }
     private void Attack()
     {
+        attackSound.Play();
         if (!PlayerController.Instance.enabled)
             ToIdle();
     }

@@ -1,24 +1,28 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace BobJeltes.Events
 {
-    [System.Serializable]
+    [Serializable]
     public class UnityEventGameObject : UnityEvent<GameObject> { }
 
-    [System.Serializable]
+    [Serializable]
     public class UnityEventFloat : UnityEvent<float> { }
 
-    [System.Serializable]
+    [Serializable]
     public class UnityEventInt : UnityEvent<int> { }
 
-    [System.Serializable]
+    [Serializable]
     public class UnityEventString : UnityEvent<string> { }
 
-    [System.Serializable]
+    [Serializable]
     public class UnityEventBool : UnityEvent<bool> { }
 
-    [System.Serializable]
+    [Serializable]
+    public class UnityEventCustomType<T> : UnityEvent<T> { }
+
+    [Serializable]
     public class UnityEventData
     {
         public string EventString;
@@ -28,13 +32,13 @@ namespace BobJeltes.Events
         public Color color;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class UnityEventWithData {
         public UnityEventData eventData = new UnityEventData();
         public DataEvent Event;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class DataEvent : UnityEvent<UnityEventData>
     {
 

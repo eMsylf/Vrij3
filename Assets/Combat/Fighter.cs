@@ -8,6 +8,9 @@ namespace Combat
 {
     public class Fighter : MonoBehaviour, CombatProperties.IKillable, CombatProperties.IDamagable<int>, CombatProperties.ICanAttack
     {
+        public FMODUnity.StudioEventEmitter dieSound;
+        public FMODUnity.StudioEventEmitter getHit;
+
         public Stat Health;
         public Stat Stamina;
         private float InvincibilityTime = 0f;
@@ -111,6 +114,9 @@ namespace Combat
                 }
             }
 
+            if (OnDeathEvent != null)
+                OnDeathEvent.Invoke();
+
             gameObject.SetActive(false);
         }
 
@@ -120,6 +126,7 @@ namespace Combat
         }
 
         public UnityEvent OnHitEvent;
+        public UnityEvent OnDeathEvent;
 
         public void TakeDamage(int damageTaken)
         {
@@ -143,6 +150,7 @@ namespace Combat
                 //Debug.Log(name + " should die now", this);
                 Die();
             }
+            else getHit.Play();
         }
 
         public void TakeDamage(int damageTaken, float invincibilityTime)
