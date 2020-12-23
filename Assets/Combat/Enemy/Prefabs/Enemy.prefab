@@ -203,6 +203,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adcb7da20534fc46844756057b92db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dieSound: {fileID: 0}
+  getHit: {fileID: 0}
   Health: {fileID: 4627939917055992900}
   Stamina: {fileID: 0}
   touchDamage:
@@ -905,6 +907,11 @@ PrefabInstance:
     - target: {fileID: 3314560014620542494, guid: a595db9bfed31084fb021ad8abf2cdfa,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3416874675899473086, guid: a595db9bfed31084fb021ad8abf2cdfa,
+        type: 3}
+      propertyPath: objectsBecomeChildren
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

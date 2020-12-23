@@ -135,9 +135,12 @@ public class PlayerController : Fighter
         Controls.Game.Enable();
         SubscribeControls();
 
+        movement.state = Movement.State.Idle;
+
         //Debug.Log("Set current health and stamina of " + name + " to max", this);
 
         LockCursor(true);
+        attacking.state = Attacking.State.Ready;
         attacking.ClearChargingProhibitors();
     }
 
@@ -193,7 +196,6 @@ public class PlayerController : Fighter
         Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
 
         Controls.Game.Run.started += _ => Run(true);
-        //Controls.Game.Run.performed -= _ => Run(false);
         Controls.Game.Run.canceled += _ => Run(false);
 
         controlsSubscribed = true;
@@ -214,7 +216,6 @@ public class PlayerController : Fighter
         Controls.Game.LockOn.performed -= _ => targeting.LockOn(transform.position);
         
         Controls.Game.Run.started -= _ => Run(true);
-        //Controls.Game.Run.performed -= _ => Run(false);
         Controls.Game.Run.canceled -= _ => Run(false);
 
         controlsSubscribed = false;
@@ -234,10 +235,18 @@ public class PlayerController : Fighter
 
     public override void Die()
     {
+        InterruptAttackCharge();
         GameManager.Instance.PlayerDeath(this);
         //----------------------------------------------------------- Player dies
         dieSound.Play();
         base.Die();
+    }
+
+    public void InterruptAttackCharge()
+    {
+        StopCoroutine(attacking.DoCharge());
+        if (attacking.slowmotionInitiated) TimeManager.Instance.StopSlowmotion();
+        attacking.InterruptCharge();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -510,14 +519,14 @@ public class PlayerController : Fighter
     public class Attacking
     {
         public Slider ChargeSlider;
-        public GameObject ChargeIndicators;
-        public enum EChargeType
-        {
-            States,
-            Slider,
-            Both
-        }
-        public EChargeType ChargeType;
+        //public GameObject ChargeIndicators;
+        //public enum EChargeType
+        //{
+        //    States,
+        //    Slider,
+        //    Both
+        //}
+        //public EChargeType ChargeType;
         public Animator WeaponAnimator;
         public Gradient ChargeZones;
         public Statistic ChargeIndicator;
@@ -576,38 +585,6 @@ public class PlayerController : Fighter
             attackLaunched.Invoke();
         }
 
-        GameObject GetChargeObject()
-        {
-            GameObject obj;
-            switch (ChargeType)
-            {
-                case EChargeType.Slider:
-                    obj = ChargeSlider.gameObject;
-                    break;
-                default:
-                    obj = ChargeIndicators.gameObject;
-                    break;
-            }
-            if (obj == null)
-            {
-                Debug.LogWarning("Charge object " + ChargeType + " of Player is null!");
-            }
-            return obj;
-        }
-
-        GameObject[] GetChargeObjects()
-        {
-            switch (ChargeType)
-            {
-                case EChargeType.Slider:
-                    return new GameObject[] { ChargeSlider.gameObject };
-                default:
-                    return new GameObject[] { ChargeIndicators.gameObject };
-                case EChargeType.Both:
-                    return new GameObject[] { ChargeSlider.gameObject, ChargeIndicators.gameObject };
-            }
-        }
-
         int GetChargeZoneIndex(float time)
         {
             for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
@@ -629,6 +606,7 @@ public class PlayerController : Fighter
                 Debug.Log("No charge to interrupt");
                 return;
             }
+            ChargeIndicator.SetCurrent(0);
             state = State.Ready;
         }
 
@@ -668,18 +646,11 @@ public class PlayerController : Fighter
             return chargeProhibitors.Count == 0;
         }
 
+        internal bool slowmotionInitiated = false;
         public IEnumerator DoCharge()
         {
             state = State.Charging;
-            switch (ChargeType)
-            {
-                case EChargeType.Slider:
-                    ChargeIndicator.SetCurrent(0, true, true);
-                    break;
-                default:
-                    ChargeIndicator.SetCurrent(0, true, true);
-                    break;
-            }
+            ChargeIndicator.SetCurrent(0, true, true);
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
             //Debug.Log("Start charge");
@@ -689,9 +660,8 @@ public class PlayerController : Fighter
                 chargeTime += Time.unscaledDeltaTime;
             }
             //Debug.Log("Charge deadzone passed");
-            GetChargeObject().SetActive(true);
-            bool slowmotionInitiated = false;
-            
+            ChargeIndicator.Visualizer.SetActive(true);
+            slowmotionInitiated = false;
             int previousChargeState = 0;
             while (state == State.Charging)
             {
@@ -719,19 +689,10 @@ public class PlayerController : Fighter
 
                 int currentChargeState = GetChargeZoneIndex(chargeTimeClamped);
                 
-                switch (ChargeType)
+                if (currentChargeState != previousChargeState)
                 {
-                    case EChargeType.Slider:
-                        ChargeSlider.value = chargeTimeClamped;
-                        ChargeIndicator.SetCurrent(currentChargeState + 1, false, false);
-                        break;
-                    case EChargeType.States:
-                        if (currentChargeState != previousChargeState)
-                        {
-                            ChargeIndicator.SetCurrent(currentChargeState + 1);
-                            previousChargeState = currentChargeState;
-                        }
-                        break;
+                    ChargeIndicator.SetCurrent(currentChargeState + 1);
+                    previousChargeState = currentChargeState;
                 }
                 if (!slowmotionInitiated)
                 {
@@ -751,7 +712,7 @@ public class PlayerController : Fighter
                 }
             }
             TimeManager.Instance.StopSlowmotion();
-            GetChargeObject().SetActive(false);
+            ChargeIndicator.Visualizer.SetActive(false);
 
             //Launch(chargeTimeClamped);
             Launch(GetChargeZoneIndex(chargeTimeClamped));
@@ -759,7 +720,7 @@ public class PlayerController : Fighter
 
         public void ApplyChargeZoneColors()
         {
-            GameObject chargeObject = GetChargeObject();
+            GameObject chargeObject = ChargeIndicator.Visualizer;
             if (chargeObject == null)
             {
                 Debug.LogError("Charge object is not assigned");
@@ -790,6 +751,7 @@ public class PlayerController : Fighter
 
     public void AttemptAttackCharge()
     {
+        Debug.Log("Attempt attack charge while in state" + attacking.state.ToString());
         switch (attacking.state)
         {
             // Attack charge allowed when
