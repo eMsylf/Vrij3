@@ -52,7 +52,7 @@ namespace Combat
             if (m_value == _value)
                 return;
             m_value = _value;
-            Debug.Log("Set " + name + " to " + _value + " points", this);
+            //Debug.Log("Set " + name + " to " + _value + " points", this);
             OnValueChanged.Invoke(_value);
         }
 

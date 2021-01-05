@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BobJeltes.Extensions;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -72,15 +73,31 @@ public class Pathfinding : MonoBehaviour
     
     [Tooltip("How close the pathfinder has to be to their waypoint before choosing a new waypoint")]
     public float waypointProximity = 1f;
-    /// <summary>
-    /// When enabled, pathfinding finds a new waypoint when the object is close enough to its waypoint
-    /// </summary>
+    
+    [Tooltip("When enabled, the current waypoint is automatically emptied upon reaching the proximity")]
     public bool useWaypointProximity = true;
+    [Tooltip("When enabled, a new waypoint is automatically picked when the current waypoint is set to 'none'")]
+    public bool autoPickNewWaypoint = true;
     
     [Space]
     
     [Tooltip("Tip: to have a pathfinder constantly move towards 1 target, put the desired target in this field and set Waypoint Proximity to 0.")]
     public Transform currentWaypoint;
+    [SerializeField]
+    private Vector3 currentGoal;
+    public Vector3 CurrentGoal
+    {
+        get
+        {
+            if (currentWaypoint != null)
+            {
+                currentGoal = currentWaypoint.position;
+            }
+            return currentGoal;
+        }
+
+        set => currentGoal = value;
+    }
     private int currentWaypointIndex;
 
     public UnityEvent WaypointReached;
@@ -99,38 +116,68 @@ public class Pathfinding : MonoBehaviour
     {
         if (currentWaypoint == null)
         {
-            WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
-            if (wpManager == null)
-                return;
-            switch (method)
+            if (autoPickNewWaypoint)
             {
-                case Method.RandomWaypoint:
-                    currentWaypoint = WaypointManager.GetRandomWaypoint();
-                    break;
-                case Method.OrderedWaypoint:
-                    currentWaypoint = WaypointManager.GetNextWaypoint(currentWaypointIndex, out currentWaypointIndex);
-                    break;
-                case Method.ReverseOrderedWaypoint:
-                    currentWaypoint = WaypointManager.GetPreviousWaypoint(currentWaypointIndex, out currentWaypointIndex);
-                    break;
+                WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
+                if (wpManager == null)
+                    return;
+                switch (method)
+                {
+                    case Method.RandomWaypoint:
+                        currentWaypoint = WaypointManager.GetRandomWaypoint();
+                        break;
+                    case Method.OrderedWaypoint:
+                        currentWaypoint = WaypointManager.GetNextWaypoint(currentWaypointIndex, out currentWaypointIndex);
+                        break;
+                    case Method.ReverseOrderedWaypoint:
+                        currentWaypoint = WaypointManager.GetPreviousWaypoint(currentWaypointIndex, out currentWaypointIndex);
+                        break;
+                }
             }
         }
-        else if (useWaypointProximity && Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
+        else if (useWaypointProximity && Vector3.Distance(CurrentGoal, transform.position) < waypointProximity)
         {
             currentWaypoint = null;
             WaypointReached.Invoke();
         }
     }
 
+    public float StuckSpeedThreshold = .5f;
+    [Tooltip("The amount of time the pathfinder needs to stand still trying to reach a goal, before applying a random force in an attempt to break free")]
+    public float unstuckTime = 1f;
+    private float _unstuckTime;
+    private bool Stuck;
+    public float UnstuckForce = 1f;
 
-    private void FixedUpdate()
+    public void Unstuck()
     {
-        if (currentWaypoint == null)
+        //Debug.Log(Rigidbody.velocity.magnitude);
+
+        // Speed is high, not stuck
+        if (Mathf.Abs(Rigidbody.velocity.magnitude) > .5f)
         {
+            _unstuckTime = unstuckTime;
+            Stuck = false;
+            return;
+        }
+        Stuck = true;
+
+        // Reset time and try get unstuck
+        if (_unstuckTime <= 0f)
+        {
+            _unstuckTime = unstuckTime;
+
+            Rigidbody.AddForce(Extensions.RandomVector301().normalized * UnstuckForce, ForceMode.Impulse);
             return;
         }
 
-        Vector3 heading = currentWaypoint.position - Rigidbody.position;
+        _unstuckTime -= Time.fixedDeltaTime;
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 heading = CurrentGoal - Rigidbody.position;
+        Unstuck();
 
         Rigidbody.AddForce(heading.normalized * speed);
 
@@ -199,16 +246,17 @@ public class Pathfinding : MonoBehaviour
     {
         Gizmos.color = indicatorColor;
         Handles.color = indicatorColor;
-        if (currentWaypoint != null)
+        Gizmos.DrawLine(transform.position, CurrentGoal);
+        if (rotateTowardsWaypoint)
         {
-            Gizmos.DrawLine(transform.position, currentWaypoint.position);
-            if (rotateTowardsWaypoint)
+            Vector3 direction = CurrentGoal - transform.position;
+            if (direction != Vector3.zero)
             {
-                Quaternion desiredRotation = Quaternion.LookRotation(currentWaypoint.position - transform.position);
+                Quaternion desiredRotation = Quaternion.LookRotation(direction);
                 float dot = Quaternion.Dot(transform.rotation, desiredRotation);
                 float angle = Quaternion.Angle(transform.rotation, desiredRotation);
                 Vector3 angles = transform.rotation.eulerAngles - desiredRotation.eulerAngles;
-                float distance = Vector3.Distance(transform.position, currentWaypoint.position);
+                float distance = Vector3.Distance(transform.position, CurrentGoal);
 
                 Vector3 from = transform.forward;
                 if (angles.y > 0f && angles.y < 180f)
@@ -218,10 +266,10 @@ public class Pathfinding : MonoBehaviour
 
                 //Debug.Log("Angles: " + angles);
                 Handles.DrawSolidArc(
-                    transform.position, 
-                    transform.up, 
-                    from, 
-                    angle, 
+                    transform.position,
+                    transform.up,
+                    from,
+                    angle,
                     distance);
             }
         }
