@@ -491,7 +491,7 @@ public class PlayerController : Fighter
         if (readMovement != Vector2.zero)
         {
             SetMoveInput(readMovement);
-            // ---------------------------------------------    Footsteps
+            // ---------------------------------------------    Footsteps Bob help werkt nie goe :(
             footstepsSound.Play();
         }
 
