@@ -24,7 +24,7 @@ public class EnergyAbsorption : TriggerEvent
 
     public void AbsorbEnergy(GameObject energyObject)
     {
-        Debug.Log("Absorb energy", energyObject);
+        //Debug.Log("Absorb energy", energyObject);
         Energy energyComponent = energyObject.GetComponent<Energy>();
         float absorbedEnergy;
         if (energyComponent == null)

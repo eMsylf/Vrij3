@@ -646,6 +646,17 @@ public class PlayerController : Fighter
             return chargeProhibitors.Count == 0;
         }
 
+        public EnergyAbsorption energyAbsorption;
+        public int fullChargeCost = 20;
+        [Range(0f, 1f)]
+        public float EnergyChargeLimit = .75f;
+
+        internal bool CanFullCharge()
+        {
+            if (energyAbsorption == null) return true;
+            return energyAbsorption.Energy >= fullChargeCost;
+        }
+
         internal bool slowmotionInitiated = false;
         public IEnumerator DoCharge()
         {
@@ -685,6 +696,11 @@ public class PlayerController : Fighter
                     chargeTime = chargeTimeClamped;
                 }
 
+                if (!CanFullCharge())
+                {
+                    chargeTimeClamped = Mathf.Clamp(chargeTimeClamped, 0f, EnergyChargeLimit);
+                }
+
                 //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
 
                 int currentChargeState = GetChargeZoneIndex(chargeTimeClamped);
@@ -715,6 +731,12 @@ public class PlayerController : Fighter
             ChargeIndicator.Visualizer.SetActive(false);
 
             //Launch(chargeTimeClamped);
+            if (chargeTimeClamped > EnergyChargeLimit)
+            {
+                Debug.Log("Detract energy");
+                energyAbsorption.Energy -= fullChargeCost;
+            }
+
             Launch(GetChargeZoneIndex(chargeTimeClamped));
         }
 
