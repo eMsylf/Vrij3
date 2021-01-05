@@ -26,7 +26,7 @@ namespace BobJeltes
 
             //Undo.RecordObject(target, "Set slider value");
             EditorGUI.BeginChangeCheck();
-            newCurrent = EditorGUILayout.Slider("Value", targetScript.value, 0, targetScript.maxValue);
+            newCurrent = EditorGUILayout.Slider("Value", targetScript.m_value, 0, targetScript.maxValue);
             if (EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(target);

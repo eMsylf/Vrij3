@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace BobJeltes
 {
@@ -12,11 +8,16 @@ namespace BobJeltes
         [HideInInspector]
         public float maxValue = 1;
         [HideInInspector]
-        public float value;
+        public float m_value;
         public bool invertValue;
+        public float Value
+        {
+            get => invertValue ? InvertedValue : m_value;
+            set => m_value = value;
+        }
         public float InvertedValue
         {
-            get => maxValue - value;
+            get => maxValue - m_value;
         }
 
         //==========================================
@@ -26,9 +27,9 @@ namespace BobJeltes
 
         public virtual void SetValue(float newValue)
         {
-            value = newValue;
+            Value = newValue;
             Debug.Log("Update value: " + newValue);
-            OnValueSet.Invoke(invertValue?InvertedValue:value);
+            OnValueSet.Invoke(Value);
         }
 
         public void SetMax(float newMax)
@@ -47,11 +48,11 @@ namespace BobJeltes
                 // Maximum omlaag
             }
 
-            value = newMax * (value / oldMax);
+            Value = newMax * (Value / oldMax);
 
 
             OnMaxSet.Invoke(maxValue);
-            SetValue(value);
+            SetValue(Value);
         }
     }
 

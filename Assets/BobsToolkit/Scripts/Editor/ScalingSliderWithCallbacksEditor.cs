@@ -23,7 +23,7 @@ namespace BobJeltes
 
 
             EditorGUI.BeginChangeCheck();
-            newCurrent = EditorGUILayout.Slider("Value", targetScript.value, 0f, targetScript.maxValue);
+            newCurrent = EditorGUILayout.Slider("Value", targetScript.m_value, 0f, targetScript.maxValue);
             if (EditorGUI.EndChangeCheck())
             {
                 targetScript.SetValue(newCurrent);
