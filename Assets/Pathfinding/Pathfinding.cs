@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BobJeltes.Extensions;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -72,10 +73,10 @@ public class Pathfinding : MonoBehaviour
     
     [Tooltip("How close the pathfinder has to be to their waypoint before choosing a new waypoint")]
     public float waypointProximity = 1f;
-    /// <summary>
-    /// When enabled, pathfinding finds a new waypoint when the object is close enough to its waypoint
-    /// </summary>
+    
+    [Tooltip("When enabled, the current waypoint is automatically emptied upon reaching the proximity")]
     public bool useWaypointProximity = true;
+    [Tooltip("When enabled, a new waypoint is automatically picked when the current waypoint is set to 'none'")]
     public bool autoPickNewWaypoint = true;
     
     [Space]
@@ -141,10 +142,42 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
+    public float StuckSpeedThreshold = .5f;
+    [Tooltip("The amount of time the pathfinder needs to stand still trying to reach a goal, before applying a random force in an attempt to break free")]
+    public float unstuckTime = 1f;
+    private float _unstuckTime;
+    private bool Stuck;
+    public float UnstuckForce = 1f;
+
+    public void Unstuck()
+    {
+        //Debug.Log(Rigidbody.velocity.magnitude);
+
+        // Speed is high, not stuck
+        if (Mathf.Abs(Rigidbody.velocity.magnitude) > .5f)
+        {
+            _unstuckTime = unstuckTime;
+            Stuck = false;
+            return;
+        }
+        Stuck = true;
+
+        // Reset time and try get unstuck
+        if (_unstuckTime <= 0f)
+        {
+            _unstuckTime = unstuckTime;
+
+            Rigidbody.AddForce(Extensions.RandomVector301().normalized * UnstuckForce, ForceMode.Impulse);
+            return;
+        }
+
+        _unstuckTime -= Time.fixedDeltaTime;
+    }
 
     private void FixedUpdate()
     {
         Vector3 heading = CurrentGoal - Rigidbody.position;
+        Unstuck();
 
         Rigidbody.AddForce(heading.normalized * speed);
 
@@ -216,25 +249,29 @@ public class Pathfinding : MonoBehaviour
         Gizmos.DrawLine(transform.position, CurrentGoal);
         if (rotateTowardsWaypoint)
         {
-            Quaternion desiredRotation = Quaternion.LookRotation(CurrentGoal - transform.position);
-            float dot = Quaternion.Dot(transform.rotation, desiredRotation);
-            float angle = Quaternion.Angle(transform.rotation, desiredRotation);
-            Vector3 angles = transform.rotation.eulerAngles - desiredRotation.eulerAngles;
-            float distance = Vector3.Distance(transform.position, CurrentGoal);
-
-            Vector3 from = transform.forward;
-            if (angles.y > 0f && angles.y < 180f)
+            Vector3 direction = CurrentGoal - transform.position;
+            if (direction != Vector3.zero)
             {
-                angle *= -1f;
-            }
+                Quaternion desiredRotation = Quaternion.LookRotation(direction);
+                float dot = Quaternion.Dot(transform.rotation, desiredRotation);
+                float angle = Quaternion.Angle(transform.rotation, desiredRotation);
+                Vector3 angles = transform.rotation.eulerAngles - desiredRotation.eulerAngles;
+                float distance = Vector3.Distance(transform.position, CurrentGoal);
 
-            //Debug.Log("Angles: " + angles);
-            Handles.DrawSolidArc(
-                transform.position,
-                transform.up,
-                from,
-                angle,
-                distance);
+                Vector3 from = transform.forward;
+                if (angles.y > 0f && angles.y < 180f)
+                {
+                    angle *= -1f;
+                }
+
+                //Debug.Log("Angles: " + angles);
+                Handles.DrawSolidArc(
+                    transform.position,
+                    transform.up,
+                    from,
+                    angle,
+                    distance);
+            }
         }
 
 

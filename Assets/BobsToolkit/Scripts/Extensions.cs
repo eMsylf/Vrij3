@@ -22,8 +22,24 @@ namespace BobJeltes.Extensions
             Vector3 referenceRelativeVector3 = reference.forward * vector3.z + reference.right * vector3.x + reference.up * vector3.y;
             return referenceRelativeVector3;
         }
-    }
 
-    
-    
+        public static Vector3 RandomVector301()
+        {
+            return RandomVector3(Vector3.zero, Vector3.one);
+        }
+
+        public static Vector3 RandomVector3(Vector3 min, Vector3 max)
+        {
+            return new Vector3(
+                Random.Range(min.x, max.x),
+                Random.Range(min.y, max.y),
+                Random.Range(min.z, max.z)
+                );
+        }
+
+        public static bool RandomFiftyFifty()
+        {
+            return Random.Range(0, 100) <= 50 ? true : false;
+        }
+    }
 }
