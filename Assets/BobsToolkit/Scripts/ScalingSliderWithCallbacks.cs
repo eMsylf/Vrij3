@@ -46,11 +46,11 @@ public class ScalingSliderWithCallbacks : SliderExtension
         {
             if (Mathf.Approximately(0f, maxValue))
                 return 0;
-            return Mathf.InverseLerp(0f, maxValue, this.value);
+            return Mathf.InverseLerp(0f, maxValue, this.m_value);
         }
         set
         {
-            this.value = (int)Mathf.Lerp(0f, maxValue, value);
+            this.m_value = (int)Mathf.Lerp(0f, maxValue, value);
         }
     }
 
