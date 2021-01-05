@@ -21,7 +21,7 @@ public class TriggerEvent : MonoBehaviour
         {
             return;
         }
-        Debug.Log(other.name + " entered trigger of " + name, this);
+        //Debug.Log(other.name + " entered trigger of " + name, this);
         switch (passedEventObject)
         {
             case EventObject.This:
