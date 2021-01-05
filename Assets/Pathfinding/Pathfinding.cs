@@ -76,11 +76,27 @@ public class Pathfinding : MonoBehaviour
     /// When enabled, pathfinding finds a new waypoint when the object is close enough to its waypoint
     /// </summary>
     public bool useWaypointProximity = true;
+    public bool autoPickNewWaypoint = true;
     
     [Space]
     
     [Tooltip("Tip: to have a pathfinder constantly move towards 1 target, put the desired target in this field and set Waypoint Proximity to 0.")]
     public Transform currentWaypoint;
+    [SerializeField]
+    private Vector3 currentGoal;
+    public Vector3 CurrentGoal
+    {
+        get
+        {
+            if (currentWaypoint != null)
+            {
+                currentGoal = currentWaypoint.position;
+            }
+            return currentGoal;
+        }
+
+        set => currentGoal = value;
+    }
     private int currentWaypointIndex;
 
     public UnityEvent WaypointReached;
@@ -99,23 +115,26 @@ public class Pathfinding : MonoBehaviour
     {
         if (currentWaypoint == null)
         {
-            WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
-            if (wpManager == null)
-                return;
-            switch (method)
+            if (autoPickNewWaypoint)
             {
-                case Method.RandomWaypoint:
-                    currentWaypoint = WaypointManager.GetRandomWaypoint();
-                    break;
-                case Method.OrderedWaypoint:
-                    currentWaypoint = WaypointManager.GetNextWaypoint(currentWaypointIndex, out currentWaypointIndex);
-                    break;
-                case Method.ReverseOrderedWaypoint:
-                    currentWaypoint = WaypointManager.GetPreviousWaypoint(currentWaypointIndex, out currentWaypointIndex);
-                    break;
+                WaypointCollection wpManager = GetWaypointManager(SnapToClosestWaypointManager);
+                if (wpManager == null)
+                    return;
+                switch (method)
+                {
+                    case Method.RandomWaypoint:
+                        currentWaypoint = WaypointManager.GetRandomWaypoint();
+                        break;
+                    case Method.OrderedWaypoint:
+                        currentWaypoint = WaypointManager.GetNextWaypoint(currentWaypointIndex, out currentWaypointIndex);
+                        break;
+                    case Method.ReverseOrderedWaypoint:
+                        currentWaypoint = WaypointManager.GetPreviousWaypoint(currentWaypointIndex, out currentWaypointIndex);
+                        break;
+                }
             }
         }
-        else if (useWaypointProximity && Vector3.Distance(currentWaypoint.position, transform.position) < waypointProximity)
+        else if (useWaypointProximity && Vector3.Distance(CurrentGoal, transform.position) < waypointProximity)
         {
             currentWaypoint = null;
             WaypointReached.Invoke();
@@ -125,12 +144,7 @@ public class Pathfinding : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (currentWaypoint == null)
-        {
-            return;
-        }
-
-        Vector3 heading = currentWaypoint.position - Rigidbody.position;
+        Vector3 heading = CurrentGoal - Rigidbody.position;
 
         Rigidbody.AddForce(heading.normalized * speed);
 
@@ -199,31 +213,28 @@ public class Pathfinding : MonoBehaviour
     {
         Gizmos.color = indicatorColor;
         Handles.color = indicatorColor;
-        if (currentWaypoint != null)
+        Gizmos.DrawLine(transform.position, CurrentGoal);
+        if (rotateTowardsWaypoint)
         {
-            Gizmos.DrawLine(transform.position, currentWaypoint.position);
-            if (rotateTowardsWaypoint)
+            Quaternion desiredRotation = Quaternion.LookRotation(CurrentGoal - transform.position);
+            float dot = Quaternion.Dot(transform.rotation, desiredRotation);
+            float angle = Quaternion.Angle(transform.rotation, desiredRotation);
+            Vector3 angles = transform.rotation.eulerAngles - desiredRotation.eulerAngles;
+            float distance = Vector3.Distance(transform.position, CurrentGoal);
+
+            Vector3 from = transform.forward;
+            if (angles.y > 0f && angles.y < 180f)
             {
-                Quaternion desiredRotation = Quaternion.LookRotation(currentWaypoint.position - transform.position);
-                float dot = Quaternion.Dot(transform.rotation, desiredRotation);
-                float angle = Quaternion.Angle(transform.rotation, desiredRotation);
-                Vector3 angles = transform.rotation.eulerAngles - desiredRotation.eulerAngles;
-                float distance = Vector3.Distance(transform.position, currentWaypoint.position);
-
-                Vector3 from = transform.forward;
-                if (angles.y > 0f && angles.y < 180f)
-                {
-                    angle *= -1f;
-                }
-
-                //Debug.Log("Angles: " + angles);
-                Handles.DrawSolidArc(
-                    transform.position, 
-                    transform.up, 
-                    from, 
-                    angle, 
-                    distance);
+                angle *= -1f;
             }
+
+            //Debug.Log("Angles: " + angles);
+            Handles.DrawSolidArc(
+                transform.position,
+                transform.up,
+                from,
+                angle,
+                distance);
         }
 
 
