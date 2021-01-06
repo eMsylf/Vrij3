@@ -105,6 +105,12 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        attackSound.Stop();
+        idleSound.Stop();
+    }
+
     #region States
     [Tooltip("If the player has been out of range for this duration, the enemy AI will stop following the player")]
     public float playerOutOfRangeCooldown = 3f;
@@ -222,10 +228,10 @@ public class EnemyAI : MonoBehaviour
         //Debug.Log("Transition to Attack");
         state = States.Attack;
         Pathfinding.enabled = false;
+        attackSound.Play(); // uwu
     }
     private void Attack()
     {
-        attackSound.Play();
         if (!PlayerController.Instance.enabled)
             ToIdle();
     }

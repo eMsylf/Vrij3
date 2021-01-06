@@ -5511,6 +5511,60 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &131699676496620708
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2387313531442926059}
+  - component: {fileID: 4598108439895240786}
+  m_Layer: 0
+  m_Name: AttackTik3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2387313531442926059
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131699676496620708}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6951748276986587629}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4598108439895240786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131699676496620708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Player/Player_chargetik3
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 0
+  OverrideMaxDistance: 0
 --- !u!1 &259220756437079186
 GameObject:
   m_ObjectHideFlags: 0
@@ -5891,6 +5945,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollisionTag: 
   Event: event:/SFX/Player/Player_hit
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 0
+  OverrideMaxDistance: 0
+--- !u!1 &950022271496902763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 303735656886156691}
+  - component: {fileID: 777773124706348731}
+  m_Layer: 0
+  m_Name: AttackTik2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &303735656886156691
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950022271496902763}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6951748276986587629}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &777773124706348731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950022271496902763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Player/Player_chargetik2
   PlayEvent: 0
   StopEvent: 0
   AllowFadeout: 1
@@ -6534,6 +6642,10 @@ Transform:
   - {fileID: 1816302001142991572}
   - {fileID: 1071446988825363732}
   - {fileID: 1990480432909163690}
+  - {fileID: 2005193435046952584}
+  - {fileID: 303735656886156691}
+  - {fileID: 2387313531442926059}
+  - {fileID: 7495271987346840667}
   m_Father: {fileID: 4051798414168452884}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7360,6 +7472,60 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 1
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &3454844586820381027
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7495271987346840667}
+  - component: {fileID: 1433604584593214440}
+  m_Layer: 0
+  m_Name: AttackTik4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7495271987346840667
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454844586820381027}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6951748276986587629}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1433604584593214440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454844586820381027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Player/Player_chargetik4
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 0
+  OverrideMaxDistance: 0
 --- !u!1 &3528094935999319916
 GameObject:
   m_ObjectHideFlags: 0
@@ -8858,7 +9024,6 @@ MonoBehaviour:
           m_CallState: 2
     state: 0
     energyAbsorption: {fileID: 3383182193792440309}
-    energyText: {fileID: 0}
     fullChargeCost: 20
     EnergyChargeLimit: 0.75
   targeting:
@@ -9371,7 +9536,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: -100}
+  m_AnchoredPosition: {x: 0, y: -100}
   m_SizeDelta: {x: 98.84, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1257376996053751321
@@ -9589,6 +9754,60 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &8342225722661572292
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2005193435046952584}
+  - component: {fileID: 9124827102644698201}
+  m_Layer: 0
+  m_Name: Attacktik1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2005193435046952584
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8342225722661572292}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6951748276986587629}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9124827102644698201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8342225722661572292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Player/Player_chargetik1
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 0
+  OverrideMaxDistance: 0
 --- !u!1 &8361452633471406793
 GameObject:
   m_ObjectHideFlags: 0
@@ -10239,15 +10458,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad9648736b8b68043aed5a13068784d0, type: 3}
---- !u!1 &6455570727373104480 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4717615782920449815, guid: ad9648736b8b68043aed5a13068784d0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1796546820810476151}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6455570727373104511 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4717615782920449800, guid: ad9648736b8b68043aed5a13068784d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1796546820810476151}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6455570727373104480 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4717615782920449815, guid: ad9648736b8b68043aed5a13068784d0,
     type: 3}
   m_PrefabInstance: {fileID: 1796546820810476151}
   m_PrefabAsset: {fileID: 0}
@@ -10816,9 +11035,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e567ebb91a8fb544caba96c4be7459b6, type: 3}
---- !u!224 &2478662683078903407 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1316214022601865180, guid: e567ebb91a8fb544caba96c4be7459b6,
+--- !u!1 &4180678295942639269 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 731021298605858582, guid: e567ebb91a8fb544caba96c4be7459b6,
     type: 3}
   m_PrefabInstance: {fileID: 3468294247243657651}
   m_PrefabAsset: {fileID: 0}
@@ -10834,9 +11053,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &4180678295942639269 stripped
+--- !u!1 &1064604015700537096 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 731021298605858582, guid: e567ebb91a8fb544caba96c4be7459b6,
+  m_CorrespondingSourceObject: {fileID: 4532838440818302651, guid: e567ebb91a8fb544caba96c4be7459b6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3468294247243657651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &2478662683078903407 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1316214022601865180, guid: e567ebb91a8fb544caba96c4be7459b6,
     type: 3}
   m_PrefabInstance: {fileID: 3468294247243657651}
   m_PrefabAsset: {fileID: 0}
@@ -10852,12 +11077,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1064604015700537096 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4532838440818302651, guid: e567ebb91a8fb544caba96c4be7459b6,
-    type: 3}
-  m_PrefabInstance: {fileID: 3468294247243657651}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4032823922421342312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11328,15 +11547,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229, type: 3}
---- !u!1 &4770075578206718574 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1432732583754614826, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
-    type: 3}
-  m_PrefabInstance: {fileID: 5895388686875705924}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4770075578206718571 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1432732583754614831, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
+    type: 3}
+  m_PrefabInstance: {fileID: 5895388686875705924}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4770075578206718574 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1432732583754614826, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
     type: 3}
   m_PrefabInstance: {fileID: 5895388686875705924}
   m_PrefabAsset: {fileID: 0}

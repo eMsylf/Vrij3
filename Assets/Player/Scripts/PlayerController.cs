@@ -16,15 +16,17 @@ public class PlayerController : Fighter
     #region Julia Added
     //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something.
     public ParticleSystem dust;
-    public void CreateDust(){
+    public void CreateDust()
+    {
         dust.Play();
-}
+    }
 
-    public FMODUnity.StudioEventEmitter getHitSound;
-    public FMODUnity.StudioEventEmitter attackChargeSound;
     public FMODUnity.StudioEventEmitter attack1Sound;
     public FMODUnity.StudioEventEmitter attack2Sound;
     public FMODUnity.StudioEventEmitter attack3Sound;
+
+
+    public FMODUnity.StudioEventEmitter getHitSound;
 
     public FMODUnity.StudioEventEmitter footstepsSound;
     public FMODUnity.StudioEventEmitter dodgeSound;
@@ -357,6 +359,7 @@ public class PlayerController : Fighter
         }
         movement.Input = input;
         Animator.SetBool("IsWalking", true);
+        footstepsSound.Play(); //----------------------------------- Footsteps :)
         UpdateFacingDirection(movement.Input);
     }
 
@@ -367,7 +370,8 @@ public class PlayerController : Fighter
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
         movement.state = Movement.State.Idle;
         Animator.SetBool("IsWalking", false);
-        attackChargeSound.Stop();
+        footstepsSound.Stop(); //----------------------------------- Footstops :)
+   
     }
 
     private void Run(bool enabled)
@@ -432,7 +436,7 @@ public class PlayerController : Fighter
         {
             //Debug.Log("Insufficient stamina to dodge");
             //-----------------------------------------------   Out of Stamina
-            staminaLowSound.Play();
+            //staminaLowSound.Play();
             return;
         }
         Stamina.Use(1);
@@ -497,7 +501,7 @@ public class PlayerController : Fighter
 
         else
         {
-            footstepsSound.Stop();
+            //footstepsSound.Stop();
             Stop();
         }
     }
@@ -518,6 +522,12 @@ public class PlayerController : Fighter
     [Serializable]
     public class Attacking
     {
+        public FMODUnity.StudioEventEmitter attackChargeSound;
+        public FMODUnity.StudioEventEmitter attackChargeTik1Sound;
+        public FMODUnity.StudioEventEmitter attackChargeTik2Sound;
+        public FMODUnity.StudioEventEmitter attackChargeTik3Sound;
+        public FMODUnity.StudioEventEmitter attackChargeTik4Sound;
+
         public Slider ChargeSlider;
         //public GameObject ChargeIndicators;
         //public enum EChargeType
@@ -568,10 +578,7 @@ public class PlayerController : Fighter
         internal void Launch(float chargeTime)
         {
             if (chargeTime == 0f)
-            {
-                //----------------------------------------- Attack 1 hit
-
-
+            { 
                 Debug.Log("Launch uncharged attack!");
             }
             else
@@ -661,6 +668,7 @@ public class PlayerController : Fighter
         public IEnumerator DoCharge()
         {
             state = State.Charging;
+
             ChargeIndicator.SetCurrent(0, true, true);
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
@@ -670,10 +678,13 @@ public class PlayerController : Fighter
                 yield return new WaitForEndOfFrame();
                 chargeTime += Time.unscaledDeltaTime;
             }
+
+            attackChargeSound.Play(); //------------------------------ charge sound
+
             //Debug.Log("Charge deadzone passed");
             ChargeIndicator.Visualizer.SetActive(true);
             slowmotionInitiated = false;
-            int previousChargeState = 0;
+            int previousChargeState = -1;
             while (state == State.Charging)
             {
                 yield return new WaitForEndOfFrame();
@@ -709,6 +720,13 @@ public class PlayerController : Fighter
                 {
                     ChargeIndicator.SetCurrent(currentChargeState + 1);
                     previousChargeState = currentChargeState;
+
+                    //------------------------------------------------------------- Charge tiks
+                    if (currentChargeState == 0) attackChargeTik1Sound.Play();
+                    else if (currentChargeState == 1) attackChargeTik2Sound.Play();
+                    else if (currentChargeState == 2) attackChargeTik3Sound.Play();
+                    else if (currentChargeState == 3) attackChargeTik4Sound.Play();
+
                 }
                 if (!slowmotionInitiated)
                 {
@@ -736,6 +754,8 @@ public class PlayerController : Fighter
                 Debug.Log("Detract energy");
                 energyAbsorption.Energy -= fullChargeCost;
             }
+
+            attackChargeSound.Stop();
 
             Launch(GetChargeZoneIndex(chargeTimeClamped));
         }
@@ -857,6 +877,7 @@ public class PlayerController : Fighter
         // Get walking direction at end of attack 
         UpdateMoveInput();
     }
+
     #endregion
 
     #region Targeting

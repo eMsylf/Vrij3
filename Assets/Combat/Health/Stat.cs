@@ -41,6 +41,8 @@ namespace Combat
 
         public FloatEvent OnValueChanged;
         public UnityEvent OnDepleted;
+        public UnityEvent OnIncrease;
+        public UnityEvent OnDecrease;
 
         public float Get()
         {
@@ -51,6 +53,12 @@ namespace Combat
         {
             if (m_value == _value)
                 return;
+
+            if (_value > m_value)
+                OnIncrease.Invoke();
+            else
+                OnDecrease.Invoke();
+
             m_value = _value;
             //Debug.Log("Set " + name + " to " + _value + " points", this);
             OnValueChanged.Invoke(_value);
