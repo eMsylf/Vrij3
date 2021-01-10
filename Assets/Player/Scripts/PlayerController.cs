@@ -233,6 +233,19 @@ public class PlayerController : Fighter
     {
         base.Update();
         ManageRuningStaminaDrain(movement.running);
+        switch (movement.state)
+        {
+            case Movement.State.Idle:
+            case Movement.State.Dodging:
+            case Movement.State.Hit:
+            case Movement.State.Stunned:
+            case Movement.State.Disabled:
+                break;
+            case Movement.State.Moving:
+                if (!footstepsSound.IsPlaying())
+                    footstepsSound.Play(); //----------------------------------- Footsteps :)
+                break;
+        }
     }
 
     public override void Die()
@@ -359,7 +372,6 @@ public class PlayerController : Fighter
         }
         movement.Input = input;
         Animator.SetBool("IsWalking", true);
-        footstepsSound.Play(); //----------------------------------- Footsteps :)
         UpdateFacingDirection(movement.Input);
     }
 
