@@ -8,6 +8,7 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using BobJeltes.StandardUtilities;
+using UnityEngine.InputSystem;
 
 namespace BobJeltes.Menu
 {
@@ -36,6 +37,23 @@ namespace BobJeltes.Menu
 
         public StartScreen StartScreen;
         public Transform CurrentScreen = null;
+
+        public void SetCurrentScreen(Transform screen)
+        {
+            CurrentScreen = screen;
+            foreach (Transform scr in Screens)
+            {
+                scr.gameObject.SetActive(false);
+            }
+
+            CurrentScreen.gameObject.SetActive(true);
+            Button selectedButton = CurrentScreen.GetComponentInChildren<Button>();
+            if (selectedButton == null)
+                selectedButton = GlobalBackButton.GetComponent<Button>();
+            ActiveEventSystem.SetSelectedGameObject(selectedButton.gameObject);
+            selectedButton.Select();
+        }
+
         public List<Transform> PreviousScreens = new List<Transform>();
         public NavigationButton GlobalBackButton;
 
@@ -45,18 +63,22 @@ namespace BobJeltes.Menu
         }
 
         EventSystem activeEventSystem;
-        public EventSystem FindActiveEventSystem()
+        public EventSystem ActiveEventSystem
         {
-            if (activeEventSystem == null)
+            get
             {
-                activeEventSystem = FindObjectOfType<EventSystem>();
                 if (activeEventSystem == null)
                 {
-                    Debug.LogError("No event system found in scene!");
+                    activeEventSystem = FindObjectOfType<EventSystem>();
+                    if (activeEventSystem == null)
+                    {
+                        Debug.LogError("No event system found in scene!");
+                    }
                 }
+                return activeEventSystem;
             }
-            return activeEventSystem;
         }
+
         public void GoToScreen(Transform newScreen)
         {
             if (Screens == null)
@@ -85,7 +107,7 @@ namespace BobJeltes.Menu
             }
 
             PreviousScreens.Add(CurrentScreen);
-            CurrentScreen = newScreen;
+            SetCurrentScreen(newScreen);
 
             if (!GlobalBackButton.gameObject.activeInHierarchy)
             {
@@ -113,6 +135,8 @@ namespace BobJeltes.Menu
                 return;
             }
 
+            Debug.Log("RETURN TO THIS SCREEN: " + previousScreen.name);
+
             if (ScreenTransitionDuration > 0f)
             {
                 if (BlockInputsDuringTransitions)
@@ -127,7 +151,7 @@ namespace BobJeltes.Menu
                 Screens.position = GetMoveDelta(CurrentScreen.transform, previousScreen.transform);
             }
 
-            CurrentScreen = previousScreen;
+            SetCurrentScreen(previousScreen);
             PreviousScreens.Remove(previousScreen);
 
             if (PreviousScreens.Count == 0)
@@ -178,6 +202,8 @@ namespace BobJeltes.Menu
             GetComponent<Canvas>().enabled = true;
             if (pause)
                 GameManager.Instance.Pause(IsOpen);
+
+            Controls.Menu.Back.performed += _ => GoToPreviousScreen();
         }
 
         public void Close(bool pause)
@@ -209,6 +235,10 @@ namespace BobJeltes.Menu
             {
                 Close(false);
             }
+            else
+            {
+                Open(false);
+            }
         }
 
         public bool VisualizeScreenNavigation = true;
@@ -233,7 +263,6 @@ namespace BobJeltes.Menu
         {
             Debug.Log("Menu enabled");
             Controls.Menu.Toggle.performed += _ => Toggle();
-            FindActiveEventSystem();
             Controls.Menu.Enable();
         }
 

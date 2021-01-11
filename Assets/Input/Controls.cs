@@ -487,6 +487,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f4d73e8-63f6-4408-890b-9009e4fffb3e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -509,6 +517,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Toggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9d3024fa-140b-42a3-b886-aa96d5f00673"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -731,6 +750,44 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""TitleScreen"",
+            ""id"": ""c5c63700-aa9b-4a55-a963-ff12f6cb8cf2"",
+            ""actions"": [
+                {
+                    ""name"": ""Start"",
+                    ""type"": ""Button"",
+                    ""id"": ""f313042b-4d45-400f-95e8-52be02005b8e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""3a7b8899-6a02-4ac0-9488-0bf747f44b6b"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Start"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ff653b07-2a6e-4025-bd99-8d61451f97ff"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Start"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -778,6 +835,7 @@ public class @Controls : IInputActionCollection, IDisposable
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Toggle = m_Menu.FindAction("Toggle", throwIfNotFound: true);
+        m_Menu_Back = m_Menu.FindAction("Back", throwIfNotFound: true);
         // SlideShow
         m_SlideShow = asset.FindActionMap("SlideShow", throwIfNotFound: true);
         m_SlideShow_Continue = m_SlideShow.FindAction("Continue", throwIfNotFound: true);
@@ -788,6 +846,9 @@ public class @Controls : IInputActionCollection, IDisposable
         m_CameraController_Altitude = m_CameraController.FindAction("Altitude", throwIfNotFound: true);
         m_CameraController_Look = m_CameraController.FindAction("Look", throwIfNotFound: true);
         m_CameraController_Boost = m_CameraController.FindAction("Boost", throwIfNotFound: true);
+        // TitleScreen
+        m_TitleScreen = asset.FindActionMap("TitleScreen", throwIfNotFound: true);
+        m_TitleScreen_Start = m_TitleScreen.FindAction("Start", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -943,11 +1004,13 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Menu;
     private IMenuActions m_MenuActionsCallbackInterface;
     private readonly InputAction m_Menu_Toggle;
+    private readonly InputAction m_Menu_Back;
     public struct MenuActions
     {
         private @Controls m_Wrapper;
         public MenuActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Toggle => m_Wrapper.m_Menu_Toggle;
+        public InputAction @Back => m_Wrapper.m_Menu_Back;
         public InputActionMap Get() { return m_Wrapper.m_Menu; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -960,6 +1023,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Toggle.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnToggle;
                 @Toggle.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnToggle;
                 @Toggle.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnToggle;
+                @Back.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnBack;
+                @Back.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnBack;
+                @Back.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnBack;
             }
             m_Wrapper.m_MenuActionsCallbackInterface = instance;
             if (instance != null)
@@ -967,6 +1033,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Toggle.started += instance.OnToggle;
                 @Toggle.performed += instance.OnToggle;
                 @Toggle.canceled += instance.OnToggle;
+                @Back.started += instance.OnBack;
+                @Back.performed += instance.OnBack;
+                @Back.canceled += instance.OnBack;
             }
         }
     }
@@ -1069,6 +1138,39 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public CameraControllerActions @CameraController => new CameraControllerActions(this);
+
+    // TitleScreen
+    private readonly InputActionMap m_TitleScreen;
+    private ITitleScreenActions m_TitleScreenActionsCallbackInterface;
+    private readonly InputAction m_TitleScreen_Start;
+    public struct TitleScreenActions
+    {
+        private @Controls m_Wrapper;
+        public TitleScreenActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Start => m_Wrapper.m_TitleScreen_Start;
+        public InputActionMap Get() { return m_Wrapper.m_TitleScreen; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TitleScreenActions set) { return set.Get(); }
+        public void SetCallbacks(ITitleScreenActions instance)
+        {
+            if (m_Wrapper.m_TitleScreenActionsCallbackInterface != null)
+            {
+                @Start.started -= m_Wrapper.m_TitleScreenActionsCallbackInterface.OnStart;
+                @Start.performed -= m_Wrapper.m_TitleScreenActionsCallbackInterface.OnStart;
+                @Start.canceled -= m_Wrapper.m_TitleScreenActionsCallbackInterface.OnStart;
+            }
+            m_Wrapper.m_TitleScreenActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Start.started += instance.OnStart;
+                @Start.performed += instance.OnStart;
+                @Start.canceled += instance.OnStart;
+            }
+        }
+    }
+    public TitleScreenActions @TitleScreen => new TitleScreenActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1103,6 +1205,7 @@ public class @Controls : IInputActionCollection, IDisposable
     public interface IMenuActions
     {
         void OnToggle(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
     }
     public interface ISlideShowActions
     {
@@ -1115,5 +1218,9 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnAltitude(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
+    }
+    public interface ITitleScreenActions
+    {
+        void OnStart(InputAction.CallbackContext context);
     }
 }
