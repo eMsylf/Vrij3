@@ -21,15 +21,19 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
+    public bool WarnOnlyOnce = true;
+    private bool warningGiven = false;
     [SerializeField] protected WaypointCollection waypointManager;
     public WaypointCollection WaypointManager
     {
         get
         {
-            if (waypointManager == null)
+            if (!warningGiven && waypointManager == null)
             {
-                Debug.LogError("No waypoint manager assigned to " + name, this);
+                Debug.LogWarning("No waypoint manager assigned to " + name, this);
+                if (WarnOnlyOnce) warningGiven = true;
             }
+            else if (!WarnOnlyOnce) warningGiven = false;
             return waypointManager;
         }
         set
@@ -145,7 +149,7 @@ public class Pathfinding : MonoBehaviour
     public float StuckSpeedThreshold = .5f;
     [Tooltip("The amount of time the pathfinder needs to stand still trying to reach a goal, before applying a random force in an attempt to break free")]
     public float unstuckTime = 1f;
-    private float _unstuckTime;
+    private float _unstuckTime = 1f;
     private bool Stuck;
     public float UnstuckForce = 1f;
 

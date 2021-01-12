@@ -691,7 +691,10 @@ public class PlayerController : Fighter
                 chargeTime += Time.unscaledDeltaTime;
             }
 
-            attackChargeSound.Play(); //------------------------------ charge sound
+            if (attackChargeSound == null)
+                Debug.LogError("Attack charge sound is missing");
+            else
+                attackChargeSound.Play(); //------------------------------ charge sound
 
             //Debug.Log("Charge deadzone passed");
             ChargeIndicator.Visualizer.SetActive(true);

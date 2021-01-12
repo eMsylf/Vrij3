@@ -37,6 +37,29 @@ namespace BobJeltes.Extensions
                 );
         }
 
+        public static Vector3 RandomVector3()
+        {
+            return RandomVector3(1f);
+        }
+
+        public static Vector3 RandomVector3(float multiplier)
+        {
+            return RandomVector3(multiplier, multiplier, multiplier);
+        }
+
+        public static Vector3 RandomVector3(Vector3 multiplier)
+        {
+            return RandomVector3(multiplier.x, multiplier.y, multiplier.z);
+        }
+
+        public static Vector3 RandomVector3(float x, float y, float z)
+        {
+            return new Vector3(
+                Random.Range(-x, x),
+                Random.Range(-y, y),
+                Random.Range(-z, z));
+        }
+
         public static bool RandomFiftyFifty()
         {
             return Random.Range(0, 100) <= 50 ? true : false;

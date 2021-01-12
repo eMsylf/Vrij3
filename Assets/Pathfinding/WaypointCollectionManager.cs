@@ -5,6 +5,9 @@ public class WaypointCollectionManager : Singleton<WaypointCollectionManager>
 {
     WaypointCollection[] WaypointCollections;
 
+
+    public bool WarnOnlyOnce = true;
+    private bool warningGiven = false;
     public WaypointCollection[] GetWaypointCollections(bool redefineList)
     {
         if (redefineList || WaypointCollections == null)
@@ -14,7 +17,12 @@ public class WaypointCollectionManager : Singleton<WaypointCollectionManager>
 
         if (WaypointCollections.Length == 0)
         {
-            Debug.LogError("No waypoint collections found in scene!", this);
+            if (!warningGiven)
+            {
+                Debug.LogWarning("No waypoint collections found in scene!", this);
+                if (WarnOnlyOnce) warningGiven = true;
+            }
+            else if (!WarnOnlyOnce) warningGiven = false;
         }
         else
         {

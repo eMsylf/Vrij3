@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BobJeltes.Extensions;
 
 public class MotMug : Enemy
 {
@@ -39,30 +40,7 @@ public class MotMug : Enemy
         if (rb == null)
             return;
 
-        rb.AddForce(RandomVector3(JitterAmount));
-    }
-
-    public Vector3 RandomVector3()
-    {
-        return RandomVector3(1f);
-    }
-
-    public Vector3 RandomVector3(float bounds)
-    {
-        return RandomVector3(bounds, bounds, bounds);
-    }
-
-    public Vector3 RandomVector3(Vector3 bounds)
-    {
-        return RandomVector3(bounds.x, bounds.y, bounds.z);
-    }
-
-    public Vector3 RandomVector3(float x, float y, float z)
-    {
-        return new Vector3(
-            Random.Range(-x, x),
-            Random.Range(-y, y),
-            Random.Range(-z, z));
+        rb.AddForce(Extensions.RandomVector3(JitterAmount));
     }
 
     private void ManagePathfinding()

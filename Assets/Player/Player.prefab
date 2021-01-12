@@ -6042,6 +6042,34 @@ MonoBehaviour:
         m_CallState: 2
   OnDepleted:
     m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4900042824571271087}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnIncrease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4189871794858404363}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDecrease:
+    m_PersistentCalls:
       m_Calls: []
 --- !u!1 &1197776118080202872
 GameObject:
@@ -7717,6 +7745,12 @@ MonoBehaviour:
   OnDepleted:
     m_PersistentCalls:
       m_Calls: []
+  OnIncrease:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDecrease:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4308062211768046483
 GameObject:
   m_ObjectHideFlags: 0
@@ -8859,7 +8893,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7717233248994819637}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 30
   m_Drag: 5
   m_AngularDrag: 0.05
   m_UseGravity: 0
@@ -8928,11 +8962,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   dust: {fileID: 1593020624}
-  getHitSound: {fileID: 8765806878511329315}
-  attackChargeSound: {fileID: 8649560444395208198}
   attack1Sound: {fileID: 8650810164106653139}
   attack2Sound: {fileID: 1232713793975350401}
   attack3Sound: {fileID: 95949685090521270}
+  getHitSound: {fileID: 8765806878511329315}
   footstepsSound: {fileID: 5738719025208700245}
   dodgeSound: {fileID: 4785978229808016446}
   staminaLowSound: {fileID: 4900042824571271087}
@@ -8951,6 +8984,11 @@ MonoBehaviour:
     defaultDodgeDirection: 1
     state: 0
   attacking:
+    attackChargeSound: {fileID: 8649560444395208198}
+    attackChargeTik1Sound: {fileID: 9124827102644698201}
+    attackChargeTik2Sound: {fileID: 777773124706348731}
+    attackChargeTik3Sound: {fileID: 4598108439895240786}
+    attackChargeTik4Sound: {fileID: 1433604584593214440}
     ChargeSlider: {fileID: 2499125909367898424}
     WeaponAnimator: {fileID: 5145052013846552861}
     ChargeZones:
