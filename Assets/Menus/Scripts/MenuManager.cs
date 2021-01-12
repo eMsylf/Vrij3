@@ -49,7 +49,16 @@ namespace BobJeltes.Menu
             }
 
             CurrentScreen.gameObject.SetActive(true);
+            SetSelectedButton();
+        }
+
+        /// <summary>
+        /// Sets the selected button to the first button on the currently active screen.
+        /// </summary>
+        public void SetSelectedButton()
+        {
             Button selectedButton = CurrentScreen.GetComponentInChildren<Button>();
+            // If no buttons are present, select the global back button
             if (selectedButton == null)
                 selectedButton = GlobalBackButton.GetComponent<Button>();
             ActiveEventSystem.SetSelectedGameObject(selectedButton.gameObject);
@@ -208,11 +217,13 @@ namespace BobJeltes.Menu
             if (pause)
                 GameManager.Instance.Pause(IsOpen);
 
+            SetSelectedButton();
             Controls.Menu.Back.performed += _ => GoToPreviousScreen();
         }
 
         public void Close(bool pause)
         {
+            Controls.Menu.Back.performed -= _ => GoToPreviousScreen();
             GetComponent<Canvas>().enabled = false;
             if (pause)
                 GameManager.Instance.Pause(IsOpen);
