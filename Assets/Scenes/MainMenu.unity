@@ -276,6 +276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 724e563579be22e4196a9b3864db83fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UndoFadeOnEnable: 1
   duration: 2
   OnFadeStart:
     m_PersistentCalls:
@@ -315,6 +316,17 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 436152752}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!1001 &547977814
 PrefabInstance:
@@ -2026,24 +2038,44 @@ MonoBehaviour:
     AssignAutomatically: 1
     Screen: {fileID: 0}
   CurrentScreen: {fileID: 0}
-  backAction:
-    m_Name: Back
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 59f288fd-c2f0-4fa1-8f18-5e1a6a9f7365
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 216f1060-0cca-4f5d-969a-21a584a23998
-      m_Path: '*/{Cancel}'
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Back
-      m_Flags: 0
   PreviousScreens: []
   GlobalBackButton: {fileID: 1847924486}
+  BackWithoutPreviousScreens:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1818378121}
+        m_MethodName: SetSelectedGameObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1314063077}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 436152752}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2068060881534531057}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   CloseOnStart: 0
   toggleable: 0
   rememberLastScreen: 0

@@ -7,11 +7,12 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class PanelFader : MonoBehaviour
 {
 
-    private bool mFaded = false;
+    public bool UndoFadeOnEnable = true;
 
     public float duration = 0.4f;
     public UnityEvent OnFadeStart;
@@ -34,7 +35,9 @@ public class PanelFader : MonoBehaviour
     {
         Controls.TitleScreen.Enable();
         Controls.TitleScreen.Start.performed += _ => Fade();
-        
+
+        if (UndoFadeOnEnable)
+            FadeUndo();
     }
 
     private void OnDisable()
@@ -46,23 +49,14 @@ public class PanelFader : MonoBehaviour
     public void Fade() {
         var canvGroup = GetComponent<CanvasGroup>();
         OnFadeStart.Invoke();
-        StartCoroutine(DoFade(canvGroup, canvGroup.alpha, mFaded ? 1 : 0));
+
+        canvGroup.DOFade(0f, duration).onComplete += () => OnFadeEnd.Invoke();
     }
 
-    public IEnumerator DoFade(CanvasGroup canvGroup, float start, float end) {
+    public void FadeUndo()
+    {
+        var canvGroup = GetComponent<CanvasGroup>();
 
-        float counter = 0f;
-
-        while (counter < duration) {
-
-            counter += Time.deltaTime;
-            canvGroup.alpha = Mathf.Lerp(start, end, counter / duration);
-
-            yield return null;
-        }
-
-        OnFadeEnd.Invoke();
-    
+        canvGroup.alpha = 1f;
     }
-
 }
