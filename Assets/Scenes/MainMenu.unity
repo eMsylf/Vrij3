@@ -294,20 +294,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UndoFadeOnEnable: 1
   duration: 2
-  OnFadeStart:
+  undoDuration: 0.3
+  OnFade:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1314063079}
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnFadeEnd:
     m_PersistentCalls:
       m_Calls:
@@ -344,6 +334,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnFadeUndo:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1314063079}
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnFadeUndoEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &547977814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1923,31 +1930,9 @@ MonoBehaviour:
   BackWithoutPreviousScreens:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1818378121}
-        m_MethodName: SetSelectedGameObject
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1314063077}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 436152752}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 2068060881534531057}
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 2068060881534531060}
+        m_MethodName: Fade
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2013,6 +1998,8 @@ GameObject:
   - component: {fileID: 2068060881534531059}
   - component: {fileID: 2068060881534531056}
   - component: {fileID: 2068060881534530956}
+  - component: {fileID: 2068060881534531061}
+  - component: {fileID: 2068060881534531060}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Untagged
@@ -2063,6 +2050,78 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &2068060881534531060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068060881534531057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724e563579be22e4196a9b3864db83fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UndoFadeOnEnable: 1
+  duration: 0.25
+  undoDuration: 0.3
+  OnFade:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1818378121}
+        m_MethodName: SetSelectedGameObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1314063077}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 436152752}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2068060881534531057}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnFadeUndo:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFadeUndoEnd:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!225 &2068060881534531061
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068060881534531057}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &2068060882253343164 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6701342093934642952, guid: 48edfb6f4a3c81449a16da8c8690daac,
