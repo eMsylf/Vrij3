@@ -9,6 +9,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using BobJeltes.StandardUtilities;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
+using System.ComponentModel;
 
 namespace BobJeltes.Menu
 {
@@ -47,7 +49,16 @@ namespace BobJeltes.Menu
             }
 
             CurrentScreen.gameObject.SetActive(true);
+            SetSelectedButton();
+        }
+
+        /// <summary>
+        /// Sets the selected button to the first button on the currently active screen.
+        /// </summary>
+        public void SetSelectedButton()
+        {
             Button selectedButton = CurrentScreen.GetComponentInChildren<Button>();
+            // If no buttons are present, select the global back button
             if (selectedButton == null)
                 selectedButton = GlobalBackButton.GetComponent<Button>();
             ActiveEventSystem.SetSelectedGameObject(selectedButton.gameObject);
@@ -56,6 +67,8 @@ namespace BobJeltes.Menu
 
         public List<Transform> PreviousScreens = new List<Transform>();
         public NavigationButton GlobalBackButton;
+        [Tooltip("This can be used to define what happens when there are no previous screens, and the 'back' button is pressed. For example: show the title screen.")]
+        public UnityEvent BackWithoutPreviousScreens;
 
         public int GetScreenCount()
         {
@@ -126,6 +139,7 @@ namespace BobJeltes.Menu
             {
                 Debug.Log("No previous screens to go back to");
                 GlobalBackButton.gameObject.SetActive(false);
+                BackWithoutPreviousScreens.Invoke();
                 return;
             }
             Transform previousScreen = PreviousScreens[PreviousScreens.Count - 1];
@@ -203,11 +217,13 @@ namespace BobJeltes.Menu
             if (pause)
                 GameManager.Instance.Pause(IsOpen);
 
+            SetSelectedButton();
             Controls.Menu.Back.performed += _ => GoToPreviousScreen();
         }
 
         public void Close(bool pause)
         {
+            Controls.Menu.Back.performed -= _ => GoToPreviousScreen();
             GetComponent<Canvas>().enabled = false;
             if (pause)
                 GameManager.Instance.Pause(IsOpen);
