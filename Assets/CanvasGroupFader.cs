@@ -17,37 +17,17 @@ public class CanvasGroupFader : MonoBehaviour
 
     public float duration = 0.4f;
     public float undoDuration = 0.1f;
+    public UnityEvent onEnable;
     public UnityEvent OnFade;
     public UnityEvent OnFadeEnd;
     public UnityEvent OnFadeUndo;
     public UnityEvent OnFadeUndoEnd;
 
-    Controls controls;
-    Controls Controls
-    {
-        get
-        {
-            if (controls == null)
-            {
-                controls = new Controls();
-            }
-            return controls;
-        }
-    }
-
     private void OnEnable()
     {
-        Controls.TitleScreen.Enable();
-        Controls.TitleScreen.Start.performed += _ => Fade();
-
         if (UndoFadeOnEnable)
             FadeUndo();
-    }
-
-    private void OnDisable()
-    {
-        Controls.TitleScreen.Disable();
-        Controls.TitleScreen.Start.performed -= _ => Fade();
+        onEnable.Invoke();
     }
 
     public void Fade() {
@@ -57,6 +37,7 @@ public class CanvasGroupFader : MonoBehaviour
     public void Fade(float _duration)
     {
         var canvGroup = GetComponent<CanvasGroup>();
+        canvGroup.DOComplete();
         OnFade.Invoke();
         if (duration <= 0f)
         {
@@ -79,6 +60,7 @@ public class CanvasGroupFader : MonoBehaviour
     {
         Debug.Log("Undo fade: " + name, this);
         var canvGroup = GetComponent<CanvasGroup>();
+        canvGroup.DOComplete();
         OnFadeUndo.Invoke();
         if (undoDuration <= 0f)
         {

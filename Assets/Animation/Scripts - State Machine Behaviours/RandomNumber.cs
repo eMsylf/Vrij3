@@ -24,7 +24,7 @@ public class RandomNumber : StateMachineBehaviour
         if (!RollOnEnter)
             return;
         Debug.Log("Enter state: " + stateInfo.ToString());
-        int number = Random.Range(0, exitMax);
+        int number = Random.Range(0, enterMax);
         Debug.Log("Random number picked: " + number);
         animator.SetInteger(EnterAnimatorParameter, number);
     }

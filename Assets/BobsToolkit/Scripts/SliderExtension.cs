@@ -28,7 +28,7 @@ namespace BobJeltes
         public virtual void SetValue(float newValue)
         {
             Value = newValue;
-            Debug.Log("Update value: " + newValue);
+            //Debug.Log("Update value: " + newValue, gameObject);
             OnValueSet.Invoke(Value);
         }
 

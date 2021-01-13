@@ -99,7 +99,9 @@ namespace Combat {
 
             OnHitEvent.Invoke();
 
-            Fighter fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
+            Fighter fighterHit = other.GetComponent<Fighter>();
+            if (fighter == null)
+                fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
             Fighter parentFighter = GetParentFighter();
             
             if (other.attachedRigidbody != null)
