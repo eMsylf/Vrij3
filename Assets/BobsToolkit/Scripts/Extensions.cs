@@ -60,9 +60,14 @@ namespace BobJeltes.Extensions
                 Random.Range(-z, z));
         }
 
-        public static bool RandomFiftyFifty()
+        /// <summary>
+        /// Returns a random number based on a roll between 0 and 100.
+        /// </summary>
+        /// <param name="oddShift">A number between 0 and 100. Lower = more chance at FALSE. Higher = more chance at TRUE.</param>
+        /// <returns></returns>
+        public static bool RandomTrueFalse(int oddShift = 50)
         {
-            return Random.Range(0, 100) <= 50 ? true : false;
+            return Random.Range(0, 100) < oddShift ? true : false;
         }
     }
 }

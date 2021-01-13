@@ -10,10 +10,11 @@ public class Grow : MonoBehaviour
     {
         Multiply,
         Add,
-        GrowTowardsLinear
+        Curve
     }
     public Method method;
-    public float speed = 1f;
+    public AnimationCurve growthCurve = new AnimationCurve();
+
     [Space]
     public bool resetScaleOnEnable = true;
     public Vector3 referenceScale = Vector3.one;
@@ -30,10 +31,10 @@ public class Grow : MonoBehaviour
             case Method.Add:
                 transform.localScale += growth;
                 break;
-            case Method.GrowTowardsLinear:
-                transform.localScale = Vector3.Lerp(transform.localScale, growth, progress);
-                progress += Time.fixedDeltaTime * speed;
-                progress = Mathf.Clamp(progress, 0f, 1f);
+            case Method.Curve:
+                progress += Time.fixedDeltaTime;
+                float evaluatedProgress = growthCurve.Evaluate(progress);
+                transform.localScale =  Vector3.Lerp(referenceScale, growth, evaluatedProgress);
                 break;
         }
     }
