@@ -150,7 +150,8 @@ namespace Combat
                 //Debug.Log(name + " should die now", this);
                 Die();
             }
-            else getHit.Play();
+            else if (getHit != null)
+                getHit.Play();
         }
 
         public void TakeDamage(int damageTaken, float invincibilityTime)

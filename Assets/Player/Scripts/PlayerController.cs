@@ -253,7 +253,8 @@ public class PlayerController : Fighter
         InterruptAttackCharge();
         GameManager.Instance.PlayerDeath(this);
         //----------------------------------------------------------- Player dies
-        dieSound.Play();
+        if (dieSound != null)
+            dieSound.Play();
         base.Die();
     }
 
@@ -685,7 +686,7 @@ public class PlayerController : Fighter
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
             //Debug.Log("Start charge");
-            while (chargeTime < ChargeTimeDeadzone)
+            while (state == State.Charging && chargeTime < ChargeTimeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime += Time.unscaledDeltaTime;
@@ -808,7 +809,7 @@ public class PlayerController : Fighter
 
     public void AttemptAttackCharge()
     {
-        Debug.Log("Attempt attack charge while in state" + attacking.state.ToString());
+        Debug.Log("Attempt attack charge while in state " + attacking.state.ToString());
         switch (attacking.state)
         {
             // Attack charge allowed when

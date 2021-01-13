@@ -38,10 +38,21 @@ public class Boss : Enemy
     {
         if (animator == null)
         {
-            Debug.LogError("Animator not assigned");
+            Debug.LogError("Animator not assigned", gameObject);
             return;
         }
 
         animator.SetTrigger("Death");
+    }
+
+    public void PlayerClose(bool isClose)
+    {
+        if (animator == null)
+        {
+            Debug.LogError("Animator not assigned", gameObject);
+            return;
+        }
+
+        animator.SetBool("PlayerClose", isClose);
     }
 }
