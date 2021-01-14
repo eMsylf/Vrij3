@@ -67,14 +67,14 @@ public class LookAtTargetGroup : MonoBehaviour
                         break;
                 }
                 if (ReverseUp) up *= -1f;
+                Vector3 lookPos = targetPosition;
                 foreach (Transform trans in transform)
                 {
-                    Vector3 lookPos = targetPosition;
                     if (StayUpright) lookPos.y = 0f;
-                    
-                    if (reverse) lookPos = trans.position + target.position;
 
-                    trans.LookAt(lookPos, up);
+                    trans.forward = targetPosition - trans.position;
+                    if (reverse) trans.forward *= -1f;
+                    //trans.LookAt(lookPos, up);
                 }
                 break;
         }
