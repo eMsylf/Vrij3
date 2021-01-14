@@ -466,7 +466,7 @@ public class PlayerController : Fighter
         movement.AcceptMovementInput = false;
         // ---------------------------------------------    Dodge sound
         dodgeSound.Play();
-
+        attacking.InterruptCharge();
         if (movement.Input == Vector2Int.zero)
         {
             NeutralDodge();
@@ -678,6 +678,7 @@ public class PlayerController : Fighter
         }
 
         internal bool slowmotionInitiated = false;
+
         public IEnumerator DoCharge()
         {
             state = State.Charging;
@@ -772,8 +773,8 @@ public class PlayerController : Fighter
             }
 
             attackChargeSound.Stop();
-
-            Launch(GetChargeZoneIndex(chargeTimeClamped));
+            if (state == State.Attacking)
+                Launch(GetChargeZoneIndex(chargeTimeClamped));
         }
 
         public void ApplyChargeZoneColors()
