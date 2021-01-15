@@ -2108,6 +2108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 336964990054051634}
   - component: {fileID: 336964990054051635}
+  - component: {fileID: 4266403471860234391}
   m_Layer: 0
   m_Name: Anxi_Body_Scream
   m_TagString: Untagged
@@ -2179,6 +2180,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4266403471860234391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336964990054051633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61bff17b4f690e54b8df18a07622b58c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 336964990054051635}
+  useOverrideColor: 1
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  duration: 0.1
 --- !u!1 &336964990073311565
 GameObject:
   m_ObjectHideFlags: 0
@@ -3425,7 +3442,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 336964991262743666}
-  - component: {fileID: 5164759661292886680}
   m_Layer: 0
   m_Name: Anxi_Scream
   m_TagString: Untagged
@@ -3462,25 +3478,6 @@ Transform:
   m_Father: {fileID: 8207179651748757082}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &5164759661292886680
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 336964991262743665}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &336964991562970024
 GameObject:
   m_ObjectHideFlags: 0
@@ -4459,10 +4456,79 @@ MonoBehaviour:
   PickRandomBloodSplatter: 1
   OnHitEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2771448801967961720}
+        m_MethodName: SetOverrideColor
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: red
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2771448801967961720}
+        m_MethodName: DoSpriteFlash
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4266403471860234391}
+        m_MethodName: SetOverrideColor
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: red
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4266403471860234391}
+        m_MethodName: DoSpriteFlash
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeathEvent:
     m_PersistentCalls:
       m_Calls: []
+  OnAttackAnnouncement:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2771448801967961720}
+        m_MethodName: SetOverrideColor
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: white
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2771448801967961720}
+        m_MethodName: DoSpriteFlash
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   ScreamEmitter: {fileID: 421388370}
   eyeSpawner: {fileID: 42791690}
   motmugSpawner: {fileID: 114876935}
@@ -4506,6 +4572,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4909246827722325386}
   - component: {fileID: 2220408893196118142}
+  - component: {fileID: 2771448801967961720}
   m_Layer: 0
   m_Name: Anxi_Body
   m_TagString: Untagged
@@ -4591,6 +4658,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2771448801967961720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5351027309179060849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61bff17b4f690e54b8df18a07622b58c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 2220408893196118142}
+  useOverrideColor: 1
+  overrideColor: {r: 16.966568, g: 16.966568, b: 16.966568, a: 0}
+  duration: 0.1
 --- !u!1001 &781387713
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4801,6 +4884,12 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7596782227824352160, guid: 6cf05f061e2f7af43bd8e16b9056061c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6cf05f061e2f7af43bd8e16b9056061c, type: 3}
+--- !u!224 &630565190503162477 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 630565189858223532, guid: 6cf05f061e2f7af43bd8e16b9056061c,
+    type: 3}
+  m_PrefabInstance: {fileID: 781387713}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5502676734128568244 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5502676734825803893, guid: 6cf05f061e2f7af43bd8e16b9056061c,
@@ -4813,12 +4902,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c818e48c90523645988fceca7572181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &630565190503162477 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 630565189858223532, guid: 6cf05f061e2f7af43bd8e16b9056061c,
-    type: 3}
-  m_PrefabInstance: {fileID: 781387713}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &104764950186585572
 PrefabInstance:
   m_ObjectHideFlags: 0
