@@ -15,7 +15,12 @@ namespace BobJeltes
         public void SetOverrideColor(string color)
         {
             if (ColorUtility.TryParseHtmlString(color, out Color newColor))
-                overrideColor = newColor;
+            {
+                overrideColor.r = newColor.r;
+                overrideColor.g = newColor.g;
+                overrideColor.b = newColor.b;
+                overrideColor.a = newColor.a;
+            }
             else
                 Debug.LogError("Input override color did not result in a valid color: " + color, gameObject);
         }
