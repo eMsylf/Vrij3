@@ -122,7 +122,8 @@ namespace Combat
 
         public void SpawnObjectAtOwnHeight(GameObject prefab)
         {
-            Instantiate(prefab, new Vector3(transform.position.x, prefab.transform.position.y, transform.position.z), prefab.transform.rotation).transform.localScale = transform.localScale;
+            if (prefab != null)
+                Instantiate(prefab, new Vector3(transform.position.x, prefab.transform.position.y, transform.position.z), prefab.transform.rotation).transform.localScale = transform.localScale;
         }
 
         public UnityEvent OnHitEvent;
