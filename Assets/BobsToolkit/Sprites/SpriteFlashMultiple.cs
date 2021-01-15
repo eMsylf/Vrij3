@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Boo.Lang;
+using System;
 using System.Collections;
 using UnityEngine;
 
 namespace BobJeltes
 {
-    public class SpriteFlash : MonoBehaviour
+    public class SpriteFlashMultiple : MonoBehaviour
     {
         [Header("FloodColor shader required on sprite material")]
-        public SpriteRenderer spriteRenderer;
+        public List<SpriteRenderer> spriteRenderers = new List<SpriteRenderer>();
         public bool useOverrideColor = true;
         [ColorUsage(true, true)]
         public Color overrideColor = Color.white;
@@ -17,7 +18,6 @@ namespace BobJeltes
                 overrideColor = newColor;
             else
                 Debug.LogError("Input override color did not result in a valid color: " + color, gameObject);
-                    
         }
         public float duration = 0.1f;
         
@@ -28,9 +28,9 @@ namespace BobJeltes
 
         public void SetupSpriteFlash()
         {
-            if (spriteRenderer == null)
+            if (spriteRenderers == null || spriteRenderers.Count == 0)
             {
-                Debug.LogError("Sprite renderer of " + spriteRenderer.name + " is not assinged", spriteRenderer);
+                Debug.LogError("Sprite renderer of " + name + " is not assinged", gameObject);
                 return;
             }
         }
@@ -47,14 +47,20 @@ namespace BobJeltes
 
         public IEnumerator DoFlashColor(float _duration)
         {
-            SetSpriteColor();
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                SetSpriteColor(spriteRenderer);
+            }
             yield return new WaitForSeconds(_duration);
-            ResetSpriteColor();
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                ResetSpriteColor(spriteRenderer);
+            }
         }
 
-        public void SetSpriteColor()
+        public void SetSpriteColor(SpriteRenderer spriteRenderer)
         {
-            if (spriteRenderer == null)
+            if (spriteRenderers == null)
             {
                 Debug.LogError("Sprite renderer is null");
                 return;
@@ -71,9 +77,9 @@ namespace BobJeltes
             //Debug.Log("Color is now " + color);
         }
 
-        public void ResetSpriteColor()
+        public void ResetSpriteColor(SpriteRenderer spriteRenderer)
         {
-            if (spriteRenderer == null)
+            if (spriteRenderers == null)
             {
                 Debug.LogError("Sprite renderer is null");
                 return;
@@ -86,7 +92,10 @@ namespace BobJeltes
 
         private void OnDisable()
         {
-            ResetSpriteColor();
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                ResetSpriteColor(spriteRenderer);
+            }
         }
     }
 }
