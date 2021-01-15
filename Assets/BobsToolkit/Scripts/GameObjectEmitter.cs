@@ -102,7 +102,7 @@ public class GameObjectEmitter : MonoBehaviour
 
     public virtual void Emit()
     {
-        Debug.Log("Emit", gameObject);
+        //Debug.Log("Emit", gameObject);
         Vector3[] starts = GetStartPositions();
         Vector3[] directions = GetDirections();
         ObjectPool objPool = GetObjectPool();
