@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b8f666aca087064489e4737642465cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  prefab: {fileID: 3734812850011670994, guid: a0ad899534df25845b98306a7cd1ddfe, type: 3}
   Continuous: 0
   Amount: 1
   Interval: 1
@@ -4398,6 +4398,7 @@ Transform:
   - {fileID: 421388372}
   - {fileID: 1967318848}
   - {fileID: 1825419550}
+  - {fileID: 2924392375947024591}
   - {fileID: 5842704981165185999}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -4433,8 +4434,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c9c3db1b102ac24ead814ab7c5e026c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dieSound: {fileID: 0}
-  getHit: {fileID: 0}
+  dieSound: {fileID: 6456523590601108352}
+  getHit: {fileID: 205703609502223547}
   Health: {fileID: 5502676734128568244}
   Stamina: {fileID: 0}
   touchDamage:
@@ -4502,6 +4503,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 205703609502223547}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeathEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -4533,6 +4545,9 @@ MonoBehaviour:
   ScreamEmitter: {fileID: 421388370}
   eyeSpawner: {fileID: 42791690}
   motmugSpawner: {fileID: 114876935}
+  IdleSound: {fileID: 3448271830597771631}
+  ScreamSound: {fileID: 1941186024798101708}
+  EyespawnSound: {fileID: 8527483290029847907}
   animator: {fileID: 8282719180942414483}
 --- !u!65 &786050296
 BoxCollider:
@@ -4563,6 +4578,60 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &2222842787558976791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4343526659601682813}
+  - component: {fileID: 4003020577777402034}
+  m_Layer: 12
+  m_Name: MotmugSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4343526659601682813
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2222842787558976791}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5842704981165185999}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4003020577777402034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2222842787558976791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Mothman/Mothman_attack
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &2233954663515450003
 GameObject:
   m_ObjectHideFlags: 0
@@ -4607,16 +4676,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CollisionTag: 
-  Event: event:/SFX/Screature/Screature_idle
+  Event: event:/SFX/Boss 1/Boss idle
   PlayEvent: 0
   StopEvent: 0
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
   Params: []
-  OverrideAttenuation: 1
+  OverrideAttenuation: 0
   OverrideMinDistance: 1
-  OverrideMaxDistance: 10
+  OverrideMaxDistance: 20
+--- !u!1 &5170219376633379564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4377811486511942876}
+  - component: {fileID: 8527483290029847907}
+  m_Layer: 12
+  m_Name: EyeAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4377811486511942876
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5170219376633379564}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5842704981165185999}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8527483290029847907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5170219376633379564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Boss 1/Boss attack eyeball
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &5213738279502751418
 GameObject:
   m_ObjectHideFlags: 0
@@ -4661,16 +4784,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CollisionTag: 
-  Event: event:/SFX/Screature/Screature_die
+  Event: event:/SFX/Boss 1/Boss death
   PlayEvent: 0
   StopEvent: 0
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
   Params: []
-  OverrideAttenuation: 1
+  OverrideAttenuation: 0
   OverrideMinDistance: 1
-  OverrideMaxDistance: 5
+  OverrideMaxDistance: 20
 --- !u!1 &5351027309179060849
 GameObject:
   m_ObjectHideFlags: 0
@@ -4881,16 +5004,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CollisionTag: 
-  Event: event:/SFX/Screature/Screature_attack
+  Event: event:/SFX/Boss 1/Boss attack scream
   PlayEvent: 0
   StopEvent: 0
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
   Params: []
-  OverrideAttenuation: 1
+  OverrideAttenuation: 0
   OverrideMinDistance: 1
-  OverrideMaxDistance: 5
+  OverrideMaxDistance: 20
 --- !u!1 &7732686781556556503
 GameObject:
   m_ObjectHideFlags: 0
@@ -4969,12 +5092,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8279336989638301980}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.0000029504295}
+  m_LocalPosition: {x: 270.94, y: 0, z: -86.299995}
+  m_LocalScale: {x: 2.4008, y: 2.4008, z: 2.4008}
   m_Children: []
-  m_Father: {fileID: 5842704981165185999}
-  m_RootOrder: 5
+  m_Father: {fileID: 8207179651748757082}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &8242657104347289566
 SphereCollider:
@@ -5021,9 +5144,10 @@ Transform:
   - {fileID: 6925591489293841739}
   - {fileID: 2405755805959022123}
   - {fileID: 1077682183644848393}
-  - {fileID: 2924392375947024591}
+  - {fileID: 4377811486511942876}
+  - {fileID: 4343526659601682813}
   m_Father: {fileID: 8207179651748757082}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &781387713
 PrefabInstance:

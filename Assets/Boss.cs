@@ -10,8 +10,23 @@ public class Boss : Enemy
     public Spawner eyeSpawner;
     public Spawner motmugSpawner;
 
+    public FMODUnity.StudioEventEmitter IdleSound;
+    public FMODUnity.StudioEventEmitter ScreamSound;
+    public FMODUnity.StudioEventEmitter EyespawnSound;
+
+
+
+
     [Header("Boss animation")]
     public Animator animator;
+
+    void PlayScreamAttackSound() {
+        ScreamSound.Play();
+    }
+
+    void PlayDeathSound() {
+        dieSound.Play();
+    }
 
     void SpawnScream()
     {
