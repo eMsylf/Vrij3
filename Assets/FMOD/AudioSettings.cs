@@ -9,9 +9,12 @@ public class AudioSettings : Singleton<AudioSettings>
     FMOD.Studio.Bus Music;
     FMOD.Studio.Bus Master;
 
+    [Range(0f, 1f)]
+    public float defaultVolume = .5f;
+
     public string sfxName = "SFX";
     public string musicName = "Music";
-    public string masterName = "master";
+    public string masterName = "Master";
 
     private void Awake()
     {
@@ -28,7 +31,7 @@ public class AudioSettings : Singleton<AudioSettings>
     {
         if (!PlayerPrefs.HasKey(keyName))
         {
-            PlayerPrefs.SetFloat(keyName, 50f);
+            PlayerPrefs.SetFloat(keyName, defaultVolume);
             PlayerPrefs.Save();
         }
         else

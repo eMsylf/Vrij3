@@ -13,7 +13,7 @@ public class Grow : MonoBehaviour
         Curve
     }
     public Method method;
-    public AnimationCurve growthCurve = new AnimationCurve();
+    public AnimationCurve growthCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, 1f));
 
     [Space]
     public bool resetScaleOnEnable = true;
