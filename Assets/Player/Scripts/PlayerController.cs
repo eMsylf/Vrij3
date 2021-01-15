@@ -27,8 +27,32 @@ public class PlayerController : Fighter
 
 
     public FMODUnity.StudioEventEmitter getHitSound;
-
+    
     public FMODUnity.StudioEventEmitter footstepsSound;
+    [Min(0)]
+    public float footstepInterval = .5f;
+    [Min(0)]
+    public float footstepIntervalRunning = .25f;
+    private float timeBeforeNextFootstep;
+
+    public void ManageFootstepSound()
+    {
+        if (footstepsSound == null)
+            return;
+
+        if (timeBeforeNextFootstep > 0f)
+        {
+            timeBeforeNextFootstep -= Time.deltaTime;
+            return;
+        }
+
+        footstepsSound.Play();
+        if (movement.running)
+            timeBeforeNextFootstep = footstepIntervalRunning;
+        else
+            timeBeforeNextFootstep = footstepInterval;
+    }
+
     public FMODUnity.StudioEventEmitter dodgeSound;
 
     public FMODUnity.StudioEventEmitter staminaLowSound;
@@ -232,7 +256,7 @@ public class PlayerController : Fighter
     public override void Update()
     {
         base.Update();
-        ManageRuningStaminaDrain(movement.running);
+        ManageRunningStaminaDrain(movement.running);
         switch (movement.state)
         {
             case Movement.State.Idle:
@@ -242,8 +266,7 @@ public class PlayerController : Fighter
             case Movement.State.Disabled:
                 break;
             case Movement.State.Moving:
-                if (!footstepsSound.IsPlaying())
-                    footstepsSound.Play(); //----------------------------------- Footsteps :)
+                ManageFootstepSound();
                 break;
         }
     }
@@ -387,19 +410,26 @@ public class PlayerController : Fighter
    
     }
 
+    public float runningAnimationMultiplier = 1.5f;
+
     private void Run(bool enabled)
     {
         if (enabled && Stamina.m_value <= 0)
             return; 
 
         movement.running = enabled;
+        if (enabled)
+            Animator.SetFloat("RunningMultiplier", runningAnimationMultiplier);
+        else
+            Animator.SetFloat("RunningMultiplier", 1f);
         Stamina.allowRecovery = !enabled;
+        timeBeforeNextFootstep = 0f;
         //Debug.Log("Running: " + enabled, this);
         if (enabled)
             movement.runStaminaDrainTime = movement.RunStaminaDrainTime;
     }
 
-    private void ManageRuningStaminaDrain(bool running)
+    private void ManageRunningStaminaDrain(bool running)
     {
         if (!running)
             return;
@@ -509,7 +539,7 @@ public class PlayerController : Fighter
         {
             SetMoveInput(readMovement);
             // ---------------------------------------------    Footsteps Bob help werkt nie goe :(
-            footstepsSound.Play();
+            //footstepsSound.Play();
         }
 
         else
