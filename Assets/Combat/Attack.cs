@@ -100,21 +100,14 @@ namespace Combat {
             OnHitEvent.Invoke();
 
             Fighter fighterHit = other.GetComponent<Fighter>();
-            if (fighter == null)
-                fighterHit = other.attachedRigidbody?.GetComponent<Fighter>();
+            if (fighterHit == null)
+                fighterHit = other.GetComponentInParent<Fighter>();
             Fighter parentFighter = GetParentFighter();
-            
-            if (other.attachedRigidbody != null)
+            Debug.Log("Hit fighter: " + fighterHit, gameObject);
+
+            if (other.attachedRigidbody != null && !other.attachedRigidbody.isKinematic)
             {
-                Vector3 forceVector = new Vector3();
-
-                if (attackForce.outwardForceMultiplier != 0f)
-                    forceVector += (other.transform.position - transform.position) * attackForce.outwardForceMultiplier;
-                if (attackForce.multiplier != 0f)
-                    forceVector += GetForceVector(attackForce.direction);
-
-
-                other.attachedRigidbody.AddForce(forceVector, ForceMode.Impulse);
+                AddAttackForceTo(other.attachedRigidbody);
             }
 
             if (fighterHit == null)
@@ -163,6 +156,18 @@ namespace Combat {
                 Camera.main.DOShakePosition(CameraShake.Duration, CameraShake.Strength);
             if (HitStun.enabled)
                 TimeManager.Instance.DoSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
+        }
+
+        public void AddAttackForceTo(Rigidbody rigidbody)
+        {
+            Vector3 forceVector = new Vector3();
+
+            if (attackForce.outwardForceMultiplier != 0f)
+                forceVector += (rigidbody.position - transform.position) * attackForce.outwardForceMultiplier;
+            if (attackForce.multiplier != 0f)
+                forceVector += GetForceVector(attackForce.direction);
+            
+            rigidbody.AddForce(forceVector, ForceMode.Impulse);
         }
 
         public void DamageFighter(Fighter attacker, Fighter victim)
