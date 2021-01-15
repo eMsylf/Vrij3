@@ -303,6 +303,7 @@ GameObject:
   - component: {fileID: 1866788986472050172}
   - component: {fileID: 1866788986472050171}
   - component: {fileID: 4496395341564099562}
+  - component: {fileID: 867051935101639660}
   m_Layer: 5
   m_Name: TitleScreen
   m_TagString: Untagged
@@ -420,6 +421,29 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &867051935101639660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866788986472050170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Menu/Menu move
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 0
+  OverrideMaxDistance: 0
 --- !u!1 &5874376906882632607
 GameObject:
   m_ObjectHideFlags: 0
