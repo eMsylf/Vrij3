@@ -23,7 +23,7 @@ public class Boss : Enemy
 
     void PlayScreamAttackSound() { IdleSound.Stop(); ScreamSound.Play();}
     void PlayEyePopSound() { IdleSound.Stop(); EyePopSound.Play(); }
-    void PlayTeethClackSound() { IdleSound.Stop(); TeethClackSound.Play();}
+    void PlayTeethClackSound() { TeethClackSound.Play();}
     void PlayAttAnnounceSound() { IdleSound.Stop(); AttAnnounceSound.Play(); }
     void PlayDeathSound() { IdleSound.Stop(); dieSound.Play();}
     void PLayIdleSound() { IdleSound.Play(); }
