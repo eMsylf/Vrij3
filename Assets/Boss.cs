@@ -10,23 +10,25 @@ public class Boss : Enemy
     public Spawner eyeSpawner;
     public Spawner motmugSpawner;
 
-    public FMODUnity.StudioEventEmitter IdleSound;
-    public FMODUnity.StudioEventEmitter ScreamSound;
-    public FMODUnity.StudioEventEmitter EyespawnSound;
-
-
-
-
     [Header("Boss animation")]
     public Animator animator;
 
-    void PlayScreamAttackSound() {
-        ScreamSound.Play();
-    }
+    #region Sound
+    [Header("Boss Sounds")]
+    public FMODUnity.StudioEventEmitter IdleSound;
+    public FMODUnity.StudioEventEmitter ScreamSound;
+    public FMODUnity.StudioEventEmitter EyePopSound;
+    public FMODUnity.StudioEventEmitter TeethClackSound;
+    public FMODUnity.StudioEventEmitter AttAnnounceSound;
 
-    void PlayDeathSound() {
-        dieSound.Play();
-    }
+    void PlayScreamAttackSound() { IdleSound.Stop(); ScreamSound.Play();}
+    void PlayEyePopSound() { IdleSound.Stop(); EyePopSound.Play(); }
+    void PlayTeethClackSound() { IdleSound.Stop(); TeethClackSound.Play();}
+    void PlayAttAnnounceSound() { IdleSound.Stop(); AttAnnounceSound.Play(); }
+    void PlayDeathSound() { IdleSound.Stop(); dieSound.Play();}
+    void PLayIdleSound() { IdleSound.Play(); }
+
+    #endregion
 
     void SpawnScream()
     {

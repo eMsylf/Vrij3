@@ -51,9 +51,9 @@ MonoBehaviour:
   TriggerOnce: 0
   Preload: 0
   Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 15
 --- !u!1 &3280204851357293819
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,9 +179,9 @@ MonoBehaviour:
   TriggerOnce: 0
   Preload: 0
   Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 15
 --- !u!1 &4749329289670397363
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,9 +233,45 @@ MonoBehaviour:
   TriggerOnce: 0
   Preload: 0
   Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 15
+--- !u!114 &5755118504398582152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 648fe5aa54ba9404c9253a06920055b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Visual: {fileID: 0}
+  EnergyAbsorbedRatio: 0.1
+  InstantiateParticles: 1
+  FreePrefab: {fileID: 4533091867458702230, guid: 243034a74ff369545b4362ce55d95a73,
+    type: 3}
+  AbsorbedPrefab: {fileID: 2865376917913340384, guid: ba39aa6c41f8321489dc637b48b53d8d,
+    type: 3}
+  EnergyEmitter: {fileID: 8040823487251005647, guid: a1a9bd48ea38cae49a73b7944ce69b2c,
+    type: 3}
+  freeParticles: {fileID: 0}
+  absorbedParticles: {fileID: 0}
+--- !u!114 &8819434613393817835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475457101559693662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a442a3592648fe34e8219f1051633042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Energy: 10
 --- !u!1 &7979384227933598691
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,9 +323,9 @@ MonoBehaviour:
   TriggerOnce: 0
   Preload: 0
   Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 15
 --- !u!1 &8215679829483737413
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,42 +360,6 @@ Transform:
   m_Father: {fileID: 1025268547610004229}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5755118504398582152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8475457101559693662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 648fe5aa54ba9404c9253a06920055b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Visual: {fileID: 0}
-  EnergyAbsorbedRatio: 0.1
-  InstantiateParticles: 1
-  FreePrefab: {fileID: 4533091867458702230, guid: 243034a74ff369545b4362ce55d95a73,
-    type: 3}
-  AbsorbedPrefab: {fileID: 2865376917913340384, guid: ba39aa6c41f8321489dc637b48b53d8d,
-    type: 3}
-  EnergyEmitter: {fileID: 8040823487251005647, guid: a1a9bd48ea38cae49a73b7944ce69b2c,
-    type: 3}
-  freeParticles: {fileID: 0}
-  absorbedParticles: {fileID: 0}
---- !u!114 &8819434613393817835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8475457101559693662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a442a3592648fe34e8219f1051633042, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Energy: 20
 --- !u!1001 &6973520334301170889
 PrefabInstance:
   m_ObjectHideFlags: 0
