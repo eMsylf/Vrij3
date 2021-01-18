@@ -68,10 +68,13 @@ public class Death : MonoBehaviour
         {
             // 2 energy orbs per cycle
             int cycles = absorbedEnergy / 2;
-            // Divide the absorbed energy over the cycles
-            absorbedBurst.count = absorbedEnergy / cycles;
-            absorbedBurst.cycleCount = cycles;
-            absorbedBurst.repeatInterval = .1f;
+            if (cycles > 0)
+            {
+                // Divide the absorbed energy over the cycles
+                absorbedBurst.count = absorbedEnergy / cycles;
+                absorbedBurst.cycleCount = cycles;
+                absorbedBurst.repeatInterval = .1f;
+            }
         }
     }
 
