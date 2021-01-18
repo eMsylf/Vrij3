@@ -25,6 +25,13 @@ public class AudioSettings : Singleton<AudioSettings>
         master.Init();
     }
 
+    private void Start()
+    {
+        sfx.Init();
+        music.Init();
+        master.Init();
+    }
+
     public void Set(AudioSetting setting, float value)
     {
         setting.Set(value);

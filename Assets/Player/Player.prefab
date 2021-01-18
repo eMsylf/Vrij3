@@ -7964,7 +7964,7 @@ MonoBehaviour:
   CanMultiHit: 0
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 21504
+    m_Bits: 87040
   InvincibilityTime: 0
   HitStun:
     enabled: 1
@@ -8392,7 +8392,7 @@ MonoBehaviour:
   CanMultiHit: 0
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 21504
+    m_Bits: 87040
   InvincibilityTime: 0
   HitStun:
     enabled: 1
@@ -8472,7 +8472,7 @@ MonoBehaviour:
   CanMultiHit: 1
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 21504
+    m_Bits: 87040
   InvincibilityTime: 0
   HitStun:
     enabled: 1
@@ -8967,6 +8967,8 @@ MonoBehaviour:
   attack3Sound: {fileID: 95949685090521270}
   getHitSound: {fileID: 8765806878511329315}
   footstepsSound: {fileID: 5738719025208700245}
+  footstepInterval: 0.5
+  footstepIntervalRunning: 0.25
   dodgeSound: {fileID: 4785978229808016446}
   staminaLowSound: {fileID: 4900042824571271087}
   staminaRegainSound: {fileID: 4189871794858404363}
@@ -8983,6 +8985,7 @@ MonoBehaviour:
     RunStaminaDrainTime: 1
     defaultDodgeDirection: 1
     state: 0
+  runningAnimationMultiplier: 1.5
   attacking:
     attackChargeSound: {fileID: 8649560444395208198}
     attackChargeTik1Sound: {fileID: 9124827102644698201}
@@ -9170,6 +9173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 5738622204949074231}
+  useOverrideColor: 1
   overrideColor: {r: 5.3403134, g: 0, b: 0, a: 0}
   duration: 0.1
 --- !u!1 &7724749264071693243
@@ -9743,7 +9747,7 @@ MonoBehaviour:
   CanMultiHit: 1
   HitsTheseLayers:
     serializedVersion: 2
-    m_Bits: 21504
+    m_Bits: 87040
   InvincibilityTime: 0
   HitStun:
     enabled: 1
