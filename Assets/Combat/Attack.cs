@@ -29,6 +29,7 @@ namespace Combat {
                 Up
             }
             public EDirection direction = EDirection.Forward;
+            public ForceMode forceMode = ForceMode.VelocityChange;
             public float multiplier = 1f;
             [Tooltip("If ticked, a force away from the attack's pivot will be applied.")]
             public float outwardForceMultiplier = 1f;
@@ -167,7 +168,7 @@ namespace Combat {
             if (attackForce.multiplier != 0f)
                 forceVector += GetForceVector(attackForce.direction);
             
-            rigidbody.AddForce(forceVector, ForceMode.Impulse);
+            rigidbody.AddForce(forceVector, attackForce.forceMode);
         }
 
         public void DamageFighter(Fighter attacker, Fighter victim)
