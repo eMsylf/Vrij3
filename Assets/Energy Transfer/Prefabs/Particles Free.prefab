@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4533091867458702230}
   - component: {fileID: 4533091867458702229}
   m_Layer: 0
-  m_Name: Particles Non-Absorb
+  m_Name: Particles Free
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4768,7 +4768,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 6967ab9afc6ad6e469ac648dae3cfc72, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -4879,6 +4879,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2865376917913340383, guid: ba39aa6c41f8321489dc637b48b53d8d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 51a27f2f270d9454f94b88da7aa6272a, type: 2}
+    - target: {fileID: 2865376917913340384, guid: ba39aa6c41f8321489dc637b48b53d8d,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.5379584
+      objectReference: {fileID: 0}
+    - target: {fileID: 2865376917913340384, guid: ba39aa6c41f8321489dc637b48b53d8d,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.67809695
+      objectReference: {fileID: 0}
+    - target: {fileID: 2865376917913340384, guid: ba39aa6c41f8321489dc637b48b53d8d,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.7264151
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba39aa6c41f8321489dc637b48b53d8d, type: 3}
