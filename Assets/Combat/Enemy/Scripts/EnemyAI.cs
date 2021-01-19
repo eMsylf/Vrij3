@@ -10,6 +10,20 @@ public class EnemyAI : MonoBehaviour
 
     public FMODUnity.StudioEventEmitter attackSound;
     public FMODUnity.StudioEventEmitter idleSound;
+    public void PlaySound(FMODUnity.StudioEventEmitter sound)
+    {
+        if (sound == null)
+            Debug.LogWarning("Sound is not assinged", gameObject);
+        else
+            sound.Play();
+    }
+    public void StopSound(FMODUnity.StudioEventEmitter sound)
+    {
+        if (sound == null)
+            Debug.LogWarning("Sound is not assinged", gameObject);
+        else
+            sound.Stop();
+    }
 
     Enemy Enemy
     {
@@ -107,8 +121,8 @@ public class EnemyAI : MonoBehaviour
 
     private void OnDisable()
     {
-        attackSound.Stop();
-        idleSound.Stop();
+        StopSound(attackSound);
+        StopSound(idleSound);
     }
 
     #region States
@@ -144,7 +158,10 @@ public class EnemyAI : MonoBehaviour
         //Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
         Pathfinding.enabled = false;
-        idleSound.Play();
+        if (idleSound == null)
+            Debug.LogWarning("Idle sound not assigned", gameObject);
+        else
+            idleSound.Play();
         
     }
     private void Idle()
