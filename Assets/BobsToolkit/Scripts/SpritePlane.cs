@@ -20,6 +20,25 @@ public class SpritePlane : MonoBehaviour
     public bool invertHorizontal;
     public bool invertVertical;
 
+    private MeshFilter meshFilter;
+    private MeshFilter GetMeshFilter()
+    {
+        if (meshFilter == null)
+        {
+            meshFilter = GetComponent<MeshFilter>();
+        }
+        return meshFilter;
+    }
+    private MeshRenderer meshRenderer;
+    private MeshRenderer GetMeshRenderer()
+    {
+        if (meshRenderer == null)
+        {
+            meshRenderer = GetComponent<MeshRenderer>();
+        }
+        return meshRenderer;
+    }
+
     private void OnValidate()
     {
         SetScale();
@@ -38,7 +57,7 @@ public class SpritePlane : MonoBehaviour
 
     public void SetScale()
     {
-        Texture texture = GetComponent<MeshRenderer>().sharedMaterial.GetTexture("_MainTex");
+        Texture texture = GetMeshRenderer().sharedMaterial.GetTexture("_MainTex");
 
         if (texture == null)
         {
@@ -66,11 +85,13 @@ public class SpritePlane : MonoBehaviour
 
     internal void SetMaterial(Material material)
     {
-        GetComponent<MeshRenderer>().sharedMaterial = material;
+        if (GetMeshRenderer().sharedMaterial != material)
+            GetMeshRenderer().sharedMaterial = material;
     }
 
     internal void SetMesh(Mesh mesh)
     {
-        GetComponent<MeshFilter>().sharedMesh = mesh;
+        if (GetMeshFilter().sharedMesh != mesh)
+            GetMeshFilter().sharedMesh = mesh;
     }
 }
