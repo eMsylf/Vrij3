@@ -32,6 +32,23 @@ public class SpritePlaneDouble : MonoBehaviour
             AddNewPlanes();
         }
 
+        switch (meshType)
+        {
+            case MeshType.Quad:
+                Front.transform.localPosition = new Vector3(0, 0, 0.001f);
+                Front.transform.localRotation = Quaternion.identity;
+                Back.transform.localPosition = new Vector3(0, 0, -0.001f);
+                Back.transform.localRotation = Quaternion.Euler(0, 180f, 0);
+                break;
+            case MeshType.Plane:
+                Front.transform.localPosition = new Vector3(0, 0.001f, 0);
+                Front.transform.localRotation = Quaternion.identity;
+                Back.transform.localPosition = new Vector3(0, -0.001f, 0);
+                Back.transform.localRotation = Quaternion.Euler(0, 0, 180f);
+                break;
+            default:
+                break;
+        }
         Front.UpdateScale(scale, (SpritePlane.Orientation)meshType, GetMesh(), material, invertHorizontal, invertVertical);
         Back.UpdateScale(scale, (SpritePlane.Orientation)meshType, GetMesh(), material, !invertHorizontal, invertVertical);
     }

@@ -61,22 +61,6 @@ public class SpritePlane : MonoBehaviour
                 break;
         }
 
-        //if (sprite == null)
-        //    return;
-        //switch (orientation)
-        //{
-        //    case Orientation.XY:
-        //        newScale.x = sprite.rect.width * (invertHorizontal ? -scale : scale);
-        //        newScale.y = sprite.rect.height * (invertVertical ? -scale : scale);
-        //        break;
-        //    case Orientation.XZ:
-        //        newScale.x = sprite.rect.width * (invertHorizontal ? -scale : scale);
-        //        newScale.z = sprite.rect.height * (invertVertical ? -scale : scale);
-        //        break;
-        //    default:
-        //        break;
-        //}
-
         transform.localScale = newScale;
     }
 

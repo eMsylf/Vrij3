@@ -302,7 +302,7 @@ public class PlayerController : Fighter
     {
         Direction.DirectionIndicator.localPosition = new Vector3(movement.FacingDirection.x, 0f, movement.FacingDirection.y);
     }
-
+    // Maak component
     #region Movement
     [System.Serializable]
     public class Movement
@@ -561,6 +561,7 @@ public class PlayerController : Fighter
     }
     #endregion
 
+    // Maak component
     #region Attacking
     [Serializable]
     public class Attacking
@@ -927,6 +928,7 @@ public class PlayerController : Fighter
 
     #endregion
 
+    // Maak component
     #region Targeting
     [System.Serializable]
     public class Targeting
