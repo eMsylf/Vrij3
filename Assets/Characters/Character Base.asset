@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd17ba70d3a8586499d4b3ca03ef186f, type: 3}
   m_Name: Character Base
   m_EditorClassIdentifier: 
-  LevelCurve:
+  LevelEnergyCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 8.59916
-      outSlope: Infinity
-      tangentMode: 1
+      inSlope: 0.01
+      outSlope: 0.01
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 100
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: Infinity
+      outSlope: Infinity
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
@@ -49,5 +49,5 @@ MonoBehaviour:
   Speed: 1
   AttackFrequency: 1
   Size: 1
-  testEnergy: 9001
-  testLevel: 2
+  testEnergy: 0.2
+  testLevel: 0
