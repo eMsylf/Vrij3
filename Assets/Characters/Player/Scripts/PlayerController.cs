@@ -552,7 +552,7 @@ public class PlayerController : Fighter
     public void UpdateFacingDirection(Vector2 direction)
     {
         movement.FacingDirection = direction;
-        //TODO: Do dit niet wanneer de speler aan het aanvallen is
+        //TODO: Doe dit niet wanneer de speler aan het aanvallen is
         UpdateDirectionIndicator();
         if (Animator == null)
             return;
