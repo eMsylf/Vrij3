@@ -24,6 +24,7 @@ namespace Combat
         [System.Serializable]
         public class TouchDamage
         {
+            public bool enabled;
             public int damage = 0;
             public float invincibilityTime = 1f;
             public LayerMask layers;
@@ -187,7 +188,7 @@ namespace Combat
                 return;
             }
 
-            if (touchDamage.damage != 0)
+            if (touchDamage.enabled)
             {
                 if (collision.rigidbody != null)
                 {
@@ -195,7 +196,8 @@ namespace Combat
                     forceVector.Normalize();
                     collision.rigidbody.AddForce(touchDamage.force * forceVector, ForceMode.Impulse);
                 }
-                otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
+                if (touchDamage.damage != 0)
+                    otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
                 Debug.Log(otherFighter + " takes touch damage from " + name);
             }
         }

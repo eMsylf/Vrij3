@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(CameraFollow))]
 public class CameraController : Singleton<CameraController>
@@ -94,5 +95,12 @@ public class CameraController : Singleton<CameraController>
 
         CameraFollow.Distance += GetZoomDelta(Controls.Game.CameraZoom.ReadValue<float>());
         CameraFollow.Distance = Mathf.Clamp(CameraFollow.Distance, ZoomMin, ZoomMax);
+    }
+
+    public void MultiplyZoomConstraints(float factor)
+    {
+        ZoomMin *= factor;
+        ZoomMax *= factor;
+        CameraFollow.Distance *= factor;
     }
 }
