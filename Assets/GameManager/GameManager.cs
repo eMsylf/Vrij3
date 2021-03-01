@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using BobJeltes.Menu;
 using BobJeltes.StandardUtilities;
+using RanchyRats.Gyrus;
 
 public class GameManager : Singleton<GameManager>
 {

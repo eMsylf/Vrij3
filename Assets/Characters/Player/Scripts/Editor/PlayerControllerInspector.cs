@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using RanchyRats.Gyrus;
 
 [CustomEditor(typeof(PlayerController))]
 public class PlayerControllerInspector : Editor
