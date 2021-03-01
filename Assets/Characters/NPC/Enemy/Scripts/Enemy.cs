@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Combat
+namespace RanchyRats.Gyrus
 {
-    public class Enemy : Fighter
+    public class Enemy : Character
     {
-        public UnityEvent OnAttackAnnouncement;
-        public void AnnounceAttack()
-        {
-            OnAttackAnnouncement.Invoke();
-        }
+
     }
 }

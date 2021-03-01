@@ -48,17 +48,15 @@ public class GameManager : Singleton<GameManager>
 #endif
     }
 
-    private PlayerController PlayerInstance;
     public GameObject DeathScreen;
 
-    public void PlayerDeath(PlayerController player)
+    public void PlayerDeath(PlayerCharacter player)
     {
         //Players.Remove(player);
         //if (Players.Count == 1)
         //{
         //    MatchComplete();
         //}
-        PlayerInstance = player;
         if (DeathScreen == null)
         {
             Debug.LogError("Death screen not assigned to " + name, this);
@@ -78,14 +76,14 @@ public class GameManager : Singleton<GameManager>
         EndGameScreenInstance.gameObject.SetActive(true);
     }
 
-    public void ActivatePlayer()
+    public void ActivatePlayer(PlayerCharacter player)
     {
-        PlayerInstance.gameObject.SetActive(true);
+        player.gameObject.SetActive(true);
     }
 
-    public void RespawnPlayer()
+    public void RespawnPlayer(PlayerCharacter player)
     {
-        PlayerInstance.Respawn();
+        player.Respawn();
     }
 
     private void Start()

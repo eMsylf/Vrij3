@@ -1,4 +1,5 @@
 ﻿using Combat;
+using RanchyRats.Gyrus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +19,7 @@ public class HealthPickup : MonoBehaviour
             return;
         }
 
-        Fighter fighter = other.GetComponent<Fighter>();
+        Character fighter = other.GetComponent<Character>();
         if (fighter == null)
         {
             return;

@@ -48,7 +48,7 @@ namespace RanchyRats.Gyrus
         [Tooltip("If enabled, only one bloodsplatter is instantiated upon death. If disabled, every bloodsplatter in the list is spawned upon death.")]
         public bool PickRandomBloodSplatter;
 
-        
+        public PlayerController PlayerController;
 
         public virtual void Die()
         {
@@ -79,11 +79,15 @@ namespace RanchyRats.Gyrus
             if (onDeath != null)
                 onDeath.Invoke();
 
-            InterruptAttackCharge();
-            GameManager.Instance.PlayerDeath(this);
+            if (PlayerController != null)
+            {
+                PlayerController.InterruptAttackCharge();
+            }
+            if (this is PlayerCharacter)
+                GameManager.Instance.PlayerDeath(this as PlayerCharacter);
             //----------------------------------------------------------- Player dies
-            if (Character.sounds.death != null)
-                Character.sounds.death.Play();
+            if (sounds.death != null)
+                sounds.death.Play();
 
             gameObject.SetActive(false);
         }
@@ -156,6 +160,12 @@ namespace RanchyRats.Gyrus
             {
                 InvincibilityTime -= Time.deltaTime;
             }
+        }
+
+        public UnityEvent OnAttackAnnouncement;
+        public void AnnounceAttack()
+        {
+            OnAttackAnnouncement.Invoke();
         }
 
         public void Attack()
@@ -248,7 +258,7 @@ namespace RanchyRats.Gyrus
         public Transform RespawnOverride;
 
         // TODO: Verander dit naar een GameManager functie die de juiste instance van de player respawnt
-        private void Respawn()
+        public void Respawn()
         {
             transform.position = RespawnPoint;
         }

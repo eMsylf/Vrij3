@@ -1,4 +1,4 @@
-﻿using Combat;
+﻿using RanchyRats.Gyrus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +25,7 @@ public class Boss : Enemy
     void PlayEyePopSound() { IdleSound.Stop(); EyePopSound.Play(); }
     void PlayTeethClackSound() { TeethClackSound.Play();}
     void PlayAttAnnounceSound() { IdleSound.Stop(); AttAnnounceSound.Play(); }
-    void PlayDeathSound() { IdleSound.Stop(); dieSound.Play();}
+    void PlayDeathSound() { IdleSound.Stop(); sounds.death.Play();}
     void PLayIdleSound() { IdleSound.Play(); }
 
     #endregion
@@ -45,9 +45,9 @@ public class Boss : Enemy
         motmugSpawner.Spawn();
     }
 
-    public override void Die()
+    public  void Die()
     {
-        base.Die();
+        //base.Die();
         StartDeathAnimation();
     }
 
