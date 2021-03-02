@@ -10,8 +10,8 @@ using UnityEditor;
 
 namespace RanchyRats.Gyrus
 {
-    public class Character : MonoBehaviour, 
-        CombatProperties.IKillable, 
+    public class Character : MonoBehaviour,
+        CombatProperties.IKillable,
         //CombatProperties.IDamagable<float>, 
         CombatProperties.ICanAttack
     {
@@ -32,7 +32,6 @@ namespace RanchyRats.Gyrus
         [Header("Optional components")]
         public Stat health;
         public Stat stamina;
-        public Movement movement;
         [System.Serializable]
         public struct Events
         {
@@ -51,8 +50,27 @@ namespace RanchyRats.Gyrus
         [Tooltip("If enabled, only one bloodsplatter is instantiated upon death. If disabled, every bloodsplatter in the list is spawned upon death.")]
         public bool PickRandomBloodSplatter;
 
-        public CharacterController Controller;
-        public Animator Animator;
+        [SerializeField]
+        private CharacterController controller;
+        public CharacterController Controller {
+            get
+            {
+                if (controller == null)
+                    controller = GetComponent<CharacterController>();
+                return controller;
+            }
+        }
+        [SerializeField]
+        private Animator animator;
+        public Animator Animator
+        {
+            get
+            {
+                if (animator == null)
+                    animator = GetComponent<Animator>();
+                return animator;
+            }
+        }
 
         public virtual void Die()
         {

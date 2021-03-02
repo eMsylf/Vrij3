@@ -1,5 +1,8 @@
 ﻿using System;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace RanchyRats.Gyrus
 {
@@ -23,5 +26,14 @@ namespace RanchyRats.Gyrus
         {
             Debug.Log("Lock on");
         }
+
+#if UNITY_EDITOR
+
+        private void OnDrawGizmosSelected()
+        {
+            Handles.color = RadiusColor;
+            Handles.DrawWireDisc(transform.position, transform.up, Radius);
+        }
+#endif
     }
 }

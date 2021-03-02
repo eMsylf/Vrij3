@@ -49,21 +49,6 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        Animator animator;
-        Animator Animator
-        {
-            get
-            {
-                if (animator == null)
-                {
-                    animator = GetComponent<Animator>();
-                    if (animator == null)
-                        Debug.LogError("Animator is null", this);
-                }
-                return animator;
-            }
-        }
-
         public override void OnEnable()
         {
             base.OnEnable();
@@ -148,14 +133,5 @@ namespace RanchyRats.Gyrus
         {
             GamePadFunctions.Instance.DoGamepadRumble(duration);
         }
-
-#if UNITY_EDITOR
-
-        private void OnDrawGizmosSelected()
-        {
-            Handles.color = targeting.RadiusColor;
-            Handles.DrawWireDisc(transform.position, transform.up, targeting.Radius);
-        }
-#endif
     }
 }

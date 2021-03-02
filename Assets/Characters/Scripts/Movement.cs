@@ -42,7 +42,6 @@ namespace RanchyRats.Gyrus
             dust.Play();
         }
 
-
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
         Rigidbody rigidbody;
         Rigidbody Rigidbody
@@ -177,7 +176,7 @@ namespace RanchyRats.Gyrus
             //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
             state = State.Idle;
             Character.Animator.SetBool("IsWalking", false);
-            sounds.Footstep.Stop(); //----------------------------------- Footstops :)
+            if (sounds.Footstep != null) sounds.Footstep.Stop();
 
         }
 
@@ -186,6 +185,8 @@ namespace RanchyRats.Gyrus
 
         public void StartRunning()
         {
+            if (Stamina == null)
+                return;
             if (Stamina.IsEmpty(false))
                 return;
 
@@ -244,7 +245,7 @@ namespace RanchyRats.Gyrus
                     return;
             }
 
-            if (Stamina.IsEmpty(true))
+            if (Stamina != null && Stamina.IsEmpty(true))
             {
                 //Debug.Log("Insufficient stamina to dodge");
                 //-----------------------------------------------   Out of Stamina
@@ -308,7 +309,8 @@ namespace RanchyRats.Gyrus
 
         public void UpdateDirectionIndicator(Vector2 facingDirection)
         {
-            Direction.DirectionIndicator.localPosition = new Vector3(facingDirection.x, 0f, facingDirection.y);
+            Direction.UpdatePosition(new Vector3(facingDirection.x, 0f, facingDirection.y));
+            //Direction.DirectionIndicator.localPosition = 
         }
 
         public bool LockFacingDirection = false;

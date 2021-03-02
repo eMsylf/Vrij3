@@ -5,6 +5,12 @@ using UnityEngine;
 public class Direction : MonoBehaviour
 {
     public Transform DirectionIndicator;
+    public float distance = 1f;
+    public void UpdatePosition(Vector3 position)
+    {
+        DirectionIndicator.localPosition = position * distance;
+    }
+
     //public LookDirection DefaultDirection;
     //public List<LookDirection> Directions;
 

@@ -13,10 +13,10 @@ namespace RanchyRats.Gyrus
     public class Attacking : CharacterComponent
     {
         public FMODUnity.StudioEventEmitter attackChargeSound;
-        public FMODUnity.StudioEventEmitter attackChargeTik1Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTik2Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTik3Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTik4Sound;
+        public FMODUnity.StudioEventEmitter attackChargeTick1Sound;
+        public FMODUnity.StudioEventEmitter attackChargeTick2Sound;
+        public FMODUnity.StudioEventEmitter attackChargeTick3Sound;
+        public FMODUnity.StudioEventEmitter attackChargeTick4Sound;
 
         public Slider ChargeSlider;
         //public GameObject ChargeIndicators;
@@ -223,10 +223,10 @@ namespace RanchyRats.Gyrus
                     previousChargeState = currentChargeState;
 
                     //------------------------------------------------------------- Charge tiks
-                    if (currentChargeState == 0) attackChargeTik1Sound.Play();
-                    else if (currentChargeState == 1) attackChargeTik2Sound.Play();
-                    else if (currentChargeState == 2) attackChargeTik3Sound.Play();
-                    else if (currentChargeState == 3) attackChargeTik4Sound.Play();
+                    if (currentChargeState == 0) attackChargeTick1Sound.Play();
+                    else if (currentChargeState == 1) attackChargeTick2Sound.Play();
+                    else if (currentChargeState == 2) attackChargeTick3Sound.Play();
+                    else if (currentChargeState == 3) attackChargeTick4Sound.Play();
 
                 }
                 if (!slowmotionInitiated)
@@ -338,11 +338,11 @@ namespace RanchyRats.Gyrus
             // TODO: Move this to a callback in CharacterController
             if (!AllowMovementWhileAttacking)
             {
-                if (Character.movement != null)
+                if (Character.Controller.movement != null)
                 {
-                    Character.movement.Stop();
-                    Character.movement.AcceptMovementInput = false;
-                    Character.movement.enabled = false;
+                    Character.Controller.movement.Stop();
+                    Character.Controller.movement.AcceptMovementInput = false;
+                    Character.Controller.movement.enabled = false;
                 }
             }
             state = Attacking.State.Attacking;
@@ -353,17 +353,17 @@ namespace RanchyRats.Gyrus
         {
             //Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
             state = Attacking.State.Ready;
-            if (Character.movement != null)
+            if (Character.Controller.movement != null)
             {
-                Character.movement.state = Movement.State.Idle;
-                Character.movement.AcceptMovementInput = true;
+                Character.Controller.movement.state = Movement.State.Idle;
+                Character.Controller.movement.AcceptMovementInput = true;
             }
             Character.stamina.allowRecovery = true;
 
             // Immediately update walking direction at end of attack 
-            if (Character.movement != null)
+            if (Character.Controller.movement != null)
             {
-                Character.movement.ForceReadMoveInput();
+                Character.Controller.movement.ForceReadMoveInput();
             }
         }
     }
