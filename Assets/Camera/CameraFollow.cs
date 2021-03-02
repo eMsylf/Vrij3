@@ -142,6 +142,7 @@ public class CameraFollow : MonoBehaviour
     private void Start()
     {
         LivePreview = false;
+        Rigidbody.useGravity = false;
     }
 
     private void FixedUpdate()
