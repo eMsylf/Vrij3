@@ -10,25 +10,24 @@ public class Boss : Enemy
     public Spawner eyeSpawner;
     public Spawner motmugSpawner;
 
-    [Header("Boss animation")]
-    public Animator animator;
-
-    #region Sound
-    [Header("Boss Sounds")]
-    public FMODUnity.StudioEventEmitter IdleSound;
-    public FMODUnity.StudioEventEmitter ScreamSound;
-    public FMODUnity.StudioEventEmitter EyePopSound;
-    public FMODUnity.StudioEventEmitter TeethClackSound;
-    public FMODUnity.StudioEventEmitter AttAnnounceSound;
-
-    void PlayScreamAttackSound() { IdleSound.Stop(); ScreamSound.Play();}
-    void PlayEyePopSound() { IdleSound.Stop(); EyePopSound.Play(); }
-    void PlayTeethClackSound() { TeethClackSound.Play();}
-    void PlayAttAnnounceSound() { IdleSound.Stop(); AttAnnounceSound.Play(); }
-    void PlayDeathSound() { IdleSound.Stop(); sounds.death.Play();}
-    void PLayIdleSound() { IdleSound.Play(); }
-
-    #endregion
+    [System.Serializable]
+    public struct BossSounds
+    {
+        public FMODUnity.StudioEventEmitter IdleSound;
+        public FMODUnity.StudioEventEmitter ScreamSound;
+        public FMODUnity.StudioEventEmitter EyePopSound;
+        public FMODUnity.StudioEventEmitter TeethClackSound;
+        public FMODUnity.StudioEventEmitter AttAnnounceSound;
+    }
+    public BossSounds bossSounds;
+    
+    // TODO: Dit kan misschien ook met events gedaan worden. Vergroot modulariteit, hoef je niet de code in te duiken wanneer er een nieuwe sound toegevoegd moet worden.
+    void PlayScreamAttackSound() { bossSounds.IdleSound.Stop(); bossSounds.ScreamSound.Play(); }
+    void PlayEyePopSound() { bossSounds.IdleSound.Stop(); bossSounds.EyePopSound.Play(); }
+    void PlayTeethClackSound() { bossSounds.TeethClackSound.Play(); }
+    void PlayAttAnnounceSound() { bossSounds.IdleSound.Stop(); bossSounds.AttAnnounceSound.Play(); }
+    void PlayDeathSound() { bossSounds.IdleSound.Stop(); sounds.death.Play(); }
+    void PLayIdleSound() { bossSounds.IdleSound.Play(); }
 
     void SpawnScream()
     {
@@ -45,31 +44,31 @@ public class Boss : Enemy
         motmugSpawner.Spawn();
     }
 
-    public  void Die()
+    public override void Die()
     {
-        //base.Die();
+        base.Die();
         StartDeathAnimation();
     }
 
     public void StartDeathAnimation()
     {
-        if (animator == null)
+        if (Animator == null)
         {
             Debug.LogError("Animator not assigned", gameObject);
             return;
         }
 
-        animator.SetTrigger("Death");
+        Animator.SetTrigger("Death");
     }
 
     public void PlayerClose(bool isClose)
     {
-        if (animator == null)
+        if (Animator == null)
         {
             Debug.LogError("Animator not assigned", gameObject);
             return;
         }
 
-        animator.SetBool("PlayerClose", isClose);
+        Animator.SetBool("PlayerClose", isClose);
     }
 }

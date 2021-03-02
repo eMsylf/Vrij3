@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -131,7 +131,6 @@ GameObject:
   m_Component:
   - component: {fileID: 99953017}
   - component: {fileID: 99953016}
-  - component: {fileID: 99953018}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -148,10 +147,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 99953015}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b8e906504b3fe84ea217254d043f560, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c9c3db1b102ac24ead814ab7c5e026c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: c67cd2a439cc73c4f84628cfaecda751, type: 2}
+  profile: {fileID: 0}
   modifiers:
     energy: 0
     health: 0
@@ -161,12 +160,51 @@ MonoBehaviour:
   health: {fileID: 0}
   stamina: {fileID: 0}
   movement: {fileID: 0}
-  die:
+  events:
+    onHit:
+      m_PersistentCalls:
+        m_Calls: []
+    onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+    onRevival:
+      m_PersistentCalls:
+        m_Calls: []
+  HitObjects: []
+  PickRandomHitObject: 0
+  DeathObjects: []
+  PickRandomDeathObject: 0
+  BloodSplatters: []
+  PickRandomBloodSplatter: 0
+  Controller: {fileID: 0}
+  Animator: {fileID: 0}
+  sounds:
+    death: {fileID: 0}
+    getHit: {fileID: 0}
+  Health: {fileID: 0}
+  Stamina: {fileID: 0}
+  touchDamage:
+    enabled: 0
+    damage: 0
+    invincibilityTime: 1
+    layers:
+      serializedVersion: 2
+      m_Bits: 0
+    force: 1
+  OnAttackAnnouncement:
     m_PersistentCalls:
       m_Calls: []
-  revive:
-    m_PersistentCalls:
-      m_Calls: []
+  respawnPoint: {x: 0, y: 0, z: 0}
+  RespawnOverride: {fileID: 0}
+  ScreamEmitter: {fileID: 0}
+  eyeSpawner: {fileID: 0}
+  motmugSpawner: {fileID: 0}
+  bossSounds:
+    IdleSound: {fileID: 0}
+    ScreamSound: {fileID: 0}
+    EyePopSound: {fileID: 0}
+    TeethClackSound: {fileID: 0}
+    AttAnnounceSound: {fileID: 0}
 --- !u!4 &99953017
 Transform:
   m_ObjectHideFlags: 0
@@ -181,32 +219,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &99953018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 99953015}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4069f98b3cc43af409e017075e020ac4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 1
-  DodgeSpeed: 2
-  DodgeDuration: 1
-  AcceptMovementInput: 1
-  RunSpeedMultiplier: 1.5
-  RunStaminaDrainTime: 1
-  defaultDodgeDirection: 0
-  state: 0
-  IdleSettings:
-    speed: 0
-  WalkingSettings:
-    speed: 0
-  DodgingSettings:
-    speed: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

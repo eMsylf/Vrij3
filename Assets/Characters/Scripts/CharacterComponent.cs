@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RanchyRats.Gyrus
 {
     [RequireComponent(typeof(Character))]
-    public class CharacterController : MonoBehaviour
+    public class CharacterComponent : MonoBehaviour
     {
         private Character character;
         public Character Character
@@ -13,18 +13,11 @@ namespace RanchyRats.Gyrus
             get
             {
                 if (character == null)
+                {
                     character = GetComponent<Character>();
+                }
                 return character;
             }
-        }
-
-        public Movement movement;
-        public Attacking attacking;
-        public Targeting targeting;
-
-        public virtual void OnEnable()
-        {
-            
         }
     }
 }

@@ -7,11 +7,11 @@ public class OnHitDeath : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        Character playerController = other.attachedRigidbody.GetComponent<Character>();
+        Character character = other.attachedRigidbody.GetComponent<Character>();
 
-        if (playerController != null)
+        if (character != null)
         {
-            playerController.Die();
+            character.Die();
         }
     }
 }

@@ -33,11 +33,14 @@ namespace RanchyRats.Gyrus
         public Stat health;
         public Stat stamina;
         public Movement movement;
-
-        public UnityEvent onHit;
-        public UnityEvent onDeath;
-        public UnityEvent onRevival;
-
+        [System.Serializable]
+        public struct Events
+        {
+            public UnityEvent onHit;
+            public UnityEvent onDeath;
+            public UnityEvent onRevival;
+        }
+        public Events events;
         public List<GameObject> HitObjects = new List<GameObject>();
         [Tooltip("If disabled, every hit object in the list is spawned upon hit.")]
         public bool PickRandomHitObject;
@@ -48,7 +51,8 @@ namespace RanchyRats.Gyrus
         [Tooltip("If enabled, only one bloodsplatter is instantiated upon death. If disabled, every bloodsplatter in the list is spawned upon death.")]
         public bool PickRandomBloodSplatter;
 
-        public PlayerController PlayerController;
+        public CharacterController Controller;
+        public Animator Animator;
 
         public virtual void Die()
         {
@@ -76,16 +80,16 @@ namespace RanchyRats.Gyrus
                 }
             }
 
-            if (onDeath != null)
-                onDeath.Invoke();
+            if (events.onDeath != null)
+                events.onDeath.Invoke();
 
-            if (PlayerController != null)
+            if (Controller != null)
             {
-                PlayerController.InterruptAttackCharge();
+                Controller.attacking.InterruptCharge();
             }
             if (this is PlayerCharacter)
                 GameManager.Instance.PlayerDeath(this as PlayerCharacter);
-            //----------------------------------------------------------- Player dies
+            //----------------------------------------------------------- Character dies
             if (sounds.death != null)
                 sounds.death.Play();
 
@@ -188,7 +192,7 @@ namespace RanchyRats.Gyrus
                 Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage.");
             }
 
-            onHit.Invoke();
+            events.onHit.Invoke();
 
             if (PickRandomHitObject)
             {
@@ -243,8 +247,6 @@ namespace RanchyRats.Gyrus
             }
         }
 
-
-
         [SerializeField] private Vector3 respawnPoint = new Vector3();
         public Vector3 RespawnPoint
         {
@@ -257,7 +259,7 @@ namespace RanchyRats.Gyrus
         }
         public Transform RespawnOverride;
 
-        // TODO: Verander dit naar een GameManager functie die de juiste instance van de player respawnt
+        // TODO: Verander dit naar een GameManager functie die de juiste instance van de character respawnt
         public void Respawn()
         {
             transform.position = RespawnPoint;

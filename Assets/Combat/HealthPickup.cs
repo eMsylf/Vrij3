@@ -19,18 +19,18 @@ public class HealthPickup : MonoBehaviour
             return;
         }
 
-        Character fighter = other.GetComponent<Character>();
-        if (fighter == null)
+        Character character = other.GetComponent<Character>();
+        if (character == null)
         {
             return;
         }
 
-        if (fighter.Health.Value == fighter.Health.MaxValue)
+        if (character.Health.Value == character.Health.MaxValue)
         {
             return;
         }
 
-        fighter.Health.SetCurrent(fighter.Health.Value + 1);
+        character.Health.SetCurrent(character.Health.Value + 1);
 
         foreach (GameObject obj in DisappearanceObjects)
         {
