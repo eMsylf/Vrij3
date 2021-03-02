@@ -306,14 +306,14 @@ namespace RanchyRats.Gyrus
                     return;
             }
 
-            if (Character.Stamina.IsEmpty(true))
+            if (Character.stamina.IsEmpty(true))
             {
                 return;
             }
-            Character.Stamina.Use(1);
+            Character.stamina.Use(1);
 
             StartCoroutine(DoCharge());
-            Character.Stamina.allowRecovery = false;
+            Character.stamina.allowRecovery = false;
         }
 
         public void AddNoChargeZone(GameObject zone)
@@ -346,7 +346,7 @@ namespace RanchyRats.Gyrus
                 }
             }
             state = Attacking.State.Attacking;
-            Character.Stamina.allowRecovery = false;
+            Character.stamina.allowRecovery = false;
         }
 
         private void EndAttack()
@@ -358,7 +358,7 @@ namespace RanchyRats.Gyrus
                 Character.movement.state = Movement.State.Idle;
                 Character.movement.AcceptMovementInput = true;
             }
-            Character.Stamina.allowRecovery = true;
+            Character.stamina.allowRecovery = true;
 
             // Immediately update walking direction at end of attack 
             if (Character.movement != null)

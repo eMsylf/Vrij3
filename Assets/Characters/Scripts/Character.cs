@@ -102,9 +102,6 @@ namespace RanchyRats.Gyrus
             public FMODUnity.StudioEventEmitter getHit;
         }
         public Sounds sounds;
-
-        public Stat Health;
-        public Stat Stamina;
         private float InvincibilityTime = 0f;
         public bool Invincible
         {
@@ -132,13 +129,13 @@ namespace RanchyRats.Gyrus
         internal void OnEnableTasks()
         {
             //Debug.Log("Set current health and stamina of " + name + " to max", this);
-            if (Health != null)
+            if (health != null)
             {
-                Health.SetCurrent(Health.MaxValue);
+                health.SetCurrent(health.MaxValue);
             }
-            if (Stamina != null)
+            if (stamina != null)
             {
-                Stamina.SetCurrent(Stamina.MaxValue);
+                stamina.SetCurrent(stamina.MaxValue);
             }
         }
 
@@ -185,7 +182,7 @@ namespace RanchyRats.Gyrus
 
         public void TakeDamage(float damageTaken, float invincibilityTime = 0f, Character damageSource = null)
         {
-            Health.SetCurrent(Mathf.Clamp(Health.Value - damageTaken, 0, Health.Value));
+            health.SetCurrent(Mathf.Clamp(health.Value - damageTaken, 0, health.Value));
             InvincibilityTime += invincibilityTime;
             if (damageSource != null)
             {
@@ -206,7 +203,7 @@ namespace RanchyRats.Gyrus
                 }
             }
             //Debug.Log(name + " took " + damageTaken + " damage", this);
-            if (Health.Value <= 0)
+            if (health.Value <= 0)
             {
                 //Debug.Log(name + " should die now", this);
                 Die();
