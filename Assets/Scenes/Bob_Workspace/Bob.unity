@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -660,9 +660,10 @@ GameObject:
   - component: {fileID: 934194972}
   - component: {fileID: 934194975}
   - component: {fileID: 934194968}
-  - component: {fileID: 934194967}
   - component: {fileID: 934194971}
+  - component: {fileID: 934194973}
   - component: {fileID: 934194970}
+  - component: {fileID: 934194967}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -670,25 +671,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &934194967
-MonoBehaviour:
+--- !u!143 &934194967
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934194966}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b7195744fc6eea4e9ff8193ab614252, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movement: {fileID: 934194971}
-  attacking: {fileID: 934194970}
-  targeting: {fileID: 0}
-  sounds:
-    attack1Sound: {fileID: 0}
-    attack2Sound: {fileID: 0}
-    attack3Sound: {fileID: 0}
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &934194968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -752,7 +752,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934194966}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.12, y: 0, z: 0}
+  m_LocalPosition: {x: -7.24, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1845288958}
@@ -908,6 +908,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &934194973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934194966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d2feb9c66d1e054eba8d04cd499eeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movement: {fileID: 0}
+  attacking: {fileID: 0}
+  targeting: {fileID: 0}
 --- !u!136 &934194975
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1368,6 +1383,7 @@ GameObject:
   - component: {fileID: 1845288958}
   - component: {fileID: 1845288959}
   - component: {fileID: 1845288960}
+  - component: {fileID: 1845288961}
   m_Layer: 0
   m_Name: Character Sprite
   m_TagString: Untagged
@@ -1459,6 +1475,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1845288961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845288957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22f3806b63e58d941ac9f47b86543b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OverrideTarget: {fileID: 0}
+  method: 1
+  reverse: 0
+  StayUpright: 1
 --- !u!1 &2072276163
 GameObject:
   m_ObjectHideFlags: 0

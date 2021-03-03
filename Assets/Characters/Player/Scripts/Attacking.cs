@@ -106,10 +106,7 @@ namespace RanchyRats.Gyrus
             StopCoroutine(DoCharge());
             if (slowmotionInitiated) TimeManager.Instance.StopSlowmotion();
             if (state != State.Charging)
-            {
-                Debug.Log("No charge to interrupt");
                 return;
-            }
             ChargeIndicator.SetCurrent(0);
             state = State.Ready;
         }
@@ -142,7 +139,8 @@ namespace RanchyRats.Gyrus
         internal void ClearChargingProhibitors()
         {
             chargeProhibitors.Clear();
-            ChargeDisabledIndicator.SetActive(false);
+            if (ChargeDisabledIndicator != null)
+                ChargeDisabledIndicator.SetActive(false);
         }
 
         internal bool ChargingAllowed()
@@ -296,13 +294,13 @@ namespace RanchyRats.Gyrus
             switch (state)
             {
                 // Attack charge allowed when
-                case Attacking.State.Ready:
-                case Attacking.State.OnCooldown:
+                case State.Ready:
+                case State.OnCooldown:
                     break;
                 // Attack charge not allowed when
-                case Attacking.State.Disabled:
-                case Attacking.State.Charging:
-                case Attacking.State.Attacking:
+                case State.Disabled:
+                case State.Charging:
+                case State.Attacking:
                     return;
             }
 
@@ -345,14 +343,14 @@ namespace RanchyRats.Gyrus
                     Character.Controller.movement.enabled = false;
                 }
             }
-            state = Attacking.State.Attacking;
+            state = State.Attacking;
             Character.stamina.allowRecovery = false;
         }
 
+        // Address this from the Animator
         private void EndAttack()
         {
-            //Debug.Log("On attack end from instance. Accept movement input again.", this.gameObject);
-            state = Attacking.State.Ready;
+            state = State.Ready;
             if (Character.Controller.movement != null)
             {
                 Character.Controller.movement.state = Movement.State.Idle;
@@ -362,9 +360,7 @@ namespace RanchyRats.Gyrus
 
             // Immediately update walking direction at end of attack 
             if (Character.Controller.movement != null)
-            {
                 Character.Controller.movement.ForceReadMoveInput();
-            }
         }
     }
 }

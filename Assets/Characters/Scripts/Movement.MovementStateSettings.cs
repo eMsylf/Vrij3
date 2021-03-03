@@ -7,9 +7,11 @@
         public struct MovementStateSettings
         {
             public float speed;
+            // State duration
             public bool expires;
             public float duration;
             public State nextState;
+            // Stamina drain
             public bool drainsStamina;
             public float staminaDrainAmount;
             public float staminaDrainInterval;
