@@ -53,7 +53,7 @@ namespace RanchyRats.Gyrus
         {
             base.OnEnable();
             Controls.Game.Enable();
-            SubscribeControls();
+            AssumePlayerControl();
 
             movement.state = Movement.State.Idle;
 
@@ -68,7 +68,7 @@ namespace RanchyRats.Gyrus
         {
             //Debug.Log("Player disabled");
             Controls.Game.Disable();
-            UnsubControls();
+            RevokePlayerControl();
 
             LockCursor(false);
         }
@@ -88,10 +88,10 @@ namespace RanchyRats.Gyrus
             Cursor.visible = !locked;
         }
 
-        bool controlsSubscribed = false;
-        private void SubscribeControls()
+        bool playerControlled = false;
+        private void AssumePlayerControl()
         {
-            if (controlsSubscribed)
+            if (playerControlled)
                 return;
             Controls.Game.Movement.performed += _ => movement.SetMoveInput(_.ReadValue<Vector2>());
             Controls.Game.Movement.canceled += _ => movement.Stop();
@@ -106,12 +106,12 @@ namespace RanchyRats.Gyrus
             Controls.Game.Run.started += _ => movement.StartRunning();
             Controls.Game.Run.canceled += _ => movement.StopRunning();
 
-            controlsSubscribed = true;
+            playerControlled = true;
         }
 
-        private void UnsubControls()
+        private void RevokePlayerControl()
         {
-            if (!controlsSubscribed)
+            if (!playerControlled)
                 return;
             Controls.Game.Movement.performed -= _ => movement.SetMoveInput(_.ReadValue<Vector2>());
             Controls.Game.Movement.canceled -= _ => movement.Stop();
@@ -126,7 +126,7 @@ namespace RanchyRats.Gyrus
             Controls.Game.Run.started -= _ => movement.StartRunning();
             Controls.Game.Run.canceled -= _ => movement.StopRunning();
 
-            controlsSubscribed = false;
+            playerControlled = false;
         }
 
         public void DoGamepadRumble(float duration = .25f)

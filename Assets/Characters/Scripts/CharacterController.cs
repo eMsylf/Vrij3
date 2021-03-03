@@ -18,6 +18,8 @@ namespace RanchyRats.Gyrus
             }
         }
 
+        public bool PlayerControlled;
+
         public Movement movement;
         public Attacking attacking;
         public Targeting targeting;

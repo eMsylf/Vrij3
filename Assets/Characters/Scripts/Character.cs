@@ -146,7 +146,6 @@ namespace RanchyRats.Gyrus
 
         internal void OnEnableTasks()
         {
-            //Debug.Log("Set current health and stamina of " + name + " to max", this);
             if (health != null)
             {
                 health.SetCurrent(health.MaxValue);
@@ -159,14 +158,8 @@ namespace RanchyRats.Gyrus
 
         private void OnDisable()
         {
-            OnDisableTasks();
+            
         }
-
-        internal void OnDisableTasks()
-        {
-            //Debug.Log(name + " disabled", this);
-        }
-
 
         public virtual void Update()
         {
