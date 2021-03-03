@@ -8,34 +8,6 @@ namespace RanchyRats.Gyrus
 {
     public partial class PlayerController : CharacterController
     {
-        #region Julia Added
-
-        [System.Serializable]
-        public struct Sounds
-        {
-            public FMODUnity.StudioEventEmitter attack1Sound;
-            public FMODUnity.StudioEventEmitter attack2Sound;
-            public FMODUnity.StudioEventEmitter attack3Sound;
-
-            public void PlayAttackSound(int index)
-            {
-                if (index == 0) attack1Sound.Play();
-                else if (index == 1) attack2Sound.Play();
-                else if (index == 2) attack3Sound.Play();
-            }
-        }
-        public Sounds sounds;
-
-
-
-
-        //Later to be replaced by FMOD elements For now it's hard coded :^) You can find where I added something using the following indicator VVV
-        //---------------------------------------------------------     (What it's about)
-        //public
-
-        #endregion
-        //public UnityEvent OnHit;
-
         Controls controls;
         public Controls Controls
         {
@@ -49,27 +21,19 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        public override void OnEnable()
+        protected override void OnEnable()
         {
             base.OnEnable();
             Controls.Game.Enable();
             AssumePlayerControl();
-
-            movement.state = Movement.State.Idle;
-
-            //Debug.Log("Set current health and stamina of " + name + " to max", this);
-
             LockCursor(true);
-            attacking.state = Attacking.State.Ready;
-            attacking.ClearChargingProhibitors();
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
-            //Debug.Log("Player disabled");
+            base.OnDisable();
             Controls.Game.Disable();
             RevokePlayerControl();
-
             LockCursor(false);
         }
 

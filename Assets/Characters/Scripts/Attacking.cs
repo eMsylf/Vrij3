@@ -12,11 +12,27 @@ namespace RanchyRats.Gyrus
 {
     public class Attacking : CharacterComponent
     {
-        public FMODUnity.StudioEventEmitter attackChargeSound;
-        public FMODUnity.StudioEventEmitter attackChargeTick1Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTick2Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTick3Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTick4Sound;
+        [System.Serializable]
+        public struct Sounds
+        {
+            public FMODUnity.StudioEventEmitter attackChargeSound;
+            public FMODUnity.StudioEventEmitter attackChargeTick1Sound;
+            public FMODUnity.StudioEventEmitter attackChargeTick2Sound;
+            public FMODUnity.StudioEventEmitter attackChargeTick3Sound;
+            public FMODUnity.StudioEventEmitter attackChargeTick4Sound;
+
+            public FMODUnity.StudioEventEmitter attack1Sound;
+            public FMODUnity.StudioEventEmitter attack2Sound;
+            public FMODUnity.StudioEventEmitter attack3Sound;
+
+            public void PlayAttackSound(int index)
+            {
+                if (index == 0) attack1Sound.Play();
+                else if (index == 1) attack2Sound.Play();
+                else if (index == 2) attack3Sound.Play();
+            }
+        }
+        public Sounds sounds;
 
         public Slider ChargeSlider;
         //public GameObject ChargeIndicators;
@@ -56,6 +72,12 @@ namespace RanchyRats.Gyrus
             Disabled
         }
         public State state;
+
+        private void OnEnable()
+        {
+            state = State.Ready;
+            ClearChargingProhibitors();
+        }
 
         private void OnDisable()
         {
@@ -175,10 +197,10 @@ namespace RanchyRats.Gyrus
                 chargeTime += Time.unscaledDeltaTime;
             }
 
-            if (attackChargeSound == null)
+            if (sounds.attackChargeSound == null)
                 Debug.LogError("Attack charge sound is missing");
             else
-                attackChargeSound.Play(); //------------------------------ charge sound
+                sounds.attackChargeSound.Play(); //------------------------------ charge sound
 
             //Debug.Log("Charge deadzone passed");
             ChargeIndicator.Visualizer.SetActive(true);
@@ -221,10 +243,10 @@ namespace RanchyRats.Gyrus
                     previousChargeState = currentChargeState;
 
                     //------------------------------------------------------------- Charge tiks
-                    if (currentChargeState == 0) attackChargeTick1Sound.Play();
-                    else if (currentChargeState == 1) attackChargeTick2Sound.Play();
-                    else if (currentChargeState == 2) attackChargeTick3Sound.Play();
-                    else if (currentChargeState == 3) attackChargeTick4Sound.Play();
+                    if (currentChargeState == 0) sounds.attackChargeTick1Sound.Play();
+                    else if (currentChargeState == 1) sounds.attackChargeTick2Sound.Play();
+                    else if (currentChargeState == 2) sounds.attackChargeTick3Sound.Play();
+                    else if (currentChargeState == 3) sounds.attackChargeTick4Sound.Play();
 
                 }
                 if (!slowmotionInitiated)
@@ -254,7 +276,7 @@ namespace RanchyRats.Gyrus
                 energyAbsorption.Energy -= fullChargeCost;
             }
 
-            attackChargeSound.Stop();
+            sounds.attackChargeSound.Stop();
             if (state == State.Attacking)
                 Launch(GetChargeZoneIndex(chargeTimeClamped));
         }

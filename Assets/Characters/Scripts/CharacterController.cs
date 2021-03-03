@@ -19,14 +19,67 @@ namespace RanchyRats.Gyrus
         }
 
         public bool PlayerControlled;
+        [SerializeField]
+        private PlayerController playerController;
+        public PlayerController PlayerController
+        {
+            get
+            {
+                if (playerController == null)
+                    GetComponent<PlayerController>();
+                return playerController;
+            }
+        }
 
         public Movement movement;
         public Attacking attacking;
         public Targeting targeting;
 
-        public virtual void OnEnable()
+        protected virtual void OnEnable()
         {
             
+        }
+
+        protected virtual void OnDisable()
+        {
+
+        }
+
+        private void Update()
+        {
+            CheckPlayerControllerStatus();
+        }
+
+        public void AssignPlayerControl()
+        {
+            // TODO: Add functionality
+        }
+
+        public void RelinquishPlayerControl()
+        {
+            // TODO: Add functionality
+        }
+
+        public void CheckPlayerControllerStatus()
+        {
+            if (PlayerControlled)
+            {
+                if (PlayerController == null)
+                {
+                    // Add player controller
+                }
+                else
+                {
+                    // Enable player controller
+                }
+            }
+            else
+            {
+                if (PlayerController.enabled)
+                {
+                    // Disable player controller
+                }
+            }
         }
     }
 }

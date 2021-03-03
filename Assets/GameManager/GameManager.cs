@@ -50,7 +50,7 @@ public class GameManager : Singleton<GameManager>
 
     public GameObject DeathScreen;
 
-    public void PlayerDeath(PlayerCharacter player)
+    public void PlayerDeath(Character player)
     {
         //Players.Remove(player);
         //if (Players.Count == 1)
@@ -76,12 +76,12 @@ public class GameManager : Singleton<GameManager>
         EndGameScreenInstance.gameObject.SetActive(true);
     }
 
-    public void ActivatePlayer(PlayerCharacter player)
+    public void ActivatePlayer(Character player)
     {
         player.gameObject.SetActive(true);
     }
 
-    public void RespawnPlayer(PlayerCharacter player)
+    public void RespawnPlayer(Character player)
     {
         player.Respawn();
     }

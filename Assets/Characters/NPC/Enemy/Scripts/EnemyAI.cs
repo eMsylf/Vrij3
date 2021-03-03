@@ -52,7 +52,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    public List<PlayerCharacter> targetPlayers;
+    public List<PlayerController> targetPlayers;
     public void SortTargetPlayersList()
     {
         bool differenceDetected = false;
@@ -61,8 +61,8 @@ public class EnemyAI : MonoBehaviour
             differenceDetected = false;
             for (int i = 0; i < targetPlayers.Count - 1; i++)
             {
-                PlayerCharacter thisPlayer = targetPlayers[i];
-                PlayerCharacter nextPlayer = targetPlayers[i + 1];
+                PlayerController thisPlayer = targetPlayers[i];
+                PlayerController nextPlayer = targetPlayers[i + 1];
                 if (DistanceToPlayer(thisPlayer) > DistanceToPlayer(nextPlayer))
                 {
                     targetPlayers[i] = nextPlayer;
@@ -72,7 +72,7 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
-    public PlayerCharacter GetClosestPlayer()
+    public PlayerController GetClosestPlayer()
     {
         if (targetPlayers == null || targetPlayers.Count == 0)
             return null;
@@ -116,14 +116,14 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private float DistanceToPlayer(PlayerCharacter player)
+    private float DistanceToPlayer(PlayerController player)
     {
         return Vector3.Distance(transform.position, player.transform.position);
     }
 
     Vector3 playerLastSeenPosition;
 
-    private bool PlayerVisible(PlayerCharacter player, out Vector3 playerPos)
+    private bool PlayerVisible(PlayerController player, out Vector3 playerPos)
     {
         Vector3 rayOrigin = transform.position;
         Vector3 rayDirection = player.transform.position - transform.position;
@@ -159,7 +159,7 @@ public class EnemyAI : MonoBehaviour
     private void AnyState()
     {
         SortTargetPlayersList();
-        PlayerCharacter closestPlayer = GetClosestPlayer();
+        PlayerController closestPlayer = GetClosestPlayer();
         if (closestPlayer == null)
         {
             return;
@@ -240,7 +240,7 @@ public class EnemyAI : MonoBehaviour
 
     private void FollowSingleTarget()
     {
-        PlayerCharacter closestPlayer = GetClosestPlayer();
+        PlayerController closestPlayer = GetClosestPlayer();
         if (closestPlayer == null)
             return;
 
@@ -288,7 +288,7 @@ public class EnemyAI : MonoBehaviour
     }
     private void Attack()
     {
-        PlayerCharacter closestPlayer = GetClosestPlayer();
+        PlayerController closestPlayer = GetClosestPlayer();
         if (closestPlayer == null)
             return;
 

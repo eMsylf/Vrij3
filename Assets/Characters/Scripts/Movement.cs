@@ -87,6 +87,11 @@ namespace RanchyRats.Gyrus
             }
         }
 
+        private void OnEnable()
+        {
+            state = State.Idle;
+        }
+
         private void FixedUpdate()
         {
             Vector3 playerMovement = GetTopDownMovement(Input, state) * GetStateSettings(state).speed;
