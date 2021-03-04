@@ -22,13 +22,20 @@ namespace RanchyRats.Gyrus
                 return controls;
             }
         }
-        public List<CharacterController> controlledCharacters = new List<CharacterController>();
+
+        [SerializeField]
+        private List<CharacterController> controlledCharacters = new List<CharacterController>();
+        public List<CharacterController> ControlledCharacters
+        {
+            get => controlledCharacters;
+            private set => controlledCharacters = value;
+        }
 
         protected void OnEnable()
         {
             foreach (CharacterController character in controlledCharacters)
             {
-                AssumePlayerControl(character);
+                AssumePlayerControl(character, false);
             }
             Controls.Game.Enable();
             LockCursor(true);
@@ -38,7 +45,7 @@ namespace RanchyRats.Gyrus
         {
             foreach (CharacterController controller in controlledCharacters)
             {
-                RevokePlayerControl(controller);
+                RevokePlayerControl(controller, false);
             }
             Controls.Game.Disable();
             LockCursor(false);
@@ -59,50 +66,54 @@ namespace RanchyRats.Gyrus
             Cursor.visible = !locked;
         }
 
-        public void AssumePlayerControl(CharacterController controller)
+        public void AssumePlayerControl(CharacterController character, bool addToList = true)
         {
-            if (controller.movement != null)
+            if (addToList)
+                controlledCharacters.Add(character);
+            if (character.movement != null)
             {
-                Controls.Game.Movement.performed += _ => controller.movement.SetMoveInput(_.ReadValue<Vector2>());
-                Controls.Game.Movement.canceled += _ => controller.movement.Stop();
-                Controls.Game.Dodge.performed += _ => controller.movement.AttemptDodge();
-                Controls.Game.Run.started += _ => controller.movement.StartRunning();
-                Controls.Game.Run.canceled += _ => controller.movement.StopRunning();
+                Controls.Game.Movement.performed += _ => character.movement.SetMoveInput(_.ReadValue<Vector2>());
+                Controls.Game.Movement.canceled += _ => character.movement.Stop();
+                Controls.Game.Dodge.performed += _ => character.movement.AttemptDodge();
+                Controls.Game.Run.started += _ => character.movement.StartRunning();
+                Controls.Game.Run.canceled += _ => character.movement.StopRunning();
             }
 
-            if (controller.attacking != null) 
+            if (character.attacking != null) 
             {
-                Controls.Game.Attack.performed += _ => controller.attacking.AttemptAttackCharge();
-                Controls.Game.Attack.canceled += _ => controller.attacking.CompleteCharge();
+                Controls.Game.Attack.performed += _ => character.attacking.AttemptAttackCharge();
+                Controls.Game.Attack.canceled += _ => character.attacking.CompleteCharge();
             }
 
-            if (controller.targeting != null)
+            if (character.targeting != null)
             {
-                Controls.Game.LockOn.performed += _ => controller.targeting.LockOn(transform.position);
+                Controls.Game.LockOn.performed += _ => character.targeting.LockOn(transform.position);
             }
 
         }
 
-        public void RevokePlayerControl(CharacterController controller)
+        public void RevokePlayerControl(CharacterController character, bool removeFromList = true)
         {
-            if (controller.movement != null)
+            if (removeFromList)
+                controlledCharacters.Remove(character);
+            if (character.movement != null)
             {
-                Controls.Game.Movement.performed -= _ => controller.movement.SetMoveInput(_.ReadValue<Vector2>());
-                Controls.Game.Movement.canceled -= _ => controller.movement.Stop();
-                Controls.Game.Dodge.performed -= _ => controller.movement.AttemptDodge();
-                Controls.Game.Run.started -= _ => controller.movement.StartRunning();
-                Controls.Game.Run.canceled -= _ => controller.movement.StopRunning();
+                Controls.Game.Movement.performed -= _ => character.movement.SetMoveInput(_.ReadValue<Vector2>());
+                Controls.Game.Movement.canceled -= _ => character.movement.Stop();
+                Controls.Game.Dodge.performed -= _ => character.movement.AttemptDodge();
+                Controls.Game.Run.started -= _ => character.movement.StartRunning();
+                Controls.Game.Run.canceled -= _ => character.movement.StopRunning();
             }
 
-            if (controller.attacking != null)
+            if (character.attacking != null)
             {
-                Controls.Game.Attack.performed -= _ => controller.attacking.AttemptAttackCharge();
-                Controls.Game.Attack.canceled -= _ => controller.attacking.CompleteCharge();
+                Controls.Game.Attack.performed -= _ => character.attacking.AttemptAttackCharge();
+                Controls.Game.Attack.canceled -= _ => character.attacking.CompleteCharge();
             }
 
-            if (controller.targeting != null)
+            if (character.targeting != null)
             {
-                Controls.Game.LockOn.performed -= _ => controller.targeting.LockOn(transform.position);
+                Controls.Game.LockOn.performed -= _ => character.targeting.LockOn(transform.position);
             }
         }
 

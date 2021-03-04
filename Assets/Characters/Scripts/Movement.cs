@@ -308,15 +308,22 @@ namespace RanchyRats.Gyrus
 
         private void DirectionalDodge(Vector2 direction)
         {
+            //if (Direction == null)
+            //{
+            //    Debug.LogError("Direction indicator is null");
+            //    return;
+            //}
             DodgeDirection = direction.normalized;
-            //Debug.Log("Input detected. Dodge direction = " + DodgeDirection.ToString());
-
         }
 
         public void UpdateDirectionIndicator(Vector2 facingDirection)
         {
+            if (Direction == null)
+            {
+                Debug.LogError("Direction indicator is null");
+                return;
+            }
             Direction.UpdatePosition(new Vector3(facingDirection.x, 0f, facingDirection.y));
-            //Direction.DirectionIndicator.localPosition = 
         }
 
         public bool LockFacingDirection = false;

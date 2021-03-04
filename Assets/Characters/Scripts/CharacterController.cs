@@ -54,10 +54,9 @@ namespace RanchyRats.Gyrus
 
         public void AssignPlayerControl(PlayerController player)
         {
-            // TODO: Add functionality
             PlayerControlled = true;
             PlayerController = player;
-            if (!PlayerController.controlledCharacters.Contains(this))
+            if (!PlayerController.ControlledCharacters.Contains(this))
             {
                 PlayerController.AssumePlayerControl(this);
             }
@@ -65,10 +64,9 @@ namespace RanchyRats.Gyrus
 
         public void ReleasePlayerControl()
         {
-            // TODO: Add functionality
             PlayerControlled = false;
             PlayerController = null;
-            if (PlayerController.controlledCharacters.Contains(this))
+            if (PlayerController.ControlledCharacters.Contains(this))
             {
                 PlayerController.RevokePlayerControl(this);
             }
@@ -82,10 +80,11 @@ namespace RanchyRats.Gyrus
                 {
                     // If the character is controlled by a player, but no PlayerController is assigned, Find player controller in scene
                     PlayerController pc = FindObjectOfType<PlayerController>();
-                    if (pc != null)
+                    if (pc == null)
                     {
-                        AssignPlayerControl(pc);
+                        pc = new GameObject("Player Controller", typeof(PlayerController)).GetComponent<PlayerController>();
                     }
+                    AssignPlayerControl(pc);
                 }
             }
             else
