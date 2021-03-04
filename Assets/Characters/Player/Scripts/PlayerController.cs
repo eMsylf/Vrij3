@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.InputSystem;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -6,7 +8,7 @@ using Combat;
 
 namespace RanchyRats.Gyrus
 {
-    public partial class PlayerController : CharacterController
+    public partial class PlayerController : MonoBehaviour
     {
         Controls controls;
         public Controls Controls
@@ -20,20 +22,25 @@ namespace RanchyRats.Gyrus
                 return controls;
             }
         }
+        public List<CharacterController> controlledCharacters = new List<CharacterController>();
 
-        protected override void OnEnable()
+        protected void OnEnable()
         {
-            base.OnEnable();
+            foreach (CharacterController character in controlledCharacters)
+            {
+                AssumePlayerControl(character);
+            }
             Controls.Game.Enable();
-            AssumePlayerControl();
             LockCursor(true);
         }
 
-        protected override void OnDisable()
+        protected void OnDisable()
         {
-            base.OnDisable();
+            foreach (CharacterController controller in controlledCharacters)
+            {
+                RevokePlayerControl(controller);
+            }
             Controls.Game.Disable();
-            RevokePlayerControl();
             LockCursor(false);
         }
 
@@ -52,50 +59,67 @@ namespace RanchyRats.Gyrus
             Cursor.visible = !locked;
         }
 
-        bool playerControlled = false;
-        private void AssumePlayerControl()
+        public void AssumePlayerControl(CharacterController controller)
         {
-            if (playerControlled)
-                return;
-            Controls.Game.Movement.performed += _ => movement.SetMoveInput(_.ReadValue<Vector2>());
-            Controls.Game.Movement.canceled += _ => movement.Stop();
+            if (controller.movement != null)
+            {
+                Controls.Game.Movement.performed += _ => controller.movement.SetMoveInput(_.ReadValue<Vector2>());
+                Controls.Game.Movement.canceled += _ => controller.movement.Stop();
+                Controls.Game.Dodge.performed += _ => controller.movement.AttemptDodge();
+                Controls.Game.Run.started += _ => controller.movement.StartRunning();
+                Controls.Game.Run.canceled += _ => controller.movement.StopRunning();
+            }
 
-            Controls.Game.Dodge.performed += _ => movement.AttemptDodge();
+            if (controller.attacking != null) 
+            {
+                Controls.Game.Attack.performed += _ => controller.attacking.AttemptAttackCharge();
+                Controls.Game.Attack.canceled += _ => controller.attacking.CompleteCharge();
+            }
 
-            Controls.Game.Attack.performed += _ => attacking.AttemptAttackCharge();
-            Controls.Game.Attack.canceled += _ => attacking.CompleteCharge();
+            if (controller.targeting != null)
+            {
+                Controls.Game.LockOn.performed += _ => controller.targeting.LockOn(transform.position);
+            }
 
-            Controls.Game.LockOn.performed += _ => targeting.LockOn(transform.position);
-
-            Controls.Game.Run.started += _ => movement.StartRunning();
-            Controls.Game.Run.canceled += _ => movement.StopRunning();
-
-            playerControlled = true;
         }
 
-        private void RevokePlayerControl()
+        public void RevokePlayerControl(CharacterController controller)
         {
-            if (!playerControlled)
-                return;
-            Controls.Game.Movement.performed -= _ => movement.SetMoveInput(_.ReadValue<Vector2>());
-            Controls.Game.Movement.canceled -= _ => movement.Stop();
+            if (controller.movement != null)
+            {
+                Controls.Game.Movement.performed -= _ => controller.movement.SetMoveInput(_.ReadValue<Vector2>());
+                Controls.Game.Movement.canceled -= _ => controller.movement.Stop();
+                Controls.Game.Dodge.performed -= _ => controller.movement.AttemptDodge();
+                Controls.Game.Run.started -= _ => controller.movement.StartRunning();
+                Controls.Game.Run.canceled -= _ => controller.movement.StopRunning();
+            }
 
-            Controls.Game.Dodge.performed -= _ => movement.AttemptDodge();
+            if (controller.attacking != null)
+            {
+                Controls.Game.Attack.performed -= _ => controller.attacking.AttemptAttackCharge();
+                Controls.Game.Attack.canceled -= _ => controller.attacking.CompleteCharge();
+            }
 
-            Controls.Game.Attack.performed -= _ => attacking.AttemptAttackCharge();
-            Controls.Game.Attack.canceled -= _ => attacking.CompleteCharge();
-
-            Controls.Game.LockOn.performed -= _ => targeting.LockOn(transform.position);
-
-            Controls.Game.Run.started -= _ => movement.StartRunning();
-            Controls.Game.Run.canceled -= _ => movement.StopRunning();
-
-            playerControlled = false;
+            if (controller.targeting != null)
+            {
+                Controls.Game.LockOn.performed -= _ => controller.targeting.LockOn(transform.position);
+            }
         }
 
         public void DoGamepadRumble(float duration = .25f)
         {
             GamePadFunctions.Instance.DoGamepadRumble(duration);
         }
+
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            foreach (CharacterController character in controlledCharacters)
+            {
+                Gizmos.DrawLine(transform.position, character.transform.position);
+            }
+        }
+#endif
     }
 }

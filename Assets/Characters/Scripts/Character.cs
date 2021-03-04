@@ -105,7 +105,7 @@ namespace RanchyRats.Gyrus
             {
                 Controller.attacking.InterruptCharge();
             }
-            if (Controller.PlayerControlled)
+            if (Controller.PlayerController != null)
                 GameManager.Instance.PlayerDeath(Controller.Character);
             //----------------------------------------------------------- Character dies
             if (sounds.death != null)

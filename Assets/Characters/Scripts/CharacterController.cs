@@ -18,17 +18,19 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        public bool PlayerControlled;
         [SerializeField]
-        private PlayerController playerController;
+        private bool PlayerControlled;
+        [SerializeField]
+        private PlayerController playerController = null;
         public PlayerController PlayerController
         {
             get
             {
-                if (playerController == null)
-                    GetComponent<PlayerController>();
+                //if (playerController == null)
+                //    GetComponent<PlayerController>();
                 return playerController;
             }
+            private set { playerController = value; }
         }
 
         public Movement movement;
@@ -50,14 +52,26 @@ namespace RanchyRats.Gyrus
             CheckPlayerControllerStatus();
         }
 
-        public void AssignPlayerControl()
+        public void AssignPlayerControl(PlayerController player)
         {
             // TODO: Add functionality
+            PlayerControlled = true;
+            PlayerController = player;
+            if (!PlayerController.controlledCharacters.Contains(this))
+            {
+                PlayerController.AssumePlayerControl(this);
+            }
         }
 
-        public void RelinquishPlayerControl()
+        public void ReleasePlayerControl()
         {
             // TODO: Add functionality
+            PlayerControlled = false;
+            PlayerController = null;
+            if (PlayerController.controlledCharacters.Contains(this))
+            {
+                PlayerController.RevokePlayerControl(this);
+            }
         }
 
         public void CheckPlayerControllerStatus()
@@ -66,18 +80,20 @@ namespace RanchyRats.Gyrus
             {
                 if (PlayerController == null)
                 {
-                    // Add player controller
-                }
-                else
-                {
-                    // Enable player controller
+                    // If the character is controlled by a player, but no PlayerController is assigned, Find player controller in scene
+                    PlayerController pc = FindObjectOfType<PlayerController>();
+                    if (pc != null)
+                    {
+                        AssignPlayerControl(pc);
+                    }
                 }
             }
             else
             {
-                if (PlayerController.enabled)
+                if (PlayerController != null && PlayerController.enabled)
                 {
-                    // Disable player controller
+                    // If the character is NOT player-controlled, disable player controller
+                    ReleasePlayerControl();
                 }
             }
         }

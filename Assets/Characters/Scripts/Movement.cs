@@ -135,13 +135,12 @@ namespace RanchyRats.Gyrus
         }
         #endregion
 
-        // TODO: Weghalen? Is dit nog van belang? 
-        // Ja dit is van belang: wanneer een aanval eindigt moet de input van de speler gelezen worden zodat de speler gelijk doorgaat met bewegen als de stick in een richting gehouden wordt tijdens de aanval. Zonder dit blijft de speler stilstaan.
+        // Wanneer een aanval eindigt moet de input van de speler gelezen worden zodat de speler gelijk doorgaat met bewegen als de stick in een richting gehouden wordt tijdens de aanval. Zonder dit blijft de speler stilstaan.
         public void ForceReadMoveInput()
         {
-            if (Character.Controller is PlayerController)
+            if (Character.Controller.PlayerController != null)
             {
-                Vector2 input = (Character.Controller as PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
+                Vector2 input = (Character.Controller.PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
                 if (input != Vector2.zero)
                     SetMoveInput(input);
                 else
@@ -170,7 +169,8 @@ namespace RanchyRats.Gyrus
                     break;
             }
             Input = input;
-            Character.Animator.SetBool("IsWalking", true);
+            if (Character.Animator != null)
+                Character.Animator.SetBool("IsWalking", true);
             UpdateFacingDirection(Input);
         }
 
@@ -180,7 +180,8 @@ namespace RanchyRats.Gyrus
             Input = Vector2.zero;
             //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
             state = State.Idle;
-            Character.Animator.SetBool("IsWalking", false);
+            if (Character.Animator != null)
+                Character.Animator.SetBool("IsWalking", false);
             if (sounds.Footstep != null) sounds.Footstep.Stop();
 
         }
