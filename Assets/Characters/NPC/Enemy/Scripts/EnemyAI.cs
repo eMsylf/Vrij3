@@ -7,8 +7,6 @@ using UnityEngine;
 //[RequireComponent(typeof(Pathfinding))]
 public class EnemyAI : MonoBehaviour
 {
-    Enemy enemy;
-
     public FMODUnity.StudioEventEmitter attackSound;
     public FMODUnity.StudioEventEmitter idleSound;
     public void PlaySound(FMODUnity.StudioEventEmitter sound)
@@ -24,18 +22,6 @@ public class EnemyAI : MonoBehaviour
             Debug.LogWarning("Sound is not assigned", gameObject);
         else
             sound.Stop();
-    }
-
-    Enemy Enemy
-    {
-        get
-        {
-            if (enemy == null)
-            {
-                enemy = GetComponent<Enemy>();
-            }
-            return enemy;
-        }
     }
 
     [SerializeField]
@@ -71,13 +57,6 @@ public class EnemyAI : MonoBehaviour
                 }
             }
         }
-    }
-    public PlayerController GetClosestPlayer()
-    {
-        if (targetPlayers == null || targetPlayers.Count == 0)
-            return null;
-
-        return targetPlayers[0];
     }
 
     public float SightRange = 5f;
@@ -116,6 +95,14 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    public PlayerController GetClosestPlayer()
+    {
+        if (targetPlayers == null || targetPlayers.Count == 0)
+            return null;
+
+        return targetPlayers[0];
+    }
+
     private float DistanceToPlayer(PlayerController player)
     {
         return Vector3.Distance(transform.position, player.transform.position);
@@ -125,9 +112,10 @@ public class EnemyAI : MonoBehaviour
 
     private bool PlayerVisible(PlayerController player, out Vector3 playerPos)
     {
-        Vector3 rayOrigin = transform.position;
-        Vector3 rayDirection = player.transform.position - transform.position;
-        Ray ray = new Ray(rayOrigin, rayDirection);
+        Ray ray = new Ray(
+            transform.position, 
+            player.transform.position - transform.position);
+        
         if (Physics.Raycast(ray, out RaycastHit hit, SightRange, sightObstructions, QueryTriggerInteraction.Ignore))
         {
             Debug.Log("Player view obstructed by " + hit.collider.name + " on layer " + hit.collider.gameObject.layer.ToString(), hit.collider);

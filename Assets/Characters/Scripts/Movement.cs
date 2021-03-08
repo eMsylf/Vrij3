@@ -56,28 +56,27 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        // TODO: Dit in een andere file?
         public enum State
         {
-            Idle = default,
+            Stopped = default,
             Walking,
             Running,
             Dodging
         }
         public State state = default;
         // TODO: Zou chill zijn als deze als een tabel weergegeven zouden kunnen worden
-        public MovementStateSettings IdleSettings = new MovementStateSettings(0);
+        public MovementStateSettings StoppedSettings = new MovementStateSettings(0);
         public MovementStateSettings WalkingSettings = new MovementStateSettings(1f);
         public MovementStateSettings RunningSettings = new MovementStateSettings(1.5f);
-        public MovementStateSettings DodgingSettings = new MovementStateSettings(2f, true, .3f, State.Idle, true, 1, 0);
+        public MovementStateSettings DodgingSettings = new MovementStateSettings(2f, true, .3f, State.Stopped, true, 1, 0);
 
         public MovementStateSettings GetStateSettings(State state)
         {
             switch (state)
             {
-                case State.Idle:
+                case State.Stopped:
                 default:
-                    return IdleSettings;
+                    return StoppedSettings;
                 case State.Walking:
                     return WalkingSettings;
                 case State.Running:
@@ -89,7 +88,7 @@ namespace RanchyRats.Gyrus
 
         private void OnEnable()
         {
-            state = State.Idle;
+            state = State.Stopped;
         }
 
         private void FixedUpdate()
@@ -102,7 +101,7 @@ namespace RanchyRats.Gyrus
         {
             switch (state)
             {
-                case State.Idle:
+                case State.Stopped:
                 case State.Dodging:
                     break;
                 case State.Walking:
@@ -138,14 +137,14 @@ namespace RanchyRats.Gyrus
         // Wanneer een aanval eindigt moet de input van de speler gelezen worden zodat de speler gelijk doorgaat met bewegen als de stick in een richting gehouden wordt tijdens de aanval. Zonder dit blijft de speler stilstaan.
         public void ForceReadMoveInput()
         {
-            if (Character.Controller.PlayerController != null)
-            {
-                Vector2 input = (Character.Controller.PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
-                if (input != Vector2.zero)
-                    SetMoveInput(input);
-                else
-                    Stop();
-            }
+            if (Character.Controller.PlayerController == null)
+                return;
+
+            Vector2 input = (Character.Controller.PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
+            if (input != Vector2.zero)
+                SetMoveInput(input);
+            else
+                Stop();
         }
 
         public void SetMoveInput(Vector2 input)
@@ -162,7 +161,7 @@ namespace RanchyRats.Gyrus
                 case State.Dodging:
                     Debug.Log("Player can't move while " + state.ToString());
                     return;
-                case State.Idle:
+                case State.Stopped:
                     state = State.Walking;
                     break;
                 case State.Walking:
@@ -179,7 +178,7 @@ namespace RanchyRats.Gyrus
             //Debug.Log("Stop!");
             Input = Vector2.zero;
             //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
-            state = State.Idle;
+            state = State.Stopped;
             if (Character.Animator != null)
                 Character.Animator.SetBool("IsWalking", false);
             if (sounds.Footstep != null) sounds.Footstep.Stop();
@@ -208,7 +207,7 @@ namespace RanchyRats.Gyrus
         {
             switch (state)
             {
-                case State.Idle:
+                case State.Stopped:
                 default:
                 case State.Walking:
                 case State.Dodging:
@@ -242,7 +241,7 @@ namespace RanchyRats.Gyrus
             switch (state)
             {
                 // Dodging is allowed when
-                case State.Idle:
+                case State.Stopped:
                 case State.Walking:
                 case State.Running:
                     break;
@@ -286,7 +285,7 @@ namespace RanchyRats.Gyrus
             }
 
             yield return new WaitForSeconds(duration);
-            state = State.Idle;
+            state = State.Stopped;
             AcceptMovementInput = true;
             OnDodgeCompleted.Invoke();
             // TODO: Update movement input

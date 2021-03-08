@@ -16,7 +16,7 @@
             public float staminaDrainAmount;
             public float staminaDrainInterval;
 
-            public MovementStateSettings(float speed, bool expires = false, float duration = 0f, State nextState = State.Idle, bool drainsStamina = false, float staminaDrainAmount = 0f, float staminaDrainInterval = 1f)
+            public MovementStateSettings(float speed, bool expires = false, float duration = 0f, State nextState = State.Stopped, bool drainsStamina = false, float staminaDrainAmount = 0f, float staminaDrainInterval = 1f)
             {
                 this.speed = speed;
                 this.expires = expires;

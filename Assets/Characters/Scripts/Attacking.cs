@@ -369,13 +369,13 @@ namespace RanchyRats.Gyrus
             Character.stamina.allowRecovery = false;
         }
 
-        // Address this from the Animator
+        // Address this from the Animator maybe
         private void EndAttack()
         {
             state = State.Ready;
             if (Character.Controller.movement != null)
             {
-                Character.Controller.movement.state = Movement.State.Idle;
+                Character.Controller.movement.state = Movement.State.Stopped;
                 Character.Controller.movement.AcceptMovementInput = true;
             }
             Character.stamina.allowRecovery = true;

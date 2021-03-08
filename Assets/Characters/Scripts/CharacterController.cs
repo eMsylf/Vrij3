@@ -26,30 +26,38 @@ namespace RanchyRats.Gyrus
         {
             get
             {
-                //if (playerController == null)
-                //    GetComponent<PlayerController>();
                 return playerController;
             }
             private set { playerController = value; }
         }
 
+        [SerializeField]
+        private AIController aIController;
+        public AIController AIController
+        {
+            get
+            {
+                if (aIController == null)
+                {
+                    aIController = GetComponent<AIController>();
+                    if (aIController == null)
+                        aIController = gameObject.AddComponent<AIController>();
+                }
+                return aIController;
+            }
+        }
         public Movement movement;
         public Attacking attacking;
         public Targeting targeting;
 
-        protected virtual void OnEnable()
-        {
-            
-        }
-
-        protected virtual void OnDisable()
-        {
-
-        }
-
         private void Update()
         {
             CheckPlayerControllerStatus();
+
+            if (!PlayerControlled)
+            {
+
+            }
         }
 
         public void AssignPlayerControl(PlayerController player)
@@ -78,10 +86,11 @@ namespace RanchyRats.Gyrus
             {
                 if (PlayerController == null)
                 {
-                    // If the character is controlled by a player, but no PlayerController is assigned, Find player controller in scene
+                    // If the character is controlled by a player, but no PlayerController is assigned, find player controller in scene
                     PlayerController pc = FindObjectOfType<PlayerController>();
                     if (pc == null)
                     {
+                        // If no player controller is found, create a new player controller
                         pc = new GameObject("Player Controller", typeof(PlayerController)).GetComponent<PlayerController>();
                     }
                     AssignPlayerControl(pc);

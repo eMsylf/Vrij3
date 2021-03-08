@@ -113,6 +113,7 @@ namespace RanchyRats.Gyrus
 
             gameObject.SetActive(false);
         }
+
         [System.Serializable]
         public struct Sounds
         {
@@ -141,11 +142,6 @@ namespace RanchyRats.Gyrus
 
         public virtual void OnEnable()
         {
-            OnEnableTasks();
-        }
-
-        internal void OnEnableTasks()
-        {
             if (health != null)
             {
                 health.SetCurrent(health.MaxValue);
@@ -154,11 +150,6 @@ namespace RanchyRats.Gyrus
             {
                 stamina.SetCurrent(stamina.MaxValue);
             }
-        }
-
-        private void OnDisable()
-        {
-            
         }
 
         public virtual void Update()
@@ -274,7 +265,6 @@ namespace RanchyRats.Gyrus
         }
 
 #if UNITY_EDITOR
-
         private void OnDrawGizmosSelected()
         {
             Handles.color = Color.white;
