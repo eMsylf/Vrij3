@@ -7,6 +7,7 @@
         public struct MovementStateSettings
         {
             public float speed;
+            public float footstepInterval;
             // State duration
             public bool expires;
             public float duration;
@@ -16,9 +17,10 @@
             public float staminaDrainAmount;
             public float staminaDrainInterval;
 
-            public MovementStateSettings(float speed, bool expires = false, float duration = 0f, State nextState = State.Stopped, bool drainsStamina = false, float staminaDrainAmount = 0f, float staminaDrainInterval = 1f)
+            public MovementStateSettings(float speed, float footstepInterval, bool expires = false, float duration = 0f, State nextState = State.Stopped, bool drainsStamina = false, float staminaDrainAmount = 0f, float staminaDrainInterval = 1f)
             {
                 this.speed = speed;
+                this.footstepInterval = footstepInterval;
                 this.expires = expires;
                 this.duration = duration;
                 this.nextState = nextState;

@@ -35,14 +35,6 @@ namespace RanchyRats.Gyrus
         public Sounds sounds;
 
         public Slider ChargeSlider;
-        //public GameObject ChargeIndicators;
-        //public enum EChargeType
-        //{
-        //    States,
-        //    Slider,
-        //    Both
-        //}
-        //public EChargeType ChargeType;
         public Animator WeaponAnimator;
         public Gradient ChargeZones;
         public Statistic ChargeIndicator;
@@ -81,9 +73,10 @@ namespace RanchyRats.Gyrus
 
         private void OnDisable()
         {
-            InterruptCharge();
+            EndCharge(false);
         }
 
+        // TODO: Confusing naming. Merge this with StartAttack()
         internal void Launch(int chargeIndex)
         {
             WeaponAnimator.SetTrigger("Attack");
@@ -123,24 +116,22 @@ namespace RanchyRats.Gyrus
             return ChargeZones.colorKeys.Length - 1;
         }
 
-        public void InterruptCharge()
-        {
-            StopCoroutine(DoCharge());
-            if (slowmotionInitiated) TimeManager.Instance.StopSlowmotion();
-            if (state != State.Charging)
-                return;
-            ChargeIndicator.SetCurrent(0);
-            state = State.Ready;
-        }
-
-        public void CompleteCharge()
+        public void EndCharge(bool complete)
         {
             if (state != State.Charging)
             {
-                Debug.Log("No charge to complete");
+                Debug.Log("No charge to complete"); 
                 return;
             }
-            state = State.Attacking;
+
+            if (complete)
+                state = State.Attacking;
+            else
+            {
+                StopCoroutine(DoCharge());
+                ChargeIndicator.SetCurrent(0);
+                if (slowmotionInitiated) TimeManager.Instance.StopSlowmotion();
+            }
         }
 
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
@@ -345,8 +336,40 @@ namespace RanchyRats.Gyrus
         {
             RemoveChargingProhibitor(zone);
         }
-        public bool AllowMovementWhileAttacking = false;
-        public void OnAttack()
+
+        [Serializable]
+        public struct Restrictions
+        {
+            public bool Move;
+            public bool Rotate;
+            public bool StaminaRecovery;
+
+            public Restrictions(bool move, bool rotate, bool staminaRecovery)
+            {
+                Move = move;
+                Rotate = rotate;
+                StaminaRecovery = staminaRecovery;
+            }
+        }
+        public Restrictions restrictions = new Restrictions(true, true, true);
+
+        public void ActivateMovementRestrictions(bool active)
+        {
+            if (Character.Controller.movement != null)
+            {
+                if (restrictions.Move)
+                {
+                    Character.Controller.movement.Stop();
+                    Character.Controller.movement.BlockMovementInput = active; // TODO: Misschien beter om het movement component uit te schakelen
+                }
+                if (restrictions.Rotate)
+                    Character.Controller.movement.LockFacingDirection = active;
+                if (restrictions.StaminaRecovery)
+                    Character.stamina.allowRecovery = !active;
+            }
+        }
+
+        public void StartAttack()
         {
             if (Character.Animator != null)
             {
@@ -356,29 +379,17 @@ namespace RanchyRats.Gyrus
             WeaponAnimator.SetFloat("AttackCharge", latestCharge);
             WeaponAnimator.SetTrigger("Attack");
             // TODO: Move this to a callback in CharacterController
-            if (!AllowMovementWhileAttacking)
-            {
-                if (Character.Controller.movement != null)
-                {
-                    Character.Controller.movement.Stop();
-                    Character.Controller.movement.AcceptMovementInput = false;
-                    Character.Controller.movement.enabled = false;
-                }
-            }
+
+            ActivateMovementRestrictions(true);
             state = State.Attacking;
-            Character.stamina.allowRecovery = false;
         }
 
-        // Address this from the Animator maybe
-        private void EndAttack()
+        // Would be nice if this was available as a visual scripting block
+        // Address this from the Animator
+        public void EndAttack()
         {
             state = State.Ready;
-            if (Character.Controller.movement != null)
-            {
-                Character.Controller.movement.state = Movement.State.Stopped;
-                Character.Controller.movement.AcceptMovementInput = true;
-            }
-            Character.stamina.allowRecovery = true;
+            ActivateMovementRestrictions(false);
 
             // Immediately update walking direction at end of attack 
             if (Character.Controller.movement != null)

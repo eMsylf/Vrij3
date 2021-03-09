@@ -91,7 +91,7 @@ namespace RanchyRats.Gyrus
             if (character.attacking != null) 
             {
                 Controls.Game.Attack.performed += _ =>      character.attacking.AttemptAttackCharge();
-                Controls.Game.Attack.canceled += _ =>       character.attacking.CompleteCharge();
+                Controls.Game.Attack.canceled += _ =>       character.attacking.EndCharge(true);
             }
 
             if (character.targeting != null)
@@ -101,7 +101,7 @@ namespace RanchyRats.Gyrus
 
         public void RevokePlayerControl(CharacterController character, bool removeFromList = true)
         {
-            if (controlledCharacters.Contains(character))
+            if (character == null || controlledCharacters.Contains(character))
             {
                 Debug.Log(character.name + " is not being controlled by player controller", this);
                 return;
@@ -121,7 +121,7 @@ namespace RanchyRats.Gyrus
             if (character.attacking != null)
             {
                 Controls.Game.Attack.performed -= _ =>      character.attacking.AttemptAttackCharge();
-                Controls.Game.Attack.canceled -= _ =>       character.attacking.CompleteCharge();
+                Controls.Game.Attack.canceled -= _ =>       character.attacking.EndCharge(true);
             }
 
             if (character.targeting != null)
