@@ -150,7 +150,6 @@ public class Pathfinding : MonoBehaviour
     [Tooltip("The amount of time the pathfinder needs to stand still trying to reach a goal, before applying a random force in an attempt to break free")]
     public float unstuckTime = 1f;
     private float _unstuckTime = 1f;
-    private bool Stuck;
     public float UnstuckForce = 1f;
 
     public void Unstuck()
@@ -161,10 +160,8 @@ public class Pathfinding : MonoBehaviour
         if (Mathf.Abs(Rigidbody.velocity.magnitude) > .5f)
         {
             _unstuckTime = unstuckTime;
-            Stuck = false;
             return;
         }
-        Stuck = true;
 
         // Reset time and try get unstuck
         if (_unstuckTime <= 0f)

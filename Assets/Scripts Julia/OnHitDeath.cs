@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using RanchyRats.Gyrus;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,11 +7,11 @@ public class OnHitDeath : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        PlayerController playerController = other.attachedRigidbody.GetComponent<PlayerController>();
+        Character character = other.attachedRigidbody.GetComponent<Character>();
 
-        if (playerController != null)
+        if (character != null)
         {
-            playerController.Die();
+            character.Die();
         }
     }
 }

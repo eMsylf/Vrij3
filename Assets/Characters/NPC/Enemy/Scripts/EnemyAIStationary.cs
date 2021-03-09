@@ -1,11 +1,11 @@
 ﻿using BobJeltes;
-using Combat;
+using RanchyRats.Gyrus;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Enemy))]
-//[RequireComponent(typeof(Pathfinding))]
+// Convert to/merge with a base class of EnemyAI to be able to input a targeting component
 public partial class EnemyAIStationary : MonoBehaviour
 {
     Enemy enemy;
@@ -71,10 +71,10 @@ public partial class EnemyAIStationary : MonoBehaviour
         state = _state;
     }
 
-    private float CheckPlayerDistance()
-    {
-        return Vector3.Distance(transform.position, PlayerController.Instance.transform.position);
-    }
+    //private float CheckPlayerDistance()
+    //{
+    //    return Vector3.Distance(transform.position, PlayerController.Instance.transform.position);
+    //}
 
     private void AnyState()
     {
@@ -149,8 +149,9 @@ public partial class EnemyAIStationary : MonoBehaviour
             ToIdle();
             return;
         }
-        if (!PlayerController.Instance.enabled)
-            ToIdle();
+        // TODO: Re-add in base enemy ai class
+        //if (!PlayerController.Instance.enabled)
+        //    ToIdle();
         attackTimeCurrent -= Time.deltaTime;
     }
 

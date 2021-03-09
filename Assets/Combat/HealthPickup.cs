@@ -1,4 +1,5 @@
 ﻿using Combat;
+using RanchyRats.Gyrus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,18 +19,18 @@ public class HealthPickup : MonoBehaviour
             return;
         }
 
-        Fighter fighter = other.GetComponent<Fighter>();
-        if (fighter == null)
+        Character character = other.GetComponent<Character>();
+        if (character == null)
         {
             return;
         }
 
-        if (fighter.Health.m_value == fighter.Health.m_maxValue)
+        if (character.health.Value == character.health.MaxValue)
         {
             return;
         }
 
-        fighter.Health.SetCurrent(fighter.Health.m_value + 1);
+        character.health.SetCurrent(character.health.Value + 1);
 
         foreach (GameObject obj in DisappearanceObjects)
         {

@@ -5,6 +5,7 @@ using DG.Tweening;
 using BobJeltes.StandardUtilities;
 using UnityEngine.Events;
 using UnityEditor;
+using RanchyRats.Gyrus;
 
 namespace Combat {
     public class Attack : MonoBehaviour
@@ -57,24 +58,24 @@ namespace Combat {
         [Range(0f, 1f)]
         public float MovementSpeedReduction = 1f;
 
-        Fighter fighter;
-        Fighter GetParentFighter()
+        Character fighter;
+        Character GetParentFighter()
         {
             if (fighter == null)
             {
-                fighter = GetComponentInParent<Fighter>();
+                fighter = GetComponentInParent<Character>();
             }
             return fighter;
         }
 
-        private List<Fighter> fightersHit = new List<Fighter>();
+        private List<Character> charactersHit = new List<Character>();
 
         public UnityEvent OnAttackLaunched;
 
         private void OnEnable()
         {
             OnAttackLaunched.Invoke();
-            fightersHit.Clear();
+            charactersHit.Clear();
         }
 
         public UnityEvent OnHitEvent;
@@ -100,35 +101,35 @@ namespace Combat {
 
             OnHitEvent.Invoke();
 
-            Fighter fighterHit = other.GetComponent<Fighter>();
-            if (fighterHit == null)
-                fighterHit = other.GetComponentInParent<Fighter>();
-            Fighter parentFighter = GetParentFighter();
-            Debug.Log("Hit fighter: " + fighterHit, gameObject);
+            Character characterHit = other.GetComponent<Character>();
+            if (characterHit == null)
+                characterHit = other.GetComponentInParent<Character>();
+            Character parentCharacter = GetParentFighter();
+            Debug.Log("Hit fighter: " + characterHit, gameObject);
 
             if (other.attachedRigidbody != null && !other.attachedRigidbody.isKinematic)
             {
                 AddAttackForceTo(other.attachedRigidbody);
             }
 
-            if (fighterHit == null)
+            if (characterHit == null)
                 return;
 
-            if (parentFighter == fighterHit)
+            if (parentCharacter == characterHit)
             {
-                Debug.Log("Hit self", parentFighter);
+                Debug.Log("Hit self", parentCharacter);
                 return;
             }
 
-            if (fighterHit.Invincible)
+            if (characterHit.Invincible)
             {
                 //Debug.Log("<color=yellow>Couldn't hit fighter because of invincibility</color>");
                 return;
             }
 
-            if (fightersHit.Contains(fighterHit))
+            if (charactersHit.Contains(characterHit))
             {
-                Debug.Log(name + " tried to multihit " + fighterHit.name, this);
+                Debug.Log(name + " tried to multihit " + characterHit.name, this);
                 if (!CanMultiHit)
                 {
                     return;
@@ -137,13 +138,13 @@ namespace Combat {
 
             // The hit is succesful
 
-            fightersHit.Add(fighterHit);
+            charactersHit.Add(characterHit);
 
             switch (effect)
             {
                 case Effect.Health:
                     //Debug.Log("Deal " + Damage + " health damage");
-                    DamageFighter(parentFighter, fighterHit);
+                    DamageCharacter(parentCharacter, characterHit);
                     break;
                 case Effect.Stamina:
                     Debug.Log("Drain " + StaminaReduction + " stamina");
@@ -171,7 +172,7 @@ namespace Combat {
             rigidbody.AddForce(forceVector, attackForce.forceMode);
         }
 
-        public void DamageFighter(Fighter attacker, Fighter victim)
+        public void DamageCharacter(Character attacker, Character victim)
         {
 
             if (attacker != null)

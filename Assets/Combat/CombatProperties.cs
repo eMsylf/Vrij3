@@ -8,7 +8,12 @@ namespace Combat
     {
         public interface IDamagable<T>
         {
-            void TakeDamage(T damageTaken);
+            void TakeDamage(T damage);
+        }
+
+        public interface IDamageDealer<T>
+        {
+            void DealDamage(T damage);
         }
 
         public interface IKillable
@@ -20,5 +25,6 @@ namespace Combat
         {
             void Attack();
         }
+
     }
 }
