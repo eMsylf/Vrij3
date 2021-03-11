@@ -52,12 +52,9 @@ namespace RanchyRats.Gyrus
 
         private void Update()
         {
-            CheckPlayerControllerStatus();
+            UpdatePlayerControllerStatus();
 
-            if (!PlayerControlled)
-            {
-
-            }
+            UpdateAIControllerStatus();
         }
 
         public void AssignPlayerControl(PlayerController player)
@@ -80,29 +77,41 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        public void CheckPlayerControllerStatus()
+        /// <summary>
+        /// Enables/adds and assigns a player controller when the character is player controlled, and otherwise releases player control.
+        /// </summary>
+        public void UpdatePlayerControllerStatus()
         {
-            if (PlayerControlled)
+            if (PlayerControlled && PlayerController == null)
             {
-                if (PlayerController == null)
+                // If the character is controlled by a player, but no PlayerController is assigned, find player controller in scene
+                PlayerController pc = FindObjectOfType<PlayerController>();
+                if (pc == null)
                 {
-                    // If the character is controlled by a player, but no PlayerController is assigned, find player controller in scene
-                    PlayerController pc = FindObjectOfType<PlayerController>();
-                    if (pc == null)
-                    {
-                        // If no player controller is found, create a new player controller
-                        pc = new GameObject("Player Controller", typeof(PlayerController)).GetComponent<PlayerController>();
-                    }
-                    AssignPlayerControl(pc);
+                    // If no player controller is found, create a new player controller
+                    pc = new GameObject("Player Controller", typeof(PlayerController)).GetComponent<PlayerController>();
                 }
+                AssignPlayerControl(pc);
             }
-            else
+            else if (PlayerController != null && PlayerController.enabled)
             {
-                if (PlayerController != null && PlayerController.enabled)
-                {
-                    // If the character is NOT player-controlled, disable player controller
-                    ReleasePlayerControl();
-                }
+                // If the character is NOT player-controlled, release the character from player control
+                ReleasePlayerControl();
+            }
+        }
+
+        /// <summary>
+        /// Disables the AI controller when player control is enabled, otherwise enables the AI controller
+        /// </summary>
+        public void UpdateAIControllerStatus()
+        {
+            if (PlayerControlled && AIController.enabled)
+            {
+                AIController.enabled = false;
+            }
+            else if (!AIController.enabled)
+            {
+                AIController.enabled = true;
             }
         }
     }
