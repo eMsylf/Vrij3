@@ -65,8 +65,8 @@ namespace RanchyRats.Gyrus
                 return;
             }
 #endif
-            Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !enabled;
+            Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
         }
 
         public void AssumePlayerControl(CharacterController character, bool addToList = true)

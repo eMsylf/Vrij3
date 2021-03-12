@@ -4,10 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AIController : MonoBehaviour
+[RequireComponent(typeof(RanchyRats.Gyrus.CharacterController))]
+public partial class AIController : MonoBehaviour
 {
     public Pathfinding pathfinding;
     public NavMeshAgent navMeshAgent;
+
+    private RanchyRats.Gyrus.CharacterController characterController;
+    public RanchyRats.Gyrus.CharacterController CharacterController
+    {
+        get
+        {
+            if (characterController == null)
+                GetComponent<RanchyRats.Gyrus.CharacterController>();
+            return characterController;
+        }
+        private set => characterController = value;
+    }
 
     public enum Attitude
     {
@@ -15,32 +28,44 @@ public class AIController : MonoBehaviour
         Neutral,
         Hostile
     }
-    public Attitude aIType;
+    public Attitude attitude;
 
     [System.Serializable]
     public struct AIAttitude
     {
         public LayerMask AggressionLayers;
-
-        public AIAttitude(LayerMask aggressionLayers)
-        {
-            AggressionLayers = aggressionLayers;
-        }
     }
 
-    public AIAttitude Passive = new AIAttitude(new LayerMask());
-    public AIAttitude Neutral = new AIAttitude();
-    public AIAttitude Hostile = new AIAttitude();
+    [SerializeField]
+    private AIAttitude
+        Passive = new AIAttitude(),
+        Neutral = new AIAttitude(),
+        Hostile = new AIAttitude();
+
+    public AIAttitude GetAttitude()
+    {
+        switch (attitude)
+        {
+            default:
+            case Attitude.Passive:
+                return Passive;
+            case Attitude.Neutral:
+                return Neutral;
+            case Attitude.Hostile:
+                return Hostile;
+                //return new AIAttitude();
+        }
+    }
 
     [System.Serializable]
     public struct AIState
     {
         // Wat moet een AI allemaal kunnen doen in een state?
-        
+        public FMODUnity.StudioEventEmitter startSound;
     }
 
     public AIState idle;
-    public AIState alert; // ?
+    public AIState alert;
     public AIState searching;
     public AIState aggressive;
 
@@ -62,8 +87,7 @@ public class AIController : MonoBehaviour
         {
             navMeshAgent.enabled = false;
         }
-        StopSound(attackSound);
-        StopSound(idleSound);
+        idle.startSound.Stop();
     }
 
     private void Start()
@@ -77,24 +101,6 @@ public class AIController : MonoBehaviour
         navMeshAgent.destination = goal.position;
         yield return new WaitForSeconds(interval);
         StartCoroutine(UpdateGoalPosition(interval));
-    }
-
-
-    public FMODUnity.StudioEventEmitter attackSound;
-    public FMODUnity.StudioEventEmitter idleSound;
-    public void PlaySound(FMODUnity.StudioEventEmitter sound)
-    {
-        if (sound == null)
-            Debug.LogWarning("Sound is not assigned", gameObject);
-        else
-            sound.Play();
-    }
-    public void StopSound(FMODUnity.StudioEventEmitter sound)
-    {
-        if (sound == null)
-            Debug.LogWarning("Sound is not assigned", gameObject);
-        else
-            sound.Stop();
     }
 
     public List<Character> targetCharacters = new List<Character>();
@@ -119,10 +125,7 @@ public class AIController : MonoBehaviour
         }
     }
 
-    public float SightRange = 5f;
-    // TODO: Fix Cone class
-    internal Cone SightCone;
-    public LayerMask sightObstructions;
+    public Cone SightCone = new Cone();
     public float AttackRange = 3f;
 
     [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. X = min, y = max")]
@@ -171,36 +174,25 @@ public class AIController : MonoBehaviour
         return Vector3.Distance(transform.position, character.transform.position);
     }
 
-    Vector3 playerLastSeenPosition;
-
-    private bool IsCharacterVisible(Character character, out Vector3 characterPosition)
+    private bool IsCharacterVisible(Character character)
     {
         Ray ray = new Ray(
             transform.position,
             character.transform.position - transform.position);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, SightRange, sightObstructions, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, SightCone.radius, SightCone.layermMask, QueryTriggerInteraction.Ignore))
         {
             Debug.Log("Player view obstructed by " + hit.collider.name + " on layer " + hit.collider.gameObject.layer.ToString(), hit.collider);
             // Use old player position
-            characterPosition = playerLastSeenPosition;
             return false;
         }
-        else
-        {
-            //Debug.DrawRay(rayOrigin, rayDirection, Color.red, 1f, SightRange);
-            // Update player last seen position
-            playerLastSeenPosition = character.transform.position;
-            characterPosition = playerLastSeenPosition;
-            Debug.Log("Player in view");
-            return true;
-        }
+        return true;
     }
 
-    #region States
+    #region State machine
     [Tooltip("If the player has been out of range for this duration, the enemy AI will stop following the player")]
-    public float playerOutOfRangeCooldown = 3f;
-    private float playerOutOfRangeCooldownCurrent;
+    public float characterOutOfRangeCooldown = 3f;
+    private float aggressionCooldown;
     private void AnyState()
     {
         SortTargetPlayersList();
@@ -216,14 +208,14 @@ public class AIController : MonoBehaviour
             ToAttack();
             return;
         }
-        if (distanceToCharacter < SightRange)
+        if (distanceToCharacter < SightCone.radius)
         {
             ToFollowSingleTarget();
             return;
         }
     }
 
-    private float idleTimeCurrent = 0f;
+    private float idleTimeRemaining = 0f;
 
     public void ToIdle()
     {
@@ -233,22 +225,21 @@ public class AIController : MonoBehaviour
             return;
         }
 
-        idleTimeCurrent = Random.Range(IdleTime.x, IdleTime.y);
+        idleTimeRemaining = Random.Range(IdleTime.x, IdleTime.y);
         //Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
         navMeshAgent.isStopped = true;
-        if (idleSound == null)
+        if (idle.startSound == null)
             Debug.LogWarning("Idle sound not assigned", gameObject);
         else
-            idleSound.Play();
-
+            idle.startSound.Play();
     }
     private void Idle()
     {
-        if (idleTimeCurrent > 0f)
+        if (idleTimeRemaining > 0f)
         {
             //idleSound.Play();
-            idleTimeCurrent -= Time.deltaTime;
+            idleTimeRemaining -= Time.deltaTime;
         }
         else
         {
@@ -287,22 +278,22 @@ public class AIController : MonoBehaviour
 
     private void FollowSingleTarget()
     {
-        Character closestPlayer = GetClosestCharacter();
-        if (closestPlayer == null)
+        Character closestCharacter = GetClosestCharacter();
+        if (closestCharacter == null)
             return;
 
-        if (!closestPlayer.enabled)
+        if (!closestCharacter.enabled)
         {
             ToIdle();
             return;
         }
 
-        if (DistanceToCharacter(closestPlayer) < SightRange)
+        if (DistanceToCharacter(closestCharacter) < SightCone.radius)
         {
             Debug.Log("Player is within sight range");
-            if (IsCharacterVisible(closestPlayer, out Vector3 playerPos))
+            if (IsCharacterVisible(closestCharacter))
             {
-                navMeshAgent.destination = playerPos;
+                navMeshAgent.destination = closestCharacter.transform.position;
                 return;
             }
             //Pathfinding.CurrentGoal = UpdateLatestPlayerSightedPosition();
@@ -310,15 +301,15 @@ public class AIController : MonoBehaviour
         }
 
         // Player out of sight
-        if (playerOutOfRangeCooldownCurrent <= 0f)
+        if (aggressionCooldown <= 0f)
         {
-            playerOutOfRangeCooldownCurrent = playerOutOfRangeCooldown;
+            aggressionCooldown = characterOutOfRangeCooldown;
             navMeshAgent.isStopped = true;
             ToIdle();
             return;
         }
 
-        playerOutOfRangeCooldownCurrent -= Time.deltaTime;
+        aggressionCooldown -= Time.deltaTime;
     }
     public bool StopWhileAttacking = true;
     public void ToAttack()
@@ -331,7 +322,7 @@ public class AIController : MonoBehaviour
         //Debug.Log("Transition to Attack");
         state = States.Attack;
         if (StopWhileAttacking) navMeshAgent.isStopped = false;
-        attackSound.Play();
+        CharacterController.attacking?.sounds.PlayAttackSound(0);
     }
     private void Attack()
     {
@@ -345,12 +336,13 @@ public class AIController : MonoBehaviour
     #endregion
 
 #if UNITY_EDITOR
-    public Color TargetingColor = Color.yellow;
     public Color AttackColor = Color.red;
     private void OnDrawGizmosSelected()
     {
-        UnityEditor.Handles.color = TargetingColor;
-        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, SightRange);
+        SightCone.Draw(transform.position, transform.forward, transform.up);
+
+        UnityEditor.Handles.color = SightCone.indicatorColor;
+        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, SightCone.radius);
         UnityEditor.Handles.color = AttackColor;
         UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, AttackRange);
     }

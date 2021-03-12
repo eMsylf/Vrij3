@@ -158,13 +158,6 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        // TODO: Hoort in Attacking
-        public UnityEvent OnAttackAnnouncement;
-        public void AnnounceAttack()
-        {
-            OnAttackAnnouncement.Invoke();
-        }
-
         public void Attack()
         {
             throw new System.NotImplementedException();
