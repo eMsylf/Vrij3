@@ -84,7 +84,7 @@ namespace RanchyRats.Gyrus
         private void OnEnable()
         {
             state = State.Ready;
-            ClearChargingProhibitors();
+            ClearChargeBlockers();
         }
 
         private void OnDisable()
@@ -109,19 +109,19 @@ namespace RanchyRats.Gyrus
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
         internal List<GameObject> chargeBlockers = new List<GameObject>();
 
-        internal void AddChargingBlocker(GameObject blocker)
+        public void AddChargingBlocker(GameObject blocker)
         {
             chargeBlockers.Add(blocker);
             ChargeBlockedIndicator.SetActive(chargeBlockers.Count != 0);
         }
 
-        internal void RemoveChargingBlocker(GameObject blocker)
+        public void RemoveChargingBlocker(GameObject blocker)
         {
             chargeBlockers.Remove(blocker);
             ChargeBlockedIndicator.SetActive(chargeBlockers.Count != 0);
         }
 
-        internal void ClearChargingProhibitors()
+        internal void ClearChargeBlockers()
         {
             chargeBlockers.Clear();
             if (ChargeBlockedIndicator != null)
@@ -298,20 +298,11 @@ namespace RanchyRats.Gyrus
             {
                 return;
             }
+            // TODO: Get stamina use from attack?
             Character.stamina.Use(1);
 
             StartCoroutine(DoCharge());
             Character.stamina.allowRecovery = false;
-        }
-
-        public void AddNoChargeZone(GameObject zone)
-        {
-            AddChargingBlocker(zone);
-        }
-
-        public void RemoveNoChargeZone(GameObject zone)
-        {
-            RemoveChargingBlocker(zone);
         }
 
         [Serializable]

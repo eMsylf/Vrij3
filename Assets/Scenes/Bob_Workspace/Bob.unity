@@ -1091,6 +1091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlockMovementInput: 0
+  MovementByNavMeshAgent: 0
   defaultDodgeDirection: 0
   Stamina: {fileID: 0}
   Direction: {fileID: 0}
@@ -1784,6 +1785,7 @@ GameObject:
   - component: {fileID: 1109765101}
   - component: {fileID: 1109765100}
   - component: {fileID: 1109765105}
+  - component: {fileID: 1109765106}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -1804,6 +1806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlockMovementInput: 0
+  MovementByNavMeshAgent: 0
   defaultDodgeDirection: 0
   Stamina: {fileID: 0}
   Direction: {fileID: 0}
@@ -1996,19 +1999,51 @@ MonoBehaviour:
   targetCharacters: []
   SightCone:
     radius: 7.93
-    angle: 60
-    indicatorColor: {r: 0.9370135, g: 1, b: 0.4669811, a: 1}
-    highlightColor: {r: 1, g: 0, b: 0, a: 1}
+    angle: 30
+    handleColor: {r: 1, g: 1, b: 1, a: 1}
+    handleFill: 1
     layermMask:
       serializedVersion: 2
       m_Bits: 0
-    positionsInsideCone: []
   AttackRange: 3.87
   IdleTime: {x: 1, y: 5}
   state: 0
   characterOutOfRangeCooldown: 3
   StopWhileAttacking: 1
   AttackColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &1109765106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109765099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d728e804df8ea645adc3ffa58233e59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WarnOnlyOnce: 1
+  waypointManager: {fileID: 0}
+  SnapToClosestWaypointManager: 1
+  method: 0
+  speed: 1
+  MaxWalkDistance: 1
+  rotateTowardsWaypoint: 1
+  rotationSpeed: 1
+  waypointProximity: 1
+  useWaypointProximity: 1
+  autoPickNewWaypoint: 1
+  currentWaypoint: {fileID: 0}
+  currentGoal: {x: 0, y: 0, z: 0}
+  WaypointReached:
+    m_PersistentCalls:
+      m_Calls: []
+  StuckSpeedThreshold: 0.5
+  unstuckTime: 1
+  UnstuckForce: 1
+  waypointProximityIndicator: 2
+  indicatorColor: {r: 1, g: 1, b: 1, a: 0.14117648}
 --- !u!1 &1256384518
 GameObject:
   m_ObjectHideFlags: 0
@@ -2165,12 +2200,11 @@ MonoBehaviour:
   SightCone:
     radius: 10
     angle: 60
-    indicatorColor: {r: 1, g: 1, b: 1, a: 1}
-    highlightColor: {r: 1, g: 0, b: 0, a: 1}
+    handleColor: {r: 1, g: 1, b: 1, a: 1}
+    handleFill: 1
     layermMask:
       serializedVersion: 2
       m_Bits: 0
-    positionsInsideCone: []
   AttackRange: 3
   IdleTime: {x: 1, y: 5}
   state: 0
@@ -2569,6 +2603,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlockMovementInput: 0
+  MovementByNavMeshAgent: 0
   defaultDodgeDirection: 0
   Stamina: {fileID: 0}
   Direction: {fileID: 0}

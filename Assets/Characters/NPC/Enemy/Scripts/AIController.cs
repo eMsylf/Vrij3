@@ -8,7 +8,6 @@ using UnityEngine.AI;
 public partial class AIController : MonoBehaviour
 {
     public Pathfinding pathfinding;
-    public NavMeshAgent navMeshAgent;
 
     private RanchyRats.Gyrus.CharacterController characterController;
     public RanchyRats.Gyrus.CharacterController CharacterController
@@ -69,38 +68,9 @@ public partial class AIController : MonoBehaviour
     public AIState searching;
     public AIState aggressive;
 
-    public Transform goal;
-    [Min(0)]
-    public float GoalUpdateInterval = .5f;
-
-    private void OnEnable()
-    {
-        if (navMeshAgent != null)
-        {
-            navMeshAgent.enabled = true;
-        }
-    }
-
     private void OnDisable()
     {
-        if (navMeshAgent != null)
-        {
-            navMeshAgent.enabled = false;
-        }
         idle.startSound.Stop();
-    }
-
-    private void Start()
-    {
-        StartCoroutine(UpdateGoalPosition(GoalUpdateInterval));
-    }
-
-    public IEnumerator UpdateGoalPosition(float interval)
-    {
-        Debug.Log("Update goal position");
-        navMeshAgent.destination = goal.position;
-        yield return new WaitForSeconds(interval);
-        StartCoroutine(UpdateGoalPosition(interval));
     }
 
     public List<Character> targetCharacters = new List<Character>();
@@ -228,7 +198,7 @@ public partial class AIController : MonoBehaviour
         idleTimeRemaining = Random.Range(IdleTime.x, IdleTime.y);
         //Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
-        navMeshAgent.isStopped = true;
+        pathfinding.NavMeshAgent.isStopped = true;
         if (idle.startSound == null)
             Debug.LogWarning("Idle sound not assigned", gameObject);
         else
@@ -250,7 +220,7 @@ public partial class AIController : MonoBehaviour
     public void ToWander()
     {
         state = States.Wander;
-        navMeshAgent.isStopped = false;
+        pathfinding.NavMeshAgent.isStopped = false;
         // TODO: Reimplement
         //Pathfinding.autoPickNewWaypoint = true;
         //Pathfinding.useWaypointProximity = true;
@@ -269,7 +239,7 @@ public partial class AIController : MonoBehaviour
 
         //Debug.Log("Transition to Follow Single Target");
         state = States.FollowSingleTarget;
-        navMeshAgent.isStopped = false;
+        pathfinding.NavMeshAgent.isStopped = false;
         // TODO: Reimplement
         //Pathfinding.autoPickNewWaypoint = false;
         //Pathfinding.currentWaypoint = null;
@@ -293,7 +263,7 @@ public partial class AIController : MonoBehaviour
             Debug.Log("Player is within sight range");
             if (IsCharacterVisible(closestCharacter))
             {
-                navMeshAgent.destination = closestCharacter.transform.position;
+                pathfinding.NavMeshAgent.destination = closestCharacter.transform.position;
                 return;
             }
             //Pathfinding.CurrentGoal = UpdateLatestPlayerSightedPosition();
@@ -304,7 +274,7 @@ public partial class AIController : MonoBehaviour
         if (aggressionCooldown <= 0f)
         {
             aggressionCooldown = characterOutOfRangeCooldown;
-            navMeshAgent.isStopped = true;
+            pathfinding.NavMeshAgent.isStopped = true;
             ToIdle();
             return;
         }
@@ -321,7 +291,7 @@ public partial class AIController : MonoBehaviour
         }
         //Debug.Log("Transition to Attack");
         state = States.Attack;
-        if (StopWhileAttacking) navMeshAgent.isStopped = false;
+        if (StopWhileAttacking) pathfinding.NavMeshAgent.isStopped = false;
         CharacterController.attacking?.sounds.PlayAttackSound(0);
     }
     private void Attack()
@@ -341,7 +311,7 @@ public partial class AIController : MonoBehaviour
     {
         SightCone.Draw(transform.position, transform.forward, transform.up);
 
-        UnityEditor.Handles.color = SightCone.indicatorColor;
+        UnityEditor.Handles.color = SightCone.handleColor;
         UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, SightCone.radius);
         UnityEditor.Handles.color = AttackColor;
         UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, AttackRange);

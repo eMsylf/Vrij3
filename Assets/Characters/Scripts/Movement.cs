@@ -12,6 +12,8 @@ namespace RanchyRats.Gyrus
     public partial class Movement : CharacterComponent
     {
         public bool BlockMovementInput = false;
+        [Tooltip("If the movement is being controlled by a NavMeshAgent component, the movement animation is still updated through this component but the movement is not applied to the rigidbody.")]
+        public bool MovementByNavMeshAgent = false;
         internal Vector2 Input;
         internal Vector2 FacingDirection = new Vector2(0f, 1f);
         internal enum DefaultDodgeDirection { Backward, ToCamera }
@@ -34,10 +36,6 @@ namespace RanchyRats.Gyrus
 
         //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something.
         public ParticleSystem dust;
-        public void CreateDust()
-        {
-            dust.Play();
-        }
 
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
         Rigidbody rigidbody;
@@ -90,6 +88,8 @@ namespace RanchyRats.Gyrus
 
         private void FixedUpdate()
         {
+            if (MovementByNavMeshAgent)
+                return;
             Vector3 playerMovement = GetTopDownMovement(Input, state) * GetStateSettings(state).speed;
             // TODO: Deze camera-relatieve berekening moet uitgevoerd worden in de Player Controller. De movement hoort dat niet te doen, omdat de AI geen camera heeft.
             Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
@@ -266,14 +266,17 @@ namespace RanchyRats.Gyrus
         private IEnumerator Dodge(float duration)
         {
             state = State.Dodging;
-            Stamina.Use(1);
-            CreateDust();
             BlockMovementInput = true;
 
-            sounds.Dodge.Play();
+            if (Stamina != null) Stamina.Use(GetStateSettings(state).staminaDrainAmount);
+            if (dust != null) dust.Play();
+            if (sounds.Dodge != null) sounds.Dodge.Play();
+
             // TODO: Move charge interruption to PlayerController
+            if (Character.Controller.attacking != null)
+                Character.Controller.attacking.EndCharge(false);
+            
             OnDodgeStarted.Invoke();
-            //attacking.InterruptCharge();
             if (Input == Vector2.zero)
             {
                 NeutralDodge();
@@ -284,11 +287,11 @@ namespace RanchyRats.Gyrus
             }
 
             yield return new WaitForSeconds(duration);
+
             state = State.Stopped;
             BlockMovementInput = false;
             OnDodgeCompleted.Invoke();
-            // TODO: Update movement input
-            //UpdateMoveInput();
+            ForceReadMoveInput();
         }
 
         private void NeutralDodge()
@@ -306,11 +309,6 @@ namespace RanchyRats.Gyrus
 
         private void DirectionalDodge(Vector2 direction)
         {
-            //if (Direction == null)
-            //{
-            //    Debug.LogError("Direction indicator is null");
-            //    return;
-            //}
             DodgeDirection = direction.normalized;
         }
 
@@ -331,7 +329,6 @@ namespace RanchyRats.Gyrus
                 return;
 
             FacingDirection = direction;
-            //TODO: Doe dit niet wanneer de speler aan het aanvallen is
             UpdateDirectionIndicator(FacingDirection);
             if (Character.Animator == null)
                 return;

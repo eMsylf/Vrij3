@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -54,17 +55,31 @@ public class Pathfinding : MonoBehaviour
         return WaypointManager;
     }
 
+    private NavMeshAgent navMeshAgent;
+    public NavMeshAgent NavMeshAgent
+    {
+        get
+        {
+            if (navMeshAgent == null)
+                navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
+            return navMeshAgent;
+        }
+    }
+
     public enum Method
     {
         RandomWaypoint,
         OrderedWaypoint,
-        ReverseOrderedWaypoint
+        ReverseOrderedWaypoint,
+        RandomNavMeshPoint
     }
     [Tooltip("This is the method in which a new waypoint is chosen.")]
     public Method method;
     
     [Tooltip("The speed with which the pathfinder moves.")]
     public float speed = 1f;
+    [Min(0)]
+    public float MaxWalkDistance = 1f;
     
     [Space]
     
@@ -104,6 +119,11 @@ public class Pathfinding : MonoBehaviour
     }
     private int currentWaypointIndex;
 
+
+    public Transform goal;
+    [Min(0)]
+    public float GoalUpdateInterval = .5f;
+
     public UnityEvent WaypointReached;
 
     private void Start()
@@ -113,7 +133,18 @@ public class Pathfinding : MonoBehaviour
         {
             return;
         }
+
+        if (method == Method.RandomNavMeshPoint)
+            StartCoroutine(UpdateGoalPosition(GoalUpdateInterval));
         //currentWaypoint = WaypointManager.GetRandomWaypoint();
+    }
+
+    public IEnumerator UpdateGoalPosition(float interval)
+    {
+        Debug.Log("Update goal position");
+        NavMeshAgent.destination = goal.position;
+        yield return new WaitForSeconds(interval);
+        StartCoroutine(UpdateGoalPosition(interval));
     }
 
     private void Update()
@@ -136,6 +167,13 @@ public class Pathfinding : MonoBehaviour
                     case Method.ReverseOrderedWaypoint:
                         currentWaypoint = WaypointManager.GetPreviousWaypoint(currentWaypointIndex, out currentWaypointIndex);
                         break;
+                    case Method.RandomNavMeshPoint:
+                        Vector3 randomDirection = Random.insideUnitCircle * MaxWalkDistance;
+                        randomDirection += transform.position;
+                        NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, MaxWalkDistance, 1);
+                        Vector3 finalPosition = hit.position;
+                        NavMeshAgent.destination = finalPosition;
+                        break;
                 }
             }
         }
@@ -149,7 +187,7 @@ public class Pathfinding : MonoBehaviour
     public float StuckSpeedThreshold = .5f;
     [Tooltip("The amount of time the pathfinder needs to stand still trying to reach a goal, before applying a random force in an attempt to break free")]
     public float unstuckTime = 1f;
-    private float _unstuckTime = 1f;
+    private float unstuckTimeLeft = 1f;
     public float UnstuckForce = 1f;
 
     public void Unstuck()
@@ -159,52 +197,56 @@ public class Pathfinding : MonoBehaviour
         // Speed is high, not stuck
         if (Mathf.Abs(Rigidbody.velocity.magnitude) > .5f)
         {
-            _unstuckTime = unstuckTime;
+            unstuckTimeLeft = unstuckTime;
             return;
         }
 
         // Reset time and try get unstuck
-        if (_unstuckTime <= 0f)
+        if (unstuckTimeLeft <= 0f)
         {
-            _unstuckTime = unstuckTime;
+            unstuckTimeLeft = unstuckTime;
 
             Rigidbody.AddForce(Extensions.RandomVector301().normalized * UnstuckForce, ForceMode.Impulse);
             return;
         }
 
-        _unstuckTime -= Time.fixedDeltaTime;
+        unstuckTimeLeft -= Time.fixedDeltaTime;
     }
 
     private void FixedUpdate()
     {
-        Vector3 heading = CurrentGoal - Rigidbody.position;
+        Vector3 heading = (CurrentGoal - Rigidbody.position).normalized;
         Unstuck();
 
-        Rigidbody.AddForce(heading.normalized * speed);
+        Rigidbody.AddForce(heading * speed);
 
         if (rotateTowardsWaypoint)
         {
-            Quaternion currentRotation = transform.rotation;
-            Quaternion desiredRotation = Quaternion.LookRotation(heading);
-            Vector3 currentEuler = transform.rotation.eulerAngles;
-            Vector3 desiredEuler = desiredRotation.eulerAngles;
-            Vector3 eulerDifference = desiredEuler - currentEuler;
+            Vector3 currentRotation = transform.rotation.eulerAngles;
+            Vector3 desiredRotation = Quaternion.LookRotation(heading).eulerAngles;
+            Vector3 rotationDelta = desiredRotation - currentRotation;
 
-            ClampToHalfCircles(ref eulerDifference);
+            ClampToHalfCircles(ref rotationDelta);
 
-            Vector3 torque = eulerDifference * rotationSpeed;
+            Vector3 torque = rotationDelta * rotationSpeed;
 
             Rigidbody.AddRelativeTorque(torque);
-            //Debug.Log("Current euler: " + currentEuler + " Desired euler: " + desiredEuler + " difference: " + eulerDifference + " Multiplied difference (torque): " + torque);
         }
     }
 
+    /// <summary>
+    /// Use this to get the shortest rotation to the desired euler. 
+    /// </summary>
+    /// <param name="euler"></param>
     public void ClampToHalfCircles(ref Vector3 euler)
     {
+        // Limit the angle to 360 degrees
         euler.x %= 360f;
         euler.y %= 360f;
         euler.z %= 360f;
 
+        // If the angle is larger than 180 degrees, reduce it by 360 to make it return the same rotation but within half a circle
+        // 359 is larger than 180. 359 - 360 = -1. This results in a 1 degree turn to the left, instead of turning an entire circle to the right.
         if (euler.x > 180f)
         {
             euler.x -= 360f;
@@ -213,6 +255,7 @@ public class Pathfinding : MonoBehaviour
         {
             euler.x += 360f;
         }
+
         if (euler.y > 180f)
         {
             euler.y -= 360f;
@@ -275,7 +318,6 @@ public class Pathfinding : MonoBehaviour
             }
         }
 
-
         switch (waypointProximityIndicator)
         {
             case IndicatorType.Circle:
@@ -288,6 +330,8 @@ public class Pathfinding : MonoBehaviour
             case IndicatorType.Off:
                 break;
         }
+
+        Gizmos.DrawWireSphere(transform.position, MaxWalkDistance);
     }
 #endif
 }
