@@ -1,4 +1,5 @@
-﻿using RanchyRats.Gyrus;
+﻿using FMODUnity;
+using RanchyRats.Gyrus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,13 +22,14 @@ public partial class AIController : MonoBehaviour
         private set => characterController = value;
     }
 
+    [Header("Attitude")]
+    public Attitude attitude;
     public enum Attitude
     {
         Passive,
         Neutral,
         Hostile
     }
-    public Attitude attitude;
 
     [System.Serializable]
     public struct AIAttitude
@@ -56,51 +58,8 @@ public partial class AIController : MonoBehaviour
         }
     }
 
-    [System.Serializable]
-    public struct AIState
-    {
-        // Wat moet een AI allemaal kunnen doen in een state?
-        public FMODUnity.StudioEventEmitter startSound;
-    }
-
-    public AIState idle;
-    public AIState alert;
-    public AIState searching;
-    public AIState aggressive;
-
-    private void OnDisable()
-    {
-        idle.startSound.Stop();
-    }
-
-    public List<Character> targetCharacters = new List<Character>();
-
-    public void SortTargetPlayersList()
-    {
-        bool differenceDetected = false;
-        while (differenceDetected)
-        {
-            differenceDetected = false;
-            for (int i = 0; i < targetCharacters.Count - 1; i++)
-            {
-                Character thisPlayer = targetCharacters[i];
-                Character nextPlayer = targetCharacters[i + 1];
-                if (DistanceToCharacter(thisPlayer) > DistanceToCharacter(nextPlayer))
-                {
-                    targetCharacters[i] = nextPlayer;
-                    targetCharacters[i + 1] = thisPlayer;
-                    differenceDetected = true;
-                }
-            }
-        }
-    }
-
-    public Cone SightCone = new Cone();
-    public float AttackRange = 3f;
-
-    [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. X = min, y = max")]
-    public Vector2 IdleTime = new Vector2(1f, 5f);
-
+    [Header("States")]
+    public States state;
     public enum States
     {
         Idle,
@@ -108,7 +67,42 @@ public partial class AIController : MonoBehaviour
         FollowSingleTarget,
         Attack
     }
-    public States state;
+    [System.Serializable]
+    public struct AIState
+    {
+        // Wat moet een AI allemaal kunnen doen in een state?
+        public StudioEventEmitter startSound;
+
+        [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. X = min, y = max")]
+        public Vector2 TimeLimit;
+        public float DetectionRadius;
+
+        public AIState(Vector2 timeLimit, float detectionRadius)
+        {
+            startSound = null;
+            TimeLimit = timeLimit;
+            DetectionRadius = detectionRadius;
+        }
+    }
+    public AIState idle = new AIState(new Vector2(0f, 5f), 3f);
+    public AIState alert = new AIState(new Vector2(0f, 5f), 4f);
+    public AIState searching = new AIState(new Vector2(0f, 5f), 5f);
+    public AIState aggressive = new AIState(new Vector2(0f, 5f), 6f);
+
+    [Header("Targeting")]
+    public List<Character> targetCharacters = new List<Character>();
+    public Cone SightCone = new Cone();
+    [Tooltip("If the player has been out of range for this duration, the enemy AI will stop following the player")]
+    public float OutOfRangeTimeout = 3f;
+
+    [Header("Attacking")]
+    public float AttackRange = 3f;
+    public bool StopWhileAttacking = true;
+
+    private void OnDisable()
+    {
+        idle.startSound.Stop();
+    }
 
     void Update()
     {
@@ -127,6 +121,27 @@ public partial class AIController : MonoBehaviour
             case States.Attack:
                 Attack();
                 break;
+        }
+    }
+
+    public void SortTargetPlayersList()
+    {
+        bool differenceDetected = false;
+        while (differenceDetected)
+        {
+            differenceDetected = false;
+            for (int i = 0; i < targetCharacters.Count - 1; i++)
+            {
+                Character thisCharacter = targetCharacters[i];
+                Character nextCharacter = targetCharacters[i + 1];
+                if (DistanceToCharacter(thisCharacter) > DistanceToCharacter(nextCharacter))
+                {
+                    // Switch the characters positions
+                    targetCharacters[i] = nextCharacter;
+                    targetCharacters[i + 1] = thisCharacter;
+                    differenceDetected = true;
+                }
+            }
         }
     }
 
@@ -160,8 +175,6 @@ public partial class AIController : MonoBehaviour
     }
 
     #region State machine
-    [Tooltip("If the player has been out of range for this duration, the enemy AI will stop following the player")]
-    public float characterOutOfRangeCooldown = 3f;
     private float aggressionCooldown;
     private void AnyState()
     {
@@ -195,7 +208,7 @@ public partial class AIController : MonoBehaviour
             return;
         }
 
-        idleTimeRemaining = Random.Range(IdleTime.x, IdleTime.y);
+        idleTimeRemaining = Random.Range(idle.TimeLimit.x, idle.TimeLimit.y);
         //Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
         pathfinding.NavMeshAgent.isStopped = true;
@@ -273,7 +286,7 @@ public partial class AIController : MonoBehaviour
         // Player out of sight
         if (aggressionCooldown <= 0f)
         {
-            aggressionCooldown = characterOutOfRangeCooldown;
+            aggressionCooldown = OutOfRangeTimeout;
             pathfinding.NavMeshAgent.isStopped = true;
             ToIdle();
             return;
@@ -281,7 +294,6 @@ public partial class AIController : MonoBehaviour
 
         aggressionCooldown -= Time.deltaTime;
     }
-    public bool StopWhileAttacking = true;
     public void ToAttack()
     {
         if (state == States.Attack)
@@ -315,6 +327,12 @@ public partial class AIController : MonoBehaviour
         UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, SightCone.radius);
         UnityEditor.Handles.color = AttackColor;
         UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, AttackRange);
+
+        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, idle.DetectionRadius);
+        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, alert.DetectionRadius);
+        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, searching.DetectionRadius);
+        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, aggressive.DetectionRadius);
+
     }
 #endif
 }

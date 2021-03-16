@@ -46,6 +46,8 @@ namespace RanchyRats.Gyrus
                 return aIController;
             }
         }
+
+        [Header("Optional components")]
         public Movement movement;
         public Attacking attacking;
         public Targeting targeting;
