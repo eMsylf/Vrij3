@@ -93,35 +93,10 @@ namespace RanchyRats.Gyrus
                     position,
                     Quaternion.identity).transform.localScale = scale;
         }
+        [Header("Character events")]
         public CharacterEvent GetHit = new CharacterEvent();
         public CharacterEvent Death = new CharacterEvent();
         public CharacterEvent Revival = new CharacterEvent();
-
-        public virtual void Die()
-        {
-            Debug.Log(name + " died", this);
-
-            Death.SpawnCollection(transform.position, transform.lossyScale);
-            Death.SpawnRandom(transform.position, transform.lossyScale);
-            Death.unityEvent.Invoke();
-
-            if (Controller.PlayerController != null)
-                GameManager.Instance.PlayerDeath(Controller.Character);
-            //----------------------------------------------------------- Character dies
-            if (Death.sound != null) 
-                Death.sound.Play();
-
-            gameObject.SetActive(false);
-        }
-
-        private float InvincibilityTime = 0f;
-        public bool Invincible
-        {
-            get
-            {
-                return InvincibilityTime > 0f;
-            }
-        }
         [System.Serializable]
         public class TouchDamage
         {
@@ -131,7 +106,17 @@ namespace RanchyRats.Gyrus
             public LayerMask layers;
             public float force = 1f;
         }
+        [Space]
         public TouchDamage touchDamage;
+
+        private float InvincibilityTime = 0f;
+        public bool Invincible
+        {
+            get
+            {
+                return InvincibilityTime > 0f;
+            }
+        }
 
         public virtual void OnEnable()
         {
@@ -155,6 +140,38 @@ namespace RanchyRats.Gyrus
             if (Invincible)
             {
                 InvincibilityTime -= Time.deltaTime;
+            }
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            Character otherFighter = collision.gameObject.GetComponent<Character>();
+            if (otherFighter == null)
+            {
+                return;
+            }
+
+            if (touchDamage.layers != (touchDamage.layers.value | (1 << otherFighter.gameObject.layer)))
+            {
+                return;
+            }
+
+            if (otherFighter.Invincible)
+            {
+                return;
+            }
+
+            if (touchDamage.enabled)
+            {
+                if (collision.rigidbody != null)
+                {
+                    Vector3 forceVector = collision.rigidbody.position - transform.position;
+                    forceVector.Normalize();
+                    collision.rigidbody.AddForce(touchDamage.force * forceVector, ForceMode.Impulse);
+                }
+                if (touchDamage.damage != 0)
+                    otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
+                Debug.Log(otherFighter + " takes touch damage from " + name);
             }
         }
 
@@ -192,36 +209,21 @@ namespace RanchyRats.Gyrus
                 GetHit.sound.Play();
         }
 
-        private void OnCollisionEnter(Collision collision)
+        public virtual void Die()
         {
-            Character otherFighter = collision.gameObject.GetComponent<Character>();
-            if (otherFighter == null)
-            {
-                return;
-            }
+            Debug.Log(name + " died", this);
 
-            if (touchDamage.layers != (touchDamage.layers.value | (1 << otherFighter.gameObject.layer)))
-            {
-                return;
-            }
+            Death.SpawnCollection(transform.position, transform.lossyScale);
+            Death.SpawnRandom(transform.position, transform.lossyScale);
+            Death.unityEvent.Invoke();
 
-            if (otherFighter.Invincible)
-            {
-                return;
-            }
+            if (Controller.PlayerController != null)
+                GameManager.Instance.PlayerDeath(Controller.Character);
+            //----------------------------------------------------------- Character dies
+            if (Death.sound != null)
+                Death.sound.Play();
 
-            if (touchDamage.enabled)
-            {
-                if (collision.rigidbody != null)
-                {
-                    Vector3 forceVector = collision.rigidbody.position - transform.position;
-                    forceVector.Normalize();
-                    collision.rigidbody.AddForce(touchDamage.force * forceVector, ForceMode.Impulse);
-                }
-                if (touchDamage.damage != 0)
-                    otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
-                Debug.Log(otherFighter + " takes touch damage from " + name);
-            }
+            gameObject.SetActive(false);
         }
 
         [SerializeField] private Vector3 respawnPoint = new Vector3();
