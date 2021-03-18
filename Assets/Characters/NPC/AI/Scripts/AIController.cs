@@ -1,9 +1,7 @@
-﻿using FMODUnity;
-using RanchyRats.Gyrus;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using FMODUnity;
+using RanchyRats.Gyrus;
 
 [RequireComponent(typeof(RanchyRats.Gyrus.CharacterController))]
 public partial class AIController : MonoBehaviour
@@ -22,40 +20,12 @@ public partial class AIController : MonoBehaviour
         private set => characterController = value;
     }
 
-    [Header("Attitude")]
-    public Attitude attitude;
-    public enum Attitude
-    {
-        Passive,
-        Neutral,
-        Hostile
-    }
-
-    [System.Serializable]
-    public struct AIAttitude
-    {
-        public LayerMask AggressionLayers;
-    }
-
     [SerializeField]
-    private AIAttitude
-        Passive = new AIAttitude(),
-        Neutral = new AIAttitude(),
-        Hostile = new AIAttitude();
+    private AIAttitude aIAttitude;
 
     public AIAttitude GetAttitude()
     {
-        switch (attitude)
-        {
-            default:
-            case Attitude.Passive:
-                return Passive;
-            case Attitude.Neutral:
-                return Neutral;
-            case Attitude.Hostile:
-                return Hostile;
-                //return new AIAttitude();
-        }
+        return aIAttitude;
     }
 
     [Header("States")]
@@ -75,19 +45,39 @@ public partial class AIController : MonoBehaviour
 
         [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. X = min, y = max")]
         public Vector2 TimeLimit;
-        public float DetectionRadius;
+        [Min(0)]
+        public float VisionRangeModifier;
+        [Range(0f, 360f)]
+        public float FieldOfViewModifier;
 
-        public AIState(Vector2 timeLimit, float detectionRadius)
+        public AIState(Vector2 timeLimit, float rangeModifier, float fovModifier)
         {
             startSound = null;
             TimeLimit = timeLimit;
-            DetectionRadius = detectionRadius;
+            VisionRangeModifier = rangeModifier;
+            FieldOfViewModifier = fovModifier;
         }
     }
-    public AIState idle = new AIState(new Vector2(0f, 5f), 3f);
-    public AIState alert = new AIState(new Vector2(0f, 5f), 4f);
-    public AIState searching = new AIState(new Vector2(0f, 5f), 5f);
-    public AIState aggressive = new AIState(new Vector2(0f, 5f), 6f);
+    public AIState idle = new AIState(new Vector2(0f, 5f), -1f, 0f);
+    public AIState alert = new AIState(new Vector2(0f, 5f), -1f, 25f);
+    public AIState searching = new AIState(new Vector2(0f, 5f), 5f, 25f);
+    public AIState aggressive = new AIState(new Vector2(0f, 5f), -3f, 50f);
+
+    public AIState GetState(States state)
+    {
+        switch (state)
+        {
+            default:
+            case States.Idle:
+                return idle;
+            case States.Wander:
+                return alert;
+            case States.FollowSingleTarget:
+                return searching;
+            case States.Attack:
+                return aggressive;
+        }
+    }
 
     [Header("Targeting")]
     public List<Character> targetCharacters = new List<Character>();
@@ -95,8 +85,6 @@ public partial class AIController : MonoBehaviour
     [Tooltip("If the player has been out of range for this duration, the enemy AI will stop following the player")]
     public float OutOfRangeTimeout = 3f;
 
-    [Header("Attacking")]
-    public float AttackRange = 3f;
     public bool StopWhileAttacking = true;
 
     private void OnDisable()
@@ -147,7 +135,6 @@ public partial class AIController : MonoBehaviour
 
     public Character GetClosestCharacter()
     {
-
         if (targetCharacters == null || targetCharacters.Count == 0)
             return null;
 
@@ -186,7 +173,7 @@ public partial class AIController : MonoBehaviour
         }
 
         float distanceToCharacter = DistanceToCharacter(closestCharacter);
-        if (distanceToCharacter < AttackRange)
+        if (distanceToCharacter < aggressive.VisionRangeModifier)
         {
             ToAttack();
             return;
@@ -318,21 +305,16 @@ public partial class AIController : MonoBehaviour
     #endregion
 
 #if UNITY_EDITOR
-    public Color AttackColor = Color.red;
     private void OnDrawGizmosSelected()
     {
-        SightCone.Draw(transform.position, transform.forward, transform.up);
+        AIState aiState = GetState(state);
+
+        SightCone.Draw(transform.position, transform.forward, transform.up, aiState.VisionRangeModifier, aiState.FieldOfViewModifier);
 
         UnityEditor.Handles.color = SightCone.handleColor;
-        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, SightCone.radius);
-        UnityEditor.Handles.color = AttackColor;
-        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, AttackRange);
+        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, SightCone.radius + aiState.VisionRangeModifier);
 
-        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, idle.DetectionRadius);
-        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, alert.DetectionRadius);
-        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, searching.DetectionRadius);
-        UnityEditor.Handles.DrawWireDisc(transform.position, transform.up, aggressive.DetectionRadius);
-
+        // Misschien: Laat alle ranges zien. De niet-actieve ranges zijn vervaagd
     }
 #endif
 }

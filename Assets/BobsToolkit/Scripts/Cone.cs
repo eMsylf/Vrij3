@@ -21,14 +21,14 @@ public class Cone
         
     }
 
-    public void Draw(Vector3 origin, Vector3 direction, Vector3 orientation)
+    public void Draw(Vector3 origin, Vector3 direction, Vector3 orientation, float rangeModifier = 0f, float fovModifier = 0f)
     {
         Handles.color = handleColor;
-        float halfAngle = angle * .5f;
+        float halfAngle = Mathf.Clamp((angle + fovModifier) * .5f, 0f, 180f);
         if (handleFill)
         {
-            Handles.DrawSolidArc(origin, orientation, direction, halfAngle, radius);
-            Handles.DrawSolidArc(origin, orientation, direction, -halfAngle, radius);
+            Handles.DrawSolidArc(origin, orientation, direction, halfAngle, radius + rangeModifier);
+            Handles.DrawSolidArc(origin, orientation, direction, -halfAngle, radius + rangeModifier);
         }
 
         //Handles.color = highlightColor;

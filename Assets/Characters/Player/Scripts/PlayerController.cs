@@ -88,7 +88,7 @@ namespace RanchyRats.Gyrus
                 Controls.Game.Run.canceled += _ =>          character.movement.StopRunning();
             }
 
-            if (character.attacking != null) 
+            if (character.attacking != null)
             {
                 Controls.Game.Attack.performed += _ =>      character.attacking.AttemptAttackCharge();
                 Controls.Game.Attack.canceled += _ =>       character.attacking.EndCharge(true);

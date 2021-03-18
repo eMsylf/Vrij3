@@ -1984,36 +1984,38 @@ MonoBehaviour:
     AggressionLayers:
       serializedVersion: 2
       m_Bits: 0
-  state: 0
+  state: 3
   idle:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 5}
-    DetectionRadius: 3
+    VisionRangeModifier: -1
+    FieldOfViewModifier: 0
   alert:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 5}
-    DetectionRadius: 4
+    VisionRangeModifier: -1
+    FieldOfViewModifier: 25
   searching:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 5}
-    DetectionRadius: 5
+    VisionRangeModifier: 5
+    FieldOfViewModifier: 25
   aggressive:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 5}
-    DetectionRadius: 6
+    VisionRangeModifier: -3
+    FieldOfViewModifier: 44
   targetCharacters: []
   SightCone:
     radius: 10
-    angle: 60
+    angle: 82
     handleColor: {r: 1, g: 1, b: 1, a: 1}
     handleFill: 1
     layermMask:
       serializedVersion: 2
       m_Bits: 0
   OutOfRangeTimeout: 3
-  AttackRange: 3
   StopWhileAttacking: 1
-  AttackColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &1256384518
 GameObject:
   m_ObjectHideFlags: 0
@@ -2159,19 +2161,23 @@ MonoBehaviour:
   idle:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 0}
-    DetectionRadius: 0
+    VisionRangeModifier: -1
+    FieldOfViewModifier: 0
   alert:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 0}
-    DetectionRadius: 0
+    VisionRangeModifier: -1
+    FieldOfViewModifier: 25
   searching:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 0}
-    DetectionRadius: 0
+    VisionRangeModifier: 5
+    FieldOfViewModifier: 25
   aggressive:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 0}
-    DetectionRadius: 0
+    VisionRangeModifier: 6
+    FieldOfViewModifier: 50
   targetCharacters: []
   SightCone:
     radius: 10
@@ -2182,9 +2188,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 0
   OutOfRangeTimeout: 3
-  AttackRange: 3
   StopWhileAttacking: 1
-  AttackColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!136 &1383809895
 CapsuleCollider:
   m_ObjectHideFlags: 0
