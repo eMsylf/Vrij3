@@ -11,13 +11,14 @@ namespace RanchyRats.Gyrus
     [RequireComponent(typeof(Rigidbody))]
     public partial class Movement : CharacterComponent
     {
-        public bool AcceptMovementInput = true;
+        public bool BlockMovementInput = false;
         internal Vector2 Input;
         internal Vector2 FacingDirection = new Vector2(0f, 1f);
         internal enum DefaultDodgeDirection { Backward, ToCamera }
         [SerializeField] internal DefaultDodgeDirection defaultDodgeDirection = DefaultDodgeDirection.Backward;
         internal Vector2 DodgeDirection;
 
+        // TODO: Use charachter stamina instead of separate reference
         public Stat Stamina;
 
         public Direction Direction;
@@ -29,10 +30,6 @@ namespace RanchyRats.Gyrus
         }
         public Sounds sounds;
 
-        [Min(0)]
-        public float footstepInterval = .5f;
-        [Min(0)]
-        public float footstepIntervalRunning = .25f;
         private float timeBeforeNextFootstep;
 
         //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something.
@@ -65,10 +62,10 @@ namespace RanchyRats.Gyrus
         }
         public State state = default;
         // TODO: Zou chill zijn als deze als een tabel weergegeven zouden kunnen worden
-        public MovementStateSettings StoppedSettings = new MovementStateSettings(0);
-        public MovementStateSettings WalkingSettings = new MovementStateSettings(1f);
-        public MovementStateSettings RunningSettings = new MovementStateSettings(1.5f);
-        public MovementStateSettings DodgingSettings = new MovementStateSettings(2f, true, .3f, State.Stopped, true, 1, 0);
+        public MovementStateSettings StoppedSettings = new MovementStateSettings(0, 0);
+        public MovementStateSettings WalkingSettings = new MovementStateSettings(1f, .5f);
+        public MovementStateSettings RunningSettings = new MovementStateSettings(1.5f, .25f);
+        public MovementStateSettings DodgingSettings = new MovementStateSettings(2f, 0, true, .3f, State.Stopped, true, 1, 0);
 
         public MovementStateSettings GetStateSettings(State state)
         {
@@ -94,18 +91,19 @@ namespace RanchyRats.Gyrus
         private void FixedUpdate()
         {
             Vector3 playerMovement = GetTopDownMovement(Input, state) * GetStateSettings(state).speed;
+            // TODO: Deze camera-relatieve berekening moet uitgevoerd worden in de Player Controller. De movement hoort dat niet te doen, omdat de AI geen camera heeft.
             Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
         }
 
         private void Update()
         {
+            ManageFootstepSound();
             switch (state)
             {
                 case State.Stopped:
                 case State.Dodging:
                     break;
                 case State.Walking:
-                    ManageFootstepSound();
                     break;
                 case State.Running:
                     // TODO: Manage footstep sounds here too
@@ -149,7 +147,7 @@ namespace RanchyRats.Gyrus
 
         public void SetMoveInput(Vector2 input)
         {
-            if (!AcceptMovementInput)
+            if (BlockMovementInput)
             {
                 //Debug.LogWarning("Tried to move while input was not accepted");
                 return;
@@ -185,6 +183,7 @@ namespace RanchyRats.Gyrus
 
         }
 
+        // TODO: Dit hoort hier niet ieuw vies
         public float runningAnimationMultiplier = 1.5f;
         private float runStaminaDrainTime;
 
@@ -269,7 +268,7 @@ namespace RanchyRats.Gyrus
             state = State.Dodging;
             Stamina.Use(1);
             CreateDust();
-            AcceptMovementInput = false;
+            BlockMovementInput = true;
 
             sounds.Dodge.Play();
             // TODO: Move charge interruption to PlayerController
@@ -286,7 +285,7 @@ namespace RanchyRats.Gyrus
 
             yield return new WaitForSeconds(duration);
             state = State.Stopped;
-            AcceptMovementInput = true;
+            BlockMovementInput = false;
             OnDodgeCompleted.Invoke();
             // TODO: Update movement input
             //UpdateMoveInput();
@@ -352,10 +351,7 @@ namespace RanchyRats.Gyrus
             }
 
             sounds.Footstep.Play();
-            if (state == State.Running)
-                timeBeforeNextFootstep = footstepIntervalRunning;
-            else
-                timeBeforeNextFootstep = footstepInterval;
+            timeBeforeNextFootstep = GetStateSettings(state).footstepInterval;
         }
     }
 }

@@ -32,27 +32,11 @@ namespace RanchyRats.Gyrus
         [Header("Optional components")]
         public Stat health;
         public Stat stamina;
-        [System.Serializable]
-        public struct Events
-        {
-            public UnityEvent onHit;
-            public UnityEvent onDeath;
-            public UnityEvent onRevival;
-        }
-        public Events events;
-        public List<GameObject> HitObjects = new List<GameObject>();
-        [Tooltip("If disabled, every hit object in the list is spawned upon hit.")]
-        public bool PickRandomHitObject;
-        public List<GameObject> DeathObjects = new List<GameObject>();
-        [Tooltip("If disabled, every death object in the list is spawned upon death.")]
-        public bool PickRandomDeathObject;
-        public List<GameObject> BloodSplatters = new List<GameObject>();
-        [Tooltip("If enabled, only one bloodsplatter is instantiated upon death. If disabled, every bloodsplatter in the list is spawned upon death.")]
-        public bool PickRandomBloodSplatter;
 
         [SerializeField]
         private CharacterController controller;
-        public CharacterController Controller {
+        public CharacterController Controller
+        {
             get
             {
                 if (controller == null)
@@ -60,6 +44,7 @@ namespace RanchyRats.Gyrus
                 return controller;
             }
         }
+
         [SerializeField]
         private Animator animator;
         public Animator Animator
@@ -72,55 +57,63 @@ namespace RanchyRats.Gyrus
             }
         }
 
+        [System.Serializable]
+        public struct CharacterEvent
+        {
+            public FMODUnity.StudioEventEmitter sound;
+            [Tooltip("All objects are spawned from this list.")]
+            public List<GameObject> AllObjectsList;
+            [Tooltip("A random object is spawned from this list.")]
+            public List<GameObject> RandomObjectList;
+            public UnityEvent unityEvent;
+
+            /// <summary>
+            /// Starts the event's sound, spawns all objects and a random object, and invokes the unity event
+            /// </summary>
+            /// <param name="position">The position at which the objects should be spawned</param>
+            /// <param name="scale">The scale at which the objects should be spawned</param>
+            public void FireEverything(Vector3 position, Vector3 scale)
+            {
+                if (sound != null) sound.Play();
+                SpawnCollection(position, scale);
+                SpawnRandom(position, scale);
+                unityEvent.Invoke();
+            }
+
+            public void SpawnCollection(Vector3 position, Vector3 scale)
+            {
+                foreach (GameObject obj in AllObjectsList)
+                {
+                    Instantiate(obj, position, Quaternion.identity).transform.localScale = scale;
+                }
+            }
+
+            public void SpawnRandom(Vector3 position, Vector3 scale) => Instantiate(
+                    RandomObjectList[Random.Range(0, RandomObjectList.Count)],
+                    position,
+                    Quaternion.identity).transform.localScale = scale;
+        }
+        public CharacterEvent GetHit = new CharacterEvent();
+        public CharacterEvent Death = new CharacterEvent();
+        public CharacterEvent Revival = new CharacterEvent();
+
         public virtual void Die()
         {
             Debug.Log(name + " died", this);
-            if (PickRandomDeathObject)
-            {
-                SpawnObjectAtOwnHeight(DeathObjects[Random.Range(0, DeathObjects.Count)]);
-            }
-            else
-            {
-                foreach (GameObject obj in DeathObjects)
-                {
-                    SpawnObjectAtOwnHeight(obj);
-                }
-            }
-            if (PickRandomBloodSplatter)
-            {
-                SpawnObjectAtOwnHeight(BloodSplatters[Random.Range(0, BloodSplatters.Count)]);
-            }
-            else
-            {
-                foreach (GameObject obj in BloodSplatters)
-                {
-                    SpawnObjectAtOwnHeight(obj);
-                }
-            }
 
-            if (events.onDeath != null)
-                events.onDeath.Invoke();
+            Death.SpawnCollection(transform.position, transform.lossyScale);
+            Death.SpawnRandom(transform.position, transform.lossyScale);
+            Death.unityEvent.Invoke();
 
-            if (Controller != null)
-            {
-                Controller.attacking.InterruptCharge();
-            }
             if (Controller.PlayerController != null)
                 GameManager.Instance.PlayerDeath(Controller.Character);
             //----------------------------------------------------------- Character dies
-            if (sounds.death != null)
-                sounds.death.Play();
+            if (Death.sound != null) 
+                Death.sound.Play();
 
             gameObject.SetActive(false);
         }
 
-        [System.Serializable]
-        public struct Sounds
-        {
-            public FMODUnity.StudioEventEmitter death;
-            public FMODUnity.StudioEventEmitter getHit;
-        }
-        public Sounds sounds;
         private float InvincibilityTime = 0f;
         public bool Invincible
         {
@@ -165,6 +158,7 @@ namespace RanchyRats.Gyrus
             }
         }
 
+        // TODO: Hoort in Attacking
         public UnityEvent OnAttackAnnouncement;
         public void AnnounceAttack()
         {
@@ -191,27 +185,18 @@ namespace RanchyRats.Gyrus
                 Debug.Log(damageSource.name + " hit enemy " + name + " for " + damageTaken + " damage.");
             }
 
-            events.onHit.Invoke();
+            GetHit.unityEvent.Invoke();
 
-            if (PickRandomHitObject)
-            {
-                Instantiate(HitObjects[Random.Range(0, HitObjects.Count)]);
-            }
-            else
-            {
-                foreach (GameObject obj in HitObjects)
-                {
-                    Instantiate(obj, new Vector3(transform.position.x, obj.transform.position.y, transform.position.z), obj.transform.rotation);
-                }
-            }
+            GetHit.SpawnRandom(transform.position, transform.lossyScale);
+
             //Debug.Log(name + " took " + damageTaken + " damage", this);
             if (health.Value <= 0)
             {
                 //Debug.Log(name + " should die now", this);
                 Die();
             }
-            else if (sounds.getHit != null)
-                sounds.getHit.Play();
+            else if (GetHit.sound != null)
+                GetHit.sound.Play();
         }
 
         private void OnCollisionEnter(Collision collision)

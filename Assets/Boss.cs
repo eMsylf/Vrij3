@@ -26,7 +26,7 @@ public class Boss : Enemy
     void PlayEyePopSound() { bossSounds.IdleSound.Stop(); bossSounds.EyePopSound.Play(); }
     void PlayTeethClackSound() { bossSounds.TeethClackSound.Play(); }
     void PlayAttAnnounceSound() { bossSounds.IdleSound.Stop(); bossSounds.AttAnnounceSound.Play(); }
-    void PlayDeathSound() { bossSounds.IdleSound.Stop(); sounds.death.Play(); }
+    void PlayDeathSound() { bossSounds.IdleSound.Stop(); Death.sound.Play(); }
     void PLayIdleSound() { bossSounds.IdleSound.Play(); }
 
     void SpawnScream()
