@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using FMODUnity;
 using RanchyRats.Gyrus;
 
 [RequireComponent(typeof(RanchyRats.Gyrus.CharacterController))]
@@ -19,14 +18,17 @@ public partial class AIController : MonoBehaviour
         }
         private set => characterController = value;
     }
-
+#pragma warning disable CS0649
     [SerializeField]
     private AIAttitude aIAttitude;
-
+#pragma warning restore 
     public AIAttitude GetAttitude()
     {
+        if (aIAttitude == null) Debug.LogError("AI attitude is not assigned");
         return aIAttitude;
     }
+
+    public LayerMask AdditionalAggressionLayers = new LayerMask();
 
     [Header("States")]
     public States state;
@@ -36,27 +38,6 @@ public partial class AIController : MonoBehaviour
         Wander,
         FollowSingleTarget,
         Attack
-    }
-    [System.Serializable]
-    public struct AIState
-    {
-        // Wat moet een AI allemaal kunnen doen in een state?
-        public StudioEventEmitter startSound;
-
-        [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. X = min, y = max")]
-        public Vector2 TimeLimit;
-        [Min(0)]
-        public float VisionRangeModifier;
-        [Range(0f, 360f)]
-        public float FieldOfViewModifier;
-
-        public AIState(Vector2 timeLimit, float rangeModifier, float fovModifier)
-        {
-            startSound = null;
-            TimeLimit = timeLimit;
-            VisionRangeModifier = rangeModifier;
-            FieldOfViewModifier = fovModifier;
-        }
     }
     public AIState idle = new AIState(new Vector2(0f, 5f), -1f, 0f);
     public AIState alert = new AIState(new Vector2(0f, 5f), -1f, 25f);

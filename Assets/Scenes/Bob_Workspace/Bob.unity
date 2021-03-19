@@ -497,6 +497,80 @@ Transform:
   m_Father: {fileID: 191913661}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &408307254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 408307256}
+  - component: {fileID: 408307255}
+  - component: {fileID: 408307257}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &408307255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b561a31b0efca1a4c8a61a705d22d74c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attitude: {fileID: 0}
+  ShowThings: 1
+  aaaaaaaa: 0
+  oopsie: {x: 0, y: 0}
+  fug: 
+  cantTouchThis: {x: 0, y: 0, z: 0}
+  testCondition: 0
+  testObject: {fileID: 0}
+  testString: hallo
+  testFloat: 45
+--- !u!4 &408307256
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -20.95, y: 1, z: 10.57}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &408307257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79b8639d7f82a314797cb41eb5773ca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startSound: {fileID: 0}
+  timeLimit: 0
+  timeLimitConstant: 0
+  timeLimitRange: {x: 0, y: 0}
+  VisionRangeModifier: 0
+  FieldOfViewModifier: 0
+  Target: {fileID: 0}
+  ChaseRange: 5
 --- !u!1 &575081421
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,20 +2045,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathfinding: {fileID: 0}
-  attitude: 0
-  Passive:
-    AggressionLayers:
-      serializedVersion: 2
-      m_Bits: 0
-  Neutral:
-    AggressionLayers:
-      serializedVersion: 2
-      m_Bits: 0
-  Hostile:
-    AggressionLayers:
-      serializedVersion: 2
-      m_Bits: 0
-  state: 3
+  aIAttitude: {fileID: 0}
+  AdditionalAggressionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  state: 0
   idle:
     startSound: {fileID: 0}
     TimeLimit: {x: 0, y: 5}
@@ -2144,19 +2209,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathfinding: {fileID: 0}
-  attitude: 0
-  Passive:
-    AggressionLayers:
-      serializedVersion: 2
-      m_Bits: 0
-  Neutral:
-    AggressionLayers:
-      serializedVersion: 2
-      m_Bits: 0
-  Hostile:
-    AggressionLayers:
-      serializedVersion: 2
-      m_Bits: 256
+  aIAttitude: {fileID: 0}
+  AdditionalAggressionLayers:
+    serializedVersion: 2
+    m_Bits: 0
   state: 0
   idle:
     startSound: {fileID: 0}

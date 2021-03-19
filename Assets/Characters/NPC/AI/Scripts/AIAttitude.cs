@@ -5,6 +5,10 @@ namespace RanchyRats.Gyrus
     [CreateAssetMenu()]
     public class AIAttitude : ScriptableObject
     {
-        public LayerMask AggressionLayers;
+        [SerializeField]
+#pragma warning disable CS0649
+        private LayerMask aggressionLayers;
+#pragma warning restore
+        public LayerMask AggressionLayers { get => aggressionLayers; }
     }
 }
