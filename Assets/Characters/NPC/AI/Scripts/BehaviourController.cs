@@ -12,34 +12,6 @@ namespace RanchyRats.Gyrus.AI
         private List<AIBehaviour> behaviours = new List<AIBehaviour>();
         private AIBehaviour currentBehaviour;
 
-        public bool ShowThings;
-        [ShowIf("ShowThings")]
-        [UnityEngine.Range(0f, 2f)]
-        public float aaaaaaaa;
-        [ShowIf("ShowThings")]
-        public Vector2 oopsie;
-        [ShowIf("ShowThings")]
-        public string fug;
-
-        [ReadOnly]
-        public Vector3 cantTouchThis;
-
-
-        public enum TestCondition
-        {
-            Zero,
-            One,
-            Two
-        }
-        public TestCondition testCondition;
-        [ShowIf("testCondition", ShowIfAttribute.Type.Enum, 0)]
-        public GameObject testObject;
-        [ShowIf("testCondition", ShowIfAttribute.Type.Enum, 1)]
-        public string testString;
-        [ShowIf("testCondition", ShowIfAttribute.Type.Enum, 2)]
-        public float testFloat;
-
-
         private void Start()
         {
             GetComponents(behaviours);

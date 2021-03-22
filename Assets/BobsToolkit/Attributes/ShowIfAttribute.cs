@@ -7,22 +7,37 @@ namespace BobJeltes.Attributes
 {
     public class ShowIfAttribute : PropertyAttribute
     {
-        public string boolValueName;
-        public enum Type { Boolean, Enum }
-        public Type type;
-        public int index;
+        private string valueName;
+        private bool boolValue;
+
+        private bool invert;
+        private int[] enumIndices;
+
+        internal string ValueName { get => valueName; private set => valueName = value; }
+        internal bool BoolValue { get => boolValue; private set => boolValue = value; }
+        internal int[] EnumIndices { get => enumIndices; private set => enumIndices = value; }
+        internal bool Invert { get => invert; private set => invert = value; }
 
         /// <summary>
-        /// 
+        /// Only shows the parameter that this is used on, if the chosen value (with the value name) matches the chosen value. WARNING: Does not work in combination with other attributes.
         /// </summary>
-        /// <param name="boolValueName">Reference value that determines whether this property is shown in the inspector or not</param>
-        /// <param name="type">Choose between a boolean or enum</param>
-        /// <param name="index">Show if the enum index matches this index</param>
-        public ShowIfAttribute(string boolValueName, Type type = Type.Boolean, int index = 0)
+        /// <param name="boolValueName">The name of the reference value that determines whether the property is shown in the inspector or not</param>
+        /// <param name="boolValue">The bool value at which you want the parameter to be shown</param>
+        public ShowIfAttribute(string boolValueName, bool boolValue = true)
         {
-            this.boolValueName = boolValueName;
-            this.type = type;
-            this.index = index;
+            ValueName = boolValueName;
+            this.BoolValue = boolValue;
+        }
+        /// <summary>
+        /// Only shows the parameter that this is used on, if the chosen parameter matches the chosen value. \nWARNING: Does not work in combination with other attributes.
+        /// </summary>
+        /// <param name="enumValueName">The name of the enum value.</param>
+        /// <param name="enumIndices">The index of the enum that you want the parameter to be shown at.</param>
+        public ShowIfAttribute(string enumValueName, bool invert = false, params int[] enumIndices)
+        {
+            ValueName = enumValueName;
+            this.Invert = invert;
+            this.EnumIndices = enumIndices;
         }
     }
 
@@ -38,45 +53,53 @@ namespace BobJeltes.Attributes
             if (att == null || condition == null)
                 return base.GetPropertyHeight(property, label);
 
-            return show?base.GetPropertyHeight(property,label):0;
+            if (show)
+            {
+                return base.GetPropertyHeight(property, label);
+            }
+            else
+            {
+                return -2;
+            }
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            SerializedProperty conditional = property.serializedObject.FindProperty((attribute as ShowIfAttribute).boolValueName);
-            att = attribute as ShowIfAttribute;
+            SerializedProperty conditional = property.serializedObject.FindProperty((attribute as ShowIfAttribute).ValueName);
             condition = conditional;
             if (conditional == null)
             {
                 Debug.LogError("Property name entered in ShowIf attribute does not match an existing property");
             }
+            att = attribute as ShowIfAttribute;
 
-            switch (att.type)
+            switch (conditional.propertyType)
             {
-                case ShowIfAttribute.Type.Boolean:
-                    if (conditional.propertyType != SerializedPropertyType.Boolean)
-                    {
-                        Debug.LogError("Referenced property by ShowIf attribute is not a boolean");
-                        return;
-                    }
-                    show = conditional.boolValue;
+                case SerializedPropertyType.Boolean:
+                    show = conditional.boolValue == att.BoolValue;
                     break;
-                case ShowIfAttribute.Type.Enum:
-                    if (conditional.propertyType != SerializedPropertyType.Enum)
-                    {
-                        Debug.LogError("Referenced property by ShowIf attribute is not an enum");
-                        return;
-                    }
-                    show = conditional.enumValueIndex == att.index;
+                case SerializedPropertyType.Enum:
+                    show = MatchesEnumValue(conditional);
                     break;
                 default:
+                    Debug.LogError("Referenced property '" + att.ValueName + "' is not a boolean or enum");
                     break;
             }
 
             if (show)
             {
-                EditorGUI.PropertyField(position, property);
+                EditorGUI.PropertyField(position, property, true);
             }
+        }
+
+        public bool MatchesEnumValue(SerializedProperty enumValue)
+        {
+            for (int i = 0; i < att.EnumIndices.Length; i++)
+            {
+                if (enumValue.enumValueIndex == att.EnumIndices[i])
+                    return att.Invert ? false : true;
+            }
+            return false;
         }
     }
 }

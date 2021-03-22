@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using RanchyRats.Gyrus;
+using BobJeltes.Attributes;
 
 [RequireComponent(typeof(RanchyRats.Gyrus.CharacterController))]
 public partial class AIController : MonoBehaviour
@@ -43,6 +44,9 @@ public partial class AIController : MonoBehaviour
     public AIState alert = new AIState(new Vector2(0f, 5f), -1f, 25f);
     public AIState searching = new AIState(new Vector2(0f, 5f), 5f, 25f);
     public AIState aggressive = new AIState(new Vector2(0f, 5f), -3f, 50f);
+    [Header("Aaaaaaaa")]
+    [BobJeltes.Attributes.Range(0, 100)]
+    public Vector2 pos = new Vector2();
 
     public AIState GetState(States state)
     {

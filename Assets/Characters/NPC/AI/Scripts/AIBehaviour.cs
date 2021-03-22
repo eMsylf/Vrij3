@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BobJeltes.Attributes;
 
 namespace RanchyRats.Gyrus.AI
 {
@@ -34,15 +35,16 @@ namespace RanchyRats.Gyrus.AI
                     return UnityEngine.Random.Range(timeLimitRange.x, timeLimitRange.y);
             }
         }
-        [Min(0)]
         [SerializeField]
-        private float timeLimitConstant;
+        [ShowIf("timeLimit", false, 1)]
+        private float timeLimitConstant = 0f;
         [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. x = min, y = max")]
         [SerializeField]
-        private Vector2 timeLimitRange;
+        [ShowIf("timeLimit", false, 2)]
+        private Vector2 timeLimitRange = new Vector2();
         internal float timeLeft;
         public float VisionRangeModifier;
-        [Range(0f, 360f)]
+        [UnityEngine.Range(0f, 360f)]
         public float FieldOfViewModifier;
 
         public virtual void Init(PlayerController player)
