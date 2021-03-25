@@ -2,6 +2,7 @@
 using UnityEngine;
 using RanchyRats.Gyrus;
 using BobJeltes.Attributes;
+using RanchyRats.Gyrus.AI;
 
 [RequireComponent(typeof(RanchyRats.Gyrus.CharacterController))]
 public partial class AIController : MonoBehaviour

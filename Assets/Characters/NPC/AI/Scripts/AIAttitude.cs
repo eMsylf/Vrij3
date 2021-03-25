@@ -2,7 +2,7 @@
 
 namespace RanchyRats.Gyrus
 {
-    [CreateAssetMenu()]
+    [CreateAssetMenu(menuName = "Ranchy Rats/AI/Attitude")]
     public class AIAttitude : ScriptableObject
     {
         [SerializeField]

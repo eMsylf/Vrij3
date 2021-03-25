@@ -4,13 +4,14 @@ using System.Linq;
 using UnityEngine;
 using BobJeltes.Attributes;
 
-namespace RanchyRats.Gyrus.AI
+namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
     public class BehaviourController : MonoBehaviour
     {
+        [RequiredScriptableObject]
         public AIAttitude attitude;
-        private List<AIBehaviour> behaviours = new List<AIBehaviour>();
-        private AIBehaviour currentBehaviour;
+        private List<BTNode> behaviours = new List<BTNode>();
+        private BTNode currentBehaviour;
 
         private void Start()
         {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using FMODUnity;
 
-namespace RanchyRats.Gyrus
+namespace RanchyRats.Gyrus.AI
 {
     [System.Serializable]
     public struct AIState

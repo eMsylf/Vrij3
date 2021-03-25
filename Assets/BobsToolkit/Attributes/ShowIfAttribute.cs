@@ -19,7 +19,7 @@ namespace BobJeltes.Attributes
         internal bool Invert { get => invert; private set => invert = value; }
 
         /// <summary>
-        /// Only shows the parameter that this is used on, if the chosen value (with the value name) matches the chosen value. WARNING: Does not work in combination with other attributes.
+        /// Only shows the parameter that this is used on, if the chosen value (with the value name) matches the chosen value. NOTE: Does not work in combination with other attributes.
         /// </summary>
         /// <param name="boolValueName">The name of the reference value that determines whether the property is shown in the inspector or not</param>
         /// <param name="boolValue">The bool value at which you want the parameter to be shown</param>
@@ -29,7 +29,7 @@ namespace BobJeltes.Attributes
             this.BoolValue = boolValue;
         }
         /// <summary>
-        /// Only shows the parameter that this is used on, if the chosen parameter matches the chosen value. \nWARNING: Does not work in combination with other attributes.
+        /// Only shows the parameter that this is used on, if the chosen parameter matches the chosen value. NOTE: Does not work in combination with other attributes.
         /// </summary>
         /// <param name="enumValueName">The name of the enum value.</param>
         /// <param name="enumIndices">The index of the enum that you want the parameter to be shown at.</param>
