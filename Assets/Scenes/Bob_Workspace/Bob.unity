@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -527,14 +527,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b561a31b0efca1a4c8a61a705d22d74c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aoighoahisg: 0
   attitude: {fileID: 0}
-  cantTouchThis: {x: 0, y: 0, z: 0}
-  testCondition: 0
-  testObject: {fileID: 0}
-  testString: hallo
-  testFloat: 45
-  testFloat1: 0
-  Aaaaaaa: 0
 --- !u!4 &408307256
 Transform:
   m_ObjectHideFlags: 0
@@ -561,14 +555,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79b8639d7f82a314797cb41eb5773ca2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSound: {fileID: 0}
-  timeLimit: 1
-  timeLimitConstant: -8.26
-  timeLimitRange: {x: 0, y: 0}
-  VisionRangeModifier: 0
-  FieldOfViewModifier: 0
-  Target: {fileID: 0}
-  ChaseRange: 5
+  layers:
+    serializedVersion: 2
+    m_Bits: 0
+  Range: 0
 --- !u!1 &575081421
 GameObject:
   m_ObjectHideFlags: 0
@@ -2068,6 +2058,7 @@ MonoBehaviour:
     TimeLimit: {x: 0, y: 5}
     VisionRangeModifier: -3
     FieldOfViewModifier: 44
+  pos: {x: 0, y: 0}
   targetCharacters: []
   SightCone:
     radius: 10
@@ -2232,6 +2223,7 @@ MonoBehaviour:
     TimeLimit: {x: 0, y: 0}
     VisionRangeModifier: 6
     FieldOfViewModifier: 50
+  pos: {x: 0, y: 0}
   targetCharacters: []
   SightCone:
     radius: 10

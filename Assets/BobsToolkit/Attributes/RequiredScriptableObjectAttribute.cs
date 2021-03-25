@@ -12,40 +12,38 @@ public class RequiredScriptableObjectAttribute : PropertyAttribute
 [CustomPropertyDrawer(typeof(RequiredScriptableObjectAttribute))]
 public class RequiredScriptableObjectDrawer : PropertyDrawer
 {
+    internal int additionalLines = 0;
+    internal bool viableProperty = true;
+
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        if (property.objectReferenceValue == null)
-        {
-            float newHeight = base.GetPropertyHeight(property, label);
-
-            float space = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
-            newHeight += space*2;
-            return newHeight;
-
-        }
-        return base.GetPropertyHeight(property, label);
+        float space = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+        return base.GetPropertyHeight(property, label) + space * additionalLines; ;
     }
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         RequiredScriptableObjectAttribute att = attribute as RequiredScriptableObjectAttribute;
         Type T = property.GetType();
-        if (property.propertyType != SerializedPropertyType.ObjectReference)
+        viableProperty = property.propertyType == SerializedPropertyType.ObjectReference;
+        additionalLines = 0;
+
+        if (!viableProperty)
         {
-            EditorGUI.LabelField(position, "Field type is not object reference.");
+            EditorGUI.LabelField(position, label.text, "Field type is not object reference.");
             return;
         }
         float space = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
         position.height = space;
-
         EditorGUI.PropertyField(position, property, label);
         if (property.objectReferenceValue == null)
         {
+            additionalLines += 1;
             position.y += space;
             EditorGUI.HelpBox(position, "This is a required scriptable object", MessageType.Warning);
 
+            additionalLines += 1;
             position.y += space;
             if (GUI.Button(position, "Add required scriptable object"))
             {

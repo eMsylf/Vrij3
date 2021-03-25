@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    [AddComponentMenu("Ranchy Rats/AI/ApproachTarget")]
     public class ScanForObjects : BTLeaf
     {
         public LayerMask layers;
+        [Min(0)]
         public float Range;
 
         public override void Init(PlayerController player)
