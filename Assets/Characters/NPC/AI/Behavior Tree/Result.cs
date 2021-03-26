@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public abstract class BTDecorator : BTNode
+    public enum Result
     {
-        public BTNode child;
+        Success,
+        Failure,
+        Running
     }
 }

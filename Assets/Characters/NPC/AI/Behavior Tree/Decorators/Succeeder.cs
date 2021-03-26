@@ -4,8 +4,11 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public abstract class BTDecorator : BTNode
+    public class Succeeder : BTDecorator
     {
-        public BTNode child;
+        public override Result Tick()
+        {
+            return Result.Success;
+        }
     }
 }

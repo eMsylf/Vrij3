@@ -5,24 +5,24 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public class KeepTimeLimit : BTLeaf
+    public class TimeLimit : Action
     {
-        public enum TimeLimit
+        public enum type
         {
             Constant,
             RandomRange
         }
         [SerializeField]
-        private TimeLimit timeLimit = TimeLimit.Constant;
+        private type timeLimit = type.Constant;
 
         public float GetTimeLimit()
         {
             switch (timeLimit)
             {
                 default:
-                case TimeLimit.Constant:
+                case type.Constant:
                     return timeLimitConstant;
-                case TimeLimit.RandomRange:
+                case type.RandomRange:
                     return Random.Range(timeLimitRange.x, timeLimitRange.y);
             }
         }

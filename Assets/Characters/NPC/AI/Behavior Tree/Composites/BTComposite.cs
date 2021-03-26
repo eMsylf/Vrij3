@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BTComposite : MonoBehaviour
+namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    // Start is called before the first frame update
-    void Start()
+    public abstract class BTComposite : BTNode
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public BTNode[] nodes; // TODO: The selector can now only carry references to nodes, which excludes being able to paste actions directly into it. Find a way to be able to reference actions 
+        protected int i = 0;
     }
 }

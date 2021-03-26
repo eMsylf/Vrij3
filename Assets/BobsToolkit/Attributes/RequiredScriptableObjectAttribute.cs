@@ -30,7 +30,7 @@ public class RequiredScriptableObjectDrawer : PropertyDrawer
 
         if (!viableProperty)
         {
-            EditorGUI.LabelField(position, label.text, "Field type is not object reference.");
+            EditorGUI.LabelField(position, label.text, "Field type is not an object reference.");
             return;
         }
         float space = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -41,14 +41,14 @@ public class RequiredScriptableObjectDrawer : PropertyDrawer
         {
             additionalLines += 1;
             position.y += space;
-            EditorGUI.HelpBox(position, "This is a required scriptable object", MessageType.Warning);
+            EditorGUI.HelpBox(position, "This is a required object", MessageType.Warning);
 
-            additionalLines += 1;
-            position.y += space;
-            if (GUI.Button(position, "Add required scriptable object"))
-            {
-                Debug.Log("Create and add new scriptable object file");
-            }
+            //additionalLines += 1;
+            //position.y += space;
+            //if (GUI.Button(position, "Add required scriptable object"))
+            //{
+            //    Debug.Log("Create and add new scriptable object file");
+            //}
 
             //position.height += 2 * space;
             //position.yMax += 2 * space;
