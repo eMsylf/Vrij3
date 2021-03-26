@@ -507,9 +507,15 @@ GameObject:
   m_Component:
   - component: {fileID: 408307256}
   - component: {fileID: 408307255}
+  - component: {fileID: 408307263}
+  - component: {fileID: 408307262}
+  - component: {fileID: 408307261}
+  - component: {fileID: 408307260}
+  - component: {fileID: 408307259}
+  - component: {fileID: 408307258}
   - component: {fileID: 408307257}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: AI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -527,8 +533,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b561a31b0efca1a4c8a61a705d22d74c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aoighoahisg: 0
-  attitude: {fileID: 0}
 --- !u!4 &408307256
 Transform:
   m_ObjectHideFlags: 0
@@ -552,13 +556,105 @@ MonoBehaviour:
   m_GameObject: {fileID: 408307254}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79b8639d7f82a314797cb41eb5773ca2, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/SFX/Screature/Screature_attack
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &408307258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f90c328bb0c93343a5c1abc823ad0e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: {fileID: 0}
+--- !u!114 &408307259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 549de93be9bee4c4da59fbfd5892308e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2769544161363029229, guid: 93d5e3db2c406f14f9d3593378f15ff9, type: 3}
+  AsChild: 1
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+--- !u!114 &408307260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d36b5e8fd23eca44390c0b86392dc62d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 4.16
   layers:
     serializedVersion: 2
-    m_Bits: 0
-  Range: 0
+    m_Bits: 2048
+--- !u!114 &408307261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4eabfb19e2f7794c8e8606bbadc415b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &408307262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52fa5630ebdb2c4db9f593ea296266d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodes: []
+--- !u!114 &408307263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408307254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97619fd2cb581474eadf81f6e047bb08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 408307262}
+  - {fileID: 408307262}
 --- !u!1 &575081421
 GameObject:
   m_ObjectHideFlags: 0
