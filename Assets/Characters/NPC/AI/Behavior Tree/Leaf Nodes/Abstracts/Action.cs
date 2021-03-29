@@ -7,7 +7,7 @@ using BobJeltes.Attributes;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public abstract class Action : MonoBehaviour
+    public abstract class Action : BTNode
     {
         protected PlayerController player;
 

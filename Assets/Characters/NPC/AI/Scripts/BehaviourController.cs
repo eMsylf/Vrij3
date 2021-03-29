@@ -8,17 +8,17 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
     public class BehaviourController : MonoBehaviour
     {
-        private List<Action> behaviours = new List<Action>();
-        private Action currentBehaviour;
+        private List<Action> actions = new List<Action>();
+        private Action currentAction;
 
         private void Start()
         {
-            GetComponents(behaviours);
+            GetComponents(actions);
         }
 
         public void OnUpdate()
         {
-            currentBehaviour?.OnUpdate();
+            currentAction?.OnUpdate();
         }
 
         /// <summary>
@@ -27,11 +27,11 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         public void CheckForNewBehaviour()
         {
             // Wanneer check je voor een nieuwe behavior?
-            foreach (var behaviour in behaviours)
+            foreach (var behaviour in actions)
             {
                 if (behaviour.CheckCondition())
                 {
-                    currentBehaviour = behaviour;
+                    currentAction = behaviour;
                     break;
                 }
             }

@@ -49,5 +49,14 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         {
             timeLeft -= Time.deltaTime;
         }
+
+        public override Result Tick()
+        {
+            if (CheckCondition())
+            {
+                return Result.Running;
+            }
+            return Result.Failure;
+        }
     }
 }

@@ -30,5 +30,11 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
             // Waar laat ik deze lijst met objecten?
             Physics.OverlapSphere(transform.position, range, layers, QueryTriggerInteraction.UseGlobal);
         }
+
+        public override Result Tick()
+        {
+            // Succeedt deze altijd?
+            return Result.Success;
+        }
     }
 }

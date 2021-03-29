@@ -26,5 +26,14 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         {
             // Moet hier iets gebeuren?
         }
+
+        public override Result Tick()
+        {
+            if (CheckCondition())
+            {
+                return Result.Success;
+            }
+            return Result.Failure;
+        }
     }
 }

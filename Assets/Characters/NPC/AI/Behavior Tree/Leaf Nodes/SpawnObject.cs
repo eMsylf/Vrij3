@@ -20,5 +20,14 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         {
             Instantiate(prefab, position, Quaternion.Euler(rotation), AsChild ? transform : null);
         }
+
+        public override Result Tick()
+        {
+            if (CheckCondition())
+            {
+                return Result.Success;
+            }
+            return Result.Failure;
+        }
     }
 }

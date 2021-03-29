@@ -17,5 +17,26 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         {
             sound.Play();
         }
+
+        public override Result Tick()
+        {
+            if (CheckCondition())
+            {
+                return Result.Failure;
+            }
+            else if (sound.IsPlaying()) // Hier? In update? Blijven checken of het speelt, of gewoon 1 keer spelen en dan success returnen?
+            {
+                return Result.Running;
+            }
+            return Result.Success;
+
+
+            //if (CheckCondition())
+            //{
+            //    return Result.Failure;
+            //}
+            //OnUpdate();
+            //return Result.Success;
+        }
     }
 }
