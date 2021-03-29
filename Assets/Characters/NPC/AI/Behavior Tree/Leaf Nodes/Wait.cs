@@ -8,7 +8,7 @@ public class Wait : Action
     public float Time = 1f;
     private float timeRemaining;
 
-    public Wait(BehaviourController controller, float time) : base(controller)
+    public Wait(float time, BehaviourController controller = null) : base(controller)
     {
         Time = time;
     }

@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public class Debug : BTNode
+    public class BTDebug : BTNode
     {
         private string text;
 
-        public Debug(BehaviourController controller, string text) : base(controller)
+        public BTDebug(string text, BehaviourController controller = null) : base(controller)
         {
             this.text = text;
         }

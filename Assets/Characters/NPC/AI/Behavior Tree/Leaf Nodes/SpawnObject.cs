@@ -11,14 +11,15 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         public Vector3 position;
         public Vector3 rotation;
 
-        public SpawnObject(BehaviourController controller) : base(controller)
+        public SpawnObject(BehaviourController controller, GameObject prefab, bool asChild = false, Vector3 position = default, Vector3 rotation = default) : base(controller)
         {
+            this.prefab = prefab;
+            AsChild = asChild;
+            this.position = position;
+            this.rotation = rotation;
         }
 
-        public override void Interrupt()
-        {
-
-        }
+        public override void Interrupt() { }
 
         public override Result Tick()
         {

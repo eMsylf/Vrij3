@@ -14,7 +14,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         //public Blackboard blackboard;
         public Animator animator;
 
-        public void Start()
+        protected virtual void Start()
         {
             animator = GetComponent<Animator>();
             navMeshAgent = GetComponent<NavMeshAgent>();

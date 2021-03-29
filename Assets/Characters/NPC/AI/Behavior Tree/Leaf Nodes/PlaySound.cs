@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public class PlaySound : Action
+    public class PlaySound : BTNode
     {
         public FMODUnity.StudioEventEmitter sound;
         public bool WaitToFinish;
