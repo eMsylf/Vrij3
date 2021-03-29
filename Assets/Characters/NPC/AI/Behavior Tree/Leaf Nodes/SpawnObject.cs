@@ -11,23 +11,23 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         public Vector3 position;
         public Vector3 rotation;
 
-        public override bool CheckCondition()
+        public SpawnObject(BehaviourController controller) : base(controller)
         {
-            return prefab!=null;
         }
 
-        public override void OnUpdate()
+        public override void Interrupt()
         {
-            Instantiate(prefab, position, Quaternion.Euler(rotation), AsChild ? transform : null);
+
         }
 
         public override Result Tick()
         {
-            if (CheckCondition())
+            if (prefab == null)
             {
-                return Result.Success;
+                return Result.Failure;
             }
-            return Result.Failure;
+            Object.Instantiate(prefab, position, Quaternion.Euler(rotation), AsChild ? controller.transform : null);
+            return Result.Success;
         }
     }
 }

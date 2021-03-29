@@ -6,9 +6,14 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
     public class Repeater : BTDecorator
     {
+        public Repeater(BehaviourController controller, BTNode child) : base(controller, child)
+        {
+        }
+
         public override Result Tick()
         {
-            return Result.Running; // Hoort dit altijd running terug te sturen?
+            child.Tick();
+            return Result.Running;
         }
     }
 }

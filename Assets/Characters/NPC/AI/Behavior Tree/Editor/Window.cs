@@ -26,7 +26,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 
             if (GUILayout.Button("Press me"))
             {
-                Debug.Log("Button was pressed");
+                UnityEngine.Debug.Log("Button was pressed");
             }
 
             EditorGUILayout.Space();

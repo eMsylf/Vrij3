@@ -6,6 +6,10 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
     public class Inverter : BTDecorator
     {
+        public Inverter(BehaviourController controller, BTNode child) : base(controller, child)
+        {
+        }
+
         public override Result Tick()
         {
             var result = child.Tick();

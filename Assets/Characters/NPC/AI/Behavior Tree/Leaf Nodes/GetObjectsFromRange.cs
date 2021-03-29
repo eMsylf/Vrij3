@@ -4,20 +4,21 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public class Succeeder : BTDecorator
+    public class GetObjectsFromRange : Range
     {
-        public Succeeder(BehaviourController controller, BTNode child) : base(controller, child)
+        public LayerMask layers;
+
+        public GetObjectsFromRange(BehaviourController controller, float range) : base(controller, range)
         {
         }
 
         public override void Interrupt()
         {
-            child.Interrupt();
         }
 
         public override Result Tick()
         {
-            child.Tick();
+            Physics.OverlapSphere(controller.transform.position, range, layers, QueryTriggerInteraction.UseGlobal);
             return Result.Success;
         }
     }

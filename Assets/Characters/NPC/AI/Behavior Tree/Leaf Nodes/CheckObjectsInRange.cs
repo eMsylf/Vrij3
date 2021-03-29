@@ -8,28 +8,19 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
     {
         public LayerMask layers;
 
-        public override void Init(PlayerController player)
+        public CheckObjectsInRange(BehaviourController controller, float range, LayerMask layers) : base(controller, range)
         {
-            base.Init(player);
+            this.layers = layers;
         }
 
-        /// <summary>
-        /// Checks if there are objects within range on the specified layer(s)
-        /// </summary>
-        /// <returns>Whether there are objects in the sphere on the specified layer(s)</returns>
-        public override bool CheckCondition()
+        public override void Interrupt()
         {
-            return Physics.CheckSphere(transform.position, range, layers, QueryTriggerInteraction.UseGlobal);
-        }
 
-        public override void OnUpdate()
-        {
-            // Moet hier iets gebeuren?
         }
 
         public override Result Tick()
         {
-            if (CheckCondition())
+            if (Physics.CheckSphere(controller.transform.position, range, layers, QueryTriggerInteraction.UseGlobal))
             {
                 return Result.Success;
             }

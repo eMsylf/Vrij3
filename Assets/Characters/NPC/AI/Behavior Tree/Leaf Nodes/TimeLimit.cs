@@ -35,28 +35,24 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         private Vector2 timeLimitRange = new Vector2();
         internal float timeLeft;
 
-        public override bool CheckCondition()
+        public TimeLimit(BehaviourController controller, float time) : base(controller)
         {
-            if (timeLeft <= 0)
-            {
-                timeLeft = GetTimeLimit();
-                return false;
-            }
-            return true;
-        }
-
-        public override void OnUpdate()
-        {
-            timeLeft -= Time.deltaTime;
+            timeLimitConstant = time;
         }
 
         public override Result Tick()
         {
-            if (CheckCondition())
+            timeLeft -= Time.deltaTime;
+            if (timeLeft <= 0)
             {
-                return Result.Running;
+                return Result.Failure;
             }
-            return Result.Failure;
+            return Result.Running;
+        }
+
+        public override void Interrupt()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

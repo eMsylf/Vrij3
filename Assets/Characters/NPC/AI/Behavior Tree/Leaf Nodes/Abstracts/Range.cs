@@ -9,9 +9,14 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         [Min(0)]
         public float range;
 
+        protected Range(BehaviourController controller, float range) : base(controller)
+        {
+            this.range = range;
+        }
+
         private void OnDrawGizmosSelected()
         {
-            Gizmos.DrawWireSphere(transform.position, range);
+            //Gizmos.DrawWireSphere(controller.transform.position, range);
         }
     }
 }

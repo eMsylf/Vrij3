@@ -8,23 +8,24 @@ public class Wait : Action
     public float Time = 1f;
     private float timeRemaining;
 
-    public override bool CheckCondition()
+    public Wait(BehaviourController controller, float time) : base(controller)
     {
-        timeRemaining = Time;
-        return true;
+        Time = time;
     }
 
-    public override void OnUpdate()
+    public override void Interrupt()
     {
-        timeRemaining -= UnityEngine.Time.deltaTime;
+        throw new System.NotImplementedException();
     }
 
     public override Result Tick()
     {
         if (timeRemaining <= 0f)
         {
+            timeRemaining = Time;
             return Result.Success;
         }
+        timeRemaining -= UnityEngine.Time.deltaTime;
         return Result.Running;
     }
 }

@@ -6,6 +6,10 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
     public class Sequence : BTComposite
     {
+        public Sequence(BehaviourController controller, params BTNode[] nodes) : base(controller, nodes)
+        {
+        }
+
         public override Result Tick()
         {
             for (; i < nodes.Length; i++)

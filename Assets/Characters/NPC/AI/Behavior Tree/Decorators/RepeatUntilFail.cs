@@ -6,6 +6,10 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
     public class RepeatUntilFail : BTDecorator
     {
+        public RepeatUntilFail(BehaviourController controller, BTNode child) : base(controller, child)
+        {
+        }
+
         public override Result Tick()
         {
             var result = child.Tick();

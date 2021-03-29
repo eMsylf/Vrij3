@@ -7,36 +7,26 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
     public class PlaySound : Action
     {
         public FMODUnity.StudioEventEmitter sound;
+        public bool WaitToFinish;
 
-        public override bool CheckCondition()
+        public PlaySound(BehaviourController controller, FMODUnity.StudioEventEmitter sound) : base(controller)
         {
-            return sound != null;
+            this.sound = sound;
         }
 
-        public override void OnUpdate()
+        public override void Interrupt()
         {
-            sound.Play();
+            sound?.Stop();
         }
 
         public override Result Tick()
         {
-            if (CheckCondition())
+            if (sound == null)
             {
                 return Result.Failure;
             }
-            else if (sound.IsPlaying()) // Hier? In update? Blijven checken of het speelt, of gewoon 1 keer spelen en dan success returnen?
-            {
-                return Result.Running;
-            }
+            sound.Play();
             return Result.Success;
-
-
-            //if (CheckCondition())
-            //{
-            //    return Result.Failure;
-            //}
-            //OnUpdate();
-            //return Result.Success;
         }
     }
 }

@@ -4,8 +4,17 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public abstract class BTNode : MonoBehaviour
+    [System.Serializable]
+    public abstract class BTNode
     {
+        internal BehaviourController controller;
+
+        public BTNode(BehaviourController controller)
+        {
+            this.controller = controller;
+        }
+
         public abstract Result Tick();
+        public abstract void Interrupt();
     }
 }
