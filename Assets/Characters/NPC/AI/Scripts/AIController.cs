@@ -75,7 +75,7 @@ public partial class AIController : MonoBehaviour
 
     private void OnDisable()
     {
-        idle.startSound.Stop();
+        idle.startSound?.Stop();
     }
 
     void Update()

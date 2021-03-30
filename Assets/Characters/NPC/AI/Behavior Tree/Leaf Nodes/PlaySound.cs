@@ -6,17 +6,20 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
     public class PlaySound : BTNode
     {
-        public FMODUnity.StudioEventEmitter sound;
-        public bool WaitToFinish;
+        private FMODUnity.StudioEventEmitter sound;
+        private bool waitToFinish;
+        private bool started;
 
-        public PlaySound(BehaviourController controller, FMODUnity.StudioEventEmitter sound) : base(controller)
+        public PlaySound(BehaviourController controller, FMODUnity.StudioEventEmitter sound, bool waitToFinish) : base(controller)
         {
             this.sound = sound;
+            this.waitToFinish = waitToFinish;
         }
 
         public override void Interrupt()
         {
             sound?.Stop();
+            started = false;
         }
 
         public override Result Tick()
@@ -25,6 +28,22 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
             {
                 return Result.Failure;
             }
+
+            if (waitToFinish)
+            {
+                if (!sound.IsPlaying())
+                {
+                    if (started)
+                    {
+                        started = false;
+                        return Result.Success;
+                    }
+                    sound.Play();
+                    started = true;
+                }
+                return Result.Running;
+            }
+
             sound.Play();
             return Result.Success;
         }

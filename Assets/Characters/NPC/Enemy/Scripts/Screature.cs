@@ -5,28 +5,30 @@ using UnityEngine;
 
 public class Screature : BehaviourController
 {
-    public float SightRange = 10f;
+    [Min(0)]
+    public float 
+        VisionCheckInterval = 1f, 
+        SightRange = 10f;
     public LayerMask layers = new LayerMask();
-    public FMODUnity.StudioEventEmitter scream;
-    public GameObject screamPrefab;
+    public FMODUnity.StudioEventEmitter screamSound;
+    public GameObject screamObject;
+    [Min(0)]
+    public float ScreamDuration = 1f;
 
     protected override void Start()
     {
-        //tree = new Sequence(
-        //    this,
-        //    new BTDebug("Started"),
-        //    new Wait(1f),
-        //    new BTDebug("Ended"),
-        //    new Wait(.5f)
-        //    );
-
         tree = new Sequence(this,
-            new Wait(1f),
-            new BTDebug("start"),
+            new Wait(VisionCheckInterval),
+            new BTDebug("check"),
             new CheckObjectsInRange(this, SightRange, layers),
-            new BTDebug("objects in range"),
-            new PlaySound(this, scream),
-            new SpawnObject(this, screamPrefab, true)
+            new BTDebug("objects are in range"),
+            new PlaySound(this, screamSound, false),
+            new SetObjectActive(screamObject, true),
+            new SetAnimatorParameter(this, "Scream", true),
+            new Wait(ScreamDuration),
+            new StopSound(this, screamSound),
+            new SetAnimatorParameter(this, "Scream", false),
+            new SetObjectActive(screamObject, false)
             );
     }
 

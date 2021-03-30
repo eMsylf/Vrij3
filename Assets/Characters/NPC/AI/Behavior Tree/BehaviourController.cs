@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public class BehaviourController : MonoBehaviour
+    public abstract class BehaviourController : MonoBehaviour
     {
         public BTNode tree;
         public NavMeshAgent navMeshAgent;
