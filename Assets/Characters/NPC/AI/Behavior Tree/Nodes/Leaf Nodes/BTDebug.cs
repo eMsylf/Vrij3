@@ -1,8 +1,8 @@
-﻿using RanchyRats.Gyrus.AI.BehaviorTree;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
+    [System.Serializable]
     public class BTDebug : BTNode
     {
         private string text;
@@ -16,7 +16,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 
         public override Result Tick()
         {
-            UnityEngine.Debug.Log(text);
+            Debug.Log(text);
             return Result.Success;
         }
     }
