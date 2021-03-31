@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public class SpawnObject : Action
+    public class SpawnObject : BTNode
     {
         public GameObject prefab;
         public bool AsChild = true;

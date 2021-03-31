@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public abstract class Range : Action
+    public abstract class Range : BTNode
     {
         [Min(0)]
         public float range;

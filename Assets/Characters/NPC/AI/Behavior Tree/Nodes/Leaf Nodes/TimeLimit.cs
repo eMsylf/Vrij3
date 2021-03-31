@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RanchyRats.Gyrus.AI.BehaviorTree
 {
-    public class TimeLimit : Action
+    public class TimeLimit : BTNode
     {
         public enum type
         {
@@ -35,7 +35,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         private Vector2 timeLimitRange = new Vector2();
         internal float timeLeft;
 
-        public TimeLimit(BehaviourController controller, float time) : base(controller)
+        public TimeLimit(float time, BehaviourController controller = null) : base(controller)
         {
             timeLimitConstant = time;
         }

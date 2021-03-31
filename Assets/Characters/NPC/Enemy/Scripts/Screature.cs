@@ -13,22 +13,27 @@ public class Screature : BehaviourController
     public FMODUnity.StudioEventEmitter screamSound;
     public GameObject screamObject;
     [Min(0)]
-    public float ScreamDuration = 1f;
+    public float AnnouncementDuration = 1f,
+        ScreamDuration = 1f,
+        ScreamInterval = 1f;
 
     protected override void Start()
     {
-        tree = new Sequence(this,
-            new Wait(VisionCheckInterval),
-            new BTDebug("check"),
-            new CheckObjectsInRange(this, SightRange, layers),
-            new BTDebug("objects are in range"),
-            new PlaySound(this, screamSound, false),
-            new SetObjectActive(screamObject, true),
-            new SetAnimatorParameter(this, "Scream", true),
-            new Wait(ScreamDuration),
-            new StopSound(this, screamSound),
-            new SetAnimatorParameter(this, "Scream", false),
-            new SetObjectActive(screamObject, false)
+        tree =
+            new Selector(this,
+                new Sequence(this,
+                    new CheckObjectsInRange(this, SightRange, layers),
+                    new SetAnimatorParameter(this, "Scream", true),
+                    new Wait(AnnouncementDuration),
+                    new PlaySound(this, screamSound, false),
+                    new SetObjectActive(screamObject, true),
+                    new Wait(ScreamDuration),
+                    new StopSound(this, screamSound),
+                    new SetAnimatorParameter(this, "Scream", false),
+                    new SetObjectActive(screamObject, false),
+                    new Wait(ScreamInterval)
+                ),
+                new Idle(VisionCheckInterval)
             );
     }
 

@@ -25,12 +25,11 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         public override Result Tick()
         {
             if (sound == null)
-            {
                 return Result.Failure;
-            }
-
+            
             if (waitToFinish)
             {
+                // If the sound is not playing but the "started" flag was set, return a success to indicate the sound has finished playing.
                 if (!sound.IsPlaying())
                 {
                     if (started)
@@ -38,9 +37,11 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
                         started = false;
                         return Result.Success;
                     }
+                    // Otherwise, play the sound and set the "started" flag.
                     sound.Play();
                     started = true;
                 }
+                // If the sound is still playing, the node is still running.
                 return Result.Running;
             }
 
