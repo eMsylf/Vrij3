@@ -1,19 +1,23 @@
-﻿using System;
+﻿// Source: Mert Kirimgeri (YouTube)
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class BehaviorTreeGraphView : GraphView
 {
-    private readonly Vector2 defaultNodeSize = new Vector2(150, 200);
+    public readonly Vector2 defaultNodeSize = new Vector2(150, 200);
+    public Blackboard Blackboard;
+    public List<ExposedProperty> ExposedProperties = new List<ExposedProperty>();
+    private NodeSearchWindow _searchWindow;
 
-    public BehaviorTreeGraphView()
+    public BehaviorTreeGraphView(EditorWindow editorWindow)
     {
         styleSheets.Add(Resources.Load<StyleSheet>("BehaviorTreeGraph"));
-
         SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
         this.AddManipulator(new ContentDragger());
         this.AddManipulator(new SelectionDragger());
@@ -24,6 +28,51 @@ public class BehaviorTreeGraphView : GraphView
         grid.StretchToParentSize();
 
         AddElement(GenerateRootNode());
+        AddSearchWindow(editorWindow);
+    }
+
+    internal void AddPropertyToBlackboard(ExposedProperty exposedProperty)
+    {
+        var localPropertyName = exposedProperty.PropertyName;
+        var localPropertyValue = exposedProperty.PropertyValue;
+
+        while (ExposedProperties.Any(x => x.PropertyName == localPropertyName))
+        {
+            localPropertyName = $"{localPropertyName}(1)";
+        }
+
+        var property = new ExposedProperty();
+        property.PropertyName = localPropertyName;
+        property.PropertyValue = localPropertyValue;
+
+        ExposedProperties.Add(property);
+
+        var container = new VisualElement();
+        var blackboardField = new BlackboardField { text = property.PropertyName, typeText = "string" };
+        container.Add(blackboardField);
+
+        var propertyValueTextField = new TextField("Value:")
+        {
+            value = localPropertyValue
+        };
+        propertyValueTextField.RegisterValueChangedCallback(evt =>
+        {
+            var changingPropertyIndex = ExposedProperties.FindIndex(x => x.PropertyName == property.PropertyName);
+            ExposedProperties[changingPropertyIndex].PropertyValue = evt.newValue;
+        });
+        var blackboardValueRow = new BlackboardRow(blackboardField, propertyValueTextField);
+        container.Add(blackboardValueRow);
+
+        Blackboard.Add(container);
+    }
+
+    private void AddSearchWindow(EditorWindow editorWindow)
+    {
+        _searchWindow = ScriptableObject.CreateInstance<NodeSearchWindow>();
+
+        _searchWindow.Init(this, editorWindow);
+
+        nodeCreationRequest = context => SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), _searchWindow);
     }
 
     private Port GeneratePort(BehaviorTreeNode node, Direction portDirection, Port.Capacity capacity = Port.Capacity.Single)
@@ -45,6 +94,9 @@ public class BehaviorTreeGraphView : GraphView
         generatedPort.portName = "Next";
         node.outputContainer.Add(generatedPort);
 
+        node.capabilities &= ~Capabilities.Movable;
+        node.capabilities &= ~Capabilities.Deletable;
+
         node.RefreshExpandedState();
         node.RefreshPorts();
 
@@ -52,31 +104,43 @@ public class BehaviorTreeGraphView : GraphView
         return node;
     }
 
-    public void CreateNode(string nodeName)
+    public void CreateNode(string nodeName, Vector2 position)
     {
-        AddElement(CreateBehaviorTreeNode(nodeName));
+        AddElement(CreateBehaviorTreeNode(nodeName, position));
     }
 
-    internal BehaviorTreeNode CreateBehaviorTreeNode(string nodeName)
+    internal BehaviorTreeNode CreateBehaviorTreeNode(string nodeName, Vector2 position)
     {
         var behaviorTreeNode = new BehaviorTreeNode
         {
             title = nodeName,
             DialogueText = nodeName,
-            GUID = Guid.NewGuid().ToString()
+            GUID = Guid.NewGuid().ToString(),
         };
 
         var inputPort = GeneratePort(behaviorTreeNode, Direction.Input, Port.Capacity.Multi);
         inputPort.portName = "Input";
         behaviorTreeNode.inputContainer.Add(inputPort);
 
+        behaviorTreeNode.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
+
         var button = new Button(() => { AddChoicePort(behaviorTreeNode); });
         button.text = "New Choice"; 
         behaviorTreeNode.titleContainer.Add(button);
 
+        var textField = new TextField(string.Empty);
+        textField.RegisterValueChangedCallback(evt =>
+        {
+            behaviorTreeNode.DialogueText = evt.newValue;
+            behaviorTreeNode.title = evt.newValue;
+        }
+        );
+        textField.SetValueWithoutNotify(behaviorTreeNode.title);
+        behaviorTreeNode.mainContainer.Add(textField);
+
         behaviorTreeNode.RefreshExpandedState();
         behaviorTreeNode.RefreshPorts();
-        behaviorTreeNode.SetPosition(new Rect(Vector2.zero, defaultNodeSize));
+        behaviorTreeNode.SetPosition(new Rect(position, defaultNodeSize));
         return behaviorTreeNode;
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿// Source: Mert Kirimgeri (YouTube)
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Experimental.GraphView;
@@ -6,6 +7,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using System;
+using System.Linq;
 
 public class BehaviorTreeGraph : EditorWindow
 {
@@ -22,6 +24,40 @@ public class BehaviorTreeGraph : EditorWindow
     {
         ConstructGraph();
         GenerateToolbar();
+        GenerateMinimap();
+        GenerateBlackBoard();
+    }
+
+    private void GenerateBlackBoard()
+    {
+        var blackboard = new Blackboard(graphView);
+        blackboard.Add(new BlackboardSection { title = "Exposed properties" });
+        blackboard.addItemRequested = _blackboard => {graphView.AddPropertyToBlackboard(new ExposedProperty());};
+        blackboard.editTextRequested = (blackboard1, element, newValue) =>
+        {
+            var oldPropertyName = ((BlackboardField)element).text;
+            if (graphView.ExposedProperties.Any(x => x.PropertyName == newValue))
+            {
+                EditorUtility.DisplayDialog("Error", "This property name already exists, please choose another one.", "OK");
+            }
+
+            var propertyIndex = graphView.ExposedProperties.FindIndex(x => x.PropertyName == oldPropertyName);
+            graphView.ExposedProperties[propertyIndex].PropertyName = newValue;
+            ((BlackboardField)element).text = newValue;
+        };
+
+        blackboard.SetPosition(new Rect(10, 30, 200, 300));
+
+        graphView.Add(blackboard);
+        graphView.Blackboard = blackboard;
+    }
+
+    private void GenerateMinimap()
+    {
+        var miniMap = new MiniMap { anchored = true };
+        var cords = graphView.contentViewContainer.WorldToLocal(new Vector2(maxSize.x -1, 30));
+        miniMap.SetPosition(new Rect(cords.x, cords.y, 200, 140));
+        graphView.Add(miniMap);
     }
 
     private void OnDisable()
@@ -31,7 +67,7 @@ public class BehaviorTreeGraph : EditorWindow
 
     private void ConstructGraph()
     {
-        graphView = new BehaviorTreeGraphView
+        graphView = new BehaviorTreeGraphView(this)
         {
             name = "Behavior Tree Graph"
         };
@@ -52,9 +88,9 @@ public class BehaviorTreeGraph : EditorWindow
         toolbar.Add(new Button(() => RequestDataOperation(true)) { text = "Save Data" });
         toolbar.Add(new Button(() => RequestDataOperation(false)) { text = "Load Data" });
 
-        var nodeCreateionButton = new Button(clickEvent: () => { graphView.CreateNode("Behavior Tree Node"); });
-        nodeCreateionButton.text = "Create node";
-        toolbar.Add(nodeCreateionButton);
+        //var nodeCreateionButton = new Button(clickEvent: () => { graphView.CreateNode("Behavior Tree Node"); });
+        //nodeCreateionButton.text = "Create node";
+        //toolbar.Add(nodeCreateionButton);
 
         rootVisualElement.Add(toolbar);
     }

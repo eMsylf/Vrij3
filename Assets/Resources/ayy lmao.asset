@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c06957a9427ace429d0c18d69fbf1bf, type: 3}
+  m_Name: ayy lmao
+  m_EditorClassIdentifier: 
+  NodeLinks:
+  - BaseNodeGUID: 0678fec5-0c19-4344-8f0f-c0ac72337aab
+    PortName: Next
+    TargetNodeGUID: a1b6dea1-8a60-458b-854c-c11916268e86
+  - BaseNodeGUID: a1b6dea1-8a60-458b-854c-c11916268e86
+    PortName: lmao
+    TargetNodeGUID: 4785cfd8-1e67-4091-a434-e0678ace166e
+  - BaseNodeGUID: a1b6dea1-8a60-458b-854c-c11916268e86
+    PortName: ayy
+    TargetNodeGUID: 06df0dc7-99c3-422a-9bb2-a1eed76fea7c
+  BTNodeDatas:
+  - GUID: 06df0dc7-99c3-422a-9bb2-a1eed76fea7c
+    DialogueText: lmao
+    position: {x: 525, y: 127}
+  - GUID: 4785cfd8-1e67-4091-a434-e0678ace166e
+    DialogueText: ayyy
+    position: {x: 544, y: -16}
+  - GUID: a1b6dea1-8a60-458b-854c-c11916268e86
+    DialogueText: Behavior Tree Node
+    position: {x: 221, y: 73}

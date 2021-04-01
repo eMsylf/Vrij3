@@ -1,10 +1,12 @@
-﻿using System;
+﻿// Source: Mert Kirimgeri (YouTube)
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GraphSaveUtility
 {
@@ -91,7 +93,7 @@ public class GraphSaveUtility
     {
         foreach (var nodeData in containerCache.BTNodeDatas)
         {
-            var tempNode = _targetGraphView.CreateBehaviorTreeNode(nodeData.DialogueText);
+            var tempNode = _targetGraphView.CreateBehaviorTreeNode(nodeData.DialogueText, Vector2.zero);
             tempNode.GUID = nodeData.GUID;
             _targetGraphView.AddElement(tempNode);
 
@@ -102,6 +104,35 @@ public class GraphSaveUtility
 
     private void ConnectNodes()
     {
-        throw new NotImplementedException();
+        for (int i = 0; i < Nodes.Count; i++)
+        {
+            var connections = containerCache.NodeLinks.Where(x => x.BaseNodeGUID == Nodes[i].GUID).ToList();
+            for (int j = 0; j < connections.Count; j++)
+            {
+                var targetNodeGUID = connections[j].TargetNodeGUID;
+                var targetNode = Nodes.First(XboxBuildSubtarget => XboxBuildSubtarget.GUID == targetNodeGUID);
+                // Error: When no nodes are connected to the root node
+                LinkNodes(Nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
+
+                targetNode.SetPosition(new Rect(
+                        containerCache.BTNodeDatas.First(x => x.GUID == targetNodeGUID).position,
+                        _targetGraphView.defaultNodeSize
+                    ));
+            }
+        }
+    }
+
+    private void LinkNodes(Port port1, Port port2)
+    {
+        var tempEdge = new Edge
+        {
+            output = port1,
+            input = port2
+        };
+
+        tempEdge.input.Connect(tempEdge);
+        tempEdge.output.Connect(tempEdge);
+
+        _targetGraphView.Add(tempEdge);
     }
 }
