@@ -6,6 +6,7 @@ using UnityEngine;
 public class BehaviorTreeNodeData
 {
     public string GUID;
-    public string DialogueText; // TODO: Replace
+    public string Name;
+    public List<string> Ports = new List<string>();
     public Vector2 position;
 }

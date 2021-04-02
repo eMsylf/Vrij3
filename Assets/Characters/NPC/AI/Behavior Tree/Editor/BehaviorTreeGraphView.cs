@@ -93,21 +93,37 @@ public class BehaviorTreeGraphView : GraphView
             title = "Root",
             GUID = Guid.NewGuid().ToString(),
             DialogueText = "Root Node",
-            EntryPoint = true
+            IsRoot = true
         };
 
         var generatedPort = GeneratePort(node, Direction.Output);
         generatedPort.portName = "Next";
         node.outputContainer.Add(generatedPort);
 
-        node.capabilities &= ~Capabilities.Movable;
+
+        var tickBox = new Toggle("Lock");
+        tickBox.RegisterValueChangedCallback((val) => LockRootNode(node, val.newValue));
+        //tickBox.RegisterValueChangedCallback(() => locked);
+        node.titleContainer.Add(tickBox);
+        if (locked)
+            node.capabilities &= ~Capabilities.Movable;
         node.capabilities &= ~Capabilities.Deletable;
 
         node.RefreshExpandedState();
         node.RefreshPorts();
 
-        node.SetPosition(new Rect(x: 100, y: 200, width: 100, height: 150));
+        node.SetPosition(new Rect(x: 0, y: 0, width: 100, height: 150));
         return node;
+    }
+
+    bool locked = true;
+    public void LockRootNode(BehaviorTreeNode node, bool locked)
+    {
+        this.locked = locked;
+        if (!this.locked)
+            node.capabilities |= Capabilities.Movable;
+        else
+            node.capabilities &= ~Capabilities.Movable;
     }
 
     public void CreateNode(string nodeName, Vector2 position)
@@ -139,8 +155,7 @@ public class BehaviorTreeGraphView : GraphView
         {
             behaviorTreeNode.DialogueText = evt.newValue;
             behaviorTreeNode.title = evt.newValue;
-        }
-        );
+        });
         textField.SetValueWithoutNotify(behaviorTreeNode.title);
         behaviorTreeNode.mainContainer.Add(textField);
 
@@ -160,6 +175,8 @@ public class BehaviorTreeGraphView : GraphView
         var outputPortCount = behaviorTreeNode.outputContainer.Query("connector").ToList().Count;
 
         var choicePortName = string.IsNullOrEmpty(overriddenPortName) ? $"Choice {outputPortCount}":overriddenPortName;
+
+        behaviorTreeNode.Ports.Add(choicePortName);
 
         var textField = new TextField{
             name = string.Empty,
@@ -191,7 +208,7 @@ public class BehaviorTreeGraphView : GraphView
             edge.input.Disconnect(edge);
             RemoveElement(targetEdge.First());
         }
-
+        behaviorTreeNode.Ports.Remove(generatedPort.portName);
         behaviorTreeNode.outputContainer.Remove(generatedPort);
         behaviorTreeNode.RefreshPorts();
         behaviorTreeNode.RefreshExpandedState();

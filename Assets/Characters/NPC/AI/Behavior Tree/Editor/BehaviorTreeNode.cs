@@ -10,5 +10,7 @@ public class BehaviorTreeNode : Node
 
     public string DialogueText;
 
-    public bool EntryPoint = false;
+    public List<string> Ports = new List<string>();
+
+    public bool IsRoot = false;
 }

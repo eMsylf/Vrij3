@@ -41,30 +41,34 @@ public class GraphSaveUtility
 
     private bool SaveNodes(BehaviorTreeContainer behaviorTreeContainer)
     {
-        if (!Edges.Any()) return false;
-
-
-        var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
-
-        for (int i = 0; i < connectedPorts.Length; i++)
+        if (!Edges.Any())
         {
-            var outputNode = connectedPorts[i].output.node as BehaviorTreeNode;
-            var inputNode = connectedPorts[i].input.node as BehaviorTreeNode;
+            var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
 
-            behaviorTreeContainer.NodeLinks.Add(new NodeLinkData
+            for (int i = 0; i < connectedPorts.Length; i++)
             {
-                BaseNodeGUID = outputNode.GUID,
-                PortName = connectedPorts[i].output.portName,
-                TargetNodeGUID = inputNode.GUID
-            });
+                var outputNode = connectedPorts[i].output.node as BehaviorTreeNode;
+                var inputNode = connectedPorts[i].input.node as BehaviorTreeNode;
+
+                behaviorTreeContainer.NodeLinks.Add(new NodeLinkData
+                {
+                    BaseNodeGUID = outputNode.GUID,
+                    PortName = connectedPorts[i].output.portName,
+                    TargetNodeGUID = inputNode.GUID
+                });
+            }
         }
 
-        foreach (var btNode in Nodes.Where(node => !node.EntryPoint))
+
+
+        // For each node in the Nodes list that is not the root
+        foreach (var btNode in Nodes.Where(node => !node.IsRoot))
         {
             behaviorTreeContainer.BTNodeDatas.Add(new BehaviorTreeNodeData
             {
                 GUID = btNode.GUID,
-                DialogueText = btNode.DialogueText,
+                Name = btNode.DialogueText,
+                Ports = btNode.Ports,
                 position = btNode.GetPosition().position
             });
         }
@@ -101,11 +105,14 @@ public class GraphSaveUtility
     private void ClearGraph()
     {
         // Set entry points guid back from the save. Discard existing guid.
-        Nodes.Find(x => x.EntryPoint).GUID = containerCache.NodeLinks[0].BaseNodeGUID;
+        if (containerCache.NodeLinks.Count == 0)
+            Debug.Log("No node links to clear");
+        else
+            Nodes.Find(x => x.IsRoot).GUID = containerCache.NodeLinks[0].BaseNodeGUID;
 
         foreach (var node in Nodes)
         {
-            if (node.EntryPoint) continue;
+            if (node.IsRoot) continue;
             Edges.Where(x => x.input.node == node).ToList().ForEach(edge => _targetGraphView.RemoveElement(edge));
 
             _targetGraphView.RemoveElement(node);
@@ -116,12 +123,20 @@ public class GraphSaveUtility
     {
         foreach (var nodeData in containerCache.BTNodeDatas)
         {
-            var tempNode = _targetGraphView.CreateBehaviorTreeNode(nodeData.DialogueText, Vector2.zero);
+            // Create new temporary node
+            var tempNode = _targetGraphView.CreateBehaviorTreeNode(nodeData.Name, nodeData.position);
             tempNode.GUID = nodeData.GUID;
+            // Add node to the graph view
             _targetGraphView.AddElement(tempNode);
 
-            var nodePorts = containerCache.NodeLinks.Where(x => x.BaseNodeGUID == nodeData.GUID).ToList();
-            nodePorts.ForEach(x => _targetGraphView.AddChoicePort(tempNode, x.PortName));
+            // Get all ports that have a connection
+            //var nodePorts = containerCache.NodeLinks.Where(x => x.BaseNodeGUID == nodeData.GUID).ToList();
+            foreach (var portName in nodeData.Ports)
+            {
+                _targetGraphView.AddChoicePort(tempNode, portName);
+            }
+            // Add those ports back to the node
+            //nodePorts.ForEach(x => _targetGraphView.AddChoicePort(tempNode, x.PortName));
         }
     }
 
