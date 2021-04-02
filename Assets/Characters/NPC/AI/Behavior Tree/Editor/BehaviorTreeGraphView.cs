@@ -31,6 +31,12 @@ public class BehaviorTreeGraphView : GraphView
         AddSearchWindow(editorWindow);
     }
 
+    public void ClearBlackboardWithProperties()
+    {
+        ExposedProperties.Clear();
+        Blackboard.Clear();
+    }
+
     internal void AddPropertyToBlackboard(ExposedProperty exposedProperty)
     {
         var localPropertyName = exposedProperty.PropertyName;

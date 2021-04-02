@@ -13,11 +13,12 @@ public class BehaviorTreeGraph : EditorWindow
 {
     private BehaviorTreeGraphView graphView;
     private string fileName = "New Narrative";
+    private static BehaviorTreeGraph instance;
 
     [MenuItem("Tools/Ranchy Rats/Behavior Tree Editor")]
     public static void ShowWindow()
     {
-        GetWindow<BehaviorTreeGraph>("Behavior Tree");
+        instance = GetWindow<BehaviorTreeGraph>("Behavior Tree");
     }
 
     private void OnEnable()
@@ -25,10 +26,10 @@ public class BehaviorTreeGraph : EditorWindow
         ConstructGraph();
         GenerateToolbar();
         GenerateMinimap();
-        GenerateBlackBoard();
+        GenerateBlackboard();
     }
 
-    private void GenerateBlackBoard()
+    private void GenerateBlackboard()
     {
         var blackboard = new Blackboard(graphView);
         blackboard.Add(new BlackboardSection { title = "Exposed properties" });
@@ -39,6 +40,7 @@ public class BehaviorTreeGraph : EditorWindow
             if (graphView.ExposedProperties.Any(x => x.PropertyName == newValue))
             {
                 EditorUtility.DisplayDialog("Error", "This property name already exists, please choose another one.", "OK");
+                return;
             }
 
             var propertyIndex = graphView.ExposedProperties.FindIndex(x => x.PropertyName == oldPropertyName);
@@ -94,6 +96,13 @@ public class BehaviorTreeGraph : EditorWindow
 
         rootVisualElement.Add(toolbar);
     }
+
+    //[UnityEditor.Callbacks.DidReloadScripts]
+    //private static void OnScriptsReloaded()
+    //{
+    //    Debug.Log("Scripts reloaded.");
+    //    instance?.RequestDataOperation(false);
+    //}
 
     private void RequestDataOperation(bool save)
     {

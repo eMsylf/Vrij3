@@ -25,9 +25,24 @@ public class GraphSaveUtility
 
     public void SaveGraph(string fileName)
     {
-        if (!Edges.Any()) return;
+        var behaviorTreeContainer = ScriptableObject.CreateInstance<BehaviorTreeContainer>();
+        if (!SaveNodes(behaviorTreeContainer)) return;
+        SaveExposedProperties(behaviorTreeContainer);
+        if (!AssetDatabase.IsValidFolder("Assets/Resources"))
+            AssetDatabase.CreateFolder("Assets", "Resources");
+        AssetDatabase.CreateAsset(behaviorTreeContainer, $"Assets/Resources/{fileName}.asset");
+        AssetDatabase.SaveAssets();
+    }
 
-        var dialogueContainer = ScriptableObject.CreateInstance<BehaviorTreeContainer>();
+    private void SaveExposedProperties(BehaviorTreeContainer behaviorTreeContainer)
+    {
+        behaviorTreeContainer.ExposedProperties.AddRange(_targetGraphView.ExposedProperties);
+    }
+
+    private bool SaveNodes(BehaviorTreeContainer behaviorTreeContainer)
+    {
+        if (!Edges.Any()) return false;
+
 
         var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
 
@@ -36,7 +51,7 @@ public class GraphSaveUtility
             var outputNode = connectedPorts[i].output.node as BehaviorTreeNode;
             var inputNode = connectedPorts[i].input.node as BehaviorTreeNode;
 
-            dialogueContainer.NodeLinks.Add(new NodeLinkData 
+            behaviorTreeContainer.NodeLinks.Add(new NodeLinkData
             {
                 BaseNodeGUID = outputNode.GUID,
                 PortName = connectedPorts[i].output.portName,
@@ -46,18 +61,14 @@ public class GraphSaveUtility
 
         foreach (var btNode in Nodes.Where(node => !node.EntryPoint))
         {
-            dialogueContainer.BTNodeDatas.Add(new BehaviorTreeNodeData
+            behaviorTreeContainer.BTNodeDatas.Add(new BehaviorTreeNodeData
             {
                 GUID = btNode.GUID,
                 DialogueText = btNode.DialogueText,
                 position = btNode.GetPosition().position
             });
         }
-
-        if (!AssetDatabase.IsValidFolder("Assets/Resources"))
-            AssetDatabase.CreateFolder("Assets", "Resources");
-        AssetDatabase.CreateAsset(dialogueContainer, $"Assets/Resources/{fileName}.asset");
-        AssetDatabase.SaveAssets();
+        return true;
     }
 
     public void LoadGraph(string fileName)
@@ -73,6 +84,18 @@ public class GraphSaveUtility
         ClearGraph();
         CreateNodes();
         ConnectNodes();
+        CreateExposedProperties();
+    }
+
+    private void CreateExposedProperties()
+    {
+        // Clear existing properties on hot-reload
+        _targetGraphView.ClearBlackboardWithProperties();
+        // Add properties from data
+        foreach (var exposedProperty in containerCache.ExposedProperties)
+        {
+            _targetGraphView.AddPropertyToBlackboard(exposedProperty);
+        }
     }
 
     private void ClearGraph()
