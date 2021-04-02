@@ -22,7 +22,7 @@ public class BehaviorTreeGraphView : GraphView
         this.AddManipulator(new ContentDragger());
         this.AddManipulator(new SelectionDragger());
         this.AddManipulator(new RectangleSelector());
-
+        // Would be nice to add a manipulator that allowed dragging a new connector into open space to open the search window
         var grid = new GridBackground();
         Insert(0, grid);
         grid.StretchToParentSize();
@@ -47,9 +47,11 @@ public class BehaviorTreeGraphView : GraphView
             localPropertyName = $"{localPropertyName}(1)";
         }
 
-        var property = new ExposedProperty();
-        property.PropertyName = localPropertyName;
-        property.PropertyValue = localPropertyValue;
+        var property = new ExposedProperty
+        {
+            PropertyName = localPropertyName,
+            PropertyValue = localPropertyValue
+        };
 
         ExposedProperties.Add(property);
 
@@ -101,12 +103,10 @@ public class BehaviorTreeGraphView : GraphView
         node.outputContainer.Add(generatedPort);
 
 
-        var tickBox = new Toggle("Lock");
+        var tickBox = new Toggle();
         tickBox.RegisterValueChangedCallback((val) => LockRootNode(node, val.newValue));
-        //tickBox.RegisterValueChangedCallback(() => locked);
         node.titleContainer.Add(tickBox);
-        if (locked)
-            node.capabilities &= ~Capabilities.Movable;
+        LockRootNode(node, locked);
         node.capabilities &= ~Capabilities.Deletable;
 
         node.RefreshExpandedState();
@@ -116,7 +116,7 @@ public class BehaviorTreeGraphView : GraphView
         return node;
     }
 
-    bool locked = true;
+    bool locked = false;
     public void LockRootNode(BehaviorTreeNode node, bool locked)
     {
         this.locked = locked;

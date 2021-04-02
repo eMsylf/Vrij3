@@ -23,8 +23,6 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
 
     public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
     {
-
-
         var tree = new List<SearchTreeEntry> {
             new SearchTreeGroupEntry(new GUIContent("Create Elements"), 0),
             new SearchTreeGroupEntry(new GUIContent("Behavior Tree"), 1),

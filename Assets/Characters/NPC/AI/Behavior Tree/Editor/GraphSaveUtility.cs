@@ -105,9 +105,7 @@ public class GraphSaveUtility
     private void ClearGraph()
     {
         // Set entry points guid back from the save. Discard existing guid.
-        if (containerCache.NodeLinks.Count == 0)
-            Debug.Log("No node links to clear");
-        else
+        if (containerCache.NodeLinks.Count != 0)
             Nodes.Find(x => x.IsRoot).GUID = containerCache.NodeLinks[0].BaseNodeGUID;
 
         foreach (var node in Nodes)
@@ -142,9 +140,11 @@ public class GraphSaveUtility
 
     private void ConnectNodes()
     {
+        // For each node
         for (int i = 0; i < Nodes.Count; i++)
         {
             var connections = containerCache.NodeLinks.Where(x => x.BaseNodeGUID == Nodes[i].GUID).ToList();
+            // For every connection
             for (int j = 0; j < connections.Count; j++)
             {
                 var targetNodeGUID = connections[j].TargetNodeGUID;

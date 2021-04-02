@@ -64,7 +64,8 @@ public class BehaviorTreeGraph : EditorWindow
 
     private void OnDisable()
     {
-        rootVisualElement.Remove(graphView);
+        if (graphView != null)
+            rootVisualElement.Remove(graphView);
     }
 
     private void ConstructGraph()
