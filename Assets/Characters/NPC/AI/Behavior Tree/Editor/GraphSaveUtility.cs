@@ -131,7 +131,7 @@ public class GraphSaveUtility
             //var nodePorts = containerCache.NodeLinks.Where(x => x.BaseNodeGUID == nodeData.GUID).ToList();
             foreach (var portName in nodeData.Ports)
             {
-                _targetGraphView.AddChoicePort(tempNode, portName);
+                _targetGraphView.AddPort(tempNode, portName);
             }
             // Add those ports back to the node
             //nodePorts.ForEach(x => _targetGraphView.AddChoicePort(tempNode, x.PortName));

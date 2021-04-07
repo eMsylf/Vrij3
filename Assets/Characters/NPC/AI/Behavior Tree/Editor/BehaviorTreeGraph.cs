@@ -12,7 +12,7 @@ using System.Linq;
 public class BehaviorTreeGraph : EditorWindow
 {
     private BehaviorTreeGraphView graphView;
-    private string fileName = "New Narrative";
+    private string fileName = "New Behavior Tree";
     private static BehaviorTreeGraph instance;
 
     [MenuItem("Tools/Ranchy Rats/Behavior Tree Editor")]

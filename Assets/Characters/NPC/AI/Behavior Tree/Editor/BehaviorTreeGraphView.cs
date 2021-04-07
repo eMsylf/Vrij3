@@ -146,8 +146,8 @@ public class BehaviorTreeGraphView : GraphView
 
         behaviorTreeNode.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
 
-        var button = new Button(() => { AddChoicePort(behaviorTreeNode); });
-        button.text = "New Choice"; 
+        var button = new Button(() => { AddPort(behaviorTreeNode); });
+        button.text = "New Connection"; 
         behaviorTreeNode.titleContainer.Add(button);
 
         var textField = new TextField(string.Empty);
@@ -165,7 +165,7 @@ public class BehaviorTreeGraphView : GraphView
         return behaviorTreeNode;
     }
 
-    public void AddChoicePort(BehaviorTreeNode behaviorTreeNode, string overriddenPortName = "")
+    public void AddPort(BehaviorTreeNode behaviorTreeNode, string overriddenPortName = "")
     {
         var generatedPort = GeneratePort(behaviorTreeNode, Direction.Output);
 
@@ -174,13 +174,13 @@ public class BehaviorTreeGraphView : GraphView
 
         var outputPortCount = behaviorTreeNode.outputContainer.Query("connector").ToList().Count;
 
-        var choicePortName = string.IsNullOrEmpty(overriddenPortName) ? $"Choice {outputPortCount}":overriddenPortName;
+        var portName = string.IsNullOrEmpty(overriddenPortName) ? $"Connection {outputPortCount}":overriddenPortName;
 
-        behaviorTreeNode.Ports.Add(choicePortName);
+        behaviorTreeNode.Ports.Add(portName);
 
         var textField = new TextField{
             name = string.Empty,
-            value = choicePortName
+            value = portName
         };
         textField.RegisterValueChangedCallback(evt => generatedPort.portName = evt.newValue);
         generatedPort.contentContainer.Add(new Label(" "));
@@ -191,7 +191,7 @@ public class BehaviorTreeGraphView : GraphView
         };
         generatedPort.contentContainer.Add(deleteButton);
 
-        generatedPort.portName = choicePortName;
+        generatedPort.portName = portName;
 
         behaviorTreeNode.outputContainer.Add(generatedPort);
         behaviorTreeNode.RefreshPorts();
