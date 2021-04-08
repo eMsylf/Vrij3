@@ -20,14 +20,14 @@ public class PlayerController : Fighter
         dust.Play();
     }
 
-    public FMODUnity.StudioEventEmitter attack1Sound;
-    public FMODUnity.StudioEventEmitter attack2Sound;
-    public FMODUnity.StudioEventEmitter attack3Sound;
+    //public FMODUnity.StudioEventEmitter attack1Sound;
+    //public FMODUnity.StudioEventEmitter attack2Sound;
+    //public FMODUnity.StudioEventEmitter attack3Sound;
 
 
-    public FMODUnity.StudioEventEmitter getHitSound;
+    //public FMODUnity.StudioEventEmitter getHitSound;
     
-    public FMODUnity.StudioEventEmitter footstepsSound;
+    //public FMODUnity.StudioEventEmitter footstepsSound;
     [Min(0)]
     public float footstepInterval = .5f;
     [Min(0)]
@@ -36,20 +36,20 @@ public class PlayerController : Fighter
 
     public void ManageFootstepSound()
     {
-        if (footstepsSound == null)
-            return;
+        //if (footstepsSound == null)
+        //    return;
 
-        if (timeBeforeNextFootstep > 0f)
-        {
-            timeBeforeNextFootstep -= Time.deltaTime;
-            return;
-        }
+        //if (timeBeforeNextFootstep > 0f)
+        //{
+        //    timeBeforeNextFootstep -= Time.deltaTime;
+        //    return;
+        //}
 
-        footstepsSound.Play();
-        if (movement.running)
-            timeBeforeNextFootstep = footstepIntervalRunning;
-        else
-            timeBeforeNextFootstep = footstepInterval;
+        //footstepsSound.Play();
+        //if (movement.running)
+        //    timeBeforeNextFootstep = footstepIntervalRunning;
+        //else
+        //    timeBeforeNextFootstep = footstepInterval;
     }
 
     public FMODUnity.StudioEventEmitter dodgeSound;
@@ -59,9 +59,9 @@ public class PlayerController : Fighter
     public FMODUnity.StudioEventEmitter healthLowSound;
 
     public void PlayAttackSound(int index) {
-        if (index == 0) attack1Sound.Play();
-        else if (index == 1) attack2Sound.Play();
-        else if (index == 2)attack3Sound.Play();
+        //if (index == 0) attack1Sound.Play();
+        //else if (index == 1) attack2Sound.Play();
+        //else if (index == 2)attack3Sound.Play();
 
     }
 
@@ -143,6 +143,10 @@ public class PlayerController : Fighter
     }
 
     [SerializeField] private Vector3 respawnPoint = new Vector3();
+
+    public Action PlayerDodge = default;
+    public Action<float> PlayerAttack = default;
+
     public Vector3 RespawnPoint
     {
         get
@@ -265,7 +269,7 @@ public class PlayerController : Fighter
             case Movement.State.Disabled:
                 break;
             case Movement.State.Moving:
-                ManageFootstepSound();
+                //ManageFootstepSound();
                 break;
         }
     }
@@ -275,8 +279,8 @@ public class PlayerController : Fighter
         InterruptAttackCharge();
         GameManager.Instance.PlayerDeath(this);
         //----------------------------------------------------------- Player dies
-        if (dieSound != null)
-            dieSound.Play();
+        //if (dieSound != null)
+        //    dieSound.Play();
         base.Die();
     }
 
@@ -405,7 +409,7 @@ public class PlayerController : Fighter
         //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
         movement.state = Movement.State.Idle;
         Animator.SetBool("IsWalking", false);
-        footstepsSound.Stop(); //----------------------------------- Footstops :)
+        //footstepsSound.Stop(); //----------------------------------- Footstops :)
    
     }
 
@@ -493,8 +497,11 @@ public class PlayerController : Fighter
     {
         movement.state = Movement.State.Dodging;
         movement.AcceptMovementInput = false;
+
+        PlayerDodge?.Invoke();
+
         // ---------------------------------------------    Dodge sound
-        dodgeSound.Play();
+        //dodgeSound.Play();
         attacking.InterruptCharge();
         if (movement.Input == Vector2Int.zero)
         {
@@ -565,11 +572,11 @@ public class PlayerController : Fighter
     [Serializable]
     public class Attacking
     {
-        public FMODUnity.StudioEventEmitter attackChargeSound;
-        public FMODUnity.StudioEventEmitter attackChargeTik1Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTik2Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTik3Sound;
-        public FMODUnity.StudioEventEmitter attackChargeTik4Sound;
+        //public FMODUnity.StudioEventEmitter attackChargeSound;
+        //public FMODUnity.StudioEventEmitter attackChargeTik1Sound;
+        //public FMODUnity.StudioEventEmitter attackChargeTik2Sound;
+        //public FMODUnity.StudioEventEmitter attackChargeTik3Sound;
+        //public FMODUnity.StudioEventEmitter attackChargeTik4Sound;
 
         public Slider ChargeSlider;
         //public GameObject ChargeIndicators;
@@ -723,10 +730,10 @@ public class PlayerController : Fighter
                 chargeTime += Time.unscaledDeltaTime;
             }
 
-            if (attackChargeSound == null)
-                Debug.LogError("Attack charge sound is missing");
-            else
-                attackChargeSound.Play(); //------------------------------ charge sound
+            //if (attackChargeSound == null)
+            //    Debug.LogError("Attack charge sound is missing");
+            //else
+            //    attackChargeSound.Play(); //------------------------------ charge sound
 
             //Debug.Log("Charge deadzone passed");
             ChargeIndicator.Visualizer.SetActive(true);
@@ -769,10 +776,10 @@ public class PlayerController : Fighter
                     previousChargeState = currentChargeState;
 
                     //------------------------------------------------------------- Charge tiks
-                    if (currentChargeState == 0) attackChargeTik1Sound.Play();
-                    else if (currentChargeState == 1) attackChargeTik2Sound.Play();
-                    else if (currentChargeState == 2) attackChargeTik3Sound.Play();
-                    else if (currentChargeState == 3) attackChargeTik4Sound.Play();
+                    //if (currentChargeState == 0) attackChargeTik1Sound.Play();
+                    //else if (currentChargeState == 1) attackChargeTik2Sound.Play();
+                    //else if (currentChargeState == 2) attackChargeTik3Sound.Play();
+                    //else if (currentChargeState == 3) attackChargeTik4Sound.Play();
 
                 }
                 if (!slowmotionInitiated)
@@ -802,7 +809,7 @@ public class PlayerController : Fighter
                 energyAbsorption.Energy -= fullChargeCost;
             }
 
-            attackChargeSound.Stop();
+            //attackChargeSound.Stop();
             if (state == State.Attacking)
                 Launch(GetChargeZoneIndex(chargeTimeClamped));
         }
@@ -892,6 +899,8 @@ public class PlayerController : Fighter
         Animator.SetTrigger("Attack");
         attacking.WeaponAnimator.SetFloat("AttackCharge", attacking.latestCharge);
         attacking.WeaponAnimator.SetTrigger("Attack");
+
+        PlayerAttack?.Invoke(attacking.latestCharge);
 
         Stop();
         //Debug.Log("OnAttack, set movement input to false");

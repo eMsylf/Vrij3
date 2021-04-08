@@ -8,8 +8,8 @@ public class EnemyAI : MonoBehaviour
 {
     Enemy enemy;
 
-    public FMODUnity.StudioEventEmitter attackSound;
-    public FMODUnity.StudioEventEmitter idleSound;
+    //public FMODUnity.StudioEventEmitter attackSound;
+    //public FMODUnity.StudioEventEmitter idleSound;
     public void PlaySound(FMODUnity.StudioEventEmitter sound)
     {
         if (sound == null)
@@ -121,8 +121,8 @@ public class EnemyAI : MonoBehaviour
 
     private void OnDisable()
     {
-        StopSound(attackSound);
-        StopSound(idleSound);
+        //StopSound(attackSound);
+        //StopSound(idleSound);
     }
 
     #region States
@@ -158,10 +158,10 @@ public class EnemyAI : MonoBehaviour
         //Debug.Log("To Idle for " + idleTimeCurrent);
         state = States.Idle;
         Pathfinding.enabled = false;
-        if (idleSound == null)
-            Debug.LogWarning("Idle sound not assigned", gameObject);
-        else
-            idleSound.Play();
+        //if (idleSound == null)
+        //    Debug.LogWarning("Idle sound not assigned", gameObject);
+        //else
+        //    idleSound.Play();
         
     }
     private void Idle()
@@ -245,7 +245,7 @@ public class EnemyAI : MonoBehaviour
         //Debug.Log("Transition to Attack");
         state = States.Attack;
         Pathfinding.enabled = false;
-        attackSound.Play(); // uwu
+        //attackSound.Play(); // uwu
     }
     private void Attack()
     {

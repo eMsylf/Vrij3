@@ -16,9 +16,9 @@ public class AudioSettings : Singleton<AudioSettings>
 
     private void Awake()
     {
-        sfx.audioBus = FMODUnity.RuntimeManager.GetBus("bus:/" + sfx.name);
-        music.audioBus = FMODUnity.RuntimeManager.GetBus("bus:/"+ music.name);
-        master.audioBus = FMODUnity.RuntimeManager.GetBus("bus:/");
+        //sfx.audioBus = FMODUnity.RuntimeManager.GetBus("bus:/" + sfx.name);
+        //music.audioBus = FMODUnity.RuntimeManager.GetBus("bus:/"+ music.name);
+        //master.audioBus = FMODUnity.RuntimeManager.GetBus("bus:/");
 
         sfx.Init();
         music.Init();
@@ -40,7 +40,7 @@ public class AudioSettings : Singleton<AudioSettings>
     public void SetMaster(float value)
     {
         if (Instance == null) return;
-        Instance.master.audioBus.setVolume(value);
+        //Instance.master.audioBus.setVolume(value);
 
         PlayerPrefs.SetFloat(Instance.master.name, value);
         PlayerPrefs.Save();
@@ -49,7 +49,7 @@ public class AudioSettings : Singleton<AudioSettings>
     public void SetMusic(float value)
     {
         if (Instance == null) return;
-        Instance.music.audioBus.setVolume(value);
+        //Instance.music.audioBus.setVolume(value);
         
         PlayerPrefs.SetFloat(Instance.music.name, value);
         PlayerPrefs.Save();
@@ -58,7 +58,7 @@ public class AudioSettings : Singleton<AudioSettings>
     public void SetSFX(float value)
     {
         if (Instance == null) return;
-        Instance.sfx.audioBus.setVolume(value);
+        //Instance.sfx.audioBus.setVolume(value);
 
         PlayerPrefs.SetFloat(Instance.sfx.name, value);
         PlayerPrefs.Save();
@@ -71,7 +71,7 @@ public class AudioSettings : Singleton<AudioSettings>
         public Slider slider;
         [Range(0f, 1f)]
         public float defaultVolume = .5f;
-        internal FMOD.Studio.Bus audioBus;
+        //internal FMOD.Studio.Bus audioBus;
 
         public AudioSetting(string _name)
         {
@@ -93,7 +93,7 @@ public class AudioSettings : Singleton<AudioSettings>
 
         internal void Set(float value)
         {
-            audioBus.setVolume(value);
+            //audioBus.setVolume(value);
             PlayerPrefs.SetFloat(name, value);
             PlayerPrefs.Save();
             if (slider == null)

@@ -8,8 +8,8 @@ namespace Combat
 {
     public class Fighter : MonoBehaviour, CombatProperties.IKillable, CombatProperties.IDamagable<int>, CombatProperties.ICanAttack
     {
-        public FMODUnity.StudioEventEmitter dieSound;
-        public FMODUnity.StudioEventEmitter getHit;
+        //public FMODUnity.StudioEventEmitter dieSound;
+        //public FMODUnity.StudioEventEmitter getHit;
 
         public Stat Health;
         public Stat Stamina;
@@ -152,8 +152,8 @@ namespace Combat
                 //Debug.Log(name + " should die now", this);
                 Die();
             }
-            else if (getHit != null)
-                getHit.Play();
+            //else if (getHit != null)
+            //    getHit.Play();
         }
 
         public void TakeDamage(int damageTaken, float invincibilityTime)

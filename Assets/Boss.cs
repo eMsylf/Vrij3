@@ -14,19 +14,19 @@ public class Boss : Enemy
     public Animator animator;
 
     #region Sound
-    [Header("Boss Sounds")]
-    public FMODUnity.StudioEventEmitter IdleSound;
-    public FMODUnity.StudioEventEmitter ScreamSound;
-    public FMODUnity.StudioEventEmitter EyePopSound;
-    public FMODUnity.StudioEventEmitter TeethClackSound;
-    public FMODUnity.StudioEventEmitter AttAnnounceSound;
+    //[Header("Boss Sounds")]
+    //public FMODUnity.StudioEventEmitter IdleSound;
+    //public FMODUnity.StudioEventEmitter ScreamSound;
+    //public FMODUnity.StudioEventEmitter EyePopSound;
+    //public FMODUnity.StudioEventEmitter TeethClackSound;
+    //public FMODUnity.StudioEventEmitter AttAnnounceSound;
 
-    void PlayScreamAttackSound() { IdleSound.Stop(); ScreamSound.Play();}
-    void PlayEyePopSound() { IdleSound.Stop(); EyePopSound.Play(); }
-    void PlayTeethClackSound() { TeethClackSound.Play();}
-    void PlayAttAnnounceSound() { IdleSound.Stop(); AttAnnounceSound.Play(); }
-    void PlayDeathSound() { IdleSound.Stop(); dieSound.Play();}
-    void PLayIdleSound() { IdleSound.Play(); }
+    void PlayScreamAttackSound() { /*IdleSound.Stop(); ScreamSound.Play();*/}
+    void PlayEyePopSound() {/* IdleSound.Stop(); EyePopSound.Play();*/ }
+    void PlayTeethClackSound() { /*TeethClackSound.Play();*/}
+    void PlayAttAnnounceSound() { /*IdleSound.Stop(); AttAnnounceSound.Play();*/ }
+    void PlayDeathSound() { /*IdleSound.Stop(); dieSound.Play();*/}
+    void PLayIdleSound() { /*IdleSound.Play();*/ }
 
     #endregion
 
