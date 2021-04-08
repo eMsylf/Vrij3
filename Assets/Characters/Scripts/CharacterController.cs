@@ -95,9 +95,9 @@ namespace RanchyRats.Gyrus
                 }
                 AssignPlayerControl(pc);
             }
-            else if (PlayerController != null && PlayerController.enabled)
+            else if (PlayerController != null && !PlayerController.enabled)
             {
-                // If the character is NOT player-controlled, release the character from player control
+                // If the character is NOT player-controlled and the player controller is disabled, release the character from player control
                 ReleasePlayerControl();
             }
         }
@@ -107,9 +107,10 @@ namespace RanchyRats.Gyrus
         /// </summary>
         public void UpdateAIControllerStatus()
         {
-            if (PlayerControlled && AIController.enabled)
+            if (PlayerControlled)
             {
-                AIController.enabled = false;
+                if (AIController.enabled)
+                    AIController.enabled = false;
             }
             else if (!AIController.enabled)
             {

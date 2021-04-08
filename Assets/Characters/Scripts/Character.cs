@@ -145,18 +145,18 @@ namespace RanchyRats.Gyrus
 
         private void OnCollisionEnter(Collision collision)
         {
-            Character otherFighter = collision.gameObject.GetComponent<Character>();
-            if (otherFighter == null)
+            Character otherCharacter = collision.gameObject.GetComponent<Character>();
+            if (otherCharacter == null)
             {
                 return;
             }
 
-            if (touchDamage.layers != (touchDamage.layers.value | (1 << otherFighter.gameObject.layer)))
+            if (touchDamage.layers != (touchDamage.layers.value | (1 << otherCharacter.gameObject.layer)))
             {
                 return;
             }
 
-            if (otherFighter.Invincible)
+            if (otherCharacter.Invincible)
             {
                 return;
             }
@@ -170,8 +170,8 @@ namespace RanchyRats.Gyrus
                     collision.rigidbody.AddForce(touchDamage.force * forceVector, ForceMode.Impulse);
                 }
                 if (touchDamage.damage != 0)
-                    otherFighter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
-                Debug.Log(otherFighter + " takes touch damage from " + name);
+                    otherCharacter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
+                Debug.Log(otherCharacter + " takes touch damage from " + name);
             }
         }
 
