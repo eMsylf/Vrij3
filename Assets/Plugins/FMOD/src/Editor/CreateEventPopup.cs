@@ -18,9 +18,12 @@ namespace FMODUnity
         }
 
         SerializedProperty outputProperty;
-        internal void SelectEvent(SerializedProperty property)
+        SerializedProperty outputGUIDProperty;
+
+        internal void SelectEvent(SerializedProperty property, SerializedProperty outputguidproperty)
         {
             outputProperty = property;
+            outputGUIDProperty = outputguidproperty;
         }
 
         class BankEntry
@@ -338,6 +341,19 @@ namespace FMODUnity
                 string fullPath = "event:" + eventFolder + eventName;
                 outputProperty.stringValue = fullPath;
                 EditorUtils.UpdateParamsOnEmitter(outputProperty.serializedObject, fullPath);
+
+                if (outputGUIDProperty != null) {
+                    byte[] fmodguid = new byte[16];
+                    for (int i = 0; i < 16; i++) {
+                        fmodguid[i] = 0;
+                    }
+                    Guid guid = new Guid(eventGuid);
+                    Array.Copy(guid.ToByteArray(), fmodguid, 16);
+                    for (int i = 0; i < 16; i++) {
+                        outputGUIDProperty.GetArrayElementAtIndex(i).intValue = (int)fmodguid[i];
+                    }
+                }
+
                 outputProperty.serializedObject.ApplyModifiedProperties();
             }
         }

@@ -1,4 +1,5 @@
 ﻿using RanchyRats.Gyrus.AI.BehaviorTree;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,6 @@ public class Screature : BehaviourController
         VisionCheckInterval = 1f, 
         SightRange = 10f;
     public LayerMask layers = new LayerMask();
-    public FMODUnity.StudioEventEmitter screamSound;
     public GameObject screamObject;
     [Min(0)]
     public float AnnouncementDuration = 1f,
@@ -25,10 +25,8 @@ public class Screature : BehaviourController
                     new CheckObjectsInRange(this, SightRange, layers),
                     new SetAnimatorParameter(this, "Scream", true),
                     new Wait(AnnouncementDuration),
-                    new PlaySound(this, screamSound, false),
                     new SetObjectActive(screamObject, true),
                     new Wait(ScreamDuration),
-                    new StopSound(this, screamSound),
                     new SetAnimatorParameter(this, "Scream", false),
                     new SetObjectActive(screamObject, false),
                     new Wait(ScreamInterval)

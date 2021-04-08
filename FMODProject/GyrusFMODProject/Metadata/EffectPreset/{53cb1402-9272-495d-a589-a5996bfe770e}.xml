@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.01.00">
+	<object class="EffectPreset" id="{53cb1402-9272-495d-a589-a5996bfe770e}">
+		<property name="name">
+			<value>fxChain_playerSound</value>
+		</property>
+		<relationship name="folder">
+			<destination>{bb8402d8-0a10-4de0-9e4f-7cc88d3845f3}</destination>
+		</relationship>
+		<relationship name="effect">
+			<destination>{562fc46f-a50b-4810-bcac-75a4c64988d3}</destination>
+		</relationship>
+	</object>
+	<object class="EffectChain" id="{562fc46f-a50b-4810-bcac-75a4c64988d3}">
+		<relationship name="effects">
+			<destination>{6bd27260-45a3-4eee-b5b5-6d1c2e6714db}</destination>
+			<destination>{63b5bfc5-9834-40af-9cab-36aeca17544f}</destination>
+		</relationship>
+	</object>
+	<object class="SpatialiserEffect" id="{6bd27260-45a3-4eee-b5b5-6d1c2e6714db}">
+		<property name="minimumDistance">
+			<value>4</value>
+		</property>
+		<property name="maximumDistance">
+			<value>50</value>
+		</property>
+		<property name="extentMode">
+			<value>1</value>
+		</property>
+		<property name="soundSize">
+			<value>4.5999999</value>
+		</property>
+	</object>
+	<object class="MixerSend" id="{63b5bfc5-9834-40af-9cab-36aeca17544f}">
+		<property name="level">
+			<value>-10</value>
+		</property>
+		<property name="inputFormat">
+			<value>2</value>
+		</property>
+		<relationship name="mixerReturn">
+			<destination>{7f977b20-8382-4150-8a3d-4f59b553ca4e}</destination>
+		</relationship>
+	</object>
+</objects>
