@@ -4,6 +4,7 @@ using UnityEngine;
 using RunicSounds;
 using System;
 using UnityEngine.InputSystem;
+using RanchyRats.Gyrus;
 
 public class PlayerAudioHandler : MonoBehaviour {
 
@@ -19,47 +20,58 @@ public class PlayerAudioHandler : MonoBehaviour {
 
     private AudioEvent currentAttackSound = default;
 
-    private IEnumerator Start() {
+    private IEnumerator Start()
+    {
         audioBankGameplay.LoadBank();
-        while (audioBankGameplay.IsLoadOperationInProgress) {
+        while (audioBankGameplay.IsLoadOperationInProgress)
+        {
             yield return null;
         }
 
-        playerController.PlayerDodge += OnPlayerDodge;
-        playerController.PlayerAttack += OnPlayerAttack;
+        //playerController.PlayerDodge += OnPlayerDodge;
+        //playerController.PlayerAttack += OnPlayerAttack;
 
         currentAttackSound = audioEventPlayerAttack;
     }
 
-    private void Update() {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) {
+    private void Update()
+    {
+        if (Keyboard.current.digit1Key.wasPressedThisFrame)
+        {
             currentAttackSound = audioEventPlayerAttack;
-        } else if (Keyboard.current.digit2Key.wasPressedThisFrame) {
+        }
+        else if (Keyboard.current.digit2Key.wasPressedThisFrame)
+        {
             currentAttackSound = audioEventPlayerAttackv2;
         }
-        else if (Keyboard.current.digit3Key.wasPressedThisFrame) {
+        else if (Keyboard.current.digit3Key.wasPressedThisFrame)
+        {
             currentAttackSound = audioEventPlayerAttackv3;
         }
     }
 
-    private void OnDestroy() {
-        playerController.PlayerDodge -= OnPlayerDodge;
-        playerController.PlayerAttack -= OnPlayerAttack;
+    private void OnDestroy()
+    {
+        //playerController.PlayerDodge -= OnPlayerDodge;
+        //playerController.PlayerAttack -= OnPlayerAttack;
     }
 
     /// <summary>
     /// Plays footstep sound
     /// DO NOT RENAME, CALLED BY ANIMATION EVENT
     /// </summary>
-    public void OnPlayerFootstep() {
+    public void OnPlayerFootstep()
+    {
         audioEventFootstep.PlayOneShot(gameObject);
     }
 
-    private void OnPlayerDodge() {
+    private void OnPlayerDodge()
+    {
         audioEventDash.PlayOneShot(gameObject);
     }
 
-    private void OnPlayerAttack(float charge) {
+    private void OnPlayerAttack(float charge)
+    {
         currentAttackSound.PlayOneShot(gameObject);
     }
 }
