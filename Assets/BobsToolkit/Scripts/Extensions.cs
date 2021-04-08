@@ -15,11 +15,23 @@ namespace BobJeltes.Extensions
         public static Vector3 ConvertToObjectRelative(this Vector3 vector3, Transform reference, bool flatten = false, bool normalize = false)
         {
             Vector3 referenceForward = reference.forward;
+            Vector3 referenceRight = reference.right;
+            Vector3 referenceUp = reference.up;
             if (flatten)
+            {
                 referenceForward.Scale(new Vector3(1, 0, 1));
+                referenceRight.Scale(new Vector3(1, 0, 1));
+                referenceUp.Scale(new Vector3(1, 0, 1));
+            }
+
             if (normalize)
+            {
                 referenceForward.Normalize();
-            Vector3 referenceRelativeVector3 = reference.forward * vector3.z + reference.right * vector3.x + reference.up * vector3.y;
+                referenceRight.Normalize();
+                referenceUp.Normalize();
+            }
+
+            Vector3 referenceRelativeVector3 = referenceForward * vector3.z + referenceRight * vector3.x + referenceUp * vector3.y;
             return referenceRelativeVector3;
         }
 

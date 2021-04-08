@@ -92,6 +92,7 @@ namespace RanchyRats.Gyrus
                 return;
             Vector3 playerMovement = GetTopDownMovement(Input, state) * GetStateSettings(state).speed;
             // TODO: Deze camera-relatieve berekening moet uitgevoerd worden in de Player Controller. De movement hoort dat niet te doen, omdat de AI geen camera heeft.
+            // Of, de camera kan worden doorgegeven vanuit... ergens
             Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
         }
 
@@ -139,8 +140,13 @@ namespace RanchyRats.Gyrus
                 return;
 
             Vector2 input = (Character.Controller.PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
+            bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
             if (input != Vector2.zero)
+            {
                 SetMoveInput(input);
+                if (run)
+                    StartRunning();
+            }
             else
                 Stop();
         }
@@ -189,14 +195,19 @@ namespace RanchyRats.Gyrus
 
         public void StartRunning()
         {
-            if (Stamina == null)
+            if (RunningSettings.drainsStamina && Stamina != null && Stamina.IsEmpty(false))
                 return;
-            if (Stamina.IsEmpty(false))
-                return;
-
-            state = State.Running;
+            switch (state)
+            {
+                case State.Stopped:
+                case State.Walking:
+                case State.Running:
+                    state = State.Running;
+                    break;
+                case State.Dodging:
+                    return;
+            }
             Character.Animator.SetFloat("RunningMultiplier", runningAnimationMultiplier);
-            Stamina.allowRecovery = false;
             timeBeforeNextFootstep = 0f;
             //Debug.Log("Running: " + enabled, this);
             runStaminaDrainTime = GetStateSettings(State.Running).staminaDrainInterval;
@@ -220,6 +231,8 @@ namespace RanchyRats.Gyrus
 
         private void ManageRunningStaminaDrain()
         {
+            if (!RunningSettings.drainsStamina)
+                return;
             // TODO: Implement stamina drain settings
             runStaminaDrainTime -= Time.deltaTime;
 
@@ -249,7 +262,7 @@ namespace RanchyRats.Gyrus
                     return;
             }
 
-            if (Stamina != null && Stamina.IsEmpty(true))
+            if (DodgingSettings.drainsStamina && Stamina != null && Stamina.IsEmpty(true))
             {
                 //Debug.Log("Insufficient stamina to dodge");
                 //-----------------------------------------------   Out of Stamina
@@ -287,11 +300,12 @@ namespace RanchyRats.Gyrus
             }
 
             yield return new WaitForSeconds(duration);
-
+            // TODO: Kan niet rennen
             state = State.Stopped;
             BlockMovementInput = false;
             OnDodgeCompleted.Invoke();
             ForceReadMoveInput();
+            if (dust != null) dust.Stop();
         }
 
         private void NeutralDodge()
