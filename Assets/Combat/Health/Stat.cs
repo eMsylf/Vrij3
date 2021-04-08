@@ -8,8 +8,14 @@ namespace Combat
     [System.Serializable]
     public class Stat : MonoBehaviour
     {
-        public float m_maxValue = 4;
-        public float m_value;
+        [SerializeField]
+        private float m_maxValue = 4;
+        [SerializeField]
+        private float m_value;
+        public bool AllowOverflow;
+        public bool AllowUnderflow;
+        [Tooltip("When enabled, this statistic is set to its maximum automatically when Start() is called.")]
+        public bool setValueToMax = true;
         [Header("Recovery")]
         [Tooltip("The time it takes for a point to be recovered..")]
         public float recoveryTime = 1f;
@@ -17,26 +23,17 @@ namespace Combat
         private float windup;
         private float recovery;
         public bool allowRecovery = false;
-        [Header("Other")]
-        [Tooltip("When enabled, this statistic is set to its maximum automatically on startup.")]
-        public bool syncValueToMax = true;
 
         public float MaxValue
         {
             get => m_maxValue;
-            set
-            {
-                m_maxValue = value;
-            }
+            set => m_maxValue = value;
         }
 
         public float Value
         {
             get => m_value;
-            set
-            {
-                m_value = value;
-            }
+            set => m_value = value;
         }
 
         public FloatEvent OnValueChanged;
@@ -44,29 +41,54 @@ namespace Combat
         public UnityEvent OnIncrease;
         public UnityEvent OnDecrease;
 
-        public float Get()
+        public struct Sounds
         {
-            return m_value;
+            public FMODUnity.StudioEventEmitter depleted;
+            public FMODUnity.StudioEventEmitter recovery;
+            public FMODUnity.StudioEventEmitter recoverToFull;
+        }
+        public Sounds sounds;
+
+        public bool IsEmpty(bool playWarningSound)
+        {
+            if (m_value <= 0)
+            {
+                if (playWarningSound)
+                {
+                    sounds.depleted.Play();
+                }
+            }
+            return m_value <= 0;
         }
 
-        public void SetCurrent(float _value)
+        public void SetCurrent(float value)
         {
-            if (m_value == _value)
+            if (Value == value)
                 return;
 
-            if (_value > m_value)
-                OnIncrease.Invoke();
-            else
-                OnDecrease.Invoke();
+            if (value > Value)
+            {
+                if (!AllowOverflow && value > MaxValue)
+                    value = MaxValue;
 
-            m_value = _value;
+                if (value >= MaxValue)
+                    OnIncrease.Invoke();
+            }
+            else
+            {
+                if (!AllowUnderflow && value < 0)
+                    value = 0;
+                OnDecrease.Invoke();
+            }
+
+            Value = value;
             //Debug.Log("Set " + name + " to " + _value + " points", this);
-            OnValueChanged.Invoke(_value);
+            OnValueChanged.Invoke(value);
         }
 
         public void Use(float amount)
         {
-            if (m_value - amount >= 0)
+            if (Value - amount >= 0)
             {
                 SetCurrent(m_value - amount);
             }
@@ -77,7 +99,7 @@ namespace Combat
 
         private void Start()
         {
-            if (syncValueToMax)
+            if (setValueToMax)
             {
                 Value = MaxValue;
             }

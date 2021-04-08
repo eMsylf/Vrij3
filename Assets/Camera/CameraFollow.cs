@@ -35,19 +35,21 @@ public class CameraFollow : MonoBehaviour
         {
             return center;
         }
+        // Clean list
         for (int i = 0; i < transforms.Count; i++)
         {
             if (transforms[i] == null)
             {
-                Debug.LogError("CameraFollow target transform at list position " + i + " was null, and has been removed from the list.");
+                Debug.LogWarning("CameraFollow target at list position " + i + " was null, and has been removed from the list.");
                 transforms.RemoveAt(i);
                 i--;
-                continue;
             }
-
-            center += transforms[i].position;
         }
-        if (transforms.Count != 0)
+        foreach (Transform transform in transforms)
+        {
+            center += transform.position;
+        }
+        if (transforms.Count > 0)
             center /= transforms.Count;
         return center ;
     }
@@ -142,6 +144,7 @@ public class CameraFollow : MonoBehaviour
     private void Start()
     {
         LivePreview = false;
+        Rigidbody.useGravity = false;
     }
 
     private void FixedUpdate()

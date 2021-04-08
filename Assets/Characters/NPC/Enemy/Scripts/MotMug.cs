@@ -1,8 +1,8 @@
-﻿using Combat;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BobJeltes.Extensions;
+using RanchyRats.Gyrus;
 
 public class MotMug : Enemy
 {
@@ -19,11 +19,11 @@ public class MotMug : Enemy
     public bool movementJitter = true;
     public Vector3 JitterAmount = Vector3.one;
 
-    public override void Update()
-    {
-        base.Update();
-        ManagePathfinding();
-    }
+    //public override void Update()
+    //{
+    //    base.Update();
+    //    ManagePathfinding();
+    //}
 
     private void FixedUpdate()
     {
