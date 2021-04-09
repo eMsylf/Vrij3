@@ -114,25 +114,11 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        #region It would be nice if I could combine these somehow
         internal Vector3 GetTopDownMovement(Vector2 input, State state)
         {
-            Vector3 movement = Vector3.zero;
-            switch (state)
-            {
-                case State.Walking:
-                    movement = new Vector3(input.x, 0f, input.y);
-                    break;
-                case State.Running:
-                    movement = new Vector3(input.x, 0f, input.y);
-                    break;
-                case State.Dodging:
-                    movement = new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
-                    break;
-            }
-            return movement;
+            if (state == State.Dodging) return new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
+            return new Vector3(input.x, 0f, input.y);
         }
-        #endregion
 
         // Wanneer een aanval eindigt moet de input van de speler gelezen worden zodat de speler gelijk doorgaat met bewegen als de stick in een richting gehouden wordt tijdens de aanval. Zonder dit blijft de speler stilstaan.
         public void ForceReadMoveInput()
@@ -159,30 +145,21 @@ namespace RanchyRats.Gyrus
                 //Debug.LogWarning("Tried to move while input was not accepted");
                 return;
             }
-            //Debug.Log("Input: " + input);
 
-            switch (state)
+            if (state == State.Stopped)
             {
-                case State.Dodging:
-                    Debug.Log("Player can't move while " + state.ToString());
-                    return;
-                case State.Stopped:
-                    state = State.Walking;
-                    break;
-                case State.Walking:
-                    break;
+                state = State.Walking;
+                if (Character.Animator != null)
+                    Character.Animator.SetBool("IsWalking", true);
             }
+
             Input = input;
-            if (Character.Animator != null)
-                Character.Animator.SetBool("IsWalking", true);
             UpdateFacingDirection(Input);
         }
 
         public void Stop()
         {
-            //Debug.Log("Stop!");
             Input = Vector2.zero;
-            //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
             state = State.Stopped;
             if (Character.Animator != null)
                 Character.Animator.SetBool("IsWalking", false);
@@ -190,35 +167,17 @@ namespace RanchyRats.Gyrus
 
         public void StartRunning()
         {
+            if (state == State.Dodging) return;
+
             if (RunningSettings.drainsStamina && Stamina != null && Stamina.IsEmpty(false))
                 return;
-            switch (state)
-            {
-                case State.Stopped:
-                case State.Walking:
-                case State.Running:
-                    state = State.Running;
-                    break;
-                case State.Dodging:
-                    return;
-            }
             runStaminaDrainTimeRemaining = GetStateSettings(State.Running).staminaDrainInterval;
             Character.Animator.SetFloat("RunningMultiplier", runningAnimationMultiplier);
         }
 
         public void StopRunning()
         {
-            switch (state)
-            {
-                case State.Stopped:
-                default:
-                case State.Walking:
-                case State.Dodging:
-                    break;
-                case State.Running:
-                    state = State.Walking;
-                    break;
-            }
+            if (state == State.Running) state = State.Walking;
             Character.Animator.SetFloat("RunningMultiplier", 1f);
         }
 
@@ -232,7 +191,7 @@ namespace RanchyRats.Gyrus
             if (runStaminaDrainTimeRemaining <= 0f)
             {
                 runStaminaDrainTimeRemaining = GetStateSettings(State.Running).staminaDrainInterval;
-                Stamina.Use(1);
+                Stamina.Use(GetStateSettings(State.Running).staminaDrainAmount);
 
                 if (Stamina.IsEmpty(true))
                 {
@@ -245,11 +204,6 @@ namespace RanchyRats.Gyrus
         {
             switch (state)
             {
-                // Dodging is allowed when
-                case State.Stopped:
-                case State.Walking:
-                case State.Running:
-                    break;
                 // Dodging is not allowed when
                 case State.Dodging:
                     return;
@@ -269,7 +223,6 @@ namespace RanchyRats.Gyrus
         private IEnumerator DoDodge(float duration)
         {
             state = State.Dodging;
-            BlockMovementInput = true;
 
             if (Stamina != null) Stamina.Use(GetStateSettings(state).staminaDrainAmount);
             if (dust != null) dust.Play();
@@ -279,40 +232,26 @@ namespace RanchyRats.Gyrus
                 Character.Controller.attacking.EndCharge(false);
             
             dodgeEvents.OnDodgeStarted.Invoke();
-            if (Input == Vector2.zero)
-            {
-                NeutralDodge();
-            }
-            else
-            {
-                DirectionalDodge(Input);
-            }
+
+            BlockMovementInput = true;
+            DodgeDirection = GetDodgeDirection(Input);
 
             yield return new WaitForSeconds(duration);
-            // TODO: Kan niet rennen
-            state = State.Stopped;
             BlockMovementInput = false;
             dodgeEvents.OnDodgeCompleted.Invoke();
             ForceReadMoveInput();
             if (dust != null) dust.Stop();
         }
 
-        private void NeutralDodge()
+        private Vector2 GetDodgeDirection(Vector2 input)
         {
-            switch (defaultDodgeDirection)
+            if (input != Vector2.zero)
+                return input.normalized;
+            return defaultDodgeDirection switch
             {
-                case DefaultDodgeDirection.Backward:
-                    DirectionalDodge(FacingDirection * -1f);
-                    break;
-                case DefaultDodgeDirection.ToCamera:
-                    DirectionalDodge(new Vector2(0f, -1f));
-                    break;
-            }
-        }
-
-        private void DirectionalDodge(Vector2 direction)
-        {
-            DodgeDirection = direction.normalized;
+                DefaultDodgeDirection.ToCamera => new Vector2(0f, -1f),
+                _ => -FacingDirection,
+            };
         }
 
         public void UpdateDirectionIndicator(Vector2 facingDirection)
