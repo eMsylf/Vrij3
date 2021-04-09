@@ -101,7 +101,9 @@ namespace RanchyRats.Gyrus
 
         public void RevokePlayerControl(CharacterController character, bool removeFromList = true)
         {
-            if (character == null || controlledCharacters.Contains(character))
+            if (character == null)
+                return;
+            if (!controlledCharacters.Contains(character))
             {
                 Debug.Log(character.name + " is not being controlled by player controller", this);
                 return;

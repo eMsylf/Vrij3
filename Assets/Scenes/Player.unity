@@ -691,10 +691,10 @@ GameObject:
   - component: {fileID: 289823749}
   - component: {fileID: 289823746}
   - component: {fileID: 289823745}
-  - component: {fileID: 289823750}
   - component: {fileID: 289823748}
   - component: {fileID: 289823747}
   - component: {fileID: 289823751}
+  - component: {fileID: 289823750}
   m_Layer: 0
   m_Name: Screature
   m_TagString: Untagged
@@ -721,7 +721,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 2048
-  screamSound: {fileID: 289823750}
   screamObject: {fileID: 1204202663}
   AnnouncementDuration: 1
   ScreamDuration: 1
@@ -834,20 +833,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 289823744}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Script: {fileID: 11500000, guid: d2f73ed381c3d8f46b1e8b07cb442da3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CollisionTag: 
-  Event: event:/SFX/Screature/Screature_attack
-  PlayEvent: 0
-  StopEvent: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
+  audioEventAttacking:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/enemies/screature/sd_sfx_enemy_screature_attacking
+      fmodGUID: b8ede817e2f952488efa072988574aab
+  audioEventIsHit:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/enemies/screature/sd_sfx_enemy_screature_isHit
+      fmodGUID: ede780fc897784448a48c2d1f118175a
 --- !u!114 &289823751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1184,6 +1180,7 @@ GameObject:
   - component: {fileID: 767960594}
   - component: {fileID: 767960593}
   - component: {fileID: 767960592}
+  - component: {fileID: 767960595}
   m_Layer: 11
   m_Name: Visual
   m_TagString: Untagged
@@ -1291,6 +1288,41 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &767960595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767960590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 761834d23738ce24f91ae494e3a258a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
+  audioBankGameplay:
+    bankReference: {fileID: 0}
+  audioEventFootstep:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/player/sd_sfx_player_footstep
+      fmodGUID: 291c127609e5444eb273a88ebf288524
+  audioEventDash:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/player/sd_sfx_player_dash
+      fmodGUID: e77007918cfa584889f5cc6d7a631806
+  audioEventPlayerAttack:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/player/sd_sfx_player_attack
+      fmodGUID: 65e491c0bb42bc44a7a56cbf7e08ae2d
+  audioEventPlayerAttackv2:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/player/sd_sfx_player_attack_v2
+      fmodGUID: ef72328e02b672459e4c9be0fd4dff35
+  audioEventPlayerAttackv3:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/player/sd_sfx_player_attack_v3
+      fmodGUID: d783aa1c642cde468e8656194499d5bf
 --- !u!1 &772814147
 GameObject:
   m_ObjectHideFlags: 0
@@ -1758,6 +1790,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
   ListenerNumber: -1
 --- !u!1 &993767110
 GameObject:
@@ -1858,6 +1891,7 @@ MonoBehaviour:
     drainsStamina: 0
     staminaDrainAmount: 0
     staminaDrainInterval: 1
+  runningAnimationMultiplier: 1.5
   DodgingSettings:
     speed: 15
     footstepInterval: 0
@@ -1867,13 +1901,13 @@ MonoBehaviour:
     drainsStamina: 1
     staminaDrainAmount: 1
     staminaDrainInterval: 0
-  runningAnimationMultiplier: 1.5
-  OnDodgeStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDodgeCompleted:
-    m_PersistentCalls:
-      m_Calls: []
+  dodgeEvents:
+    OnDodgeStarted:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDodgeCompleted:
+      m_PersistentCalls:
+        m_Calls: []
   LockFacingDirection: 0
 --- !u!114 &993767117
 MonoBehaviour:

@@ -127,7 +127,7 @@ namespace RanchyRats.Gyrus
             if (input != Vector2.zero)
             {
                 SetMoveInput(input);
-                bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
+                bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Started;
                 if (run)
                     StartRunning();
             }
@@ -144,14 +144,15 @@ namespace RanchyRats.Gyrus
             }
 
             Input = input;
-            if (Character.Animator != null) Character.Animator.SetBool("IsWalking", Input == Vector2.zero);
+            if (Character.Animator != null) Character.Animator.SetBool("IsWalking", Input != Vector2.zero);
             if (Input == Vector2.zero)
             {
                 state = State.Stopped;
                 return;
             }
 
-            state = State.Walking;
+            if (state == State.Stopped) state = State.Walking;
+
             UpdateFacingDirection(Input);
         }
 
@@ -166,7 +167,7 @@ namespace RanchyRats.Gyrus
         public void StartRunning()
         {
             if (state == State.Dodging) return;
-
+            state = State.Running;
             if (RunningSettings.drainsStamina && Stamina != null && Stamina.IsEmpty(false))
                 return;
             runStaminaDrainTimeRemaining = GetStateSettings(State.Running).staminaDrainInterval;

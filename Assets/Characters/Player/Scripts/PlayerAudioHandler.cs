@@ -8,6 +8,7 @@ using RanchyRats.Gyrus;
 
 public class PlayerAudioHandler : MonoBehaviour {
 
+    // TODO: Dit kan er wel uit, aangezien de PlayerController niet echt meer een rol speelt in het bepalen van positie
     [SerializeField] private PlayerController playerController = default;
     [Space]
     [Header("Audio settings")]
