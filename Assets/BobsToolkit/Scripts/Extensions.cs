@@ -12,6 +12,11 @@ namespace BobJeltes.Extensions
             gameObject.SetActive(value);
         }
 
+        public static Vector3 XYToXZ(this Vector2 vector2)
+        {
+            return new Vector3(vector2.x, 0f, vector2.y);
+        }
+
         public static Vector3 ConvertToObjectRelative(this Vector3 vector3, Transform reference, bool flatten = false, bool normalize = false)
         {
             Vector3 referenceForward = reference.forward;

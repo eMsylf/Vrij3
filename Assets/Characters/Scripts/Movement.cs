@@ -14,12 +14,25 @@ namespace RanchyRats.Gyrus
         public bool BlockMovementInput = false;
         [Tooltip("If the movement is being controlled by a NavMeshAgent component, the movement animation is still updated through this component but the movement is not applied to the rigidbody.")]
         public bool MovementByNavMeshAgent = false;
-        internal Vector2 Input;
-        internal Vector2 FacingDirection = new Vector2(0f, 1f);
+        internal Vector2 Input = Vector2.zero;
+        internal Vector2 FacingDirection = Vector2.up;
+        internal Vector3 playerMovement
+        {
+            get
+            {
+                // If the player is currently dodging and no input was pressed at the beginning of the dodge, return the selected default dodge
+                if (state == State.Dodging && Input == Vector2.zero)
+                {
+                    if (defaultDodgeDirection == DefaultDodgeDirection.ToCamera) return new Vector2(0f, -1f) * CurrentStateSettings.speed;
+                    return -FacingDirection.XYToXZ() * CurrentStateSettings.speed;
+                }
+                // Otherwise, return the regular movement
+                return Input.XYToXZ() * CurrentStateSettings.speed;
+            }
+        }
 
         internal enum DefaultDodgeDirection { Backward, ToCamera }
         [SerializeField] internal DefaultDodgeDirection defaultDodgeDirection = DefaultDodgeDirection.Backward;
-        internal Vector2 DodgeDirection;
 
         [System.Serializable]
         public struct Events
@@ -67,19 +80,22 @@ namespace RanchyRats.Gyrus
         public MovementStateSettings DodgingSettings = new MovementStateSettings(2f, 0, true, .3f, State.Stopped, true, 1, 0);
         public Events dodgeEvents;
 
+        public MovementStateSettings CurrentStateSettings
+        {
+            get
+            {
+                return GetStateSettings(state);
+            }
+        }
         public MovementStateSettings GetStateSettings(State state)
         {
             switch (state)
             {
-                case State.Stopped:
                 default:
-                    return StoppedSettings;
-                case State.Walking:
-                    return WalkingSettings;
-                case State.Running:
-                    return RunningSettings;
-                case State.Dodging:
-                    return DodgingSettings;
+                case State.Stopped: return StoppedSettings;
+                case State.Walking: return WalkingSettings;
+                case State.Running: return RunningSettings;
+                case State.Dodging: return DodgingSettings;
             }
         }
 
@@ -92,32 +108,13 @@ namespace RanchyRats.Gyrus
         {
             if (MovementByNavMeshAgent)
                 return;
-            Vector3 playerMovement = GetTopDownMovement(Input, state) * GetStateSettings(state).speed;
-            // TODO: Deze camera-relatieve berekening moet uitgevoerd worden in de Player Controller. De movement hoort dat niet te doen, omdat de AI geen camera heeft.
-            // Of, de camera kan worden doorgegeven vanuit... ergens
+            // TODO: De camera kan worden doorgegeven vanuit... ergens
             Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
         }
 
         private void Update()
         {
-            switch (state)
-            {
-                case State.Stopped:
-                case State.Dodging:
-                    break;
-                case State.Walking:
-                    break;
-                case State.Running:
-                    // TODO: Manage footstep sounds here too
-                    ManageRunningStaminaDrain();
-                    break;
-            }
-        }
-
-        internal Vector3 GetTopDownMovement(Vector2 input, State state)
-        {
-            if (state == State.Dodging) return new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
-            return new Vector3(input.x, 0f, input.y);
+            ManageRunningStaminaDrain();
         }
 
         // Wanneer een aanval eindigt moet de input van de speler gelezen worden zodat de speler gelijk doorgaat met bewegen als de stick in een richting gehouden wordt tijdens de aanval. Zonder dit blijft de speler stilstaan.
@@ -146,14 +143,15 @@ namespace RanchyRats.Gyrus
                 return;
             }
 
-            if (state == State.Stopped)
+            Input = input;
+            if (Character.Animator != null) Character.Animator.SetBool("IsWalking", Input == Vector2.zero);
+            if (Input == Vector2.zero)
             {
-                state = State.Walking;
-                if (Character.Animator != null)
-                    Character.Animator.SetBool("IsWalking", true);
+                state = State.Stopped;
+                return;
             }
 
-            Input = input;
+            state = State.Walking;
             UpdateFacingDirection(Input);
         }
 
@@ -183,6 +181,7 @@ namespace RanchyRats.Gyrus
 
         private void ManageRunningStaminaDrain()
         {
+            if (state != State.Running) return;
             if (!RunningSettings.drainsStamina)
                 return;
             // TODO: Implement stamina drain settings
@@ -227,31 +226,18 @@ namespace RanchyRats.Gyrus
             if (Stamina != null) Stamina.Use(GetStateSettings(state).staminaDrainAmount);
             if (dust != null) dust.Play();
 
-            // TODO: Move charge interruption to PlayerController
             if (Character.Controller.attacking != null)
                 Character.Controller.attacking.EndCharge(false);
-            
-            dodgeEvents.OnDodgeStarted.Invoke();
 
             BlockMovementInput = true;
-            DodgeDirection = GetDodgeDirection(Input);
 
+            dodgeEvents.OnDodgeStarted.Invoke();
             yield return new WaitForSeconds(duration);
-            BlockMovementInput = false;
             dodgeEvents.OnDodgeCompleted.Invoke();
+
+            BlockMovementInput = false;
             ForceReadMoveInput();
             if (dust != null) dust.Stop();
-        }
-
-        private Vector2 GetDodgeDirection(Vector2 input)
-        {
-            if (input != Vector2.zero)
-                return input.normalized;
-            return defaultDodgeDirection switch
-            {
-                DefaultDodgeDirection.ToCamera => new Vector2(0f, -1f),
-                _ => -FacingDirection,
-            };
         }
 
         public void UpdateDirectionIndicator(Vector2 facingDirection)
