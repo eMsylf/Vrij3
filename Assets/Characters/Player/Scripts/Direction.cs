@@ -10,6 +10,12 @@ namespace RanchyRats.Gyrus
         public float distance = 1f;
         public void UpdatePosition(Vector3 position)
         {
+            if (DirectionIndicator == null)
+            {
+                DirectionIndicator = new GameObject("Direction indicator").transform;
+                DirectionIndicator.parent = transform;
+            }
+
             DirectionIndicator.localPosition = position * distance;
         }
 

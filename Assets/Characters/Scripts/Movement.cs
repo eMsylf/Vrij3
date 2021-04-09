@@ -16,9 +16,17 @@ namespace RanchyRats.Gyrus
         public bool MovementByNavMeshAgent = false;
         internal Vector2 Input;
         internal Vector2 FacingDirection = new Vector2(0f, 1f);
+
         internal enum DefaultDodgeDirection { Backward, ToCamera }
         [SerializeField] internal DefaultDodgeDirection defaultDodgeDirection = DefaultDodgeDirection.Backward;
         internal Vector2 DodgeDirection;
+
+        [System.Serializable]
+        public struct Events
+        {
+            public UnityEvent OnDodgeStarted;
+            public UnityEvent OnDodgeCompleted;
+        }
 
         // TODO: Use charachter stamina instead of separate reference
         public Stat Stamina;
@@ -30,7 +38,7 @@ namespace RanchyRats.Gyrus
 
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
         Rigidbody rigidbody;
-        Rigidbody Rigidbody
+        public Rigidbody Rigidbody
         {
             get
             {
@@ -54,7 +62,10 @@ namespace RanchyRats.Gyrus
         public MovementStateSettings StoppedSettings = new MovementStateSettings(0, 0);
         public MovementStateSettings WalkingSettings = new MovementStateSettings(1f, .5f);
         public MovementStateSettings RunningSettings = new MovementStateSettings(1.5f, .25f);
+        public float runningAnimationMultiplier = 1.5f;
+        private float runStaminaDrainTimeRemaining;
         public MovementStateSettings DodgingSettings = new MovementStateSettings(2f, 0, true, .3f, State.Stopped, true, 1, 0);
+        public Events dodgeEvents;
 
         public MovementStateSettings GetStateSettings(State state)
         {
@@ -130,10 +141,10 @@ namespace RanchyRats.Gyrus
                 return;
 
             Vector2 input = (Character.Controller.PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
-            bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
             if (input != Vector2.zero)
             {
                 SetMoveInput(input);
+                bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
                 if (run)
                     StartRunning();
             }
@@ -177,10 +188,6 @@ namespace RanchyRats.Gyrus
                 Character.Animator.SetBool("IsWalking", false);
         }
 
-        // TODO: Dit hoort hier niet ieuw vies
-        public float runningAnimationMultiplier = 1.5f;
-        private float runStaminaDrainTime;
-
         public void StartRunning()
         {
             if (RunningSettings.drainsStamina && Stamina != null && Stamina.IsEmpty(false))
@@ -195,9 +202,8 @@ namespace RanchyRats.Gyrus
                 case State.Dodging:
                     return;
             }
+            runStaminaDrainTimeRemaining = GetStateSettings(State.Running).staminaDrainInterval;
             Character.Animator.SetFloat("RunningMultiplier", runningAnimationMultiplier);
-            //Debug.Log("Running: " + enabled, this);
-            runStaminaDrainTime = GetStateSettings(State.Running).staminaDrainInterval;
         }
 
         public void StopRunning()
@@ -221,11 +227,11 @@ namespace RanchyRats.Gyrus
             if (!RunningSettings.drainsStamina)
                 return;
             // TODO: Implement stamina drain settings
-            runStaminaDrainTime -= Time.deltaTime;
+            runStaminaDrainTimeRemaining -= Time.deltaTime;
 
-            if (runStaminaDrainTime <= 0f)
+            if (runStaminaDrainTimeRemaining <= 0f)
             {
-                runStaminaDrainTime = GetStateSettings(State.Running).staminaDrainInterval;
+                runStaminaDrainTimeRemaining = GetStateSettings(State.Running).staminaDrainInterval;
                 Stamina.Use(1);
 
                 if (Stamina.IsEmpty(true))
@@ -257,13 +263,10 @@ namespace RanchyRats.Gyrus
                 return;
             }
 
-            StartCoroutine(Dodge(GetStateSettings(State.Dodging).duration));
+            StartCoroutine(DoDodge(GetStateSettings(State.Dodging).duration));
         }
 
-        public UnityEvent OnDodgeStarted;
-        public UnityEvent OnDodgeCompleted;
-
-        private IEnumerator Dodge(float duration)
+        private IEnumerator DoDodge(float duration)
         {
             state = State.Dodging;
             BlockMovementInput = true;
@@ -275,7 +278,7 @@ namespace RanchyRats.Gyrus
             if (Character.Controller.attacking != null)
                 Character.Controller.attacking.EndCharge(false);
             
-            OnDodgeStarted.Invoke();
+            dodgeEvents.OnDodgeStarted.Invoke();
             if (Input == Vector2.zero)
             {
                 NeutralDodge();
@@ -289,7 +292,7 @@ namespace RanchyRats.Gyrus
             // TODO: Kan niet rennen
             state = State.Stopped;
             BlockMovementInput = false;
-            OnDodgeCompleted.Invoke();
+            dodgeEvents.OnDodgeCompleted.Invoke();
             ForceReadMoveInput();
             if (dust != null) dust.Stop();
         }
@@ -316,7 +319,10 @@ namespace RanchyRats.Gyrus
         {
             if (Direction == null)
             {
-                Debug.LogError("Direction indicator is null");
+                Debug.LogWarning("Direction indicator is null. Adding...", Direction);
+                Direction = new GameObject("Direction Indicator").AddComponent<Direction>();
+                Direction.transform.parent = transform;
+                Direction.transform.position = Vector3.zero;
                 return;
             }
             Direction.UpdatePosition(new Vector3(facingDirection.x, 0f, facingDirection.y));
