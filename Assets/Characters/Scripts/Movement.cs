@@ -25,15 +25,6 @@ namespace RanchyRats.Gyrus
 
         public Direction Direction;
 
-        public struct Sounds
-        {
-            public StudioEventEmitter Footstep;
-            public StudioEventEmitter Dodge;
-        }
-        public Sounds sounds;
-
-        private float timeBeforeNextFootstep;
-
         //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something.
         public ParticleSystem dust;
 
@@ -98,7 +89,6 @@ namespace RanchyRats.Gyrus
 
         private void Update()
         {
-            ManageFootstepSound();
             switch (state)
             {
                 case State.Stopped:
@@ -185,8 +175,6 @@ namespace RanchyRats.Gyrus
             state = State.Stopped;
             if (Character.Animator != null)
                 Character.Animator.SetBool("IsWalking", false);
-            if (sounds.Footstep != null) sounds.Footstep.Stop();
-
         }
 
         // TODO: Dit hoort hier niet ieuw vies
@@ -208,7 +196,6 @@ namespace RanchyRats.Gyrus
                     return;
             }
             Character.Animator.SetFloat("RunningMultiplier", runningAnimationMultiplier);
-            timeBeforeNextFootstep = 0f;
             //Debug.Log("Running: " + enabled, this);
             runStaminaDrainTime = GetStateSettings(State.Running).staminaDrainInterval;
         }
@@ -283,7 +270,6 @@ namespace RanchyRats.Gyrus
 
             if (Stamina != null) Stamina.Use(GetStateSettings(state).staminaDrainAmount);
             if (dust != null) dust.Play();
-            if (sounds.Dodge != null) sounds.Dodge.Play();
 
             // TODO: Move charge interruption to PlayerController
             if (Character.Controller.attacking != null)
@@ -348,21 +334,6 @@ namespace RanchyRats.Gyrus
                 return;
             Character.Animator.SetFloat("Hor", direction.x);
             Character.Animator.SetFloat("Vert", direction.y);
-        }
-
-        public void ManageFootstepSound()
-        {
-            if (sounds.Footstep == null)
-                return;
-
-            if (timeBeforeNextFootstep > 0f)
-            {
-                timeBeforeNextFootstep -= Time.deltaTime;
-                return;
-            }
-
-            sounds.Footstep.Play();
-            timeBeforeNextFootstep = GetStateSettings(state).footstepInterval;
         }
     }
 }
