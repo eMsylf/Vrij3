@@ -48,7 +48,7 @@ namespace RanchyRats.Gyrus
         public EnergyAbsorption energyAbsorption;
         public int fullChargeCost = 20;
         [Range(0f, 1f)]
-        public float EnergyChargeLimit = .75f;
+        public float EnergyRequirementTrigger = .75f;
         internal bool CanFullCharge()
         {
             if (energyAbsorption == null) return true;
@@ -62,10 +62,12 @@ namespace RanchyRats.Gyrus
         [Range(0f, 1f)]
         public float slowmotionFactor = .25f;
 
-        internal bool slowmotionInitiated = false;
+        internal bool slowmotionStarted = false;
 
         public bool AllowCharging = true;
+        public bool IsCharging = false;
         public GameObject ChargeBlockedIndicator;
+        private float latestCharge = 0f;
 
         public UnityEvent OnAttackAnnouncement;
         public UnityEvent OnAttackStarted;
@@ -79,11 +81,9 @@ namespace RanchyRats.Gyrus
             OnCooldown,
             Disabled
         }
-        public State state;
 
         private void OnEnable()
         {
-            state = State.Ready;
             ClearChargeBlockers();
         }
 
@@ -135,118 +135,129 @@ namespace RanchyRats.Gyrus
 
         public void EndCharge(bool complete)
         {
-            if (state != State.Charging)
-            {
-                Debug.Log("No charge to complete");
-                return;
-            }
+            //if (state != State.Charging)
+            //{
+            //    Debug.Log("No charge to complete");
+            //    return;
+            //}
 
             if (complete)
-                state = State.Attacking;
+            {
+                StartAttack(GetChargeIndex(latestCharge));
+            }
             else
             {
                 StopCoroutine(DoCharge());
                 ChargeIndicator.SetCurrent(0);
-                if (slowmotionInitiated) TimeManager.Instance.StopSlowmotion();
+                if (slowmotionStarted) TimeManager.Instance.StopSlowmotion();
             }
+            IsCharging = false;
         }
 
         public IEnumerator DoCharge()
         {
-            state = State.Charging;
-
+            // Set charging flag, reset parameters and indicators
+            IsCharging = true;
+            slowmotionStarted = false;
             ChargeIndicator.SetCurrent(0, true, true);
             float chargeTime = 0f;
-            float chargeTimeClamped = 0f;
-            //Debug.Log("Start charge");
-            while (state == State.Charging && chargeTime < ChargeDeadzone)
+            latestCharge = 0f;
+            int previousChargeState = -1;
+
+            // Wait until the charge time passes the deadzone
+            while (chargeTime < ChargeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime += Time.unscaledDeltaTime;
             }
 
+            // Start attack charge sound
             if (sounds.attackChargeSound == null)
                 Debug.LogError("Attack charge sound is missing");
             else
                 sounds.attackChargeSound.Play(); //------------------------------ charge sound
 
-            //Debug.Log("Charge deadzone passed");
-            ChargeIndicator.Visualizer.SetActive(true);
-            slowmotionInitiated = false;
-            int previousChargeState = -1;
-            while (state == State.Charging)
+            // Activate the charge indicator
+            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
+                ChargeIndicator.Visualizer.SetActive(true);
+
+            // Start main charging loop
+            while (IsCharging)
             {
                 yield return new WaitForEndOfFrame();
+
                 if (SlowmotionAffectsCharge)
-                {
                     chargeTime += Time.deltaTime;
-                }
                 else
-                {
                     chargeTime += Time.unscaledDeltaTime;
-                }
 
+                // If the player is standing inside charging prohibitors and cannot fully charge, reset the energy back to the end of the charging deadzone
                 if (ChargingAllowed())
-                {
-                    chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
-                }
+                    latestCharge = Mathf.Clamp01(chargeTime / ChargeTime);
                 else
                 {
-                    chargeTimeClamped = Mathf.Clamp(chargeTime, 0f, ChargeDeadzone);
-                    chargeTime = chargeTimeClamped;
+                    latestCharge = Mathf.Clamp(chargeTime, 0f, ChargeDeadzone);
+                    chargeTime = latestCharge;
                 }
 
+                // If the player does not have the required energy and cannot fully charge, clamp the charge to the limit.
                 if (!CanFullCharge())
                 {
-                    chargeTimeClamped = Mathf.Clamp(chargeTimeClamped, 0f, EnergyChargeLimit);
+                    latestCharge = Mathf.Clamp(latestCharge, 0f, EnergyRequirementTrigger);
                 }
 
-                //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
+                // Evaluate the current charge state
+                int currentChargeState = GetChargeIndex(latestCharge);
 
-                int currentChargeState = GetChargeIndex(chargeTimeClamped);
-
+                // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
                 if (currentChargeState != previousChargeState)
                 {
                     ChargeIndicator.SetCurrent(currentChargeState + 1);
                     previousChargeState = currentChargeState;
 
-                    //------------------------------------------------------------- Charge tiks
+                    //------------------------------------------------------------- Charge ticks
                     if (currentChargeState == 0) sounds.attackChargeTick1Sound.Play();
                     else if (currentChargeState == 1) sounds.attackChargeTick2Sound.Play();
                     else if (currentChargeState == 2) sounds.attackChargeTick3Sound.Play();
                     else if (currentChargeState == 3) sounds.attackChargeTick4Sound.Play();
 
                 }
-                if (!slowmotionInitiated)
+
+                // If slowmotion hasn't been started, check if the charge has passed the slowmotion trigger. If so, start slowmotion. If not, stop slowmotion.
+                if (!slowmotionStarted)
                 {
-                    if (chargeTimeClamped > slowmotionTrigger)
+                    if (latestCharge > slowmotionTrigger)
                     {
-                        slowmotionInitiated = true;
+                        slowmotionStarted = true;
                         TimeManager.Instance.DoSlowmotion(slowmotionFactor);
                     }
                 }
                 else
                 {
-                    if (chargeTimeClamped < slowmotionTrigger)
+                    if (latestCharge < slowmotionTrigger)
                     {
-                        slowmotionInitiated = false;
+                        slowmotionStarted = false;
                         TimeManager.Instance.StopSlowmotion();
                     }
                 }
             }
-            TimeManager.Instance.StopSlowmotion();
-            ChargeIndicator.Visualizer.SetActive(false);
 
-            //Launch(chargeTimeClamped);
-            if (chargeTimeClamped > EnergyChargeLimit)
+            // Once the loop has been exited, stop the slowmotion
+            TimeManager.Instance.StopSlowmotion();
+
+            // Deactivate the charge indicator visual
+            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
+                ChargeIndicator.Visualizer.SetActive(false);
+
+            // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
+            if (latestCharge > EnergyRequirementTrigger)
             {
                 Debug.Log("Detract energy");
                 energyAbsorption.Energy -= fullChargeCost;
             }
 
-            sounds.attackChargeSound.Stop();
-            if (state == State.Attacking)
-                StartAttack(GetChargeIndex(chargeTimeClamped));
+            // Stop the attack charge sound
+            sounds.attackChargeSound?.Stop();
         }
 
         public void ApplyChargeZoneColors()
@@ -280,18 +291,10 @@ namespace RanchyRats.Gyrus
 
         public void AttemptAttackCharge()
         {
-            Debug.Log("Attempt attack charge while in state " + state.ToString());
-            switch (state)
+            if (IsCharging)
             {
-                // Attack charge allowed when
-                case State.Ready:
-                case State.OnCooldown:
-                    break;
-                // Attack charge not allowed when
-                case State.Disabled:
-                case State.Charging:
-                case State.Attacking:
-                    return;
+                Debug.Log("Already charging", this);
+                return;
             }
 
             if (Character.stamina.IsEmpty(true))
@@ -323,18 +326,17 @@ namespace RanchyRats.Gyrus
 
         public void SetMovementRestrictionsActive(bool active)
         {
-            if (Character.Controller.movement != null)
+            if (Character.Controller.movement == null)
+                return;
+            if (restrictions.Move)
             {
-                if (restrictions.Move)
-                {
-                    Character.Controller.movement.Stop();
-                    Character.Controller.movement.BlockMovementInput = active; // TODO: Misschien beter om het movement component uit te schakelen
-                }
-                if (restrictions.Rotate)
-                    Character.Controller.movement.LockFacingDirection = active;
-                if (restrictions.StaminaRecovery)
-                    Character.stamina.allowRecovery = !active;
+                Character.Controller.movement.Stop();
+                Character.Controller.movement.BlockMovementInput = active; // TODO: Misschien beter om het movement component uit te schakelen
             }
+            if (restrictions.Rotate)
+                Character.Controller.movement.LockFacingDirection = active;
+            if (restrictions.StaminaRecovery) 
+                Character.stamina.allowRecovery = !active;
         }
 
         public void StartAttack(int attackIndex)
@@ -346,15 +348,13 @@ namespace RanchyRats.Gyrus
             }
 
             SetMovementRestrictionsActive(true);
-            state = State.Attacking;
             OnAttackStarted.Invoke();
         }
 
         // Would be nice if this was available as a visual scripting block
-        // Address this from the Animator
+        // Address this from the Animator, when leaving the attacking state
         public void EndAttack()
         {
-            state = State.Ready;
             SetMovementRestrictionsActive(false);
 
             // Immediately update walking direction at end of attack 

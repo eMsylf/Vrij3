@@ -695,6 +695,7 @@ GameObject:
   - component: {fileID: 289823747}
   - component: {fileID: 289823751}
   - component: {fileID: 289823750}
+  - component: {fileID: 289823752}
   m_Layer: 0
   m_Name: Screature
   m_TagString: Untagged
@@ -860,6 +861,60 @@ MonoBehaviour:
   useOverrideColor: 1
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   duration: 0.1
+--- !u!114 &289823752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289823744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b8e906504b3fe84ea217254d043f560, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 0}
+  modifiers:
+    energy: 0
+    health: 0
+    speed: 0
+    attackFrequency: 0
+    size: 0
+  health: {fileID: 0}
+  stamina: {fileID: 0}
+  controller: {fileID: 0}
+  animator: {fileID: 0}
+  GetHit:
+    sound: {fileID: 0}
+    AllObjectsList: []
+    RandomObjectList: []
+    unityEvent:
+      m_PersistentCalls:
+        m_Calls: []
+  Death:
+    sound: {fileID: 0}
+    AllObjectsList: []
+    RandomObjectList: []
+    unityEvent:
+      m_PersistentCalls:
+        m_Calls: []
+  Revival:
+    sound: {fileID: 0}
+    AllObjectsList: []
+    RandomObjectList: []
+    unityEvent:
+      m_PersistentCalls:
+        m_Calls: []
+  touchDamage:
+    enabled: 1
+    damage: 1
+    invincibilityTime: 1
+    layers:
+      serializedVersion: 2
+      m_Bits: 2048
+    force: 1
+  respawnPoint: {x: 0, y: 0, z: 0}
+  RespawnOverride: {fileID: 0}
 --- !u!1 &398416007
 GameObject:
   m_ObjectHideFlags: 0
@@ -1805,6 +1860,9 @@ GameObject:
   - component: {fileID: 993767117}
   - component: {fileID: 993767115}
   - component: {fileID: 993767116}
+  - component: {fileID: 993767111}
+  - component: {fileID: 993767113}
+  - component: {fileID: 993767112}
   m_Layer: 11
   m_Name: Player character
   m_TagString: Untagged
@@ -1812,6 +1870,152 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &993767111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993767110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca1ee9c3417f2c948a8f3f28d52bb225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+    attackChargeSound: {fileID: 0}
+    attackChargeTick1Sound: {fileID: 0}
+    attackChargeTick2Sound: {fileID: 0}
+    attackChargeTick3Sound: {fileID: 0}
+    attackChargeTick4Sound: {fileID: 0}
+    attack1Sound: {fileID: 0}
+    attack2Sound: {fileID: 0}
+    attack3Sound: {fileID: 0}
+  ChargeSlider: {fileID: 0}
+  WeaponAnimator: {fileID: 0}
+  ChargeZones:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  ChargeIndicator:
+    max: 4
+    current: 0
+    recoveryTime: 1
+    syncCurrentToMax: 1
+    Visualizer: {fileID: 0}
+  ChargeTime: 2
+  ChargeDeadzone: 0.1
+  energyAbsorption: {fileID: 0}
+  fullChargeCost: 20
+  EnergyChargeLimit: 0.75
+  SlowmotionAffectsCharge: 0
+  slowmotionTrigger: 0.5
+  slowmotionFactor: 0.25
+  AllowCharging: 1
+  ChargeBlockedIndicator: {fileID: 0}
+  OnAttackAnnouncement:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAttackStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAttackEnded:
+    m_PersistentCalls:
+      m_Calls: []
+  state: 0
+  restrictions:
+    Move: 1
+    Rotate: 1
+    StaminaRecovery: 1
+--- !u!114 &993767112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993767110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c818e48c90523645988fceca7572181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_maxValue: 4
+  m_value: 0
+  AllowOverflow: 0
+  AllowUnderflow: 0
+  setValueToMax: 1
+  recoveryTime: 1
+  recoveryWindup: 1
+  allowRecovery: 0
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDepleted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnIncrease:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDecrease:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &993767113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993767110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c818e48c90523645988fceca7572181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_maxValue: 4
+  m_value: 0
+  AllowOverflow: 0
+  AllowUnderflow: 0
+  setValueToMax: 1
+  recoveryTime: 1
+  recoveryWindup: 1
+  allowRecovery: 0
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDepleted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnIncrease:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDecrease:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &993767114
 Transform:
   m_ObjectHideFlags: 0
@@ -1843,7 +2047,7 @@ MonoBehaviour:
   playerController: {fileID: 0}
   aIController: {fileID: 0}
   movement: {fileID: 993767116}
-  attacking: {fileID: 0}
+  attacking: {fileID: 993767111}
   targeting: {fileID: 0}
 --- !u!114 &993767116
 MonoBehaviour:
@@ -1928,9 +2132,9 @@ MonoBehaviour:
     speed: 0
     attackFrequency: 0
     size: 0
-  health: {fileID: 0}
-  stamina: {fileID: 0}
-  controller: {fileID: 0}
+  health: {fileID: 993767113}
+  stamina: {fileID: 993767112}
+  controller: {fileID: 993767115}
   animator: {fileID: 767960594}
   GetHit:
     sound: {fileID: 0}

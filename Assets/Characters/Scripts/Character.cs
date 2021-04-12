@@ -88,10 +88,15 @@ namespace RanchyRats.Gyrus
                 }
             }
 
-            public void SpawnRandom(Vector3 position, Vector3 scale) => Instantiate(
+            public void SpawnRandom(Vector3 position, Vector3 scale)
+            {
+                if (RandomObjectList.Count == 0) return;
+                Instantiate(
                     RandomObjectList[Random.Range(0, RandomObjectList.Count)],
                     position,
-                    Quaternion.identity).transform.localScale = scale;
+                    Quaternion.identity).
+                    transform.localScale = scale;
+            }
         }
         [Header("Character events")]
         public CharacterEvent GetHit = new CharacterEvent();
