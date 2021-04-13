@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using BobJeltes.Attributes;
 #if UNITY_EDITOR
 #endif
 using Combat;
@@ -34,8 +35,8 @@ namespace RanchyRats.Gyrus
         }
         public Sounds sounds;
 
+        [Header("Charging")]
         public Slider ChargeSlider;
-        public Animator WeaponAnimator;
         public Gradient ChargeZones;
         public Statistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
@@ -44,16 +45,25 @@ namespace RanchyRats.Gyrus
         [Tooltip("Time below which a charge will not be initiated")]
         [Min(0)]
         public float ChargeDeadzone = .1f;
-
-        public EnergyAbsorption energyAbsorption;
-        public int fullChargeCost = 20;
-        [Range(0f, 1f)]
-        public float EnergyRequirementTrigger = .75f;
-        internal bool CanFullCharge()
+        [System.Serializable]
+        public struct EnergyCost
         {
-            if (energyAbsorption == null) return true;
-            return energyAbsorption.Energy >= fullChargeCost;
+            public EnergyAbsorption energyAbsorption;
+            [Min(0)]
+            public int fullChargeCost;
+            [Range(0f, 1f)]
+            public float EnergyRequirementTrigger;
+            internal bool CanFullCharge
+            {
+                get
+                {
+                    if (energyAbsorption == null) return true;
+                    return energyAbsorption.Energy >= fullChargeCost;
+                }
+            }
         }
+        public EnergyCost energyCost = new EnergyCost();
+
         [Tooltip("If true, the charge will slow down like everything else")]
         public bool SlowmotionAffectsCharge = false;
 
@@ -68,6 +78,28 @@ namespace RanchyRats.Gyrus
         public bool IsCharging = false;
         public GameObject ChargeBlockedIndicator;
         private float latestCharge = 0f;
+
+        [Header("Attacks")]
+        [Tooltip("If true, uses the SingleWeaponObject. Otherwise, uses the attacks from the list.")]
+        public bool SingleWeaponObject = true;
+        public Animator WeaponAnimator;
+        public Attack[] attacks = new Attack[0];
+        [System.Serializable]
+        public struct Attack
+        {
+            public int staminaCost;
+            public Restrictions restrictions;
+            public Damager damageObject;
+        }
+        public Attack GetAttack(int index) => (index > attacks.Length - 1) ? attacks[attacks.Length - 1] : attacks[index];
+
+        [Flags] public enum Restrictions
+        {
+            None = 0,
+            Move = 1,
+            Rotate = 2,
+            StaminaRecovery = 4
+        }
 
         public UnityEvent OnAttackAnnouncement;
         public UnityEvent OnAttackStarted;
@@ -85,11 +117,24 @@ namespace RanchyRats.Gyrus
         private void OnEnable()
         {
             ClearChargeBlockers();
+            // Deactivate all damage objects and add a callback to EndAttack for when the object is set to inactive next time
+            for (int i = 0; i < attacks.Length; i++)
+            {
+                if (attacks[i].damageObject == null) continue;
+                attacks[i].damageObject.gameObject.SetActive(false);
+                attacks[i].damageObject.OnDeactivation.AddListener(EndAttack);
+            }
+            
         }
 
         private void OnDisable()
         {
             EndCharge(false);
+            for (int i = 0; i < attacks.Length; i++)
+            {
+                if (attacks[i].damageObject == null) continue;
+                attacks[i].damageObject.OnDeactivation.RemoveListener(EndAttack);
+            }
         }
 
         int GetChargeIndex(float time)
@@ -201,9 +246,9 @@ namespace RanchyRats.Gyrus
                 }
 
                 // If the player does not have the required energy and cannot fully charge, clamp the charge to the limit.
-                if (!CanFullCharge())
+                if (!energyCost.CanFullCharge)
                 {
-                    latestCharge = Mathf.Clamp(latestCharge, 0f, EnergyRequirementTrigger);
+                    latestCharge = Mathf.Clamp(latestCharge, 0f, energyCost.EnergyRequirementTrigger);
                 }
 
                 // Evaluate the current charge state
@@ -250,10 +295,10 @@ namespace RanchyRats.Gyrus
                 ChargeIndicator.Visualizer.SetActive(false);
 
             // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
-            if (latestCharge > EnergyRequirementTrigger)
+            if (latestCharge > energyCost.EnergyRequirementTrigger)
             {
                 Debug.Log("Detract energy");
-                energyAbsorption.Energy -= fullChargeCost;
+                energyCost.energyAbsorption.Energy -= energyCost.fullChargeCost;
             }
 
             // Stop the attack charge sound
@@ -308,37 +353,6 @@ namespace RanchyRats.Gyrus
             Character.stamina.allowRecovery = false;
         }
 
-        [Serializable]
-        public struct Restrictions
-        {
-            public bool Move;
-            public bool Rotate;
-            public bool StaminaRecovery;
-
-            public Restrictions(bool move, bool rotate, bool staminaRecovery)
-            {
-                Move = move;
-                Rotate = rotate;
-                StaminaRecovery = staminaRecovery;
-            }
-        }
-        public Restrictions restrictions = new Restrictions(true, true, true);
-
-        public void SetMovementRestrictionsActive(bool active)
-        {
-            if (Character.Controller.movement == null)
-                return;
-            if (restrictions.Move)
-            {
-                Character.Controller.movement.Stop();
-                Character.Controller.movement.BlockMovementInput = active; // TODO: Misschien beter om het movement component uit te schakelen
-            }
-            if (restrictions.Rotate)
-                Character.Controller.movement.LockFacingDirection = active;
-            if (restrictions.StaminaRecovery) 
-                Character.stamina.allowRecovery = !active;
-        }
-
         public void StartAttack(int attackIndex)
         {
             if (Character.Animator != null)
@@ -346,16 +360,40 @@ namespace RanchyRats.Gyrus
                 Character.Animator.SetInteger("AttackIndex", attackIndex);
                 Character.Animator.SetTrigger("Attack");
             }
-
-            SetMovementRestrictionsActive(true);
+            Attack attack = GetAttack(attackIndex);
+            SetMovementRestrictionsActive(attack, true);
             OnAttackStarted.Invoke();
+            attack.damageObject.gameObject.SetActive(true);
+        }
+
+        public void SetMovementRestrictionsActive(Attack attack, bool active)
+        {
+            if (Character.Controller.movement == null) return;
+
+            if (attack.restrictions.HasFlag(Restrictions.Move))
+            {
+                Character.Controller.movement.Stop();
+                Character.Controller.movement.BlockMovementInput = active; // TODO: Misschien beter om het movement component uit te schakelen
+            }
+            if (attack.restrictions.HasFlag(Restrictions.Rotate))
+                Character.Controller.movement.LockFacingDirection = active;
+            if (attack.restrictions.HasFlag(Restrictions.StaminaRecovery))
+                Character.stamina.allowRecovery = !active;
+        }
+
+        public void ResetMovementRestrictions()
+        {
+            if (Character.Controller.movement == null) return;
+            Character.Controller.movement.BlockMovementInput = false;
+            Character.Controller.movement.LockFacingDirection = false;
+            Character.stamina.allowRecovery = true;
         }
 
         // Would be nice if this was available as a visual scripting block
         // Address this from the Animator, when leaving the attacking state
         public void EndAttack()
         {
-            SetMovementRestrictionsActive(false);
+            ResetMovementRestrictions();
 
             // Immediately update walking direction at end of attack 
             if (Character.Controller.movement != null)

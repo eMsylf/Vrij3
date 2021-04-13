@@ -8,7 +8,7 @@ using UnityEditor;
 using RanchyRats.Gyrus;
 
 namespace Combat {
-    public class Attack : MonoBehaviour
+    public class Damager : MonoBehaviour
     {
         public bool CanMultiHit = false;
         public LayerMask HitsTheseLayers;
@@ -70,12 +70,18 @@ namespace Combat {
 
         private List<Character> charactersHit = new List<Character>();
 
-        public UnityEvent OnAttackLaunched;
+        public UnityEvent OnActivation;
+        public UnityEvent OnDeactivation;
 
         private void OnEnable()
         {
-            OnAttackLaunched.Invoke();
+            OnActivation.Invoke();
             charactersHit.Clear();
+        }
+
+        public void OnDisable()
+        {
+            OnDeactivation.Invoke();
         }
 
         public UnityEvent OnHitEvent;

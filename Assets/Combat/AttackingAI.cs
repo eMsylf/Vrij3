@@ -7,7 +7,7 @@ namespace Combat
 {
     public class AttackingAI : MonoBehaviour
     {
-        public Attack Attack;
+        public Damager Attack;
 
         //public AnimationCurve AttackCurve;
 
