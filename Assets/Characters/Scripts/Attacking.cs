@@ -67,8 +67,10 @@ namespace RanchyRats.Gyrus
         public bool AllowCharging = true;
         public bool IsCharging = false;
         public GameObject ChargeBlockedIndicator;
+        // Number between 0 and 1
         private float latestCharge = 0f;
-        private float chargeTime = 0f;
+        // Raw time of latest charge
+        private float latestChargeTime = 0f;
         private int previousState = -1;
 
         [Header("Attacks")]
@@ -86,7 +88,12 @@ namespace RanchyRats.Gyrus
             public float ChargeRequirement;
         }
         public Attack GetAttack(int index) => (index > attacks.Length - 1) ? attacks[attacks.Length - 1] : attacks[index];
-        public Attack GetAttack(float charge) => attacks.First(x => x.ChargeRequirement < charge);
+        /// <summary>
+        /// Gets the strongest attack that can be used with this amount of charge
+        /// </summary>
+        /// <param name="charge">A number between 0 and 1, indicating the progress of the charge</param>
+        /// <returns>The strongest attack that can be used</returns>
+        public Attack GetAttack(float charge) => attacks.Last(x => x.ChargeRequirement < charge);
 
         [Flags] public enum Restrictions
         {
@@ -182,17 +189,26 @@ namespace RanchyRats.Gyrus
                 return;
             }
 
-            StartCoroutine(DoCharge());
+            // Set charging flag, reset parameters and indicators
+            IsCharging = true;
+            slowmotionStarted = false;
+            ChargeIndicator.SetCurrent(0, true, true);
+            latestCharge = 0f;
+            previousState = -1;
+
+            latestChargeTime = 0f;
             Character.stamina.allowRecovery = false;
+
+            StartCoroutine(DoCharge());
         }
 
         public void EndCharge(bool complete)
         {
-            //if (state != State.Charging)
-            //{
-            //    Debug.Log("No charge to complete");
-            //    return;
-            //}
+            if (!IsCharging)
+            {
+                Debug.Log("Not charging.");
+                return;
+            }
 
             // Once the loop has been exited, stop the slowmotion
             if (slowmotionStarted) TimeManager.Instance.StopSlowmotion();
@@ -200,8 +216,6 @@ namespace RanchyRats.Gyrus
             // Deactivate the charge indicator visual
             if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
                 ChargeIndicator.Visualizer.SetActive(false);
-
-
 
             // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
             if (latestCharge > energyCost.EnergyRequirementTrigger)
@@ -214,30 +228,18 @@ namespace RanchyRats.Gyrus
             sounds.attackChargeSound?.Stop();
             IsCharging = false;
             if (complete)
-            {
                 StartAttack(latestCharge);
-            }
             else
-            {
                 StopCoroutine(DoCharge());
-            }
         }
 
         public IEnumerator DoCharge()
         {
-            // Set charging flag, reset parameters and indicators
-            IsCharging = true;
-            slowmotionStarted = false;
-            ChargeIndicator.SetCurrent(0, true, true);
-            latestCharge = 0f;
-            previousState = -1;
-
-            chargeTime = 0f;
             // Wait until the charge time passes the deadzone
-            while (chargeTime < ChargeDeadzone)
+            while (latestChargeTime < ChargeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
-                chargeTime += Time.unscaledDeltaTime;
+                latestChargeTime += Time.unscaledDeltaTime;
             }
 
             // Start attack charge sound
@@ -256,17 +258,17 @@ namespace RanchyRats.Gyrus
                 yield return new WaitForEndOfFrame();
 
                 if (SlowmotionAffectsCharge)
-                    chargeTime += Time.deltaTime;
+                    latestChargeTime += Time.deltaTime;
                 else
-                    chargeTime += Time.unscaledDeltaTime;
+                    latestChargeTime += Time.unscaledDeltaTime;
 
                 // If the player is standing inside charging prohibitors and cannot fully charge, reset the energy back to the end of the charging deadzone
                 if (ChargingAllowed)
-                    latestCharge = Mathf.Clamp01(chargeTime / ChargeTimeMax);
+                    latestCharge = Mathf.Clamp01(latestChargeTime / ChargeTimeMax);
                 else
                 {
-                    latestCharge = Mathf.Clamp(chargeTime, 0f, ChargeDeadzone);
-                    chargeTime = latestCharge;
+                    latestCharge = Mathf.Clamp(latestChargeTime, 0f, ChargeDeadzone);
+                    latestChargeTime = latestCharge;
                 }
 
                 // If the player does not have the required energy and cannot fully charge, clamp the charge to the limit.
@@ -275,21 +277,29 @@ namespace RanchyRats.Gyrus
                     latestCharge = Mathf.Clamp(latestCharge, 0f, energyCost.EnergyRequirementTrigger);
                 }
 
-                // Evaluate the current charge state
-                int currentChargeState = GetChargeIndex(latestCharge);
+                // TODO: Evaluate the current charge state. Do this using the attack charge requirements, and getting the attack's index
+                //int currentChargeState = GetChargeIndex(latestCharge);
+                //Attack attack = attacks.Last(x => x.ChargeRequirement < latestCharge);
+                //attacks.
+                //attacks.LastOrDefault();
+                //attacks.FindIndex();
+                List<Attack> newAttacks = new List<Attack>();
+                newAttacks.FindLastIndex(0, x => x.ChargeRequirement < latestCharge);
+                newAttacks.FindIndex(x => x.ChargeRequirement < latestCharge);
+
 
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
-                if (currentChargeState != previousState)
-                {
-                    ChargeIndicator.SetCurrent(currentChargeState + 1);
-                    previousState = currentChargeState;
+                //if (currentChargeState != previousState)
+                //{
+                //    ChargeIndicator.SetCurrent(currentChargeState + 1);
+                //    previousState = currentChargeState;
 
-                    //------------------------------------------------------------- Charge ticks
-                    if (currentChargeState == 0) sounds.attackChargeTick1Sound.Play();
-                    else if (currentChargeState == 1) sounds.attackChargeTick2Sound.Play();
-                    else if (currentChargeState == 2) sounds.attackChargeTick3Sound.Play();
-                    else if (currentChargeState == 3) sounds.attackChargeTick4Sound.Play();
-                }
+                //    //------------------------------------------------------------- Charge ticks
+                //    if (currentChargeState == 0) sounds.attackChargeTick1Sound.Play();
+                //    else if (currentChargeState == 1) sounds.attackChargeTick2Sound.Play();
+                //    else if (currentChargeState == 2) sounds.attackChargeTick3Sound.Play();
+                //    else if (currentChargeState == 3) sounds.attackChargeTick4Sound.Play();
+                //}
 
                 // If slowmotion hasn't been started, check if the charge has passed the slowmotion trigger. If so, start slowmotion. If not, stop slowmotion.
                 if (!slowmotionStarted)
@@ -324,23 +334,23 @@ namespace RanchyRats.Gyrus
             }
             Debug.Log("Apply charge zone colors");
 
-            for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
-            {
-                Color currentColor = ChargeZones.colorKeys[i].color;
-                //Debug.Log("Color key " + i + ": " + currentColor);
-                Transform child = chargeObject.transform.GetChild(i);
-                if (child == null)
-                {
-                    Debug.LogError("Charge zone has no child at index " + i, chargeObject);
-                }
-                Graphic graphic = child.GetComponent<Graphic>();
-                if (graphic == null)
-                {
-                    Debug.LogError("Transform child " + i + " of " + chargeObject + " has no Graphic component to set the color of", child);
-                }
-                //Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
-                graphic.color = currentColor;
-            }
+            //for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
+            //{
+            //    Color currentColor = ChargeZones.colorKeys[i].color;
+            //    //Debug.Log("Color key " + i + ": " + currentColor);
+            //    Transform child = chargeObject.transform.GetChild(i);
+            //    if (child == null)
+            //    {
+            //        Debug.LogError("Charge zone has no child at index " + i, chargeObject);
+            //    }
+            //    Graphic graphic = child.GetComponent<Graphic>();
+            //    if (graphic == null)
+            //    {
+            //        Debug.LogError("Transform child " + i + " of " + chargeObject + " has no Graphic component to set the color of", child);
+            //    }
+            //    //Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
+            //    graphic.color = currentColor;
+            //}
         }
 
         public void StartAttack(float charge) => StartAttack(GetAttack(charge));
