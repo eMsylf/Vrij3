@@ -90,7 +90,7 @@ namespace RanchyRats.Gyrus
 
             if (character.attacking != null)
             {
-                Controls.Game.Attack.performed += _ =>      character.attacking.AttemptAttackCharge();
+                Controls.Game.Attack.performed += _ =>      character.attacking.StartCharge();
                 Controls.Game.Attack.canceled += _ =>       character.attacking.EndCharge(true);
             }
 
@@ -122,7 +122,7 @@ namespace RanchyRats.Gyrus
 
             if (character.attacking != null)
             {
-                Controls.Game.Attack.performed -= _ =>      character.attacking.AttemptAttackCharge();
+                Controls.Game.Attack.performed -= _ =>      character.attacking.StartCharge();
                 Controls.Game.Attack.canceled -= _ =>       character.attacking.EndCharge(true);
             }
 

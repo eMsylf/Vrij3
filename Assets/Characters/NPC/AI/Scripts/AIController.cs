@@ -277,7 +277,7 @@ public partial class AIController : MonoBehaviour
         //Debug.Log("Transition to Attack");
         state = States.Attack;
         if (StopWhileAttacking) pathfinding.NavMeshAgent.isStopped = false;
-        CharacterController.attacking?.sounds.PlayAttackSound(0);
+        //CharacterController.attacking?.sounds.PlayAttackSound(0);
     }
     private void Attack()
     {

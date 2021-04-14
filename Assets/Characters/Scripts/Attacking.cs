@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using BobJeltes.Attributes;
+using System.Linq;
 #if UNITY_EDITOR
 #endif
 using Combat;
@@ -13,7 +14,7 @@ namespace RanchyRats.Gyrus
 {
     public class Attacking : CharacterComponent
     {
-        [System.Serializable]
+        [Serializable]
         public struct Sounds
         {
             public FMODUnity.StudioEventEmitter attackChargeSound;
@@ -21,31 +22,20 @@ namespace RanchyRats.Gyrus
             public FMODUnity.StudioEventEmitter attackChargeTick2Sound;
             public FMODUnity.StudioEventEmitter attackChargeTick3Sound;
             public FMODUnity.StudioEventEmitter attackChargeTick4Sound;
-
-            public FMODUnity.StudioEventEmitter attack1Sound;
-            public FMODUnity.StudioEventEmitter attack2Sound;
-            public FMODUnity.StudioEventEmitter attack3Sound;
-
-            public void PlayAttackSound(int index)
-            {
-                if (index == 0) attack1Sound.Play();
-                else if (index == 1) attack2Sound.Play();
-                else if (index == 2) attack3Sound.Play();
-            }
         }
         public Sounds sounds;
 
         [Header("Charging")]
         public Slider ChargeSlider;
-        public Gradient ChargeZones;
+        //public Gradient ChargeZones;
         public Statistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         [Min(0)]
-        public float ChargeTime = 2f;
+        public float ChargeTimeMax = 2f;
         [Tooltip("Time below which a charge will not be initiated")]
         [Min(0)]
         public float ChargeDeadzone = .1f;
-        [System.Serializable]
+        [Serializable]
         public struct EnergyCost
         {
             public EnergyAbsorption energyAbsorption;
@@ -64,7 +54,7 @@ namespace RanchyRats.Gyrus
         }
         public EnergyCost energyCost = new EnergyCost();
 
-        [Tooltip("If true, the charge will slow down like everything else")]
+        [Tooltip("If true, the charge will slow down, along with everything else. If false, the charge continues as quickly in, as it does out of slowmotion.")]
         public bool SlowmotionAffectsCharge = false;
 
         [Range(0f, 1f)]
@@ -78,11 +68,13 @@ namespace RanchyRats.Gyrus
         public bool IsCharging = false;
         public GameObject ChargeBlockedIndicator;
         private float latestCharge = 0f;
+        private float chargeTime = 0f;
+        private int previousState = -1;
 
         [Header("Attacks")]
-        [Tooltip("If true, uses the SingleWeaponObject. Otherwise, uses the attacks from the list.")]
-        public bool SingleWeaponObject = true;
-        public Animator WeaponAnimator;
+        //[Tooltip("WARNING: NOT YET IMPLEMENTED. If true, uses the SingleWeaponObject. Otherwise, uses the attacks from the list.")]
+        //public bool SingleWeaponObject = true;
+        //public Animator WeaponAnimator;
         public Attack[] attacks = new Attack[0];
         [System.Serializable]
         public struct Attack
@@ -90,8 +82,11 @@ namespace RanchyRats.Gyrus
             public int staminaCost;
             public Restrictions restrictions;
             public Damager damageObject;
+            [Range(0f, 1f)]
+            public float ChargeRequirement;
         }
         public Attack GetAttack(int index) => (index > attacks.Length - 1) ? attacks[attacks.Length - 1] : attacks[index];
+        public Attack GetAttack(float charge) => attacks.First(x => x.ChargeRequirement < charge);
 
         [Flags] public enum Restrictions
         {
@@ -124,7 +119,6 @@ namespace RanchyRats.Gyrus
                 attacks[i].damageObject.gameObject.SetActive(false);
                 attacks[i].damageObject.OnDeactivation.AddListener(EndAttack);
             }
-            
         }
 
         private void OnDisable()
@@ -137,19 +131,19 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        int GetChargeIndex(float time)
-        {
-            for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
-            {
-                if (ChargeZones.colorKeys[i].time >= time)
-                {
-                    //Debug.Log("Time: " + time + " index " + i);
-                    return i;
-                }
-            }
-            Debug.Log("No index at time " + time + " found. Returning max: " + (ChargeZones.colorKeys.Length - 1));
-            return ChargeZones.colorKeys.Length - 1;
-        }
+        //int GetChargeIndex(float time)
+        //{
+        //    for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
+        //    {
+        //        if (ChargeZones.colorKeys[i].time >= time)
+        //        {
+        //            //Debug.Log("Time: " + time + " index " + i);
+        //            return i;
+        //        }
+        //    }
+        //    Debug.Log("No index at time " + time + " found. Returning max: " + (ChargeZones.colorKeys.Length - 1));
+        //    return ChargeZones.colorKeys.Length - 1;
+        //}
 
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
         internal List<GameObject> chargeBlockers = new List<GameObject>();
@@ -173,9 +167,23 @@ namespace RanchyRats.Gyrus
                 ChargeBlockedIndicator.SetActive(false);
         }
 
-        internal bool ChargingAllowed()
+        internal bool ChargingAllowed => chargeBlockers.Count == 0;
+
+        public void StartCharge()
         {
-            return chargeBlockers.Count == 0;
+            if (IsCharging)
+            {
+                Debug.Log("Already charging", this);
+                return;
+            }
+
+            if (Character.stamina.IsEmpty(true))
+            {
+                return;
+            }
+
+            StartCoroutine(DoCharge());
+            Character.stamina.allowRecovery = false;
         }
 
         public void EndCharge(bool complete)
@@ -186,17 +194,33 @@ namespace RanchyRats.Gyrus
             //    return;
             //}
 
+            // Once the loop has been exited, stop the slowmotion
+            if (slowmotionStarted) TimeManager.Instance.StopSlowmotion();
+
+            // Deactivate the charge indicator visual
+            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
+                ChargeIndicator.Visualizer.SetActive(false);
+
+
+
+            // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
+            if (latestCharge > energyCost.EnergyRequirementTrigger)
+            {
+                Debug.Log("Detract energy");
+                energyCost.energyAbsorption.Energy -= energyCost.fullChargeCost;
+            }
+
+            // Stop the attack charge sound
+            sounds.attackChargeSound?.Stop();
+            IsCharging = false;
             if (complete)
             {
-                StartAttack(GetChargeIndex(latestCharge));
+                StartAttack(latestCharge);
             }
             else
             {
                 StopCoroutine(DoCharge());
-                ChargeIndicator.SetCurrent(0);
-                if (slowmotionStarted) TimeManager.Instance.StopSlowmotion();
             }
-            IsCharging = false;
         }
 
         public IEnumerator DoCharge()
@@ -205,10 +229,10 @@ namespace RanchyRats.Gyrus
             IsCharging = true;
             slowmotionStarted = false;
             ChargeIndicator.SetCurrent(0, true, true);
-            float chargeTime = 0f;
             latestCharge = 0f;
-            int previousChargeState = -1;
+            previousState = -1;
 
+            chargeTime = 0f;
             // Wait until the charge time passes the deadzone
             while (chargeTime < ChargeDeadzone)
             {
@@ -237,8 +261,8 @@ namespace RanchyRats.Gyrus
                     chargeTime += Time.unscaledDeltaTime;
 
                 // If the player is standing inside charging prohibitors and cannot fully charge, reset the energy back to the end of the charging deadzone
-                if (ChargingAllowed())
-                    latestCharge = Mathf.Clamp01(chargeTime / ChargeTime);
+                if (ChargingAllowed)
+                    latestCharge = Mathf.Clamp01(chargeTime / ChargeTimeMax);
                 else
                 {
                     latestCharge = Mathf.Clamp(chargeTime, 0f, ChargeDeadzone);
@@ -255,17 +279,16 @@ namespace RanchyRats.Gyrus
                 int currentChargeState = GetChargeIndex(latestCharge);
 
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
-                if (currentChargeState != previousChargeState)
+                if (currentChargeState != previousState)
                 {
                     ChargeIndicator.SetCurrent(currentChargeState + 1);
-                    previousChargeState = currentChargeState;
+                    previousState = currentChargeState;
 
                     //------------------------------------------------------------- Charge ticks
                     if (currentChargeState == 0) sounds.attackChargeTick1Sound.Play();
                     else if (currentChargeState == 1) sounds.attackChargeTick2Sound.Play();
                     else if (currentChargeState == 2) sounds.attackChargeTick3Sound.Play();
                     else if (currentChargeState == 3) sounds.attackChargeTick4Sound.Play();
-
                 }
 
                 // If slowmotion hasn't been started, check if the charge has passed the slowmotion trigger. If so, start slowmotion. If not, stop slowmotion.
@@ -285,24 +308,10 @@ namespace RanchyRats.Gyrus
                         TimeManager.Instance.StopSlowmotion();
                     }
                 }
+
+                // IDEA: To prevent players from holding their charge indefinitely, make the charge cost stamina for every realtime second held while it's fully charged
+                if (latestCharge == 1f) Character.stamina.Use(1);
             }
-
-            // Once the loop has been exited, stop the slowmotion
-            TimeManager.Instance.StopSlowmotion();
-
-            // Deactivate the charge indicator visual
-            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
-                ChargeIndicator.Visualizer.SetActive(false);
-
-            // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
-            if (latestCharge > energyCost.EnergyRequirementTrigger)
-            {
-                Debug.Log("Detract energy");
-                energyCost.energyAbsorption.Energy -= energyCost.fullChargeCost;
-            }
-
-            // Stop the attack charge sound
-            sounds.attackChargeSound?.Stop();
         }
 
         public void ApplyChargeZoneColors()
@@ -334,34 +343,16 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        public void AttemptAttackCharge()
-        {
-            if (IsCharging)
-            {
-                Debug.Log("Already charging", this);
-                return;
-            }
+        public void StartAttack(float charge) => StartAttack(GetAttack(charge));
 
-            if (Character.stamina.IsEmpty(true))
-            {
-                return;
-            }
-            // TODO: Get stamina use from attack?
-            Character.stamina.Use(1);
+        public void StartAttack(int attackIndex) => StartAttack(GetAttack(attackIndex));
 
-            StartCoroutine(DoCharge());
-            Character.stamina.allowRecovery = false;
-        }
-
-        public void StartAttack(int attackIndex)
+        public void StartAttack(Attack attack)
         {
             if (Character.Animator != null)
-            {
-                Character.Animator.SetInteger("AttackIndex", attackIndex);
                 Character.Animator.SetTrigger("Attack");
-            }
-            Attack attack = GetAttack(attackIndex);
             SetMovementRestrictionsActive(attack, true);
+            Character.stamina.Use(attack.staminaCost);
             OnAttackStarted.Invoke();
             attack.damageObject.gameObject.SetActive(true);
         }
