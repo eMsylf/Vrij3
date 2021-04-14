@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RanchyRats.Gyrus
 {
     [RequireComponent(typeof(Character))]
-    public class CharacterComponent : MonoBehaviour
+    public abstract class CharacterComponent : MonoBehaviour
     {
         private Character character;
         public Character Character

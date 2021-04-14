@@ -5,7 +5,7 @@ using BobJeltes.StandardUtilities;
 
 public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
 {
-    public FMODUnity.StudioEventEmitter musicEmitter;
+    //public FMODUnity.StudioEventEmitter musicEmitter;
 
     public float AnxStart = 0f;
     public float BattleStart = 0f;
@@ -20,13 +20,13 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
 
     void Start()
     {
-        if (Instance.musicEmitter == null)
-        {
-            Debug.LogError("MusicEmitter is Missing");
-            return;
-        }
+        //if (Instance.musicEmitter == null)
+        //{
+        //    Debug.LogError("MusicEmitter is Missing");
+        //    return;
+        //}
         
-        Instance.musicEmitter.Play();
+        //Instance.musicEmitter.Play();
 
         if (useStartValues)
         {
@@ -36,10 +36,10 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
 
     private void Set(string parameterName, float level)
     {
-        musicEmitter.SetParameter(parameterName, level);
-        //Debug.Log("Attempt to set " + parameterName + " level to " + level);
-        musicEmitter.EventInstance.getParameterByName(parameterName, out float newValue);
-        //Debug.Log(parameterName + " level set to " + newValue);
+        //musicEmitter.SetParameter(parameterName, level);
+        ////Debug.Log("Attempt to set " + parameterName + " level to " + level);
+        //musicEmitter.EventInstance.getParameterByName(parameterName, out float newValue);
+        ////Debug.Log(parameterName + " level set to " + newValue);
     }
 
     //Bind the two FMOD parameters to functions called "Anxiety" and "Curiousity"
@@ -52,8 +52,8 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
 
     public void AdjustAnxiety(float adjustment)
     {
-        Instance.musicEmitter.EventInstance.getParameterByName(AnxietyName, out float currentAnxietyLevel);
-        Instance.Set(AnxietyName, currentAnxietyLevel + adjustment);
+        //Instance.musicEmitter.EventInstance.getParameterByName(AnxietyName, out float currentAnxietyLevel);
+        //Instance.Set(AnxietyName, currentAnxietyLevel + adjustment);
     }
     #endregion
 
@@ -66,8 +66,8 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
 
     public void AdjustCuriosity(float curiousityLevel)
     {
-        Instance.musicEmitter.EventInstance.getParameterByName(CuriosityName, out float currentLevel);
-        Instance.Set(CuriosityName, currentLevel + curiousityLevel);
+        //Instance.musicEmitter.EventInstance.getParameterByName(CuriosityName, out float currentLevel);
+        //Instance.Set(CuriosityName, currentLevel + curiousityLevel);
     }
     #endregion
 
@@ -82,8 +82,8 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
     public void AdjustBattle(float battleLevel)
     {
         if (Instance == null) return;
-        Instance.musicEmitter.EventInstance.getParameterByName(BattleName, out float currentLevel);
-        Instance.Set(BattleName, currentLevel + battleLevel);
+        //Instance.musicEmitter.EventInstance.getParameterByName(BattleName, out float currentLevel);
+        //Instance.Set(BattleName, currentLevel + battleLevel);
     }
     #endregion
 
@@ -91,8 +91,8 @@ public class PlayMusicScriptLegacy : Singleton<PlayMusicScriptLegacy>
     {
         if (Instance == null)
             return;
-        if (Instance.musicEmitter == null)
-            return;
-        Instance.musicEmitter.EventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT); //Let the track fade out instead of stopping immediately on destroy
+        //if (Instance.musicEmitter == null)
+        //    return;
+        //Instance.musicEmitter.EventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT); //Let the track fade out instead of stopping immediately on destroy
     }
 }

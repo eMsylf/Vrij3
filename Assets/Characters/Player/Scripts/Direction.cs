@@ -2,56 +2,65 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Direction : MonoBehaviour
+namespace RanchyRats.Gyrus
 {
-    public Transform DirectionIndicator;
-    public float distance = 1f;
-    public void UpdatePosition(Vector3 position)
+    public class Direction : MonoBehaviour
     {
-        DirectionIndicator.localPosition = position * distance;
-    }
+        public Transform DirectionIndicator;
+        public float distance = 1f;
+        public void UpdatePosition(Vector3 position)
+        {
+            if (DirectionIndicator == null)
+            {
+                DirectionIndicator = new GameObject("Direction indicator").transform;
+                DirectionIndicator.parent = transform;
+            }
 
-    //public LookDirection DefaultDirection;
-    //public List<LookDirection> Directions;
+            DirectionIndicator.localPosition = position * distance;
+        }
 
-    //public ELookDirection LookDirection;
+        //public LookDirection DefaultDirection;
+        //public List<LookDirection> Directions;
 
-    //public ELookDirection UpdateLookDirection(Vector2 movement)
-    //{
-    //    // Set movement indicator local position
-    //    DirectionIndicator.localPosition = new Vector3(movement.x, 0f, movement.y);
+        //public ELookDirection LookDirection;
 
-    //    // If no input is given, return the default lookdirection (South by default)
-    //    if (movement == Vector2.zero)
-    //        return default;
+        //public ELookDirection UpdateLookDirection(Vector2 movement)
+        //{
+        //    // Set movement indicator local position
+        //    DirectionIndicator.localPosition = new Vector3(movement.x, 0f, movement.y);
 
-    //    // Define a distance to beat, that can be commpared to by new measurements to see which look direction is closest to the input movement
-    //    float distanceToBeat = Mathf.Infinity;
-    //    LookDirection closestLookDirection = null;
-    //    // Look through all lookdirection objects
-    //    foreach (LookDirection lookDirectionObj in Directions)
-    //    {
-    //        float distanceToDirection = Vector3.Distance(DirectionIndicator.position, lookDirectionObj.transform.position);
-    //        if (distanceToDirection < distanceToBeat)
-    //        {
-    //            distanceToBeat = distanceToDirection;
-    //            closestLookDirection = lookDirectionObj;
-    //        }
-    //    }
-    //    //Debug.Log("Update move direction: " + closestLookDirection.Direction);
-    //    LookDirection = closestLookDirection.Direction;
+        //    // If no input is given, return the default lookdirection (South by default)
+        //    if (movement == Vector2.zero)
+        //        return default;
 
-    //    return closestLookDirection.Direction;
-    //}
+        //    // Define a distance to beat, that can be commpared to by new measurements to see which look direction is closest to the input movement
+        //    float distanceToBeat = Mathf.Infinity;
+        //    LookDirection closestLookDirection = null;
+        //    // Look through all lookdirection objects
+        //    foreach (LookDirection lookDirectionObj in Directions)
+        //    {
+        //        float distanceToDirection = Vector3.Distance(DirectionIndicator.position, lookDirectionObj.transform.position);
+        //        if (distanceToDirection < distanceToBeat)
+        //        {
+        //            distanceToBeat = distanceToDirection;
+        //            closestLookDirection = lookDirectionObj;
+        //        }
+        //    }
+        //    //Debug.Log("Update move direction: " + closestLookDirection.Direction);
+        //    LookDirection = closestLookDirection.Direction;
 
-    //public ELookDirection GetLookDirection()
-    //{
-    //    return LookDirection;
-    //}
+        //    return closestLookDirection.Direction;
+        //}
 
-    private void OnDrawGizmosSelected()
-    {
-        //Gizmos.DrawLine();
+        //public ELookDirection GetLookDirection()
+        //{
+        //    return LookDirection;
+        //}
+
+        private void OnDrawGizmosSelected()
+        {
+            //Gizmos.DrawLine();
+        }
     }
 }
 //public enum ELookDirection
