@@ -25,6 +25,8 @@ namespace RanchyRats.Gyrus
         }
         public Sounds sounds;
 
+        public FMODUnity.StudioEventEmitter[] chargeTicks = new FMODUnity.StudioEventEmitter[0];
+
         [Header("Charging")]
         public Slider ChargeSlider;
         //public Gradient ChargeZones;
@@ -71,13 +73,13 @@ namespace RanchyRats.Gyrus
         private float latestCharge = 0f;
         // Raw time of latest charge
         private float latestChargeTime = 0f;
-        private int previousState = -1;
+        private int previousIndex = -1;
 
         [Header("Attacks")]
         //[Tooltip("WARNING: NOT YET IMPLEMENTED. If true, uses the SingleWeaponObject. Otherwise, uses the attacks from the list.")]
         //public bool SingleWeaponObject = true;
         //public Animator WeaponAnimator;
-        public Attack[] attacks = new Attack[0];
+        public List<Attack> attacks = new List<Attack>();
         [System.Serializable]
         public struct Attack
         {
@@ -87,13 +89,18 @@ namespace RanchyRats.Gyrus
             [Range(0f, 1f)]
             public float ChargeRequirement;
         }
-        public Attack GetAttack(int index) => (index > attacks.Length - 1) ? attacks[attacks.Length - 1] : attacks[index];
+        public Attack GetAttack(int index) => (index > attacks.Count - 1) ? attacks[attacks.Count - 1] : attacks[index];
+
         /// <summary>
         /// Gets the strongest attack that can be used with this amount of charge
         /// </summary>
         /// <param name="charge">A number between 0 and 1, indicating the progress of the charge</param>
         /// <returns>The strongest attack that can be used</returns>
-        public Attack GetAttack(float charge) => attacks.Last(x => x.ChargeRequirement < charge);
+        public Attack GetAttack(float charge)
+        {
+            attacks.OrderBy(x => x.ChargeRequirement);
+            return attacks.Last(x => x.ChargeRequirement <= charge);
+        }
 
         [Flags] public enum Restrictions
         {
@@ -120,7 +127,7 @@ namespace RanchyRats.Gyrus
         {
             ClearChargeBlockers();
             // Deactivate all damage objects and add a callback to EndAttack for when the object is set to inactive next time
-            for (int i = 0; i < attacks.Length; i++)
+            for (int i = 0; i < attacks.Count; i++)
             {
                 if (attacks[i].damageObject == null) continue;
                 attacks[i].damageObject.gameObject.SetActive(false);
@@ -131,7 +138,7 @@ namespace RanchyRats.Gyrus
         private void OnDisable()
         {
             EndCharge(false);
-            for (int i = 0; i < attacks.Length; i++)
+            for (int i = 0; i < attacks.Count; i++)
             {
                 if (attacks[i].damageObject == null) continue;
                 attacks[i].damageObject.OnDeactivation.RemoveListener(EndAttack);
@@ -194,7 +201,7 @@ namespace RanchyRats.Gyrus
             slowmotionStarted = false;
             ChargeIndicator.SetCurrent(0, true, true);
             latestCharge = 0f;
-            previousState = -1;
+            previousIndex = -1;
 
             latestChargeTime = 0f;
             Character.stamina.allowRecovery = false;
@@ -278,28 +285,21 @@ namespace RanchyRats.Gyrus
                 }
 
                 // TODO: Evaluate the current charge state. Do this using the attack charge requirements, and getting the attack's index
-                //int currentChargeState = GetChargeIndex(latestCharge);
-                //Attack attack = attacks.Last(x => x.ChargeRequirement < latestCharge);
-                //attacks.
-                //attacks.LastOrDefault();
-                //attacks.FindIndex();
-                List<Attack> newAttacks = new List<Attack>();
-                newAttacks.FindLastIndex(0, x => x.ChargeRequirement < latestCharge);
-                newAttacks.FindIndex(x => x.ChargeRequirement < latestCharge);
-
+                int currentIndex = attacks.FindIndex(x => x.Equals(GetAttack(latestCharge)));
 
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
-                //if (currentChargeState != previousState)
-                //{
-                //    ChargeIndicator.SetCurrent(currentChargeState + 1);
-                //    previousState = currentChargeState;
+                if (currentIndex != previousIndex)
+                {
+                    ChargeIndicator.SetCurrent(currentIndex + 1);
+                    previousIndex = currentIndex;
 
-                //    //------------------------------------------------------------- Charge ticks
-                //    if (currentChargeState == 0) sounds.attackChargeTick1Sound.Play();
-                //    else if (currentChargeState == 1) sounds.attackChargeTick2Sound.Play();
-                //    else if (currentChargeState == 2) sounds.attackChargeTick3Sound.Play();
-                //    else if (currentChargeState == 3) sounds.attackChargeTick4Sound.Play();
-                //}
+                    // Converts the latest charge (0 - 1) to an index in the chargeTicks array, and picks the closest one.
+                    float chargeToSoundIndex = latestCharge * chargeTicks.Length;
+                    int chargeTickIndex = Mathf.RoundToInt(chargeToSoundIndex);
+                    //------------------------------------------------------------- Charge ticks
+                    Mathf.Clamp(chargeTickIndex, 0, chargeTicks.Length - 1);
+                    chargeTicks[chargeTickIndex].Play();
+                }
 
                 // If slowmotion hasn't been started, check if the charge has passed the slowmotion trigger. If so, start slowmotion. If not, stop slowmotion.
                 if (!slowmotionStarted)
