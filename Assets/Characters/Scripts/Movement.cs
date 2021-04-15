@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
-using Combat;
 using System.Collections;
 using UnityEngine.Events;
+using Gyrus.Combat;
 
 namespace RanchyRats.Gyrus
 {

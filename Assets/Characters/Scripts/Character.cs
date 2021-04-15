@@ -1,9 +1,9 @@
-﻿using Combat;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using BobJeltes.Extensions;
+using Gyrus.Combat;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

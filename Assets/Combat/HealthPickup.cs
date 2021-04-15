@@ -1,5 +1,4 @@
-﻿using Combat;
-using RanchyRats.Gyrus;
+﻿using RanchyRats.Gyrus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

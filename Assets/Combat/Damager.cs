@@ -7,12 +7,13 @@ using UnityEngine.Events;
 using UnityEditor;
 using RanchyRats.Gyrus;
 
-namespace Combat {
+namespace Gyrus.Combat
+{
     public class Damager : MonoBehaviour
     {
         public bool CanMultiHit = false;
         public LayerMask HitsTheseLayers;
-        
+
         [Min(0f)]
         public float InvincibilityTime = 0f;
 
@@ -48,13 +49,13 @@ namespace Combat {
 
         public Effect effect = Effect.Health;
         // if (effect != Effect.Health)
-            [HideInInspector]
+        [HideInInspector]
         public int Damage = 1;
         // if (effect != Effect.Stamina)
-            [HideInInspector]
+        [HideInInspector]
         public int StaminaReduction = 1;
         // if (effect != Effect.MovementSpeedReduction
-            [HideInInspector]
+        [HideInInspector]
         [Range(0f, 1f)]
         public float MovementSpeedReduction = 1f;
 
@@ -88,7 +89,7 @@ namespace Combat {
 
         private void OnTriggerEnter(Collider other)
         {
-            if (HitsTheseLayers != (HitsTheseLayers.value | (1 << other.gameObject.layer)))
+            if (HitsTheseLayers != (HitsTheseLayers.value | 1 << other.gameObject.layer))
             {
                 //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
                 //Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);
@@ -159,7 +160,7 @@ namespace Combat {
                     Debug.Log("Reduce movement speed by " + MovementSpeedReduction);
                     break;
             }
-            
+
             if (CameraShake.enabled)
                 Camera.main.DOShakePosition(CameraShake.Duration, CameraShake.Strength);
             if (HitStun.enabled)
@@ -174,7 +175,7 @@ namespace Combat {
                 forceVector += (rigidbody.position - transform.position) * attackForce.outwardForceMultiplier;
             if (attackForce.multiplier != 0f)
                 forceVector += GetForceVector(attackForce.direction);
-            
+
             rigidbody.AddForce(forceVector, attackForce.forceMode);
         }
 
@@ -222,7 +223,7 @@ namespace Combat {
 
                 Vector3 lookDir = forceVector * (attackForce.multiplier >= 0f ? 1f : -1f);
                 Handles.ArrowHandleCap(0, toPosition, Quaternion.LookRotation(lookDir), attackForce.multiplier, EventType.Repaint);
-                
+
             }
             if (attackForce.outwardForceMultiplier != 0f)
             {

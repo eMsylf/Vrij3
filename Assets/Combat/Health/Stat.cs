@@ -3,9 +3,9 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Combat
+namespace Gyrus.Combat
 {
-    [System.Serializable]
+    [Serializable]
     public class Stat : MonoBehaviour
     {
         [SerializeField]

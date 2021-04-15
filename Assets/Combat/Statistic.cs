@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Combat
+namespace Gyrus.Combat
 {
-    [System.Serializable]
+    [Serializable]
     public class Statistic
     {
         public int max = 4;
@@ -31,7 +31,7 @@ namespace Combat
         public void SetCurrent(int value, bool updateVisual, bool animate)
         {
             current = value;
-            if (updateVisual) 
+            if (updateVisual)
                 UpdateVisual(animate);
         }
 
@@ -90,5 +90,5 @@ namespace Combat
             }
         }
     }
-    
+
 }

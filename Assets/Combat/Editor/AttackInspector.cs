@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using Combat;
+using Gyrus.Combat;
 
 [CanEditMultipleObjects]
 [CustomEditor(typeof(Damager))]
