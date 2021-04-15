@@ -12,36 +12,46 @@ namespace RanchyRats.Gyrus
     public partial class Movement : CharacterComponent
     {
         public bool BlockMovementInput = false;
-        internal Vector2 Input;
-        internal Vector2 FacingDirection = new Vector2(0f, 1f);
+        [Tooltip("If the movement is being controlled by a NavMeshAgent component, the movement animation is still updated through this component but the movement is not applied to the rigidbody.")]
+        public bool MovementByNavMeshAgent = false;
+        internal Vector2 Input = Vector2.zero;
+        internal Vector2 FacingDirection = Vector2.up;
+        internal Vector3 playerMovement
+        {
+            get
+            {
+                // If the player is currently dodging and no input was pressed at the beginning of the dodge, return the selected default dodge
+                if (state == State.Dodging && Input == Vector2.zero)
+                {
+                    if (defaultDodgeDirection == DefaultDodgeDirection.ToCamera) return new Vector2(0f, -1f) * CurrentStateSettings.speed;
+                    return -FacingDirection.XYToXZ() * CurrentStateSettings.speed;
+                }
+                // Otherwise, return the regular movement
+                return Input.XYToXZ() * CurrentStateSettings.speed;
+            }
+        }
+
         internal enum DefaultDodgeDirection { Backward, ToCamera }
         [SerializeField] internal DefaultDodgeDirection defaultDodgeDirection = DefaultDodgeDirection.Backward;
-        internal Vector2 DodgeDirection;
+
+        [System.Serializable]
+        public struct Events
+        {
+            public UnityEvent OnDodgeStarted;
+            public UnityEvent OnDodgeCompleted;
+        }
 
         // TODO: Use charachter stamina instead of separate reference
         public Stat Stamina;
 
         public Direction Direction;
 
-        public struct Sounds
-        {
-            public StudioEventEmitter Footstep;
-            public StudioEventEmitter Dodge;
-        }
-        public Sounds sounds;
-
-        private float timeBeforeNextFootstep;
-
         //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something.
         public ParticleSystem dust;
-        public void CreateDust()
-        {
-            dust.Play();
-        }
 
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
         Rigidbody rigidbody;
-        Rigidbody Rigidbody
+        public Rigidbody Rigidbody
         {
             get
             {
@@ -65,21 +75,27 @@ namespace RanchyRats.Gyrus
         public MovementStateSettings StoppedSettings = new MovementStateSettings(0, 0);
         public MovementStateSettings WalkingSettings = new MovementStateSettings(1f, .5f);
         public MovementStateSettings RunningSettings = new MovementStateSettings(1.5f, .25f);
+        public float runningAnimationMultiplier = 1.5f;
+        private float runStaminaDrainTimeRemaining;
         public MovementStateSettings DodgingSettings = new MovementStateSettings(2f, 0, true, .3f, State.Stopped, true, 1, 0);
+        public Events dodgeEvents;
 
+        public MovementStateSettings CurrentStateSettings
+        {
+            get
+            {
+                return GetStateSettings(state);
+            }
+        }
         public MovementStateSettings GetStateSettings(State state)
         {
             switch (state)
             {
-                case State.Stopped:
                 default:
-                    return StoppedSettings;
-                case State.Walking:
-                    return WalkingSettings;
-                case State.Running:
-                    return RunningSettings;
-                case State.Dodging:
-                    return DodgingSettings;
+                case State.Stopped: return StoppedSettings;
+                case State.Walking: return WalkingSettings;
+                case State.Running: return RunningSettings;
+                case State.Dodging: return DodgingSettings;
             }
         }
 
@@ -90,47 +106,16 @@ namespace RanchyRats.Gyrus
 
         private void FixedUpdate()
         {
-            Vector3 playerMovement = GetTopDownMovement(Input, state) * GetStateSettings(state).speed;
-            // TODO: Deze camera-relatieve berekening moet uitgevoerd worden in de Player Controller. De movement hoort dat niet te doen, omdat de AI geen camera heeft.
+            if (MovementByNavMeshAgent)
+                return;
+            // TODO: De camera kan worden doorgegeven vanuit... ergens
             Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
         }
 
         private void Update()
         {
-            ManageFootstepSound();
-            switch (state)
-            {
-                case State.Stopped:
-                case State.Dodging:
-                    break;
-                case State.Walking:
-                    break;
-                case State.Running:
-                    // TODO: Manage footstep sounds here too
-                    ManageRunningStaminaDrain();
-                    break;
-            }
+            ManageRunningStaminaDrain();
         }
-
-        #region It would be nice if I could combine these somehow
-        internal Vector3 GetTopDownMovement(Vector2 input, State state)
-        {
-            Vector3 movement = Vector3.zero;
-            switch (state)
-            {
-                case State.Walking:
-                    movement = new Vector3(input.x, 0f, input.y);
-                    break;
-                case State.Running:
-                    movement = new Vector3(input.x, 0f, input.y);
-                    break;
-                case State.Dodging:
-                    movement = new Vector3(DodgeDirection.x, 0f, DodgeDirection.y);
-                    break;
-            }
-            return movement;
-        }
-        #endregion
 
         // Wanneer een aanval eindigt moet de input van de speler gelezen worden zodat de speler gelijk doorgaat met bewegen als de stick in een richting gehouden wordt tijdens de aanval. Zonder dit blijft de speler stilstaan.
         public void ForceReadMoveInput()
@@ -140,7 +125,12 @@ namespace RanchyRats.Gyrus
 
             Vector2 input = (Character.Controller.PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
             if (input != Vector2.zero)
+            {
                 SetMoveInput(input);
+                bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Started;
+                if (run)
+                    StartRunning();
+            }
             else
                 Stop();
         }
@@ -152,81 +142,56 @@ namespace RanchyRats.Gyrus
                 //Debug.LogWarning("Tried to move while input was not accepted");
                 return;
             }
-            //Debug.Log("Input: " + input);
 
-            switch (state)
-            {
-                case State.Dodging:
-                    Debug.Log("Player can't move while " + state.ToString());
-                    return;
-                case State.Stopped:
-                    state = State.Walking;
-                    break;
-                case State.Walking:
-                    break;
-            }
             Input = input;
-            if (Character.Animator != null)
-                Character.Animator.SetBool("IsWalking", true);
+            if (Character.Animator != null) Character.Animator.SetBool("IsWalking", Input != Vector2.zero);
+            if (Input == Vector2.zero)
+            {
+                state = State.Stopped;
+                return;
+            }
+
+            if (state == State.Stopped) state = State.Walking;
+
             UpdateFacingDirection(Input);
         }
 
         public void Stop()
         {
-            //Debug.Log("Stop!");
             Input = Vector2.zero;
-            //UpdateAnimatorDirection(Direction.UpdateLookDirection(MovementInput));
             state = State.Stopped;
             if (Character.Animator != null)
                 Character.Animator.SetBool("IsWalking", false);
-            if (sounds.Footstep != null) sounds.Footstep.Stop();
-
         }
-
-        // TODO: Dit hoort hier niet ieuw vies
-        public float runningAnimationMultiplier = 1.5f;
-        private float runStaminaDrainTime;
 
         public void StartRunning()
         {
-            if (Stamina == null)
-                return;
-            if (Stamina.IsEmpty(false))
-                return;
-
+            if (state == State.Dodging) return;
             state = State.Running;
+            if (RunningSettings.drainsStamina && Stamina != null && Stamina.IsEmpty(false))
+                return;
+            runStaminaDrainTimeRemaining = GetStateSettings(State.Running).staminaDrainInterval;
             Character.Animator.SetFloat("RunningMultiplier", runningAnimationMultiplier);
-            Stamina.allowRecovery = false;
-            timeBeforeNextFootstep = 0f;
-            //Debug.Log("Running: " + enabled, this);
-            runStaminaDrainTime = GetStateSettings(State.Running).staminaDrainInterval;
         }
 
         public void StopRunning()
         {
-            switch (state)
-            {
-                case State.Stopped:
-                default:
-                case State.Walking:
-                case State.Dodging:
-                    break;
-                case State.Running:
-                    state = State.Walking;
-                    break;
-            }
+            if (state == State.Running) state = State.Walking;
             Character.Animator.SetFloat("RunningMultiplier", 1f);
         }
 
         private void ManageRunningStaminaDrain()
         {
+            if (state != State.Running) return;
+            if (!RunningSettings.drainsStamina)
+                return;
             // TODO: Implement stamina drain settings
-            runStaminaDrainTime -= Time.deltaTime;
+            runStaminaDrainTimeRemaining -= Time.deltaTime;
 
-            if (runStaminaDrainTime <= 0f)
+            if (runStaminaDrainTimeRemaining <= 0f)
             {
-                runStaminaDrainTime = GetStateSettings(State.Running).staminaDrainInterval;
-                Stamina.Use(1);
+                runStaminaDrainTimeRemaining = GetStateSettings(State.Running).staminaDrainInterval;
+                Stamina.Use(GetStateSettings(State.Running).staminaDrainAmount);
 
                 if (Stamina.IsEmpty(true))
                 {
@@ -239,17 +204,12 @@ namespace RanchyRats.Gyrus
         {
             switch (state)
             {
-                // Dodging is allowed when
-                case State.Stopped:
-                case State.Walking:
-                case State.Running:
-                    break;
                 // Dodging is not allowed when
                 case State.Dodging:
                     return;
             }
 
-            if (Stamina != null && Stamina.IsEmpty(true))
+            if (DodgingSettings.drainsStamina && Stamina != null && Stamina.IsEmpty(true))
             {
                 //Debug.Log("Insufficient stamina to dodge");
                 //-----------------------------------------------   Out of Stamina
@@ -257,68 +217,38 @@ namespace RanchyRats.Gyrus
                 return;
             }
 
-            StartCoroutine(Dodge(GetStateSettings(State.Dodging).duration));
+            StartCoroutine(DoDodge(GetStateSettings(State.Dodging).duration));
         }
 
-        public UnityEvent OnDodgeStarted;
-        public UnityEvent OnDodgeCompleted;
-
-        private IEnumerator Dodge(float duration)
+        private IEnumerator DoDodge(float duration)
         {
             state = State.Dodging;
-            Stamina.Use(1);
-            CreateDust();
+
+            if (Stamina != null) Stamina.Use(GetStateSettings(state).staminaDrainAmount);
+            if (dust != null) dust.Play();
+
+            if (Character.Controller.attacking != null)
+                Character.Controller.attacking.EndCharge(false);
+
             BlockMovementInput = true;
 
-            sounds.Dodge.Play();
-            // TODO: Move charge interruption to PlayerController
-            OnDodgeStarted.Invoke();
-            //attacking.InterruptCharge();
-            if (Input == Vector2.zero)
-            {
-                NeutralDodge();
-            }
-            else
-            {
-                DirectionalDodge(Input);
-            }
-
+            dodgeEvents.OnDodgeStarted.Invoke();
             yield return new WaitForSeconds(duration);
-            state = State.Stopped;
+            dodgeEvents.OnDodgeCompleted.Invoke();
+
             BlockMovementInput = false;
-            OnDodgeCompleted.Invoke();
-            // TODO: Update movement input
-            //UpdateMoveInput();
-        }
-
-        private void NeutralDodge()
-        {
-            switch (defaultDodgeDirection)
-            {
-                case DefaultDodgeDirection.Backward:
-                    DirectionalDodge(FacingDirection * -1f);
-                    break;
-                case DefaultDodgeDirection.ToCamera:
-                    DirectionalDodge(new Vector2(0f, -1f));
-                    break;
-            }
-        }
-
-        private void DirectionalDodge(Vector2 direction)
-        {
-            //if (Direction == null)
-            //{
-            //    Debug.LogError("Direction indicator is null");
-            //    return;
-            //}
-            DodgeDirection = direction.normalized;
+            ForceReadMoveInput();
+            if (dust != null) dust.Stop();
         }
 
         public void UpdateDirectionIndicator(Vector2 facingDirection)
         {
             if (Direction == null)
             {
-                Debug.LogError("Direction indicator is null");
+                Debug.LogWarning("Direction indicator is null. Adding...", Direction);
+                Direction = new GameObject("Direction Indicator").AddComponent<Direction>();
+                Direction.transform.parent = transform;
+                Direction.transform.position = Vector3.zero;
                 return;
             }
             Direction.UpdatePosition(new Vector3(facingDirection.x, 0f, facingDirection.y));
@@ -331,27 +261,11 @@ namespace RanchyRats.Gyrus
                 return;
 
             FacingDirection = direction;
-            //TODO: Doe dit niet wanneer de speler aan het aanvallen is
             UpdateDirectionIndicator(FacingDirection);
             if (Character.Animator == null)
                 return;
             Character.Animator.SetFloat("Hor", direction.x);
             Character.Animator.SetFloat("Vert", direction.y);
-        }
-
-        public void ManageFootstepSound()
-        {
-            if (sounds.Footstep == null)
-                return;
-
-            if (timeBeforeNextFootstep > 0f)
-            {
-                timeBeforeNextFootstep -= Time.deltaTime;
-                return;
-            }
-
-            sounds.Footstep.Play();
-            timeBeforeNextFootstep = GetStateSettings(state).footstepInterval;
         }
     }
 }

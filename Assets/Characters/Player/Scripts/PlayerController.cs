@@ -65,8 +65,8 @@ namespace RanchyRats.Gyrus
                 return;
             }
 #endif
-            Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !enabled;
+            Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
         }
 
         public void AssumePlayerControl(CharacterController character, bool addToList = true)
@@ -88,7 +88,7 @@ namespace RanchyRats.Gyrus
                 Controls.Game.Run.canceled += _ =>          character.movement.StopRunning();
             }
 
-            if (character.attacking != null) 
+            if (character.attacking != null)
             {
                 Controls.Game.Attack.performed += _ =>      character.attacking.AttemptAttackCharge();
                 Controls.Game.Attack.canceled += _ =>       character.attacking.EndCharge(true);
@@ -101,7 +101,9 @@ namespace RanchyRats.Gyrus
 
         public void RevokePlayerControl(CharacterController character, bool removeFromList = true)
         {
-            if (character == null || controlledCharacters.Contains(character))
+            if (character == null)
+                return;
+            if (!controlledCharacters.Contains(character))
             {
                 Debug.Log(character.name + " is not being controlled by player controller", this);
                 return;

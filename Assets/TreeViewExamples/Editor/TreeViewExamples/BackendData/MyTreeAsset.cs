@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UnityEditor.TreeViewExamples
 {
 	
-	[CreateAssetMenu (fileName = "TreeDataAsset", menuName = "Tree Asset", order = 1)]
+	[CreateAssetMenu (fileName = "TreeDataAsset", menuName = "Unity Tree View Examples/Tree Asset", order = 1)]
 	public class MyTreeAsset : ScriptableObject
 	{
 		[SerializeField] List<MyTreeElement> m_TreeElements = new List<MyTreeElement> ();

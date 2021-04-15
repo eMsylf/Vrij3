@@ -92,9 +92,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""Run"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""dc494ec4-8df4-493a-998d-7c21622c1000"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Digital"",
                     ""processors"": """",
                     ""interactions"": """"
                 }

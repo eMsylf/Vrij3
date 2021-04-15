@@ -39,21 +39,37 @@ namespace RanchyRats.Gyrus
         public Gradient ChargeZones;
         public Statistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
+        [Min(0)]
         public float ChargeTime = 2f;
         [Tooltip("Time below which a charge will not be initiated")]
-        public float ChargeTimeDeadzone = .1f;
-        public bool ChargeEffectedBySlowdown = false;
+        [Min(0)]
+        public float ChargeDeadzone = .1f;
+
+        public EnergyAbsorption energyAbsorption;
+        public int fullChargeCost = 20;
+        [Range(0f, 1f)]
+        public float EnergyChargeLimit = .75f;
+        internal bool CanFullCharge()
+        {
+            if (energyAbsorption == null) return true;
+            return energyAbsorption.Energy >= fullChargeCost;
+        }
+        [Tooltip("If true, the charge will slow down like everything else")]
+        public bool SlowmotionAffectsCharge = false;
 
         [Range(0f, 1f)]
         public float slowmotionTrigger = .5f;
         [Range(0f, 1f)]
         public float slowmotionFactor = .25f;
 
-        internal bool allowCharging = true;
-        public GameObject ChargeDisabledIndicator;
-        internal float latestCharge;
-        public UnityEvent attackLaunched;
-        public UnityEvent attackEnd;
+        internal bool slowmotionInitiated = false;
+
+        public bool AllowCharging = true;
+        public GameObject ChargeBlockedIndicator;
+
+        public UnityEvent OnAttackAnnouncement;
+        public UnityEvent OnAttackStarted;
+        public UnityEvent OnAttackEnded;
 
         public enum State
         {
@@ -68,7 +84,7 @@ namespace RanchyRats.Gyrus
         private void OnEnable()
         {
             state = State.Ready;
-            ClearChargingProhibitors();
+            ClearChargeBlockers();
         }
 
         private void OnDisable()
@@ -76,33 +92,7 @@ namespace RanchyRats.Gyrus
             EndCharge(false);
         }
 
-        // TODO: Confusing naming. Merge this with StartAttack()
-        internal void Launch(int chargeIndex)
-        {
-            WeaponAnimator.SetTrigger("Attack");
-            WeaponAnimator.SetInteger("AttackIndex", chargeIndex);
-
-            attackLaunched.Invoke();
-        }
-
-        internal void Launch(float chargeTime)
-        {
-            if (chargeTime == 0f)
-            {
-                Debug.Log("Launch uncharged attack!");
-            }
-            else
-            {
-                //string colorString = GetChargeZone(chargeTime).ToString();
-                //string chargeAmount = GetChargeZone(chargeTime, EvaluatedColorChannel).ToString();
-                //Debug.Log("Launch charged attack. Charge amount: <color=" + colorString + ">" + chargeAmount + "</color>");
-                Debug.Log("Launch charged attack. Charge amount: " + chargeTime);
-            }
-            latestCharge = chargeTime;
-            attackLaunched.Invoke();
-        }
-
-        int GetChargeZoneIndex(float time)
+        int GetChargeIndex(float time)
         {
             for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
             {
@@ -116,11 +106,38 @@ namespace RanchyRats.Gyrus
             return ChargeZones.colorKeys.Length - 1;
         }
 
+        [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
+        internal List<GameObject> chargeBlockers = new List<GameObject>();
+
+        public void AddChargingBlocker(GameObject blocker)
+        {
+            chargeBlockers.Add(blocker);
+            ChargeBlockedIndicator.SetActive(chargeBlockers.Count != 0);
+        }
+
+        public void RemoveChargingBlocker(GameObject blocker)
+        {
+            chargeBlockers.Remove(blocker);
+            ChargeBlockedIndicator.SetActive(chargeBlockers.Count != 0);
+        }
+
+        internal void ClearChargeBlockers()
+        {
+            chargeBlockers.Clear();
+            if (ChargeBlockedIndicator != null)
+                ChargeBlockedIndicator.SetActive(false);
+        }
+
+        internal bool ChargingAllowed()
+        {
+            return chargeBlockers.Count == 0;
+        }
+
         public void EndCharge(bool complete)
         {
             if (state != State.Charging)
             {
-                Debug.Log("No charge to complete"); 
+                Debug.Log("No charge to complete");
                 return;
             }
 
@@ -134,46 +151,6 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
-        internal List<GameObject> chargeProhibitors = new List<GameObject>();
-
-        internal void AddChargingProhibitor(GameObject prohibitor)
-        {
-            chargeProhibitors.Add(prohibitor);
-            ChargeDisabledIndicator.SetActive(chargeProhibitors.Count != 0);
-        }
-
-        internal void RemoveChargingProhibitor(GameObject prohibitor)
-        {
-            chargeProhibitors.Remove(prohibitor);
-            ChargeDisabledIndicator.SetActive(chargeProhibitors.Count != 0);
-        }
-
-        internal void ClearChargingProhibitors()
-        {
-            chargeProhibitors.Clear();
-            if (ChargeDisabledIndicator != null)
-                ChargeDisabledIndicator.SetActive(false);
-        }
-
-        internal bool ChargingAllowed()
-        {
-            return chargeProhibitors.Count == 0;
-        }
-
-        public EnergyAbsorption energyAbsorption;
-        public int fullChargeCost = 20;
-        [Range(0f, 1f)]
-        public float EnergyChargeLimit = .75f;
-
-        internal bool CanFullCharge()
-        {
-            if (energyAbsorption == null) return true;
-            return energyAbsorption.Energy >= fullChargeCost;
-        }
-
-        internal bool slowmotionInitiated = false;
-
         public IEnumerator DoCharge()
         {
             state = State.Charging;
@@ -182,7 +159,7 @@ namespace RanchyRats.Gyrus
             float chargeTime = 0f;
             float chargeTimeClamped = 0f;
             //Debug.Log("Start charge");
-            while (state == State.Charging && chargeTime < ChargeTimeDeadzone)
+            while (state == State.Charging && chargeTime < ChargeDeadzone)
             {
                 yield return new WaitForEndOfFrame();
                 chargeTime += Time.unscaledDeltaTime;
@@ -200,7 +177,7 @@ namespace RanchyRats.Gyrus
             while (state == State.Charging)
             {
                 yield return new WaitForEndOfFrame();
-                if (ChargeEffectedBySlowdown)
+                if (SlowmotionAffectsCharge)
                 {
                     chargeTime += Time.deltaTime;
                 }
@@ -215,7 +192,7 @@ namespace RanchyRats.Gyrus
                 }
                 else
                 {
-                    chargeTimeClamped = Mathf.Clamp(chargeTime, 0f, ChargeTimeDeadzone);
+                    chargeTimeClamped = Mathf.Clamp(chargeTime, 0f, ChargeDeadzone);
                     chargeTime = chargeTimeClamped;
                 }
 
@@ -226,7 +203,7 @@ namespace RanchyRats.Gyrus
 
                 //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
 
-                int currentChargeState = GetChargeZoneIndex(chargeTimeClamped);
+                int currentChargeState = GetChargeIndex(chargeTimeClamped);
 
                 if (currentChargeState != previousChargeState)
                 {
@@ -269,7 +246,7 @@ namespace RanchyRats.Gyrus
 
             sounds.attackChargeSound.Stop();
             if (state == State.Attacking)
-                Launch(GetChargeZoneIndex(chargeTimeClamped));
+                StartAttack(GetChargeIndex(chargeTimeClamped));
         }
 
         public void ApplyChargeZoneColors()
@@ -321,20 +298,11 @@ namespace RanchyRats.Gyrus
             {
                 return;
             }
+            // TODO: Get stamina use from attack?
             Character.stamina.Use(1);
 
             StartCoroutine(DoCharge());
             Character.stamina.allowRecovery = false;
-        }
-
-        public void AddNoChargeZone(GameObject zone)
-        {
-            AddChargingProhibitor(zone);
-        }
-
-        public void RemoveNoChargeZone(GameObject zone)
-        {
-            RemoveChargingProhibitor(zone);
         }
 
         [Serializable]
@@ -353,7 +321,7 @@ namespace RanchyRats.Gyrus
         }
         public Restrictions restrictions = new Restrictions(true, true, true);
 
-        public void ActivateMovementRestrictions(bool active)
+        public void SetMovementRestrictionsActive(bool active)
         {
             if (Character.Controller.movement != null)
             {
@@ -369,19 +337,17 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        public void StartAttack()
+        public void StartAttack(int attackIndex)
         {
             if (Character.Animator != null)
             {
-                Character.Animator.SetFloat("AttackCharge", latestCharge);
+                Character.Animator.SetInteger("AttackIndex", attackIndex);
                 Character.Animator.SetTrigger("Attack");
             }
-            WeaponAnimator.SetFloat("AttackCharge", latestCharge);
-            WeaponAnimator.SetTrigger("Attack");
-            // TODO: Move this to a callback in CharacterController
 
-            ActivateMovementRestrictions(true);
+            SetMovementRestrictionsActive(true);
             state = State.Attacking;
+            OnAttackStarted.Invoke();
         }
 
         // Would be nice if this was available as a visual scripting block
@@ -389,7 +355,7 @@ namespace RanchyRats.Gyrus
         public void EndAttack()
         {
             state = State.Ready;
-            ActivateMovementRestrictions(false);
+            SetMovementRestrictionsActive(false);
 
             // Immediately update walking direction at end of attack 
             if (Character.Controller.movement != null)

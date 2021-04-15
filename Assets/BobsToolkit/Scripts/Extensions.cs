@@ -12,17 +12,38 @@ namespace BobJeltes.Extensions
             gameObject.SetActive(value);
         }
 
+        public static Vector3 XYToXZ(this Vector2 vector2)
+        {
+            return new Vector3(vector2.x, 0f, vector2.y);
+        }
+
         public static Vector3 ConvertToObjectRelative(this Vector3 vector3, Transform reference, bool flatten = false, bool normalize = false)
         {
             Vector3 referenceForward = reference.forward;
+            Vector3 referenceRight = reference.right;
+            Vector3 referenceUp = reference.up;
             if (flatten)
+            {
                 referenceForward.Scale(new Vector3(1, 0, 1));
+                referenceRight.Scale(new Vector3(1, 0, 1));
+                referenceUp.Scale(new Vector3(1, 0, 1));
+            }
+
             if (normalize)
+            {
                 referenceForward.Normalize();
-            Vector3 referenceRelativeVector3 = reference.forward * vector3.z + reference.right * vector3.x + reference.up * vector3.y;
+                referenceRight.Normalize();
+                referenceUp.Normalize();
+            }
+
+            Vector3 referenceRelativeVector3 = referenceForward * vector3.z + referenceRight * vector3.x + referenceUp * vector3.y;
             return referenceRelativeVector3;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>A vector3 between 0 and 1</returns>
         public static Vector3 RandomVector301()
         {
             return RandomVector3(Vector3.zero, Vector3.one);
@@ -63,11 +84,11 @@ namespace BobJeltes.Extensions
         /// <summary>
         /// Returns a random number based on a roll between 0 and 100.
         /// </summary>
-        /// <param name="oddShift">A number between 0 and 100. Lower = more chance at FALSE. Higher = more chance at TRUE.</param>
+        /// <param name="trueChance">A number between 0 and 100. Lower = more chance at FALSE. Higher = more chance at TRUE.</param>
         /// <returns></returns>
-        public static bool RandomTrueFalse(int oddShift = 50)
+        public static bool RandomTrueFalse(int trueChance = 50)
         {
-            return Random.Range(0, 100) < oddShift ? true : false;
+            return Random.Range(0, 100) < trueChance ? true : false;
         }
     }
 }

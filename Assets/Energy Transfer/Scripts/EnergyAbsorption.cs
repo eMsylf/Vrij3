@@ -19,7 +19,7 @@ public class EnergyAbsorption : TriggerEvent
         }
     }
     public FloatEvent OnAbsorbEnergy;
-    public bool DeactivateEnergyObject = true;
+    public bool DeactivateIncomingObject = true;
     public FloatEvent OnEnergyUpdated;
 
     public void AbsorbEnergy(GameObject energyObject)
@@ -36,7 +36,7 @@ public class EnergyAbsorption : TriggerEvent
             absorbedEnergy = energyComponent.amount;
         }
         Energy += absorbedEnergy;
-        if (DeactivateEnergyObject) energyObject.SetActive(false);
+        if (DeactivateIncomingObject) energyObject.SetActive(false);
         OnAbsorbEnergy.Invoke(absorbedEnergy);
     }
 }

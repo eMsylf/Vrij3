@@ -8,7 +8,7 @@ using UnityEngine;
 namespace UnityEditor.TreeViewExamples
 {
 
-	internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
+    internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
 	{
 		public T data { get; set; }
 

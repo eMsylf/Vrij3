@@ -203,8 +203,8 @@ public class EnemyAI : MonoBehaviour
     {
         state = States.Wander;
         Pathfinding.enabled = true;
-        Pathfinding.autoPickNewWaypoint = true;
-        Pathfinding.useWaypointProximity = true;
+        Pathfinding.autoPickNewGoal = true;
+        Pathfinding.clearGoal = true;
     }
     private void Wander()
     {
@@ -221,9 +221,9 @@ public class EnemyAI : MonoBehaviour
         //Debug.Log("Transition to Follow Single Target");
         state = States.FollowSingleTarget;
         Pathfinding.enabled = true;
-        Pathfinding.autoPickNewWaypoint = false;
-        Pathfinding.currentWaypoint = null;
-        Pathfinding.useWaypointProximity = false;
+        Pathfinding.autoPickNewGoal = false;
+        Pathfinding.goal = null;
+        Pathfinding.clearGoal = false;
     }
 
     private void FollowSingleTarget()
@@ -243,7 +243,7 @@ public class EnemyAI : MonoBehaviour
             Debug.Log("Player is within sight range");
             if (PlayerVisible(closestPlayer, out Vector3 playerPos))
             {
-                Pathfinding.CurrentGoal = playerPos;
+                Pathfinding.Destination = playerPos;
                 return;
             }
             //Pathfinding.CurrentGoal = UpdateLatestPlayerSightedPosition();
@@ -254,7 +254,7 @@ public class EnemyAI : MonoBehaviour
         if (playerOutOfRangeCooldownCurrent <= 0f)
         {
             playerOutOfRangeCooldownCurrent = playerOutOfRangeCooldown;
-            Pathfinding.currentWaypoint = null;
+            Pathfinding.goal = null;
             ToIdle();
             return;
         }
