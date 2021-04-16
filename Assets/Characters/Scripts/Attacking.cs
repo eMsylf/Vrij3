@@ -120,7 +120,7 @@ namespace RanchyRats.Gyrus
         {
             public int staminaCost;
             public Restrictions restrictions;
-            public Damager damageObject;
+            public global::Gyrus.Combat.Attack attackObject;
             [Range(0f, 1f)]
             public float ChargeRequirement;
         }
@@ -168,9 +168,9 @@ namespace RanchyRats.Gyrus
             // Deactivate all damage objects and add a callback to EndAttack for when the object is set to inactive next time
             for (int i = 0; i < attacks.Count; i++)
             {
-                if (attacks[i].damageObject == null) continue;
-                attacks[i].damageObject.gameObject.SetActive(false);
-                attacks[i].damageObject.OnDeactivation.AddListener(EndAttack);
+                if (attacks[i].attackObject == null) continue;
+                attacks[i].attackObject.gameObject.SetActive(false);
+                attacks[i].attackObject.events.OnDeactivation.AddListener(EndAttack);
             }
         }
 
@@ -179,8 +179,8 @@ namespace RanchyRats.Gyrus
             EndCharge(false);
             for (int i = 0; i < attacks.Count; i++)
             {
-                if (attacks[i].damageObject == null) continue;
-                attacks[i].damageObject.OnDeactivation.RemoveListener(EndAttack);
+                if (attacks[i].attackObject == null) continue;
+                attacks[i].attackObject.events.OnDeactivation.RemoveListener(EndAttack);
             }
         }
 
@@ -259,8 +259,8 @@ namespace RanchyRats.Gyrus
             if (slowmotion.active) TimeManager.Instance.StopSlowmotion();
 
             // Deactivate the charge indicator visual
-            //if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
-            //    ChargeIndicator.Visualizer.SetActive(false);
+            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
+                ChargeIndicator.Visualizer.SetActive(false);
 
             // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
             if (LatestCharge > energyCost.ChargeLimitTime)
@@ -286,10 +286,6 @@ namespace RanchyRats.Gyrus
                 yield return waitForEndOfFrame;
             }
 
-            // Activate the charge indicator
-            //if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
-            //    ChargeIndicator.Visualizer.SetActive(true);
-
             // Start main charging loop
             while (IsCharging)
             {
@@ -312,7 +308,7 @@ namespace RanchyRats.Gyrus
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
                 if (currentIndex != previousIndex)
                 {
-                    //ChargeIndicator.SetCurrent(currentIndex + 1);
+                    ChargeIndicator.Value = currentIndex + 1;
                     previousIndex = currentIndex;
                     chargeEvents.OnChargeChanged.Invoke(LatestCharge);
                 }
@@ -386,7 +382,7 @@ namespace RanchyRats.Gyrus
             SetMovementRestrictionsActive(attack, true);
             Character.stamina.Use(attack.staminaCost);
             attackEvents.OnAttackStarted.Invoke();
-            attack.damageObject.gameObject.SetActive(true);
+            attack.attackObject.gameObject.SetActive(true);
         }
 
         public void SetMovementRestrictionsActive(Attack attack, bool active)

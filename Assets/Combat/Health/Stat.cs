@@ -18,6 +18,7 @@ namespace Gyrus.Combat
         public bool setValueToMax = true;
         [Header("Recharge")]
         public bool allowRecharge = false;
+        public GameObject Visualizer;
         [Min(0)][Tooltip("The time it takes for the recharge time to start counting, after using this value")]
         public float rechargeWindupTime = 1f;
         [Min(0)] [Tooltip("The time it takes for a point to be recharged")]
@@ -128,6 +129,41 @@ namespace Gyrus.Combat
 
             if (m_value <= 0 && OnDepleted != null)
                 OnDepleted.Invoke();
+        }
+
+        public void UpdateVisual(bool animate)
+        {
+            if (Visualizer == null)
+            {
+                //Debug.LogError("Statistic visualizer is null");
+                return;
+            }
+
+            Visualizer.SetActive(true);
+
+            if (animate)
+            {
+                Animation animComponent = Visualizer.GetComponent<Animation>();
+                if (animComponent != null)
+                    animComponent.Play();
+            }
+
+            FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
+            if (fadeOutComponent != null)
+            {
+                fadeOutComponent.gameObject.SetActive(true);
+                fadeOutComponent.ResetFade();
+                fadeOutComponent.StartFadeOut();
+            }
+
+            //Debug.Log("Updating visual", Visualizer);
+            for (int i = 0; i < Visualizer.transform.childCount; i++)
+            {
+                GameObject child = Visualizer.transform.GetChild(i).gameObject;
+                bool shouldBeActive = Value >= i + 1;
+                child.SetActive(shouldBeActive);
+                //Debug.Log("This child (" + i + ") should be active: " + shouldBeActive);
+            }
         }
     }
 }

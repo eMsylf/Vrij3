@@ -7,7 +7,7 @@ namespace Gyrus.Combat
 {
     public class AttackingAI : MonoBehaviour
     {
-        public Damager Attack;
+        public Attack Attack;
 
         //public AnimationCurve AttackCurve;
 

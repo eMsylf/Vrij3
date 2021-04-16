@@ -1,15 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using DG.Tweening;
 using BobJeltes.StandardUtilities;
-using UnityEngine.Events;
-using UnityEditor;
 using RanchyRats.Gyrus;
+using BobJeltes.Attributes;
+using System;
 
 namespace Gyrus.Combat
 {
-    public class Damager : MonoBehaviour
+    public class Attack : MonoBehaviour
     {
         public bool CanMultiHit = false;
         public LayerMask HitsTheseLayers;
@@ -19,7 +20,7 @@ namespace Gyrus.Combat
 
         public HitStunSettings HitStun;
 
-        public CameraShakeSettings CameraShake;
+        public CameraShakeSettings CameraShake = new CameraShakeSettings();
         public List<GameObject> HitEffects = new List<GameObject>();
         [System.Serializable]
         public class AttackForce
@@ -39,53 +40,53 @@ namespace Gyrus.Combat
         }
         public AttackForce attackForce;
 
-        public enum Effect
+        [Flags] public enum Effect
         {
-            Health,
-            Stamina,
-            ChargeSpeed,
-            MovementSpeed
+            None = 0,
+            Health = 1,
+            Stamina = 2,
+            ChargeSpeed = 4,
+            MovementSpeed = 8
         }
 
         public Effect effect = Effect.Health;
-        // if (effect != Effect.Health)
-        [HideInInspector]
         public int Damage = 1;
-        // if (effect != Effect.Stamina)
-        [HideInInspector]
         public int StaminaReduction = 1;
-        // if (effect != Effect.MovementSpeedReduction
-        [HideInInspector]
-        [Range(0f, 1f)]
+        [Range(0, 1)]
         public float MovementSpeedReduction = 1f;
 
-        Character fighter;
-        Character GetParentFighter()
+        Character character;
+        Character GetParentCharacter()
         {
-            if (fighter == null)
+            if (character == null)
             {
-                fighter = GetComponentInParent<Character>();
+                character = GetComponentInParent<Character>();
             }
-            return fighter;
+            return character;
         }
 
         private List<Character> charactersHit = new List<Character>();
 
-        public UnityEvent OnActivation;
-        public UnityEvent OnDeactivation;
+        [System.Serializable]
+        public struct Events
+        {
+            public UnityEvent OnActivation;
+            public UnityEvent OnDeactivation;
+            public UnityEvent OnHitEvent;
+        }
+        public Events events = new Events();
 
         private void OnEnable()
         {
-            OnActivation.Invoke();
+            events.OnActivation.Invoke();
             charactersHit.Clear();
         }
 
         public void OnDisable()
         {
-            OnDeactivation.Invoke();
+            events.OnDeactivation.Invoke();
         }
 
-        public UnityEvent OnHitEvent;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -106,17 +107,15 @@ namespace Gyrus.Combat
                 Instantiate(obj, transform.position, Camera.main.transform.rotation);
             }
 
-            OnHitEvent.Invoke();
-
             Character characterHit = other.GetComponent<Character>();
             if (characterHit == null)
                 characterHit = other.GetComponentInParent<Character>();
-            Character parentCharacter = GetParentFighter();
-            Debug.Log("Hit fighter: " + characterHit, gameObject);
+            Character parentCharacter = GetParentCharacter();
+            Debug.Log("Hit character: " + characterHit, gameObject);
 
             if (other.attachedRigidbody != null && !other.attachedRigidbody.isKinematic)
             {
-                AddAttackForceTo(other.attachedRigidbody);
+                AddForceTo(other.attachedRigidbody);
             }
 
             if (characterHit == null)
@@ -130,7 +129,7 @@ namespace Gyrus.Combat
 
             if (characterHit.Invincible)
             {
-                //Debug.Log("<color=yellow>Couldn't hit fighter because of invincibility</color>");
+                //Debug.Log("<color=yellow>Couldn't hit character because of invincibility</color>");
                 return;
             }
 
@@ -165,9 +164,11 @@ namespace Gyrus.Combat
                 Camera.main.DOShakePosition(CameraShake.Duration, CameraShake.Strength);
             if (HitStun.enabled)
                 TimeManager.Instance.DoSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
+
+            events.OnHitEvent.Invoke();
         }
 
-        public void AddAttackForceTo(Rigidbody rigidbody)
+        public void AddForceTo(Rigidbody rigidbody)
         {
             Vector3 forceVector = new Vector3();
 

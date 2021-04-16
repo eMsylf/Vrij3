@@ -27,11 +27,11 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
             }
         }
         [SerializeField]
-        [ShowIf("timeLimit", false, 1)]
+        [ShowIf("timeLimit", 1)]
         private float timeLimitConstant = 0f;
         [Tooltip("The amount of time the AI will spend in the Idle state, randomly picked between these values. x = min, y = max")]
         [SerializeField]
-        [ShowIf("timeLimit", false, 2)]
+        [ShowIf("timeLimit", 2)]
         private Vector2 timeLimitRange = new Vector2();
         internal float timeLeft;
 

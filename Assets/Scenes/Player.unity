@@ -1471,6 +1471,163 @@ Transform:
   m_Father: {fileID: 173839609}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &779002788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 779002789}
+  - component: {fileID: 779002794}
+  - component: {fileID: 779002793}
+  - component: {fileID: 779002792}
+  - component: {fileID: 779002791}
+  - component: {fileID: 779002790}
+  m_Layer: 11
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &779002789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779002788}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1293361791}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &779002790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779002788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05d87875dfe7834bbcdc4c14cb1faa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanMultiHit: 0
+  HitsTheseLayers:
+    serializedVersion: 2
+    m_Bits: 4096
+  InvincibilityTime: 0
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
+  HitEffects: []
+  attackForce:
+    direction: 0
+    forceMode: 2
+    multiplier: 1
+    outwardForceMultiplier: 1
+    debugColor: {r: 1, g: 1, b: 1, a: 1}
+  effect: 0
+  Damage: 1
+  StaminaReduction: 1
+  MovementSpeedReduction: 1
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!111 &779002791
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779002788}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations:
+  - {fileID: 7400000, guid: 948d6d7f0b4ea3d47ab6b3195afef301, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
+--- !u!65 &779002792
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779002788}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &779002793
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779002788}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &779002794
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779002788}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &846087517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1647,6 +1804,7 @@ Transform:
   - {fileID: 767960591}
   - {fileID: 258516041}
   - {fileID: 1619834174}
+  - {fileID: 1293361791}
   m_Father: {fileID: 993767114}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1882,8 +2040,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca1ee9c3417f2c948a8f3f28d52bb225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackChargeSound: {fileID: 0}
-  chargeTicks: []
   chargeEvents:
     OnChargeStarted:
       m_PersistentCalls:
@@ -1895,18 +2051,13 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   ChargeSlider: {fileID: 0}
-  ChargeIndicator:
-    max: 4
-    current: 0
-    recoveryTime: 1
-    syncCurrentToMax: 1
-    Visualizer: {fileID: 0}
+  ChargeIndicator: {fileID: 0}
   ChargeTimeMax: 2
-  ChargeDeadzone: 0.1
+  ChargeTimeDeadzone: 0.1
   energyCost:
     energyAbsorption: {fileID: 0}
     fullChargeCost: 0
-    EnergyRequirementTrigger: 0
+    ChargeLimitTime: 0
   slowmotion:
     AffectsCharge: 0
     Trigger: 0.5
@@ -1948,19 +2099,21 @@ MonoBehaviour:
   AllowOverflow: 0
   AllowUnderflow: 0
   setValueToMax: 1
-  recoveryTime: 1
-  recoveryWindup: 1
-  allowRecovery: 0
+  allowRecharge: 0
+  Visualizer: {fileID: 0}
+  rechargeWindupTime: 1
+  rechargeTime: 1
+  rechargeAmount: 1
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  OnValueIncrease:
+    m_PersistentCalls:
+      m_Calls: []
+  OnValueDecrease:
+    m_PersistentCalls:
+      m_Calls: []
   OnDepleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OnIncrease:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDecrease:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &993767113
@@ -1980,19 +2133,21 @@ MonoBehaviour:
   AllowOverflow: 0
   AllowUnderflow: 0
   setValueToMax: 1
-  recoveryTime: 1
-  recoveryWindup: 1
-  allowRecovery: 0
+  allowRecharge: 0
+  Visualizer: {fileID: 0}
+  rechargeWindupTime: 1
+  rechargeTime: 1
+  rechargeAmount: 1
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  OnValueIncrease:
+    m_PersistentCalls:
+      m_Calls: []
+  OnValueDecrease:
+    m_PersistentCalls:
+      m_Calls: []
   OnDepleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OnIncrease:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDecrease:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &993767114
@@ -2516,6 +2671,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1256384518}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1293361790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1293361791}
+  m_Layer: 11
+  m_Name: Attacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1293361791
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293361790}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 779002789}
+  m_Father: {fileID: 873468531}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1305951152
 PrefabInstance:
   m_ObjectHideFlags: 0

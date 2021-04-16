@@ -35,11 +35,6 @@ namespace Gyrus.Combat
                 UpdateVisual(animate);
         }
 
-        public bool AttemptUse()
-        {
-            return Use(1);
-        }
-
         public bool Use(int amount)
         {
             if (current - amount >= 0)
