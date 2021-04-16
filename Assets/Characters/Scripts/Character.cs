@@ -127,11 +127,11 @@ namespace RanchyRats.Gyrus
         {
             if (health != null)
             {
-                health.SetCurrent(health.MaxValue);
+                health.SetValueWithoutEvent(health.MaxValue);
             }
             if (stamina != null)
             {
-                stamina.SetCurrent(stamina.MaxValue);
+                stamina.SetValueWithoutEvent(stamina.MaxValue);
             }
         }
 
@@ -193,7 +193,7 @@ namespace RanchyRats.Gyrus
 
         public void TakeDamage(float damageTaken, float invincibilityTime = 0f, Character damageSource = null)
         {
-            health.SetCurrent(Mathf.Clamp(health.Value - damageTaken, 0, health.Value));
+            health.Value = Mathf.Clamp(health.Value - damageTaken, 0, health.Value);
             InvincibilityTime += invincibilityTime;
             if (damageSource != null)
             {

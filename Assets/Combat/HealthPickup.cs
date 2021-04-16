@@ -29,7 +29,7 @@ public class HealthPickup : MonoBehaviour
             return;
         }
 
-        character.health.SetCurrent(character.health.Value + 1);
+        character.health.Value = character.health.Value + 1;
 
         foreach (GameObject obj in DisappearanceObjects)
         {

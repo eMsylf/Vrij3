@@ -12,10 +12,6 @@ namespace RanchyRats.Gyrus
 {
     public class Attacking : CharacterComponent
     {
-        public FMODUnity.StudioEventEmitter attackChargeSound;
-        public FMODUnity.StudioEventEmitter[] chargeTicks = new FMODUnity.StudioEventEmitter[0];
-
-
         [Header("Charging")]
         public ChargeEvents chargeEvents = new ChargeEvents();
         [Serializable]
@@ -28,7 +24,7 @@ namespace RanchyRats.Gyrus
         }
         public Slider ChargeSlider;
         //public Gradient ChargeZones;
-        public Statistic ChargeIndicator;
+        public Stat ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         [Min(0)]
         public float ChargeTimeMax = 2f;
@@ -240,11 +236,11 @@ namespace RanchyRats.Gyrus
             // Set charging flag, reset parameters and indicators
             IsCharging = true;
             slowmotion.active = false;
-            ChargeIndicator.SetCurrent(0, true, true);
+            ChargeIndicator.Value = 0;
             previousIndex = -1;
 
             latestChargeTime = 0f;
-            Character.stamina.allowRecovery = false;
+            Character.stamina.allowRecharge = false;
 
             StartCoroutine(DoCharge());
 
@@ -263,8 +259,8 @@ namespace RanchyRats.Gyrus
             if (slowmotion.active) TimeManager.Instance.StopSlowmotion();
 
             // Deactivate the charge indicator visual
-            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
-                ChargeIndicator.Visualizer.SetActive(false);
+            //if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
+            //    ChargeIndicator.Visualizer.SetActive(false);
 
             // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
             if (LatestCharge > energyCost.ChargeLimitTime)
@@ -280,18 +276,19 @@ namespace RanchyRats.Gyrus
                 StopCoroutine(DoCharge());
         }
 
+        WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
         public IEnumerator DoCharge()
         {
             // Wait until the charge time passes the deadzone
             while (latestChargeTime < ChargeTimeDeadzone)
             {
-                yield return new WaitForEndOfFrame();
                 latestChargeTime += Time.unscaledDeltaTime;
+                yield return waitForEndOfFrame;
             }
 
             // Activate the charge indicator
-            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
-                ChargeIndicator.Visualizer.SetActive(true);
+            //if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
+            //    ChargeIndicator.Visualizer.SetActive(true);
 
             // Start main charging loop
             while (IsCharging)
@@ -315,16 +312,8 @@ namespace RanchyRats.Gyrus
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
                 if (currentIndex != previousIndex)
                 {
-                    ChargeIndicator.SetCurrent(currentIndex + 1);
+                    //ChargeIndicator.SetCurrent(currentIndex + 1);
                     previousIndex = currentIndex;
-
-                    // Converts the latest charge (0 - 1) to an index in the chargeTicks array, and picks the closest one.
-                    float chargeToSoundIndex = LatestCharge * chargeTicks.Length;
-                    int chargeTickIndex = Mathf.RoundToInt(chargeToSoundIndex);
-                    //------------------------------------------------------------- Charge ticks
-                    Mathf.Clamp(chargeTickIndex, 0, chargeTicks.Length - 1);
-                    chargeTicks[chargeTickIndex].Play();
-
                     chargeEvents.OnChargeChanged.Invoke(LatestCharge);
                 }
 
@@ -353,19 +342,19 @@ namespace RanchyRats.Gyrus
                         EndCharge(false);
                 }
 
-                yield return new WaitForEndOfFrame();
+                yield return waitForEndOfFrame;
             }
         }
 
         public void ApplyChargeZoneColors()
         {
-            GameObject chargeObject = ChargeIndicator.Visualizer;
-            if (chargeObject == null)
-            {
-                Debug.LogError("Charge object is not assigned");
-                return;
-            }
-            Debug.Log("Apply charge zone colors");
+            //GameObject chargeObject = ChargeIndicator.Visualizer;
+            //if (chargeObject == null)
+            //{
+            //    Debug.LogError("Charge object is not assigned");
+            //    return;
+            //}
+            //Debug.Log("Apply charge zone colors");
 
             //for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
             //{
@@ -412,7 +401,7 @@ namespace RanchyRats.Gyrus
             if (attack.restrictions.HasFlag(Restrictions.Rotate))
                 Character.Controller.movement.LockFacingDirection = active;
             if (attack.restrictions.HasFlag(Restrictions.StaminaRecovery))
-                Character.stamina.allowRecovery = !active;
+                Character.stamina.allowRecharge = !active;
         }
 
         public void ResetMovementRestrictions()
@@ -420,7 +409,7 @@ namespace RanchyRats.Gyrus
             if (Character.Controller.movement == null) return;
             Character.Controller.movement.BlockMovementInput = false;
             Character.Controller.movement.LockFacingDirection = false;
-            Character.stamina.allowRecovery = true;
+            Character.stamina.allowRecharge = true;
         }
 
         // Would be nice if this was available as a visual scripting block
