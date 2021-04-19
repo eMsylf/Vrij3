@@ -4,37 +4,20 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Gyrus.Combat
+namespace Gyrus
 {
-    public class Stat : MonoBehaviour
+    public class CharacterStatistic : MonoBehaviour
     {
-        [SerializeField] [Min(0)]
-        private float m_maxValue = 4;
         [SerializeField]
-        private float m_value;
-        public bool AllowOverflow;
-        public bool AllowUnderflow;
-        [Tooltip("When enabled, this statistic is set to its maximum automatically when Start() is called.")]
-        public bool setValueToMax = true;
-        [Header("Recharge")]
-        public bool allowRecharge = false;
-        [Tooltip("This visualizer turns child transforms on and off based on the statistic's value")]
-        public Transform TransformwiseVisualizer;
-        public Slider SliderVisualizer;
-        [Min(0)][Tooltip("The time it takes for the recharge time to start counting, after using this value")]
-        public float rechargeWindupTime = 1f;
-        [Min(0)] [Tooltip("The time it takes for a point to be recharged")]
-        public float rechargeTime = 1f;
         [Min(0)]
-        public float rechargeAmount = 1f;
-        private float windupRemaining;
-        private float timeBeforeRecharge;
-
+        private float m_maxValue = 4;
         public float MaxValue
         {
             get => m_maxValue;
             set => m_maxValue = value;
         }
+        [SerializeField]
+        private float m_value;
         public float Value
         {
             get => m_value;
@@ -60,20 +43,39 @@ namespace Gyrus.Combat
                 events.OnValueChanged.Invoke(value);
             }
         }
+        public bool AllowOverflow;
+        public bool AllowUnderflow;
+        [Tooltip("When enabled, this statistic is set to its maximum automatically when Start() is called.")]
+        public bool setValueToMax = true;
+        [Header("Recharge")]
+        public bool allowRecharge = false;
+        [Tooltip("This visualizer turns child transforms on and off based on the statistic's value")]
+        public Transform TransformwiseVisualizer;
+        public Slider SliderVisualizer;
+        [Min(0)]
+        [Tooltip("The time it takes for the recharge time to start counting, after using this value")]
+        public float rechargeWindupTime = 1f;
+        [Min(0)]
+        [Tooltip("The time it takes for a point to be recharged")]
+        public float rechargeTime = 1f;
+        [Min(0)]
+        public float rechargeAmount = 1f;
+        private float windupRemaining;
+        private float timeBeforeRecharge;
 
         public void SetValueWithoutEvent(float value)
         {
             if (m_value == value)
                 return;
 
-            if (value > m_value && !AllowOverflow && value > m_maxValue)
-                value = m_maxValue;
+            if (value > m_value && !AllowOverflow && value > MaxValue)
+                value = MaxValue;
             else if (!AllowUnderflow && value < 0)
                 value = 0;
 
             m_value = value;
         }
-        [System.Serializable]
+        [Serializable]
         public struct Events
         {
             public FloatEvent OnValueChanged;
@@ -100,7 +102,7 @@ namespace Gyrus.Combat
         {
             if (!allowRecharge)
                 return;
-            if (m_value >= m_maxValue)
+            if (Value >= MaxValue)
             {
                 return;
             }

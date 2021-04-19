@@ -8,7 +8,6 @@ using System;
 
 namespace RanchyRats.Gyrus
 {
-    [RequireComponent(typeof(Animation))]
     public partial class Attack : MonoBehaviour
     {
         public bool CanMultiHit = false;

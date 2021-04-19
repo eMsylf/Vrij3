@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using BobJeltes.Extensions;
 using Gyrus.Combat;
+using Gyrus;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -30,8 +31,8 @@ namespace RanchyRats.Gyrus
         public Modifiers modifiers;
 
         [Header("Optional components")]
-        public Stat health;
-        public Stat stamina;
+        public CharacterStatistic health;
+        public CharacterStatistic stamina;
 
         [SerializeField]
         private CharacterController controller;

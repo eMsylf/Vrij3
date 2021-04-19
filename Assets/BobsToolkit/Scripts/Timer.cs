@@ -3,8 +3,8 @@ using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
 {
-    public float time = 1f;
-    private float currentTime = 1f;
+    public float totalTime = 1f;
+    private float timeRemaining = 1f;
     [Tooltip("Whether the timer should use scaled or unscaled time. Unscaled time is unaffected by slowmotion.")]
     public bool ScaledTime = true;
     public bool DisplayTimeInObjectName = false;
@@ -22,12 +22,12 @@ public class Timer : MonoBehaviour
 
     void Update()
     {
-        if (ScaledTime) currentTime -= Time.deltaTime;
-        else currentTime -= Time.unscaledDeltaTime;
+        if (ScaledTime) timeRemaining -= Time.deltaTime;
+        else timeRemaining -= Time.unscaledDeltaTime;
         if (DisplayTimeInObjectName) 
-            name = OriginalName + " (" + currentTime.ToString(StringFormats.TwoDecimals) + ")";
+            name = OriginalName + " (" + timeRemaining.ToString(StringFormats.TwoDecimals) + ")";
 
-        if (currentTime <= 0f) OnTimeOver();
+        if (timeRemaining <= 0f) OnTimeOver();
     }
 
     public UnityEvent OnStart;
@@ -44,13 +44,13 @@ public class Timer : MonoBehaviour
     {
         if (string.IsNullOrEmpty(OriginalName))
             OriginalName = name;
-        currentTime = time;
+        timeRemaining = totalTime;
         OnStart.Invoke();
     }
 
     public void Restart(float _time)
     {
-        time = _time;
+        totalTime = _time;
         Restart();
     }
 
@@ -58,6 +58,7 @@ public class Timer : MonoBehaviour
     [System.Serializable]
     public class Indicator
     {
+        public bool enabled;
         public float IndicatorWidth = .3f;
         public float IndicatorHeight = 1f;
         public Color IndicatorColor = Color.white;
@@ -69,39 +70,44 @@ public class Timer : MonoBehaviour
         }
         public Direction direction = Direction.Up;
         public bool invertDirection;
+
+        public void Draw(Transform transform, float timeRemaining, float totalTime)
+        {
+            Gizmos.color = IndicatorColor;
+            Vector3 dir = new Vector3();
+            Vector3 dirPerp = new Vector3();
+            switch (direction)
+            {
+                case Direction.Up:
+                    dir = transform.up;
+                    dirPerp = transform.right;
+                    break;
+                case Direction.Right:
+                    dir = transform.right;
+                    dirPerp = transform.up;
+                    break;
+                case Direction.Forward:
+                    dir = transform.forward;
+                    dirPerp = transform.right;
+                    break;
+            }
+
+            dir *= IndicatorHeight;
+            if (invertDirection) dir *= -1f;
+
+            Gizmos.DrawLine(transform.position, transform.position + dir * (timeRemaining / totalTime));
+            Gizmos.DrawLine(
+                transform.position + dirPerp * -IndicatorWidth,
+                transform.position + dirPerp * IndicatorWidth);
+            Gizmos.DrawLine(
+                transform.position + dirPerp * -IndicatorWidth + dir,
+                transform.position + dirPerp * IndicatorWidth + dir);
+        }
     }
-    public Indicator indicator;
+    public Indicator indicator = new Indicator();
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = indicator.IndicatorColor;
-        Vector3 dir = new Vector3();
-        Vector3 dirPerp = new Vector3();
-        switch (indicator.direction)
-        {
-            case Timer.Indicator.Direction.Up:
-                dir = transform.up;
-                dirPerp = transform.right;
-                break;
-            case Timer.Indicator.Direction.Right:
-                dir = transform.right;
-                dirPerp = transform.up;
-                break;
-            case Timer.Indicator.Direction.Forward:
-                dir = transform.forward;
-                dirPerp = transform.right;
-                break;
-        }
-    
-        dir *= indicator.IndicatorHeight;
-        if (indicator.invertDirection) dir *= -1f;
-
-        Gizmos.DrawLine(transform.position, transform.position + dir * (currentTime/time));
-        Gizmos.DrawLine(
-            transform.position + dirPerp * -indicator.IndicatorWidth, 
-            transform.position + dirPerp * indicator.IndicatorWidth);
-        Gizmos.DrawLine(
-            transform.position + dirPerp * -indicator.IndicatorWidth + dir, 
-            transform.position + dirPerp * indicator.IndicatorWidth + dir);
+        indicator.Draw(transform, timeRemaining, totalTime);
     }
 #endif
 }

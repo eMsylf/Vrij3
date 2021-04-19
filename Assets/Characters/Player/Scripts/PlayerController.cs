@@ -91,7 +91,7 @@ namespace RanchyRats.Gyrus
             if (character.attacking != null)
             {
                 Controls.Game.Attack.performed += _ =>              character.attacking.StartUnchargedAttack();
-                Controls.Game.ChargedAttack.performed += _ =>       character.attacking.StartCharge();
+                Controls.Game.ChargedAttack.started += _ =>       character.attacking.StartCharge();
                 Controls.Game.ChargedAttack.canceled += _ =>        character.attacking.EndCharge(true);
             }
 

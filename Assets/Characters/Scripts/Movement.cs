@@ -4,7 +4,7 @@ using UnityEngine;
 using FMODUnity;
 using System.Collections;
 using UnityEngine.Events;
-using Gyrus.Combat;
+using Gyrus;
 
 namespace RanchyRats.Gyrus
 {
@@ -44,7 +44,7 @@ namespace RanchyRats.Gyrus
         }
 
         // TODO: Use charachter stamina instead of separate reference
-        public Stat Stamina;
+        public CharacterStatistic Stamina;
 
         public Direction Direction;
 

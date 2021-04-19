@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using BobJeltes.Events;
-using Gyrus.Combat;
+using Gyrus;
 
 namespace RanchyRats.Gyrus
 {
@@ -23,7 +23,7 @@ namespace RanchyRats.Gyrus
             public UnityEventFloat OnChargeChanged;
         }
         public Slider ChargeSlider;
-        public Stat ChargeIndicator;
+        public CharacterStatistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         [Min(0)]
         public float ChargeTimeMax = 2f;
@@ -217,7 +217,10 @@ namespace RanchyRats.Gyrus
             // Set charging flag, reset parameters and indicators
             IsCharging = true;
             slowmotion.active = false;
-            ChargeIndicator.Value = 0;
+            if (ChargeIndicator == null)
+                Debug.Log("Charge indicator not assigned", this);
+            else
+                ChargeIndicator.Value = 0;
             previousIndex = -1;
 
             latestChargeTime = 0f;
@@ -247,7 +250,10 @@ namespace RanchyRats.Gyrus
             if (LatestCharge > energyCost.ChargeLimitTime)
             {
                 Debug.Log("Detract energy");
-                energyCost.energyAbsorption.Energy -= energyCost.fullChargeCost;
+                if (energyCost.energyAbsorption == null)
+                    Debug.Log("Energy absorbtion component not assigned", this);
+                else
+                    energyCost.energyAbsorption.Energy -= energyCost.fullChargeCost;
             }
             chargeEvents.OnChargeStopped.Invoke();
             IsCharging = false;
@@ -273,15 +279,16 @@ namespace RanchyRats.Gyrus
 
                 // If the player does not have the required energy and cannot fully charge, clamp the charge to the limit.
                 if (!energyCost.CanFullCharge)
-                    latestChargeTime = Mathf.Clamp(latestChargeTime, 0f, energyCost.ChargeLimitTime);
+                    latestChargeTime = Mathf.Clamp(latestChargeTime, 0f, energyCost.ChargeLimitTime); // TODO: Doe dit niet met charge time maar met charge progress (0-1) voor versimpeling
 
                 // TODO: Evaluate the current charge state. Do this using the attack charge requirements, and getting the attack's index
                 int currentIndex = chargedAttacks.FindIndex(x => x.Equals(GetChargedAttack(LatestCharge)));
-
+                Debug.Log("Latest charge: " + LatestCharge);
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
                 if (currentIndex != previousIndex)
                 {
-                    ChargeIndicator.Value = currentIndex + 1;
+                    if (ChargeIndicator != null)
+                        ChargeIndicator.Value = currentIndex + 1;
                     previousIndex = currentIndex;
                     chargeEvents.OnChargeChanged.Invoke(LatestCharge);
                 }
