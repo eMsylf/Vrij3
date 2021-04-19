@@ -12,6 +12,8 @@ namespace RanchyRats.Gyrus
     public partial class Movement : CharacterComponent
     {
         public bool BlockMovementInput = false;
+        public bool LockPosition = false;
+        public bool LockFacingDirection = false;
         [Tooltip("If the movement is being controlled by a NavMeshAgent component, the movement animation is still updated through this component but the movement is not applied to the rigidbody.")]
         public bool MovementByNavMeshAgent = false;
         internal Vector2 Input = Vector2.zero;
@@ -144,16 +146,18 @@ namespace RanchyRats.Gyrus
             }
 
             Input = input;
-            if (Character.Animator != null) Character.Animator.SetBool("IsWalking", Input != Vector2.zero);
             if (Input == Vector2.zero)
             {
                 state = State.Stopped;
                 return;
             }
 
-            if (state == State.Stopped) state = State.Walking;
-
-            UpdateFacingDirection(Input);
+            if (!LockPosition && state == State.Stopped)
+            {
+                if (Character.Animator != null) Character.Animator.SetBool("IsWalking", Input != Vector2.zero);
+                state = State.Walking;
+            }
+            SetFacingDirection(Input);
         }
 
         public void Stop()
@@ -254,8 +258,8 @@ namespace RanchyRats.Gyrus
             Direction.UpdatePosition(new Vector3(facingDirection.x, 0f, facingDirection.y));
         }
 
-        public bool LockFacingDirection = false;
-        public void UpdateFacingDirection(Vector2 direction)
+        
+        public void SetFacingDirection(Vector2 direction)
         {
             if (LockFacingDirection)
                 return;

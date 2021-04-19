@@ -38,6 +38,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "ChargedAttack",
+                    "type": "Button",
+                    "id": "d29bc31f-448e-4eca-b407-7c340730cf26",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold(duration=Infinity,pressPoint=0.3)"
+                },
+                {
                     "name": "LockOn",
                     "type": "Button",
                     "id": "d551f09d-2cd2-43b8-931a-4620664e2085",
@@ -458,6 +466,28 @@
                     "processors": "",
                     "groups": "Keyboard & Mouse",
                     "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b270352-4b23-49af-ac2d-0f91e666b443",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard & Mouse",
+                    "action": "ChargedAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "91c3b13c-54e7-4e5b-a4d2-690a1e9f7dd6",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ChargedAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -51,6 +51,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""ChargedAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""d29bc31f-448e-4eca-b407-7c340730cf26"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=Infinity,pressPoint=0.3)""
+                },
+                {
                     ""name"": ""LockOn"",
                     ""type"": ""Button"",
                     ""id"": ""d551f09d-2cd2-43b8-931a-4620664e2085"",
@@ -473,6 +481,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b270352-4b23-49af-ac2d-0f91e666b443"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""ChargedAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""91c3b13c-54e7-4e5b-a4d2-690a1e9f7dd6"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ChargedAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -826,6 +856,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Game_Dodge = m_Game.FindAction("Dodge", throwIfNotFound: true);
         m_Game_Interact = m_Game.FindAction("Interact", throwIfNotFound: true);
         m_Game_Attack = m_Game.FindAction("Attack", throwIfNotFound: true);
+        m_Game_ChargedAttack = m_Game.FindAction("ChargedAttack", throwIfNotFound: true);
         m_Game_LockOn = m_Game.FindAction("LockOn", throwIfNotFound: true);
         m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
         m_Game_CameraZoom = m_Game.FindAction("CameraZoom", throwIfNotFound: true);
@@ -902,6 +933,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Game_Dodge;
     private readonly InputAction m_Game_Interact;
     private readonly InputAction m_Game_Attack;
+    private readonly InputAction m_Game_ChargedAttack;
     private readonly InputAction m_Game_LockOn;
     private readonly InputAction m_Game_Look;
     private readonly InputAction m_Game_CameraZoom;
@@ -916,6 +948,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Dodge => m_Wrapper.m_Game_Dodge;
         public InputAction @Interact => m_Wrapper.m_Game_Interact;
         public InputAction @Attack => m_Wrapper.m_Game_Attack;
+        public InputAction @ChargedAttack => m_Wrapper.m_Game_ChargedAttack;
         public InputAction @LockOn => m_Wrapper.m_Game_LockOn;
         public InputAction @Look => m_Wrapper.m_Game_Look;
         public InputAction @CameraZoom => m_Wrapper.m_Game_CameraZoom;
@@ -943,6 +976,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Attack.started -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
                 @Attack.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
                 @Attack.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnAttack;
+                @ChargedAttack.started -= m_Wrapper.m_GameActionsCallbackInterface.OnChargedAttack;
+                @ChargedAttack.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnChargedAttack;
+                @ChargedAttack.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnChargedAttack;
                 @LockOn.started -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
                 @LockOn.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
                 @LockOn.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnLockOn;
@@ -977,6 +1013,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
+                @ChargedAttack.started += instance.OnChargedAttack;
+                @ChargedAttack.performed += instance.OnChargedAttack;
+                @ChargedAttack.canceled += instance.OnChargedAttack;
                 @LockOn.started += instance.OnLockOn;
                 @LockOn.performed += instance.OnLockOn;
                 @LockOn.canceled += instance.OnLockOn;
@@ -1195,6 +1234,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnDodge(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnChargedAttack(InputAction.CallbackContext context);
         void OnLockOn(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnCameraZoom(InputAction.CallbackContext context);

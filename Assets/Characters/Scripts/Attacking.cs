@@ -111,37 +111,21 @@ namespace RanchyRats.Gyrus
         // Raw time of latest charge
         private float latestChargeTime = 0f;
         private int previousIndex = -1;
-
         [Header("Attacks")]
-        public List<Attack> attacks = new List<Attack>();
-        [System.Serializable]
-        public struct Attack
-        {
-            public int staminaCost;
-            public Restrictions restrictions;
-            public global::Gyrus.Combat.Attack attackObject;
-            [Range(0f, 1f)]
-            public float ChargeRequirement;
-        }
-        public Attack GetAttack(int index) => (index > attacks.Count - 1) ? attacks[attacks.Count - 1] : attacks[index];
+        public Attack unchargedAttack;
+        [Tooltip("Make sure that the first attack has no charge requirement")]
+        public List<Attack> chargedAttacks = new List<Attack>();
+        public Attack GetChargedAttack(int index) => (index > chargedAttacks.Count - 1) ? chargedAttacks[chargedAttacks.Count - 1] : chargedAttacks[index];
 
         /// <summary>
         /// Gets the strongest attack that can be used with this amount of charge
         /// </summary>
-        /// <param name="charge">A number between 0 and 1, indicating the progress of the charge</param>
+        /// <param name="chargeRequirement">A value between 0 and 1, indicating the progress of the charge required to start an attack</param>
         /// <returns>The strongest attack that can be used</returns>
-        public Attack GetAttack(float charge)
+        public Attack GetChargedAttack(float chargeRequirement)
         {
-            attacks.OrderBy(x => x.ChargeRequirement);
-            return attacks.Last(x => x.ChargeRequirement <= charge);
-        }
-
-        [Flags] public enum Restrictions
-        {
-            None = 0,
-            Move = 1,
-            Rotate = 2,
-            StaminaRecovery = 4
+            chargedAttacks.OrderBy(x => x.ChargeRequirement);
+            return chargedAttacks.Last(x => x.ChargeRequirement <= chargeRequirement);
         }
         [Serializable]
         public struct AttackEvents
@@ -165,21 +149,32 @@ namespace RanchyRats.Gyrus
         {
             ClearChargeBlockers();
             // Deactivate all damage objects and add a callback to EndAttack for when the object is set to inactive next time
-            for (int i = 0; i < attacks.Count; i++)
+
+            if (unchargedAttack != null)
             {
-                if (attacks[i].attackObject == null) continue;
-                attacks[i].attackObject.gameObject.SetActive(false);
-                attacks[i].attackObject.events.OnDeactivation.AddListener(EndAttack);
+                unchargedAttack.gameObject.SetActive(false);
+                unchargedAttack.events.OnDeactivation.AddListener(EndAttack);
+            }
+
+            for (int i = 0; i < chargedAttacks.Count; i++)
+            {
+                if (chargedAttacks[i]== null) continue;
+                chargedAttacks[i].gameObject.SetActive(false);
+                chargedAttacks[i].events.OnDeactivation.AddListener(EndAttack);
             }
         }
 
         private void OnDisable()
         {
             EndCharge(false);
-            for (int i = 0; i < attacks.Count; i++)
+            if (unchargedAttack != null)
             {
-                if (attacks[i].attackObject == null) continue;
-                attacks[i].attackObject.events.OnDeactivation.RemoveListener(EndAttack);
+                unchargedAttack.events.OnDeactivation.RemoveListener(EndAttack);
+            }
+            for (int i = 0; i < chargedAttacks.Count; i++)
+            {
+                if (chargedAttacks[i] == null) continue;
+                chargedAttacks[i].events.OnDeactivation.RemoveListener(EndAttack);
             }
         }
 
@@ -207,6 +202,7 @@ namespace RanchyRats.Gyrus
 
         public void StartCharge()
         {
+            Debug.Log("Start charge");
             if (IsCharging)
             {
                 Debug.Log("Already charging", this);
@@ -244,8 +240,8 @@ namespace RanchyRats.Gyrus
             if (slowmotion.active) TimeManager.Instance.StopSlowmotion();
 
             // Deactivate the charge indicator visual
-            if (ChargeIndicator != null && ChargeIndicator.Visualizer != null)
-                ChargeIndicator.Visualizer.SetActive(false);
+            if (ChargeIndicator != null && ChargeIndicator.TransformwiseVisualizer != null)
+                ChargeIndicator.TransformwiseVisualizer.gameObject.SetActive(false);
 
             // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
             if (LatestCharge > energyCost.ChargeLimitTime)
@@ -257,20 +253,12 @@ namespace RanchyRats.Gyrus
             IsCharging = false;
             if (complete)
                 StartAttack(LatestCharge);
-            else
-                StopCoroutine(DoCharge());
+            StopCoroutine(DoCharge());
         }
 
         WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
         public IEnumerator DoCharge()
         {
-            // Wait until the charge time passes the deadzone
-            while (latestChargeTime < ChargeTimeDeadzone)
-            {
-                latestChargeTime += Time.unscaledDeltaTime;
-                yield return waitForEndOfFrame;
-            }
-
             // Start main charging loop
             while (IsCharging)
             {
@@ -288,7 +276,7 @@ namespace RanchyRats.Gyrus
                     latestChargeTime = Mathf.Clamp(latestChargeTime, 0f, energyCost.ChargeLimitTime);
 
                 // TODO: Evaluate the current charge state. Do this using the attack charge requirements, and getting the attack's index
-                int currentIndex = attacks.FindIndex(x => x.Equals(GetAttack(LatestCharge)));
+                int currentIndex = chargedAttacks.FindIndex(x => x.Equals(GetChargedAttack(LatestCharge)));
 
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
                 if (currentIndex != previousIndex)
@@ -327,39 +315,51 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        public void StartAttack(float charge) => StartAttack(GetAttack(charge));
+        public void StartUnchargedAttack()
+        {
+            StartAttack(unchargedAttack);
+        }
 
-        public void StartAttack(int attackIndex) => StartAttack(GetAttack(attackIndex));
+        public void StartAttack(float charge) => StartAttack(GetChargedAttack(charge));
+
+        public void StartAttack(int attackIndex) => StartAttack(GetChargedAttack(attackIndex));
 
         public void StartAttack(Attack attack)
         {
+            Debug.Log("Start attack");
+            if (attack == null)
+            {
+                Debug.Log("Attack was null");
+                return;
+            }
+
             if (Character.Animator != null)
-                Character.Animator.SetTrigger("Attack");
-            SetMovementRestrictionsActive(attack, true);
+                Character.Animator.SetBool("IsAttacking", true);
+            SetMovementRestrictions(attack);
             Character.stamina.Use(attack.staminaCost);
             attackEvents.OnAttackStarted.Invoke();
-            attack.attackObject.gameObject.SetActive(true);
+            attack.gameObject.SetActive(true);
         }
 
-        public void SetMovementRestrictionsActive(Attack attack, bool active)
+        public void SetMovementRestrictions(Attack attack)
         {
             if (Character.Controller.movement == null) return;
 
             if (attack.restrictions.HasFlag(Restrictions.Move))
             {
                 Character.Controller.movement.Stop();
-                Character.Controller.movement.BlockMovementInput = active; // TODO: Misschien beter om het movement component uit te schakelen
+                Character.Controller.movement.LockPosition = true; // TODO: Misschien beter om het movement component uit te schakelen
             }
             if (attack.restrictions.HasFlag(Restrictions.Rotate))
-                Character.Controller.movement.LockFacingDirection = active;
+                Character.Controller.movement.LockFacingDirection = true;
             if (attack.restrictions.HasFlag(Restrictions.StaminaRecovery))
-                Character.stamina.allowRecharge = !active;
+                Character.stamina.allowRecharge = !false;
         }
 
         public void ResetMovementRestrictions()
         {
             if (Character.Controller.movement == null) return;
-            Character.Controller.movement.BlockMovementInput = false;
+            Character.Controller.movement.LockPosition = false;
             Character.Controller.movement.LockFacingDirection = false;
             Character.stamina.allowRecharge = true;
         }
@@ -374,6 +374,7 @@ namespace RanchyRats.Gyrus
             if (Character.Controller.movement != null)
                 Character.Controller.movement.ForceReadMoveInput();
             attackEvents.OnAttackEnded.Invoke();
+            if (Character.Animator != null) Character.Animator.SetBool("IsAttacking", false);
         }
     }
 }
