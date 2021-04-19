@@ -10,7 +10,6 @@ namespace BobJeltes.Attributes
         private string valueName;
         private bool boolValue;
 
-        private bool invert;
         private int[] enumIndices;
 
         internal string ValueName { get => valueName; private set => valueName = value; }

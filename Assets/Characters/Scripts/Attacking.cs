@@ -23,7 +23,6 @@ namespace RanchyRats.Gyrus
             public UnityEventFloat OnChargeChanged;
         }
         public Slider ChargeSlider;
-        //public Gradient ChargeZones;
         public Stat ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         [Min(0)]
@@ -184,20 +183,6 @@ namespace RanchyRats.Gyrus
             }
         }
 
-        //int GetChargeIndex(float time)
-        //{
-        //    for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
-        //    {
-        //        if (ChargeZones.colorKeys[i].time >= time)
-        //        {
-        //            //Debug.Log("Time: " + time + " index " + i);
-        //            return i;
-        //        }
-        //    }
-        //    Debug.Log("No index at time " + time + " found. Returning max: " + (ChargeZones.colorKeys.Length - 1));
-        //    return ChargeZones.colorKeys.Length - 1;
-        //}
-
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
         internal List<GameObject> chargeBlockers = new List<GameObject>();
 
@@ -340,35 +325,6 @@ namespace RanchyRats.Gyrus
 
                 yield return waitForEndOfFrame;
             }
-        }
-
-        public void ApplyChargeZoneColors()
-        {
-            //GameObject chargeObject = ChargeIndicator.Visualizer;
-            //if (chargeObject == null)
-            //{
-            //    Debug.LogError("Charge object is not assigned");
-            //    return;
-            //}
-            //Debug.Log("Apply charge zone colors");
-
-            //for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
-            //{
-            //    Color currentColor = ChargeZones.colorKeys[i].color;
-            //    //Debug.Log("Color key " + i + ": " + currentColor);
-            //    Transform child = chargeObject.transform.GetChild(i);
-            //    if (child == null)
-            //    {
-            //        Debug.LogError("Charge zone has no child at index " + i, chargeObject);
-            //    }
-            //    Graphic graphic = child.GetComponent<Graphic>();
-            //    if (graphic == null)
-            //    {
-            //        Debug.LogError("Transform child " + i + " of " + chargeObject + " has no Graphic component to set the color of", child);
-            //    }
-            //    //Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
-            //    graphic.color = currentColor;
-            //}
         }
 
         public void StartAttack(float charge) => StartAttack(GetAttack(charge));
