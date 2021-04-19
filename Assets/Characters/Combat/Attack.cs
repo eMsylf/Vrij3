@@ -4,13 +4,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
 using BobJeltes.StandardUtilities;
-using RanchyRats.Gyrus;
-using BobJeltes.Attributes;
 using System;
 
-namespace Gyrus.Combat
+namespace RanchyRats.Gyrus
 {
-    public class Attack : MonoBehaviour
+    [RequireComponent(typeof(Animation))]
+    public partial class Attack : MonoBehaviour
     {
         public bool CanMultiHit = false;
         public LayerMask HitsTheseLayers;
@@ -18,11 +17,15 @@ namespace Gyrus.Combat
         [Min(0f)]
         public float InvincibilityTime = 0f;
 
+        public int staminaCost;
+        public Restrictions restrictions;
+        [Range(0f, 1f)]
+        public float ChargeRequirement;
         public HitStunSettings HitStun;
 
         public CameraShakeSettings CameraShake = new CameraShakeSettings();
         public List<GameObject> HitEffects = new List<GameObject>();
-        [System.Serializable]
+        [Serializable]
         public class AttackForce
         {
             public enum EDirection
@@ -40,7 +43,8 @@ namespace Gyrus.Combat
         }
         public AttackForce attackForce;
 
-        [Flags] public enum Effect
+        [Flags]
+        public enum Effect
         {
             None = 0,
             Health = 1,
@@ -67,7 +71,7 @@ namespace Gyrus.Combat
 
         private List<Character> charactersHit = new List<Character>();
 
-        [System.Serializable]
+        [Serializable]
         public struct Events
         {
             public UnityEvent OnActivation;
@@ -80,6 +84,11 @@ namespace Gyrus.Combat
         {
             events.OnActivation.Invoke();
             charactersHit.Clear();
+        }
+
+        public void DeactivateGameObject()
+        {
+            gameObject.SetActive(false);
         }
 
         public void OnDisable()

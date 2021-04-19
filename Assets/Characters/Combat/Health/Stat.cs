@@ -2,10 +2,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Gyrus.Combat
 {
-    [Serializable]
     public class Stat : MonoBehaviour
     {
         [SerializeField] [Min(0)]
@@ -18,7 +18,9 @@ namespace Gyrus.Combat
         public bool setValueToMax = true;
         [Header("Recharge")]
         public bool allowRecharge = false;
-        public GameObject Visualizer;
+        [Tooltip("This visualizer turns child transforms on and off based on the statistic's value")]
+        public Transform TransformwiseVisualizer;
+        public Slider SliderVisualizer;
         [Min(0)][Tooltip("The time it takes for the recharge time to start counting, after using this value")]
         public float rechargeWindupTime = 1f;
         [Min(0)] [Tooltip("The time it takes for a point to be recharged")]
@@ -45,24 +47,41 @@ namespace Gyrus.Combat
                 {
                     if (!AllowOverflow && value > MaxValue)
                         value = MaxValue;
-                    OnValueIncrease.Invoke();
+                    events.OnValueIncrease.Invoke();
                 }
                 else
                 {
                     if (!AllowUnderflow && value < 0)
                         value = 0;
-                    OnValueDecrease.Invoke();
+                    events.OnValueDecrease.Invoke();
                 }
 
                 m_value = value;
-                OnValueChanged.Invoke(value);
+                events.OnValueChanged.Invoke(value);
             }
         }
 
-        public FloatEvent OnValueChanged;
-        public UnityEvent OnValueIncrease;
-        public UnityEvent OnValueDecrease;
-        public UnityEvent OnDepleted;
+        public void SetValueWithoutEvent(float value)
+        {
+            if (m_value == value)
+                return;
+
+            if (value > m_value && !AllowOverflow && value > m_maxValue)
+                value = m_maxValue;
+            else if (!AllowUnderflow && value < 0)
+                value = 0;
+
+            m_value = value;
+        }
+        [System.Serializable]
+        public struct Events
+        {
+            public FloatEvent OnValueChanged;
+            public UnityEvent OnValueIncrease;
+            public UnityEvent OnValueDecrease;
+            public UnityEvent OnDepleted;
+        }
+        public Events events = new Events();
 
         private void Start()
         {
@@ -95,60 +114,43 @@ namespace Gyrus.Combat
                 timeBeforeRecharge -= Time.deltaTime;
                 return;
             }
-            Value = m_value + rechargeAmount;
+            Value += rechargeAmount;
             timeBeforeRecharge = rechargeTime;
         }
 
         public bool IsEmpty(bool fireEvent = true)
         {
-            if (fireEvent) OnDepleted.Invoke();
-            return m_value <= 0;
-        }
-
-        public void SetValueWithoutEvent(float value)
-        {
-            if (Value == value)
-                return;
-
-            if (value > Value && !AllowOverflow && value > MaxValue)
-                value = MaxValue;
-            else if (!AllowUnderflow && value < 0)
-                    value = 0;
-
-            Value = value;
-            //Debug.Log("Set " + name + " to " + _value + " points", this);
-            OnValueChanged.Invoke(value);
+            if (fireEvent) events.OnDepleted.Invoke();
+            return Value <= 0;
         }
 
         public void Use(float amount)
         {
             if (Value - amount >= 0)
-            {
-                Value = m_value - amount;
-            }
+                Value -= amount;
 
-            if (m_value <= 0 && OnDepleted != null)
-                OnDepleted.Invoke();
+            if (Value <= 0 && events.OnDepleted != null)
+                events.OnDepleted.Invoke();
         }
 
         public void UpdateVisual(bool animate)
         {
-            if (Visualizer == null)
+            if (TransformwiseVisualizer == null)
             {
                 //Debug.LogError("Statistic visualizer is null");
                 return;
             }
 
-            Visualizer.SetActive(true);
+            TransformwiseVisualizer.gameObject.SetActive(true);
 
             if (animate)
             {
-                Animation animComponent = Visualizer.GetComponent<Animation>();
+                Animation animComponent = TransformwiseVisualizer.GetComponent<Animation>();
                 if (animComponent != null)
                     animComponent.Play();
             }
 
-            FadeOut fadeOutComponent = Visualizer.GetComponent<FadeOut>();
+            FadeOut fadeOutComponent = TransformwiseVisualizer.GetComponent<FadeOut>();
             if (fadeOutComponent != null)
             {
                 fadeOutComponent.gameObject.SetActive(true);
@@ -156,13 +158,11 @@ namespace Gyrus.Combat
                 fadeOutComponent.StartFadeOut();
             }
 
-            //Debug.Log("Updating visual", Visualizer);
-            for (int i = 0; i < Visualizer.transform.childCount; i++)
+            for (int i = 0; i < TransformwiseVisualizer.transform.childCount; i++)
             {
-                GameObject child = Visualizer.transform.GetChild(i).gameObject;
+                GameObject child = TransformwiseVisualizer.transform.GetChild(i).gameObject;
                 bool shouldBeActive = Value >= i + 1;
                 child.SetActive(shouldBeActive);
-                //Debug.Log("This child (" + i + ") should be active: " + shouldBeActive);
             }
         }
     }
