@@ -36,7 +36,7 @@ public class ColorSpacerDrawer : DecoratorDrawer
 {
     ColorSpacer colorSpacer
     {
-        get { return ((ColorSpacer)attribute); }
+        get { return (ColorSpacer)attribute; }
     }
 
     public override float GetHeight()
