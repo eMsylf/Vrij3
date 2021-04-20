@@ -1,75 +1,140 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-#if UNITY_EDITOR
-#endif
-using Combat;
+using BobJeltes.Events;
+using Gyrus;
 
 namespace RanchyRats.Gyrus
 {
     public class Attacking : CharacterComponent
     {
-        [System.Serializable]
-        public struct Sounds
+        [Header("Charging")]
+        public ChargeEvents chargeEvents = new ChargeEvents();
+        [Serializable]
+        public struct ChargeEvents
         {
-            public FMODUnity.StudioEventEmitter attackChargeSound;
-            public FMODUnity.StudioEventEmitter attackChargeTick1Sound;
-            public FMODUnity.StudioEventEmitter attackChargeTick2Sound;
-            public FMODUnity.StudioEventEmitter attackChargeTick3Sound;
-            public FMODUnity.StudioEventEmitter attackChargeTick4Sound;
-
-            public FMODUnity.StudioEventEmitter attack1Sound;
-            public FMODUnity.StudioEventEmitter attack2Sound;
-            public FMODUnity.StudioEventEmitter attack3Sound;
-
-            public void PlayAttackSound(int index)
-            {
-                if (index == 0) attack1Sound.Play();
-                else if (index == 1) attack2Sound.Play();
-                else if (index == 2) attack3Sound.Play();
-            }
+            public UnityEvent OnChargeStarted;
+            public UnityEvent OnChargeStopped;
+            [Header("Passes the percentual charge (between 0 and 1")]
+            public UnityEventFloat OnChargeChanged;
         }
-        public Sounds sounds;
-
         public Slider ChargeSlider;
-        public Animator WeaponAnimator;
-        public Gradient ChargeZones;
-        public Statistic ChargeIndicator;
+        public CharacterStatistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         [Min(0)]
-        public float ChargeTime = 2f;
+        public float ChargeTimeMax = 2f;
         [Tooltip("Time below which a charge will not be initiated")]
         [Min(0)]
-        public float ChargeDeadzone = .1f;
-
-        public EnergyAbsorption energyAbsorption;
-        public int fullChargeCost = 20;
-        [Range(0f, 1f)]
-        public float EnergyChargeLimit = .75f;
-        internal bool CanFullCharge()
+        public float ChargeTimeDeadzone = .1f;
+        [Serializable]
+        public struct EnergyCost
         {
-            if (energyAbsorption == null) return true;
-            return energyAbsorption.Energy >= fullChargeCost;
+            public EnergyAbsorption energyAbsorption;
+            [Min(0)]
+            public int fullChargeCost;
+            [Min(0)] [Tooltip("The time at which the player's charge is halted, if the character does not posess the required energy.")]
+            public float ChargeLimitTime;
+            internal bool CanFullCharge
+            {
+                get
+                {
+                    if (energyAbsorption == null) return true;
+                    return energyAbsorption.Energy >= fullChargeCost;
+                }
+            }
         }
-        [Tooltip("If true, the charge will slow down like everything else")]
-        public bool SlowmotionAffectsCharge = false;
+        public EnergyCost energyCost = new EnergyCost();
+        [Serializable]
+        public struct Slowmotion
+        {
+            [Tooltip("If true, the charge will slow down, along with everything else. If false, the charge continues as quickly in, as it does out of slowmotion.")]
+            public bool AffectsCharge;
 
-        [Range(0f, 1f)]
-        public float slowmotionTrigger = .5f;
-        [Range(0f, 1f)]
-        public float slowmotionFactor = .25f;
+            [Range(0f, 1f)]
+            public float Trigger;
+            [Range(0f, 1f)]
+            public float Factor;
 
-        internal bool slowmotionInitiated = false;
+            internal bool active;
+
+            public Slowmotion(bool affectsCharge)
+            {
+                AffectsCharge = affectsCharge;
+                Trigger = .5f;
+                Factor = .25f;
+                active = false;
+            }
+        }
+        public Slowmotion slowmotion = new Slowmotion(false);
 
         public bool AllowCharging = true;
-        public GameObject ChargeBlockedIndicator;
+        public bool IsCharging = false;
+        [Serializable]
+        public struct FullChargeStaminaDrain
+        {
+            public bool enabled;
+            [Tooltip("When stamina is depleted by holding a full charge, the charge is interrupted when this box is ticked, causing the attack to be cancelled.")]
+            public bool DepletionInterruptsCharge;
+            [Min(0f)]
+            public float DrainInterval;
+            public int DrainAmount;
+            public float TimeBeforeDrain;
 
-        public UnityEvent OnAttackAnnouncement;
-        public UnityEvent OnAttackStarted;
-        public UnityEvent OnAttackEnded;
+            /// <summary>
+            /// Updates the time before the next drain should take place
+            /// </summary>
+            /// <returns>Whether the time before the next drain has run out, and stamina should be drained</returns>
+            public bool Update()
+            {
+                // To prevent players from holding their charge indefinitely, make the charge cost stamina for every --realtime-- second held while it's fully charged
+                if (enabled)
+                {
+                    TimeBeforeDrain -= Time.unscaledDeltaTime;
+                    if (TimeBeforeDrain <= 0f)
+                    {
+                        TimeBeforeDrain = DrainInterval;
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        public FullChargeStaminaDrain fullChargeStaminaDrain = new FullChargeStaminaDrain { DrainInterval = 1f, TimeBeforeDrain = 0, DrainAmount = 1 };
+        public bool IsFullyCharged => LatestCharge >= 1f;
+        public GameObject ChargeBlockedIndicator;
+        internal bool ChargingBlocked => chargeBlockers.Count > 0;
+        private float LatestCharge => Mathf.Clamp(latestChargeTime, 0f, ChargeTimeDeadzone);
+        // Raw time of latest charge
+        private float latestChargeTime = 0f;
+        private int previousIndex = -1;
+        [Header("Attacks")]
+        public Attack unchargedAttack;
+        [Tooltip("Make sure that the first attack has no charge requirement")]
+        public List<Attack> chargedAttacks = new List<Attack>();
+        public Attack GetChargedAttack(int index) => (index > chargedAttacks.Count - 1) ? chargedAttacks[chargedAttacks.Count - 1] : chargedAttacks[index];
+
+        /// <summary>
+        /// Gets the strongest attack that can be used with this amount of charge
+        /// </summary>
+        /// <param name="chargeRequirement">A value between 0 and 1, indicating the progress of the charge required to start an attack</param>
+        /// <returns>The strongest attack that can be used</returns>
+        public Attack GetChargedAttack(float chargeRequirement)
+        {
+            chargedAttacks.OrderBy(x => x.ChargeRequirement);
+            return chargedAttacks.Last(x => x.ChargeRequirement <= chargeRequirement);
+        }
+        [Serializable]
+        public struct AttackEvents
+        {
+            public UnityEvent OnAttackAnnouncement;
+            public UnityEvent OnAttackStarted;
+            public UnityEvent OnAttackEnded;
+        }
+        public AttackEvents attackEvents;
 
         public enum State
         {
@@ -79,31 +144,38 @@ namespace RanchyRats.Gyrus
             OnCooldown,
             Disabled
         }
-        public State state;
 
         private void OnEnable()
         {
-            state = State.Ready;
             ClearChargeBlockers();
+            // Deactivate all damage objects and add a callback to EndAttack for when the object is set to inactive next time
+
+            if (unchargedAttack != null)
+            {
+                unchargedAttack.gameObject.SetActive(false);
+                unchargedAttack.events.OnDeactivation.AddListener(EndAttack);
+            }
+
+            for (int i = 0; i < chargedAttacks.Count; i++)
+            {
+                if (chargedAttacks[i]== null) continue;
+                chargedAttacks[i].gameObject.SetActive(false);
+                chargedAttacks[i].events.OnDeactivation.AddListener(EndAttack);
+            }
         }
 
         private void OnDisable()
         {
             EndCharge(false);
-        }
-
-        int GetChargeIndex(float time)
-        {
-            for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
+            if (unchargedAttack != null)
             {
-                if (ChargeZones.colorKeys[i].time >= time)
-                {
-                    //Debug.Log("Time: " + time + " index " + i);
-                    return i;
-                }
+                unchargedAttack.events.OnDeactivation.RemoveListener(EndAttack);
             }
-            Debug.Log("No index at time " + time + " found. Returning max: " + (ChargeZones.colorKeys.Length - 1));
-            return ChargeZones.colorKeys.Length - 1;
+            for (int i = 0; i < chargedAttacks.Count; i++)
+            {
+                if (chargedAttacks[i] == null) continue;
+                chargedAttacks[i].events.OnDeactivation.RemoveListener(EndAttack);
+            }
         }
 
         [Tooltip("The number of triggers that the player is inside of, prohibiting its charge")]
@@ -128,238 +200,188 @@ namespace RanchyRats.Gyrus
                 ChargeBlockedIndicator.SetActive(false);
         }
 
-        internal bool ChargingAllowed()
+        public void StartCharge()
         {
-            return chargeBlockers.Count == 0;
-        }
-
-        public void EndCharge(bool complete)
-        {
-            if (state != State.Charging)
+            Debug.Log("Start charge");
+            if (IsCharging)
             {
-                Debug.Log("No charge to complete");
+                Debug.Log("Already charging", this);
                 return;
-            }
-
-            if (complete)
-                state = State.Attacking;
-            else
-            {
-                StopCoroutine(DoCharge());
-                ChargeIndicator.SetCurrent(0);
-                if (slowmotionInitiated) TimeManager.Instance.StopSlowmotion();
-            }
-        }
-
-        public IEnumerator DoCharge()
-        {
-            state = State.Charging;
-
-            ChargeIndicator.SetCurrent(0, true, true);
-            float chargeTime = 0f;
-            float chargeTimeClamped = 0f;
-            //Debug.Log("Start charge");
-            while (state == State.Charging && chargeTime < ChargeDeadzone)
-            {
-                yield return new WaitForEndOfFrame();
-                chargeTime += Time.unscaledDeltaTime;
-            }
-
-            if (sounds.attackChargeSound == null)
-                Debug.LogError("Attack charge sound is missing");
-            else
-                sounds.attackChargeSound.Play(); //------------------------------ charge sound
-
-            //Debug.Log("Charge deadzone passed");
-            ChargeIndicator.Visualizer.SetActive(true);
-            slowmotionInitiated = false;
-            int previousChargeState = -1;
-            while (state == State.Charging)
-            {
-                yield return new WaitForEndOfFrame();
-                if (SlowmotionAffectsCharge)
-                {
-                    chargeTime += Time.deltaTime;
-                }
-                else
-                {
-                    chargeTime += Time.unscaledDeltaTime;
-                }
-
-                if (ChargingAllowed())
-                {
-                    chargeTimeClamped = Mathf.Clamp01(chargeTime / ChargeTime);
-                }
-                else
-                {
-                    chargeTimeClamped = Mathf.Clamp(chargeTime, 0f, ChargeDeadzone);
-                    chargeTime = chargeTimeClamped;
-                }
-
-                if (!CanFullCharge())
-                {
-                    chargeTimeClamped = Mathf.Clamp(chargeTimeClamped, 0f, EnergyChargeLimit);
-                }
-
-                //Debug.Log("Chargetime clamped: " + chargeTimeClamped);
-
-                int currentChargeState = GetChargeIndex(chargeTimeClamped);
-
-                if (currentChargeState != previousChargeState)
-                {
-                    ChargeIndicator.SetCurrent(currentChargeState + 1);
-                    previousChargeState = currentChargeState;
-
-                    //------------------------------------------------------------- Charge tiks
-                    if (currentChargeState == 0) sounds.attackChargeTick1Sound.Play();
-                    else if (currentChargeState == 1) sounds.attackChargeTick2Sound.Play();
-                    else if (currentChargeState == 2) sounds.attackChargeTick3Sound.Play();
-                    else if (currentChargeState == 3) sounds.attackChargeTick4Sound.Play();
-
-                }
-                if (!slowmotionInitiated)
-                {
-                    if (chargeTimeClamped > slowmotionTrigger)
-                    {
-                        slowmotionInitiated = true;
-                        TimeManager.Instance.DoSlowmotion(slowmotionFactor);
-                    }
-                }
-                else
-                {
-                    if (chargeTimeClamped < slowmotionTrigger)
-                    {
-                        slowmotionInitiated = false;
-                        TimeManager.Instance.StopSlowmotion();
-                    }
-                }
-            }
-            TimeManager.Instance.StopSlowmotion();
-            ChargeIndicator.Visualizer.SetActive(false);
-
-            //Launch(chargeTimeClamped);
-            if (chargeTimeClamped > EnergyChargeLimit)
-            {
-                Debug.Log("Detract energy");
-                energyAbsorption.Energy -= fullChargeCost;
-            }
-
-            sounds.attackChargeSound.Stop();
-            if (state == State.Attacking)
-                StartAttack(GetChargeIndex(chargeTimeClamped));
-        }
-
-        public void ApplyChargeZoneColors()
-        {
-            GameObject chargeObject = ChargeIndicator.Visualizer;
-            if (chargeObject == null)
-            {
-                Debug.LogError("Charge object is not assigned");
-                return;
-            }
-            Debug.Log("Apply charge zone colors");
-
-            for (int i = 0; i < ChargeZones.colorKeys.Length; i++)
-            {
-                Color currentColor = ChargeZones.colorKeys[i].color;
-                //Debug.Log("Color key " + i + ": " + currentColor);
-                Transform child = chargeObject.transform.GetChild(i);
-                if (child == null)
-                {
-                    Debug.LogError("Charge zone has no child at index " + i, chargeObject);
-                }
-                Graphic graphic = child.GetComponent<Graphic>();
-                if (graphic == null)
-                {
-                    Debug.LogError("Transform child " + i + " of " + chargeObject + " has no Graphic component to set the color of", child);
-                }
-                //Debug.Log("Graphic " + graphic.name + "has been assigned color " + currentColor);
-                graphic.color = currentColor;
-            }
-        }
-
-        public void AttemptAttackCharge()
-        {
-            Debug.Log("Attempt attack charge while in state " + state.ToString());
-            switch (state)
-            {
-                // Attack charge allowed when
-                case State.Ready:
-                case State.OnCooldown:
-                    break;
-                // Attack charge not allowed when
-                case State.Disabled:
-                case State.Charging:
-                case State.Attacking:
-                    return;
             }
 
             if (Character.stamina.IsEmpty(true))
             {
                 return;
             }
-            // TODO: Get stamina use from attack?
-            Character.stamina.Use(1);
+
+            // Set charging flag, reset parameters and indicators
+            IsCharging = true;
+            slowmotion.active = false;
+            if (ChargeIndicator == null)
+                Debug.Log("Charge indicator not assigned", this);
+            else
+                ChargeIndicator.Value = 0;
+            previousIndex = -1;
+
+            latestChargeTime = 0f;
+            Character.stamina.allowRecharge = false;
 
             StartCoroutine(DoCharge());
-            Character.stamina.allowRecovery = false;
+
+            chargeEvents.OnChargeStarted.Invoke();
         }
 
-        [Serializable]
-        public struct Restrictions
+        public void EndCharge(bool complete)
         {
-            public bool Move;
-            public bool Rotate;
-            public bool StaminaRecovery;
-
-            public Restrictions(bool move, bool rotate, bool staminaRecovery)
+            if (!IsCharging)
             {
-                Move = move;
-                Rotate = rotate;
-                StaminaRecovery = staminaRecovery;
+                Debug.Log("Not charging.");
+                return;
             }
-        }
-        public Restrictions restrictions = new Restrictions(true, true, true);
 
-        public void SetMovementRestrictionsActive(bool active)
-        {
-            if (Character.Controller.movement != null)
+            // Once the loop has been exited, stop the slowmotion
+            if (slowmotion.active) TimeManager.Instance.StopSlowmotion();
+
+            // Deactivate the charge indicator visual
+            if (ChargeIndicator != null && ChargeIndicator.TransformwiseVisualizer != null)
+                ChargeIndicator.TransformwiseVisualizer.gameObject.SetActive(false);
+
+            // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
+            if (LatestCharge > energyCost.ChargeLimitTime)
             {
-                if (restrictions.Move)
+                Debug.Log("Detract energy");
+                if (energyCost.energyAbsorption == null)
+                    Debug.Log("Energy absorbtion component not assigned", this);
+                else
+                    energyCost.energyAbsorption.Energy -= energyCost.fullChargeCost;
+            }
+            chargeEvents.OnChargeStopped.Invoke();
+            IsCharging = false;
+            if (complete)
+                StartAttack(LatestCharge);
+            StopCoroutine(DoCharge());
+        }
+
+        WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+        public IEnumerator DoCharge()
+        {
+            // Start main charging loop
+            while (IsCharging)
+            {
+                // Add charge time
+                latestChargeTime += slowmotion.AffectsCharge ? Time.deltaTime : Time.unscaledDeltaTime;
+
+                // If the player is standing inside charge blockers and cannot fully charge, reset the energy back to the end of the charging deadzone
+                if (ChargingBlocked)
+                    latestChargeTime = 0f;
+                else
+                    latestChargeTime = Mathf.Min(latestChargeTime, ChargeTimeMax);
+
+                // If the player does not have the required energy and cannot fully charge, clamp the charge to the limit.
+                if (!energyCost.CanFullCharge)
+                    latestChargeTime = Mathf.Clamp(latestChargeTime, 0f, energyCost.ChargeLimitTime); // TODO: Doe dit niet met charge time maar met charge progress (0-1) voor versimpeling
+
+                // TODO: Evaluate the current charge state. Do this using the attack charge requirements, and getting the attack's index
+                int currentIndex = chargedAttacks.FindIndex(x => x.Equals(GetChargedAttack(LatestCharge)));
+                Debug.Log("Latest charge: " + LatestCharge);
+                // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
+                if (currentIndex != previousIndex)
                 {
-                    Character.Controller.movement.Stop();
-                    Character.Controller.movement.BlockMovementInput = active; // TODO: Misschien beter om het movement component uit te schakelen
+                    if (ChargeIndicator != null)
+                        ChargeIndicator.Value = currentIndex + 1;
+                    previousIndex = currentIndex;
+                    chargeEvents.OnChargeChanged.Invoke(LatestCharge);
                 }
-                if (restrictions.Rotate)
-                    Character.Controller.movement.LockFacingDirection = active;
-                if (restrictions.StaminaRecovery)
-                    Character.stamina.allowRecovery = !active;
+
+                // If slowmotion hasn't been started, check if the charge has passed the slowmotion trigger. If so, start slowmotion. If not, stop slowmotion.
+                if (!slowmotion.active)
+                {
+                    if (LatestCharge > slowmotion.Trigger)
+                    {
+                        slowmotion.active = true;
+                        TimeManager.Instance.DoSlowmotion(slowmotion.Factor);
+                    }
+                }
+                else
+                {
+                    if (LatestCharge < slowmotion.Trigger)
+                    {
+                        slowmotion.active = false;
+                        TimeManager.Instance.StopSlowmotion();
+                    }
+                }
+
+                if (fullChargeStaminaDrain.Update())
+                {
+                    if (IsFullyCharged) Character.stamina.Use(fullChargeStaminaDrain.DrainAmount);
+                    if (fullChargeStaminaDrain.DepletionInterruptsCharge && Character.stamina.IsEmpty(true))
+                        EndCharge(false);
+                }
+
+                yield return waitForEndOfFrame;
             }
         }
 
-        public void StartAttack(int attackIndex)
+        public void StartUnchargedAttack()
         {
-            if (Character.Animator != null)
+            StartAttack(unchargedAttack);
+        }
+
+        public void StartAttack(float charge) => StartAttack(GetChargedAttack(charge));
+
+        public void StartAttack(int attackIndex) => StartAttack(GetChargedAttack(attackIndex));
+
+        public void StartAttack(Attack attack)
+        {
+            Debug.Log("Start attack");
+            if (attack == null)
             {
-                Character.Animator.SetInteger("AttackIndex", attackIndex);
-                Character.Animator.SetTrigger("Attack");
+                Debug.Log("Attack was null");
+                return;
             }
 
-            SetMovementRestrictionsActive(true);
-            state = State.Attacking;
-            OnAttackStarted.Invoke();
+            if (Character.Animator != null)
+                Character.Animator.SetBool("IsAttacking", true);
+            SetMovementRestrictions(attack);
+            Character.stamina.Use(attack.staminaCost);
+            attackEvents.OnAttackStarted.Invoke();
+            attack.gameObject.SetActive(true);
+        }
+
+        public void SetMovementRestrictions(Attack attack)
+        {
+            if (Character.Controller.movement == null) return;
+
+            if (attack.restrictions.HasFlag(Restrictions.Move))
+            {
+                Character.Controller.movement.Stop();
+                Character.Controller.movement.LockPosition = true; // TODO: Misschien beter om het movement component uit te schakelen
+            }
+            if (attack.restrictions.HasFlag(Restrictions.Rotate))
+                Character.Controller.movement.LockFacingDirection = true;
+            if (attack.restrictions.HasFlag(Restrictions.StaminaRecovery))
+                Character.stamina.allowRecharge = !false;
+        }
+
+        public void ResetMovementRestrictions()
+        {
+            if (Character.Controller.movement == null) return;
+            Character.Controller.movement.LockPosition = false;
+            Character.Controller.movement.LockFacingDirection = false;
+            Character.stamina.allowRecharge = true;
         }
 
         // Would be nice if this was available as a visual scripting block
-        // Address this from the Animator
+        // Address this from the Animator, when leaving the attacking state
         public void EndAttack()
         {
-            state = State.Ready;
-            SetMovementRestrictionsActive(false);
+            ResetMovementRestrictions();
 
             // Immediately update walking direction at end of attack 
             if (Character.Controller.movement != null)
                 Character.Controller.movement.ForceReadMoveInput();
+            attackEvents.OnAttackEnded.Invoke();
+            if (Character.Animator != null) Character.Animator.SetBool("IsAttacking", false);
         }
     }
 }

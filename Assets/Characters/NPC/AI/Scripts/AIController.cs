@@ -46,7 +46,7 @@ public partial class AIController : MonoBehaviour
     public AIState searching = new AIState(new Vector2(0f, 5f), 5f, 25f);
     public AIState aggressive = new AIState(new Vector2(0f, 5f), -3f, 50f);
     [Header("Aaaaaaaa")]
-    [BobJeltes.Attributes.Range(0, 100)]
+    [BobJeltes.Attributes.Experimental.Range(0, 100)]
     public Vector2 pos = new Vector2();
 
     public AIState GetState(States state)
@@ -277,7 +277,7 @@ public partial class AIController : MonoBehaviour
         //Debug.Log("Transition to Attack");
         state = States.Attack;
         if (StopWhileAttacking) pathfinding.NavMeshAgent.isStopped = false;
-        CharacterController.attacking?.sounds.PlayAttackSound(0);
+        //CharacterController.attacking?.sounds.PlayAttackSound(0);
     }
     private void Attack()
     {

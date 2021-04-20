@@ -1,5 +1,4 @@
-﻿using Combat;
-using RanchyRats.Gyrus;
+﻿using RanchyRats.Gyrus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,7 +29,7 @@ public class HealthPickup : MonoBehaviour
             return;
         }
 
-        character.health.SetCurrent(character.health.Value + 1);
+        character.health.Value = character.health.Value + 1;
 
         foreach (GameObject obj in DisappearanceObjects)
         {

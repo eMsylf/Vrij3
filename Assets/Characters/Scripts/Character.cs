@@ -1,9 +1,10 @@
-﻿using Combat;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using BobJeltes.Extensions;
+using Gyrus.Combat;
+using Gyrus;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -30,8 +31,8 @@ namespace RanchyRats.Gyrus
         public Modifiers modifiers;
 
         [Header("Optional components")]
-        public Stat health;
-        public Stat stamina;
+        public CharacterStatistic health;
+        public CharacterStatistic stamina;
 
         [SerializeField]
         private CharacterController controller;
@@ -88,10 +89,15 @@ namespace RanchyRats.Gyrus
                 }
             }
 
-            public void SpawnRandom(Vector3 position, Vector3 scale) => Instantiate(
+            public void SpawnRandom(Vector3 position, Vector3 scale)
+            {
+                if (RandomObjectList.Count == 0) return;
+                Instantiate(
                     RandomObjectList[Random.Range(0, RandomObjectList.Count)],
                     position,
-                    Quaternion.identity).transform.localScale = scale;
+                    Quaternion.identity).
+                    transform.localScale = scale;
+            }
         }
         [Header("Character events")]
         public CharacterEvent GetHit = new CharacterEvent();
@@ -122,11 +128,11 @@ namespace RanchyRats.Gyrus
         {
             if (health != null)
             {
-                health.SetCurrent(health.MaxValue);
+                health.SetValueWithoutEvent(health.MaxValue);
             }
             if (stamina != null)
             {
-                stamina.SetCurrent(stamina.MaxValue);
+                stamina.SetValueWithoutEvent(stamina.MaxValue);
             }
         }
 
@@ -188,7 +194,7 @@ namespace RanchyRats.Gyrus
 
         public void TakeDamage(float damageTaken, float invincibilityTime = 0f, Character damageSource = null)
         {
-            health.SetCurrent(Mathf.Clamp(health.Value - damageTaken, 0, health.Value));
+            health.Value = Mathf.Clamp(health.Value - damageTaken, 0, health.Value);
             InvincibilityTime += invincibilityTime;
             if (damageSource != null)
             {

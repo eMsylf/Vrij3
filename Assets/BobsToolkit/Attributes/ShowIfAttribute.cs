@@ -10,13 +10,11 @@ namespace BobJeltes.Attributes
         private string valueName;
         private bool boolValue;
 
-        private bool invert;
         private int[] enumIndices;
 
         internal string ValueName { get => valueName; private set => valueName = value; }
         internal bool BoolValue { get => boolValue; private set => boolValue = value; }
         internal int[] EnumIndices { get => enumIndices; private set => enumIndices = value; }
-        internal bool Invert { get => invert; private set => invert = value; }
 
         /// <summary>
         /// Only shows the parameter that this is used on, if the chosen value (with the value name) matches the chosen value. NOTE: Does not work in combination with other attributes.
@@ -33,10 +31,9 @@ namespace BobJeltes.Attributes
         /// </summary>
         /// <param name="enumValueName">The name of the enum value.</param>
         /// <param name="enumIndices">The index of the enum that you want the parameter to be shown at.</param>
-        public ShowIfAttribute(string enumValueName, bool invert = false, params int[] enumIndices)
+        public ShowIfAttribute(string enumValueName, params int[] enumIndices)
         {
             ValueName = enumValueName;
-            this.Invert = invert;
             this.EnumIndices = enumIndices;
         }
     }
@@ -97,7 +94,7 @@ namespace BobJeltes.Attributes
             for (int i = 0; i < att.EnumIndices.Length; i++)
             {
                 if (enumValue.enumValueIndex == att.EnumIndices[i])
-                    return att.Invert ? false : true;
+                    return true;
             }
             return false;
         }

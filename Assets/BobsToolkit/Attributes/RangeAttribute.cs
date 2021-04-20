@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace BobJeltes.Attributes
+namespace BobJeltes.Attributes.Experimental
 {
     public class RangeAttribute : PropertyAttribute
     {

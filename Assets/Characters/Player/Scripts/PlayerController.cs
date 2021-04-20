@@ -81,21 +81,22 @@ namespace RanchyRats.Gyrus
 
             if (character.movement != null)
             {
-                Controls.Game.Movement.performed += _ =>    character.movement.SetMoveInput(_.ReadValue<Vector2>());
-                Controls.Game.Movement.canceled += _ =>     character.movement.Stop();
-                Controls.Game.Dodge.performed += _ =>       character.movement.AttemptDodge();
-                Controls.Game.Run.started += _ =>           character.movement.StartRunning();
-                Controls.Game.Run.canceled += _ =>          character.movement.StopRunning();
+                Controls.Game.Movement.performed += _ =>            character.movement.SetMoveInput(_.ReadValue<Vector2>());
+                Controls.Game.Movement.canceled += _ =>             character.movement.Stop();
+                Controls.Game.Dodge.performed += _ =>               character.movement.AttemptDodge();
+                Controls.Game.Run.started += _ =>                   character.movement.StartRunning();
+                Controls.Game.Run.canceled += _ =>                  character.movement.StopRunning();
             }
 
             if (character.attacking != null)
             {
-                Controls.Game.Attack.performed += _ =>      character.attacking.AttemptAttackCharge();
-                Controls.Game.Attack.canceled += _ =>       character.attacking.EndCharge(true);
+                Controls.Game.Attack.performed += _ =>              character.attacking.StartUnchargedAttack();
+                Controls.Game.ChargedAttack.started += _ =>       character.attacking.StartCharge();
+                Controls.Game.ChargedAttack.canceled += _ =>        character.attacking.EndCharge(true);
             }
 
             if (character.targeting != null)
-                Controls.Game.LockOn.performed += _ =>      character.targeting.LockOn(transform.position);
+                Controls.Game.LockOn.performed += _ =>              character.targeting.LockOn(transform.position);
 
         }
 
@@ -122,7 +123,7 @@ namespace RanchyRats.Gyrus
 
             if (character.attacking != null)
             {
-                Controls.Game.Attack.performed -= _ =>      character.attacking.AttemptAttackCharge();
+                Controls.Game.Attack.performed -= _ =>      character.attacking.StartCharge();
                 Controls.Game.Attack.canceled -= _ =>       character.attacking.EndCharge(true);
             }
 

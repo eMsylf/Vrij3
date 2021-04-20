@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using RanchyRats.Gyrus;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Combat
+namespace Gyrus.Combat
 {
     public class AttackingAI : MonoBehaviour
     {

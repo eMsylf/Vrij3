@@ -21,26 +21,4 @@ namespace BobJeltes.Events
 
     [Serializable]
     public class UnityEventCustomType<T> : UnityEvent<T> { }
-
-    [Serializable]
-    public class UnityEventData
-    {
-        public string EventString;
-        public float EventFloat;
-        public int EventInt;
-        public GameObject EventObject;
-        public Color color;
-    }
-
-    [Serializable]
-    public class UnityEventWithData {
-        public UnityEventData eventData = new UnityEventData();
-        public DataEvent Event;
-    }
-
-    [Serializable]
-    public class DataEvent : UnityEvent<UnityEventData>
-    {
-
-    }
 }
