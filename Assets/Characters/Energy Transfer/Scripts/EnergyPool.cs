@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnergyAbsorption : TriggerEvent
+public class EnergyPool : TriggerEvent
 {
     [SerializeField]
     private float energy;

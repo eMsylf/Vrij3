@@ -19,7 +19,7 @@ namespace RanchyRats.Gyrus
         {
             public UnityEvent OnChargeStarted;
             public UnityEvent OnChargeStopped;
-            [Header("Passes the percentual charge (between 0 and 1")]
+            [Header("Passes the percentual charge between 0 and 1")]
             public UnityEventFloat OnChargeChanged;
         }
         public Slider ChargeSlider;
@@ -30,7 +30,7 @@ namespace RanchyRats.Gyrus
         [Serializable]
         public struct EnergyCost
         {
-            public EnergyAbsorption energyAbsorption;
+            public EnergyPool energyPool;
             [Min(0)]
             public int fullChargeCost;
             [Min(0)] [Tooltip("The time at which the player's charge is halted, if the character does not posess the required energy.")]
@@ -39,8 +39,8 @@ namespace RanchyRats.Gyrus
             {
                 get
                 {
-                    if (energyAbsorption == null) return true;
-                    return energyAbsorption.Energy >= fullChargeCost;
+                    if (energyPool == null) return true;
+                    return energyPool.Energy >= fullChargeCost;
                 }
             }
         }
@@ -50,12 +50,10 @@ namespace RanchyRats.Gyrus
         {
             [Tooltip("If true, the charge will slow down, along with everything else. If false, the charge continues as quickly in, as it does out of slowmotion.")]
             public bool AffectsCharge;
-
             [Range(0f, 1f)]
             public float Trigger;
             [Range(0f, 1f)]
             public float Factor;
-
             internal bool active;
 
             public Slowmotion(bool affectsCharge)
@@ -104,14 +102,7 @@ namespace RanchyRats.Gyrus
         public bool IsFullyCharged => LatestCharge >= 1f;
         public GameObject ChargeBlockedIndicator;
         internal bool ChargingBlocked => chargeBlockers.Count > 0;
-        private float LatestCharge
-        {
-            get
-            {
-                // TODO: Doe hier iets anders leuks waardoor shit niet breekt dankjewel
-                return Mathf.InverseLerp(0f, ChargeTimeMax, latestChargeTime);
-            }
-        }
+        private float LatestCharge => Mathf.InverseLerp(0f, ChargeTimeMax, latestChargeTime);
 
         // Raw time of latest charge
         private float latestChargeTime = 0f;
@@ -215,9 +206,7 @@ namespace RanchyRats.Gyrus
             }
 
             if (Character.stamina.IsEmpty(true))
-            {
                 return;
-            }
 
             // Set charging flag, reset parameters and indicators
             IsCharging = true;
@@ -255,10 +244,10 @@ namespace RanchyRats.Gyrus
             if (LatestCharge > energyCost.ChargeLimitTime)
             {
                 Debug.Log("Detract energy");
-                if (energyCost.energyAbsorption == null)
+                if (energyCost.energyPool == null)
                     Debug.Log("Energy absorbtion component not assigned", this);
                 else
-                    energyCost.energyAbsorption.Energy -= energyCost.fullChargeCost;
+                    energyCost.energyPool.Energy -= energyCost.fullChargeCost;
             }
             chargeEvents.OnChargeStopped.Invoke();
             IsCharging = false;
@@ -302,7 +291,7 @@ namespace RanchyRats.Gyrus
                 // If slowmotion hasn't been started, check if the charge has passed the slowmotion trigger. If so, start slowmotion. If not, stop slowmotion.
                 if (!slowmotion.active)
                 {
-                    if (LatestCharge > slowmotion.Trigger)
+                    if (LatestCharge >= slowmotion.Trigger)
                     {
                         slowmotion.active = true;
                         TimeManager.Instance.DoSlowmotion(slowmotion.Factor);

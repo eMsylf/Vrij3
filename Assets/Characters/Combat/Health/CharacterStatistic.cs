@@ -41,17 +41,29 @@ namespace Gyrus
 
                 m_value = value;
                 events.OnValueChanged.Invoke(value);
+                UpdateVisual(value, true);
             }
         }
+        /// <summary>
+        /// A representation of the value between 0-1, where 0 is 0, and 1 is the MaxValue
+        /// </summary>
+        public float ValueRelative
+        {
+            set => Value = Mathf.Lerp(0, MaxValue, value);
+            get => Mathf.InverseLerp(0, MaxValue, Value);
+        }
+
         public bool AllowOverflow;
         public bool AllowUnderflow;
         [Tooltip("When enabled, this statistic is set to its maximum automatically when Start() is called.")]
         public bool setValueToMax = true;
         public Events events = new Events();
+
         [Header("Visualization")]
         [Tooltip("This visualizer turns child transforms on and off based on the statistic's value")]
         public Transform TransformwiseVisualizer;
         public Slider SliderVisualizer;
+
         [Header("Recharge")]
         public bool allowRecharge = false;
         [Min(0)]
@@ -76,6 +88,7 @@ namespace Gyrus
                 value = 0;
 
             m_value = value;
+            UpdateVisual(value, true);
         }
         [Serializable]
         public struct Events
@@ -104,9 +117,7 @@ namespace Gyrus
             if (!allowRecharge)
                 return;
             if (Value >= MaxValue)
-            {
                 return;
-            }
             if (windupRemaining > 0f)
             {
                 windupRemaining -= Time.deltaTime;
@@ -136,15 +147,13 @@ namespace Gyrus
                 events.OnDepleted.Invoke();
         }
 
-        public void UpdateVisual(bool animate)
+        public void UpdateVisual(float value, bool animate)
         {
             if (TransformwiseVisualizer == null)
             {
                 //Debug.LogError("Statistic visualizer is null");
                 return;
             }
-
-            TransformwiseVisualizer.gameObject.SetActive(true);
 
             if (animate)
             {
@@ -161,10 +170,10 @@ namespace Gyrus
                 fadeOutComponent.StartFadeOut();
             }
 
-            for (int i = 0; i < TransformwiseVisualizer.transform.childCount; i++)
+            for (int i = 0; i < TransformwiseVisualizer.childCount; i++)
             {
                 GameObject child = TransformwiseVisualizer.transform.GetChild(i).gameObject;
-                bool shouldBeActive = Value >= i + 1;
+                bool shouldBeActive = value >= i + 1;
                 child.SetActive(shouldBeActive);
             }
         }

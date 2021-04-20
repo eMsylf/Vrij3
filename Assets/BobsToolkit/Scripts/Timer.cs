@@ -3,8 +3,9 @@ using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
 {
+    [Min(0)]
     public float totalTime = 1f;
-    private float timeRemaining = 1f;
+    public float timeRemaining = 1f;
     [Tooltip("Whether the timer should use scaled or unscaled time. Unscaled time is unaffected by slowmotion.")]
     public bool ScaledTime = true;
     public bool DisplayTimeInObjectName = false;
@@ -71,8 +72,9 @@ public class Timer : MonoBehaviour
         public Direction direction = Direction.Up;
         public bool invertDirection;
 
-        public void Draw(Transform transform, float timeRemaining, float totalTime)
+        public void Draw(Transform transform, ref float timeRemaining, float totalTime)
         {
+            if (!enabled) return;
             Gizmos.color = IndicatorColor;
             Vector3 dir = new Vector3();
             Vector3 dirPerp = new Vector3();
@@ -94,7 +96,7 @@ public class Timer : MonoBehaviour
 
             dir *= IndicatorHeight;
             if (invertDirection) dir *= -1f;
-
+            timeRemaining = Mathf.Clamp(timeRemaining, 0f, totalTime);
             Gizmos.DrawLine(transform.position, transform.position + dir * (timeRemaining / totalTime));
             Gizmos.DrawLine(
                 transform.position + dirPerp * -IndicatorWidth,
@@ -107,7 +109,7 @@ public class Timer : MonoBehaviour
     public Indicator indicator = new Indicator();
     private void OnDrawGizmosSelected()
     {
-        indicator.Draw(transform, timeRemaining, totalTime);
+        indicator.Draw(transform, ref timeRemaining, totalTime);
     }
 #endif
 }
