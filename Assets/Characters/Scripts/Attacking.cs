@@ -27,9 +27,6 @@ namespace RanchyRats.Gyrus
         [Tooltip("Time it takes for the slider to fill up")]
         [Min(0)]
         public float ChargeTimeMax = 2f;
-        [Tooltip("Time below which a charge will not be initiated")]
-        [Min(0)]
-        public float ChargeTimeDeadzone = .1f;
         [Serializable]
         public struct EnergyCost
         {
@@ -72,7 +69,7 @@ namespace RanchyRats.Gyrus
         public Slowmotion slowmotion = new Slowmotion(false);
 
         public bool AllowCharging = true;
-        public bool IsCharging = false;
+        private bool IsCharging = false;
         [Serializable]
         public struct FullChargeStaminaDrain
         {
@@ -107,7 +104,15 @@ namespace RanchyRats.Gyrus
         public bool IsFullyCharged => LatestCharge >= 1f;
         public GameObject ChargeBlockedIndicator;
         internal bool ChargingBlocked => chargeBlockers.Count > 0;
-        private float LatestCharge => Mathf.Clamp(latestChargeTime, 0f, ChargeTimeDeadzone);
+        private float LatestCharge
+        {
+            get
+            {
+                // TODO: Doe hier iets anders leuks waardoor shit niet breekt dankjewel
+                return Mathf.InverseLerp(0f, ChargeTimeMax, latestChargeTime);
+            }
+        }
+
         // Raw time of latest charge
         private float latestChargeTime = 0f;
         private int previousIndex = -1;
@@ -244,7 +249,7 @@ namespace RanchyRats.Gyrus
 
             // Deactivate the charge indicator visual
             if (ChargeIndicator != null && ChargeIndicator.TransformwiseVisualizer != null)
-                ChargeIndicator.TransformwiseVisualizer.gameObject.SetActive(false);
+                ChargeIndicator.SetValueWithoutEvent(0f);
 
             // If the charge surpasses that of the energy requirement trigger, subtract energy from the character's energy pool
             if (LatestCharge > energyCost.ChargeLimitTime)
@@ -284,6 +289,7 @@ namespace RanchyRats.Gyrus
                 // TODO: Evaluate the current charge state. Do this using the attack charge requirements, and getting the attack's index
                 int currentIndex = chargedAttacks.FindIndex(x => x.Equals(GetChargedAttack(LatestCharge)));
                 Debug.Log("Latest charge: " + LatestCharge);
+
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
                 if (currentIndex != previousIndex)
                 {

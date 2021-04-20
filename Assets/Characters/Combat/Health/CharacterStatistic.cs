@@ -47,11 +47,13 @@ namespace Gyrus
         public bool AllowUnderflow;
         [Tooltip("When enabled, this statistic is set to its maximum automatically when Start() is called.")]
         public bool setValueToMax = true;
-        [Header("Recharge")]
-        public bool allowRecharge = false;
+        public Events events = new Events();
+        [Header("Visualization")]
         [Tooltip("This visualizer turns child transforms on and off based on the statistic's value")]
         public Transform TransformwiseVisualizer;
         public Slider SliderVisualizer;
+        [Header("Recharge")]
+        public bool allowRecharge = false;
         [Min(0)]
         [Tooltip("The time it takes for the recharge time to start counting, after using this value")]
         public float rechargeWindupTime = 1f;
@@ -83,7 +85,6 @@ namespace Gyrus
             public UnityEvent OnValueDecrease;
             public UnityEvent OnDepleted;
         }
-        public Events events = new Events();
 
         private void Start()
         {
