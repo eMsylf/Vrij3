@@ -1,14 +1,20 @@
 ﻿using RanchyRats.Gyrus;
+using RanchyRats.Gyrus.AI.BehaviorTree;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boss : Enemy
+public class Boss : BehaviourController
 {
     [Header("Boss")]
     public GameObjectEmitter ScreamEmitter;
     public Spawner eyeSpawner;
     public Spawner motmugSpawner;
+    [Min(0)]
+    public float 
+        VisionCheckInterval = 1f, 
+        SightRange = 10f;
+    public LayerMask layers = new LayerMask();
 
     [System.Serializable]
     public struct BossSounds
@@ -26,8 +32,19 @@ public class Boss : Enemy
     void PlayEyePopSound() { bossSounds.IdleSound.Stop(); bossSounds.EyePopSound.Play(); }
     void PlayTeethClackSound() { bossSounds.TeethClackSound.Play(); }
     void PlayAttAnnounceSound() { bossSounds.IdleSound.Stop(); bossSounds.AttAnnounceSound.Play(); }
-    void PlayDeathSound() { bossSounds.IdleSound.Stop(); Death.sound.Play(); }
+    //void PlayDeathSound() { bossSounds.IdleSound.Stop(); Death.sound.Play(); }
     void PLayIdleSound() { bossSounds.IdleSound.Play(); }
+
+    protected override void Start()
+    {
+        tree =
+            new Selector(this,
+                new Sequence(this,
+                    new CheckObjectsInRange(this, SightRange, layers)
+                    //new Selector
+                    )
+            );
+    }
 
     void SpawnScream()
     {
@@ -44,31 +61,31 @@ public class Boss : Enemy
         motmugSpawner.Spawn();
     }
 
-    public override void Die()
-    {
-        base.Die();
-        StartDeathAnimation();
-    }
+    //public override void Die()
+    //{
+    //    base.Die();
+    //    StartDeathAnimation();
+    //}
 
-    public void StartDeathAnimation()
-    {
-        if (Animator == null)
-        {
-            Debug.LogError("Animator not assigned", gameObject);
-            return;
-        }
+    //public void StartDeathAnimation()
+    //{
+    //    if (Animator == null)
+    //    {
+    //        Debug.LogError("Animator not assigned", gameObject);
+    //        return;
+    //    }
 
-        Animator.SetTrigger("Death");
-    }
+    //    Animator.SetTrigger("Death");
+    //}
 
-    public void PlayerClose(bool isClose)
-    {
-        if (Animator == null)
-        {
-            Debug.LogError("Animator not assigned", gameObject);
-            return;
-        }
+    //public void PlayerClose(bool isClose)
+    //{
+    //    if (Animator == null)
+    //    {
+    //        Debug.LogError("Animator not assigned", gameObject);
+    //        return;
+    //    }
 
-        Animator.SetBool("PlayerClose", isClose);
-    }
+    //    Animator.SetBool("PlayerClose", isClose);
+    //}
 }
