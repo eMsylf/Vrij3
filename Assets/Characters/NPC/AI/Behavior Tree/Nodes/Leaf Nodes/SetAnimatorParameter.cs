@@ -7,15 +7,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
     public class SetAnimatorParameter : BTNode
     {
         private Animator animator;
-
-        private enum ParameterType
-        {
-            Float,
-            Int,
-            Bool,
-            Trigger
-        }
-        private ParameterType parameterType;
+        private AnimatorControllerParameterType parameterType;
 
         private string animatorParameter;
         private int layer;
@@ -30,7 +22,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
             animator = controller.animator;
             animatorParameter = intName;
             referenceInt = value;
-            parameterType = ParameterType.Int;
+            parameterType = AnimatorControllerParameterType.Int;
             this.layer = layer;
         }
 
@@ -39,7 +31,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
             animator = controller.animator;
             animatorParameter = parameterName;
             referenceFloat = value;
-            parameterType = ParameterType.Float;
+            parameterType = AnimatorControllerParameterType.Float;
             this.layer = layer;
         }
 
@@ -48,7 +40,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
             animator = controller.animator;
             animatorParameter = parameterName;
             referenceBool = value;
-            parameterType = ParameterType.Bool;
+            parameterType = AnimatorControllerParameterType.Bool;
             this.layer = layer;
         }
 
@@ -56,7 +48,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         {
             animator = controller.animator;
             animatorParameter = triggerName;
-            parameterType = ParameterType.Trigger;
+            parameterType = AnimatorControllerParameterType.Trigger;
             this.layer = layer;
         }
 
@@ -71,16 +63,16 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 
             switch (parameterType)
             {
-                case ParameterType.Float:
+                case AnimatorControllerParameterType.Float:
                     controller.animator.SetFloat(animatorParameter, referenceFloat);
                     break;
-                case ParameterType.Int:
+                case AnimatorControllerParameterType.Int:
                     controller.animator.SetInteger(animatorParameter, referenceInt);
                     break;
-                case ParameterType.Bool:
+                case AnimatorControllerParameterType.Bool:
                     controller.animator.SetBool(animatorParameter, referenceBool);
                     break;
-                case ParameterType.Trigger:
+                case AnimatorControllerParameterType.Trigger:
                     controller.animator.SetTrigger(animatorParameter);
                     break;
                 default:

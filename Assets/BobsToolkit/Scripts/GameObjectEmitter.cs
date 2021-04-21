@@ -5,6 +5,7 @@ using UnityEngine;
 using BobJeltes;
 using BobJeltes.Extensions;
 using UnityEngine.Rendering;
+using BobJeltes.Attributes;
 
 public class GameObjectEmitter : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class GameObjectEmitter : MonoBehaviour
     public bool playOnAwake = false;
     [Tooltip("An emission will fire upon awakening")]
     public bool emitOnAwake = false;
+    [Tooltip("Emit every time this component is enabled")]
+    public bool emitOnEnable = false;
     [Space]
     [Min(0)]
     public int numberOfObjects = 5;
@@ -43,9 +46,11 @@ public class GameObjectEmitter : MonoBehaviour
     [Min(0)]
     public float objectLifetime = 1f;
     public bool objectsBecomeChildren = false;
-    public bool syncDeactivation = true;
+    [ShowIf("objectsBecomeChildren", false)]
+    public bool deactivateChildrenOnDisable = true;
 
     public bool useObjectPool = true;
+    [ShowIf("useObjectPool", true)]
     public ObjectPool objectPool;
     public ObjectPool GetObjectPool()
     {
@@ -70,9 +75,15 @@ public class GameObjectEmitter : MonoBehaviour
             Emit();
     }
 
+    private void OnEnable()
+    {
+        if (emitOnEnable)
+            Emit();
+    }
+
     private void OnDisable()
     {
-        if (syncDeactivation)
+        if (deactivateChildrenOnDisable)
         {
             ObjectPool objPool = GetObjectPool();
             foreach (GameObject obj in objPool.objectPool)
@@ -84,14 +95,14 @@ public class GameObjectEmitter : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (!play)
             return;
 
         if (interval > 0f)
         {
-            interval -= Time.fixedDeltaTime;
+            interval -= Time.deltaTime;
             return;
         }
 
@@ -160,6 +171,7 @@ public class GameObjectEmitter : MonoBehaviour
         Handles.matrix = transform.localToWorldMatrix;
         Gizmos.matrix = transform.localToWorldMatrix;
         Vector3[] starts = GetStartPositions();
+        Handles.DrawWireArc(Vector3.zero, Vector3.up, Vector3.forward, emissionAngle, 1f);
         Vector3[] directions = GetDirections();
         for (int i = 0; i < directions.Length; i++)
         {
@@ -170,6 +182,16 @@ public class GameObjectEmitter : MonoBehaviour
             objEnd += objStart;
             //Debug.Log("Direction: " + directions[i]);
             Handles.DrawLine(objStart, objEnd);
+            if (i == directions.Length - 1)
+            {
+                if (exactAngle && emissionAngle > 355f && numberOfObjects > 1)
+                {
+                    Color finalColor = Color.red;
+                    finalColor.a = .5f;
+                    Handles.color = finalColor;
+                }
+            }
+
             Handles.ArrowHandleCap(0, objEnd, Quaternion.LookRotation(objEnd - objStart), 1f, EventType.Repaint);
         }
         //if (numberOfObjects > 0f && emissionAngle > 0f)
@@ -190,10 +212,11 @@ public class GameObjectEmitter : MonoBehaviour
         {
             whole -= 1f;
         }
-
+        float fractionOfCircle = emissionAngle / 360f;
+        float fractionOfCircleRad = Mathf.PI * fractionOfCircle * 2f;
         for (int i = 0; i < numberOfObjects; i++)
         {
-            float prog = (i / whole) * Mathf.PI * (emissionAngle / 360f) * 2f;
+            float prog = (i / whole) * fractionOfCircleRad;
             
             float xOffset = Mathf.Sin(prog) * startWidth.x;
             float zOffzet = Mathf.Cos(prog) * startWidth.z;

@@ -15,7 +15,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
 
         public override void Interrupt()
         {
-
+            throw new System.NotImplementedException();
         }
 
         public override Result Tick()

@@ -10,9 +10,8 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         public Idle(float timeLimit, BehaviourController controller = null) : base(controller)
         {
             tree =
-                new Sequence(controller,
                     new TimeLimit(timeLimit)
-                );
+                ;
         }
 
         public override void Interrupt()

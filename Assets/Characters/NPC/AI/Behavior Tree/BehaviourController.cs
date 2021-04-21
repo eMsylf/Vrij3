@@ -17,6 +17,7 @@ namespace RanchyRats.Gyrus.AI.BehaviorTree
         protected virtual void Start()
         {
             animator = GetComponent<Animator>();
+            if (animator == null) Debug.LogError(name + " has no animator assigned", this);
             navMeshAgent = GetComponent<NavMeshAgent>();
         }
 
