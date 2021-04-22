@@ -27,7 +27,7 @@ namespace RanchyRats.Gyrus
             public float attackFrequency;
             public float size;
         }
-        [Tooltip("Adds an amount to the associated statistic in the character profile")]
+        [Tooltip("Adds an amount to the associated property in the character profile")]
         public Modifiers modifiers;
 
         [Header("Optional components")]
