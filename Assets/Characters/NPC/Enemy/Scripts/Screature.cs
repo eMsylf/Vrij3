@@ -33,11 +33,8 @@ public class Screature : BehaviourController
                 ),
                 new Idle(VisionCheckInterval)
             );
-    }
 
-    void Update()
-    {
-        tree?.Tick();
+        SphereCollider collider = new SphereCollider();
     }
 
     private void OnDrawGizmosSelected()

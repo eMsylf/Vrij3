@@ -17,6 +17,8 @@ public class Death : MonoBehaviour
     public GameObjectEmitter EnergyEmitter;
     [Header("No instantiation")]
     [SerializeField] private ParticleSystem freeParticles = null;
+    private bool IsDead = false;
+
     public ParticleSystem GetNonAbsorbedParticles()
     {
         if (freeParticles == null)
@@ -33,17 +35,6 @@ public class Death : MonoBehaviour
             Debug.LogError("Death particles have not been assigned");
         }
         return absorbedParticles;
-    }
-    private bool IsDead = false;
-
-    public void Die()
-    {
-        if (IsDead) return;
-        IsDead = true;
-        if (Visual != null)
-            Visual.enabled = false;
-
-        ReleaseEnergy();
     }
 
     private void CalculateBursts(int totalEnergy, out ParticleSystem.Burst nonAbsorbedBurst, out ParticleSystem.Burst absorbedBurst)
@@ -78,6 +69,7 @@ public class Death : MonoBehaviour
         }
     }
 
+    [ContextMenu("Release energy")]
     public void ReleaseEnergy()
     {
         CalculateBursts(GetComponent<EnergyBeing>().Energy, out ParticleSystem.Burst nonAbsorbedBurst, out ParticleSystem.Burst absorbedBurst);
@@ -102,6 +94,18 @@ public class Death : MonoBehaviour
         }
     }
 
+    [ContextMenu("Kill")]
+    public void Die()
+    {
+        if (IsDead) return;
+        IsDead = true;
+        if (Visual != null)
+            Visual.enabled = false;
+
+        ReleaseEnergy();
+    }
+
+    [ContextMenu("Resurrect")]
     public void Resurrect()
     {
         if (!IsDead) return;

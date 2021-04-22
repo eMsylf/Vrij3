@@ -90,5 +90,22 @@ namespace BobJeltes.Extensions
         {
             return Random.Range(0, 100) < trueChance ? true : false;
         }
+
+        public static void InstantiateList(List<GameObject> gameObjects, Transform parent = null)
+        {
+            foreach (GameObject obj in gameObjects)
+            {
+                if (parent != null)
+                    Object.Instantiate(obj, parent);
+                else
+                    Object.Instantiate(obj);
+            }
+        }
+
+        public static void InstantiateList(List<GameObject> gameObjects, Vector3 position, Quaternion rotation)
+        {
+            foreach (GameObject obj in gameObjects)
+                Object.Instantiate(obj, position, rotation);
+        }
     }
 }

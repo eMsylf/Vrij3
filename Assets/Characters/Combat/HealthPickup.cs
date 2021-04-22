@@ -1,4 +1,5 @@
-﻿using RanchyRats.Gyrus;
+﻿using BobJeltes.Extensions;
+using RanchyRats.Gyrus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,11 +32,8 @@ public class HealthPickup : MonoBehaviour
 
         character.health.Value = character.health.Value + 1;
 
-        foreach (GameObject obj in DisappearanceObjects)
-        {
-            Instantiate(obj, transform.position, transform.rotation);
-        }
+        Extensions.InstantiateList(DisappearanceObjects, transform);
 
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }
