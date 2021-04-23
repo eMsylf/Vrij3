@@ -9,6 +9,7 @@ public class TriggerEvent : MonoBehaviour
     public UnityEventGameObject onTriggerEnter;
     public UnityEventGameObject onTriggerExit;
     public bool onDisableTriggerExit;
+    private GameObject latestEntered;
     public enum EventObject
     {
         This,
@@ -17,18 +18,25 @@ public class TriggerEvent : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (layers != (layers.value | (1 << other.gameObject.layer)))
-        {
-            return;
-        }
-        //Debug.Log(other.name + " entered trigger of " + name, this);
+        if (layers == (layers.value | (1 << other.gameObject.layer)))
+            Enter(other.gameObject);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (layers == (layers.value | (1 << other.gameObject.layer)))
+            Exit(other.gameObject);
+    }
+
+    private void Enter(GameObject obj)
+    {
         switch (passedEventObject)
         {
             case EventObject.This:
                 onTriggerEnter.Invoke(gameObject);
                 break;
             case EventObject.Other:
-                onTriggerEnter.Invoke(other.gameObject);
+                onTriggerEnter.Invoke(obj);
                 break;
             default:
                 break;
@@ -36,43 +44,26 @@ public class TriggerEvent : MonoBehaviour
         latestEntered = gameObject;
     }
 
-    private void OnTriggerExit(Collider other)
+    private void Exit(GameObject obj)
     {
-        if (layers != (layers.value | (1 << other.gameObject.layer)))
-        {
-            return;
-        }
-        //Debug.Log(other.name + " left trigger of " + name, this); 
         switch (passedEventObject)
         {
             case EventObject.This:
                 onTriggerExit.Invoke(gameObject);
                 break;
             case EventObject.Other:
-                onTriggerExit.Invoke(other.gameObject);
+                onTriggerExit.Invoke(obj);
                 break;
             default:
                 break;
         }
+        if (obj == latestEntered)
+            latestEntered = null;
     }
-
-    private GameObject latestEntered;
 
     private void OnDisable()
     {
-        if (onDisableTriggerExit)
-        {
-            switch (passedEventObject)
-            {
-                case EventObject.This:
-                    onTriggerExit.Invoke(gameObject);
-                    break;
-                case EventObject.Other:
-                    onTriggerExit.Invoke(latestEntered);
-                    break;
-                default:
-                    break;
-            }
-        }
+        if (onDisableTriggerExit && latestEntered != null)
+            Exit(latestEntered);
     }
 }

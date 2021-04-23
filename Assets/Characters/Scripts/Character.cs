@@ -11,10 +11,7 @@ using UnityEditor;
 
 namespace RanchyRats.Gyrus
 {
-    public class Character : MonoBehaviour,
-        CombatProperties.IKillable,
-        //CombatProperties.IDamagable<float>, 
-        CombatProperties.ICanAttack
+    public class Character : MonoBehaviour, CombatProperties.IKillable
     {
         public CharacterProfile profile;
 
@@ -179,11 +176,6 @@ namespace RanchyRats.Gyrus
                     otherCharacter.TakeDamage(touchDamage.damage, touchDamage.invincibilityTime, this);
                 Debug.Log(otherCharacter + " takes touch damage from " + name);
             }
-        }
-
-        public void Attack()
-        {
-            throw new System.NotImplementedException();
         }
 
         public void SpawnObjectAtOwnHeight(GameObject prefab)

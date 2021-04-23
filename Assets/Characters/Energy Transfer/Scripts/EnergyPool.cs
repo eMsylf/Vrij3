@@ -13,30 +13,30 @@ public class EnergyPool : TriggerEvent
         get => energy;
         set
         {
-            Debug.Log("Energy value updated from " + energy + " to " + value);
             energy = value;
-            OnEnergyUpdated.Invoke(energy);
+            energyEvents.OnEnergyUpdated.Invoke(energy);
         }
     }
-    public FloatEvent OnAbsorbEnergy;
     public bool DeactivateIncomingObject = true;
-    public FloatEvent OnEnergyUpdated;
+
+    [System.Serializable]
+    public struct EnergyEvents
+    {
+        public FloatEvent OnAbsorbEnergy;
+        public FloatEvent OnEnergyUpdated;
+    }
+    public EnergyEvents energyEvents = new EnergyEvents();
 
     public void AbsorbEnergy(GameObject energyObject)
     {
-        //Debug.Log("Absorb energy", energyObject);
         Energy energyComponent = energyObject.GetComponent<Energy>();
         float absorbedEnergy;
         if (energyComponent == null)
-        {
             absorbedEnergy = 1f;
-        }
         else
-        {
             absorbedEnergy = energyComponent.amount;
-        }
         Energy += absorbedEnergy;
         if (DeactivateIncomingObject) energyObject.SetActive(false);
-        OnAbsorbEnergy.Invoke(absorbedEnergy);
+        energyEvents.OnAbsorbEnergy.Invoke(absorbedEnergy);
     }
 }

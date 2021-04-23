@@ -7,6 +7,7 @@ public class Death : MonoBehaviour
 {
     [Tooltip("This is turned off upon death")]
     public MeshRenderer Visual;
+    [Tooltip("The part of the energy that can be absorbed by energy collectors. The rest gets released into the air.")]
     [Range(0f, 1f)]
     public float EnergyAbsorbedRatio = .1f;
     [Tooltip("This creates new objects from given particle system prefabs. Useful for if this object or its parent is deactivated when 'release energy' is called")]

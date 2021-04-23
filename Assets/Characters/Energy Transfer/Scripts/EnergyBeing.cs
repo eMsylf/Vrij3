@@ -6,5 +6,5 @@ public class EnergyBeing : MonoBehaviour
 {
     [Tooltip("Directly dictates how many energy orbs are released upon death")]
     [Min(0)]
-    public int Energy;
+    public int Energy = 0;
 }

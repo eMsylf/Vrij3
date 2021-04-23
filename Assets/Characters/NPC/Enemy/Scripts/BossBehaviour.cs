@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class BossBehaviour : BehaviourController
 {
+    [Space]
     public GameObjectEmitter ScreamEmitter;
     public Spawner eyeSpawner;
     public Spawner motmugSpawner;
