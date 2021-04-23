@@ -294,7 +294,7 @@ namespace RanchyRats.Gyrus
                     if (LatestCharge >= slowmotion.Trigger)
                     {
                         slowmotion.active = true;
-                        TimeManager.Instance.DoSlowmotion(slowmotion.Factor);
+                        TimeManager.Instance.StartSlowmotion(slowmotion.Factor);
                     }
                 }
                 else

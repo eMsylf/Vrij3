@@ -4,148 +4,101 @@ using BobJeltes.StandardUtilities;
 
 public class TimeManager : Singleton<TimeManager>
 {
-    Controls controls;
-    Controls Controls
-    {
-        get
-        {
-            if (controls == null)
-            {
-                controls = new Controls();
-            }
-            return controls;
-        }
-    }
+    public float slowmotionDuration = 10f;
+    public float slowmotionTimeScale = .05f;
+    public float slowmotionRemaining = 10f;
+    [Range(0.0001f, 1f)]
+    public float timeScale = 1f;
+    [Space]
+    public float slowmotionTransitionTime = 1f;
+    public AnimationCurve SlowmotionTransition = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, 1f));
 
-    public float slowdownFactor = .05f;
-    public float slowdownLength = 2f;
-    public float slowdownTransition = 1f;
-    public AnimationCurve SlowdownTransition = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, 1f));
-    public bool DebugButtonsEnabled = false;
-
-    private float slowmoTime = 99f;
-    private float savedTimeScale;
-    private float savedFixedDeltaTime;
-    private bool slowmo = false;
+    private float fixedScaledDeltaTime => originalFixedDeltaTime * timeScale;
+    private float originalFixedDeltaTime;
+    private bool slowmotionActive;
     private bool transitioning = false;
 
     private void Awake()
     {
-        if (DebugButtonsEnabled)
-        {
-            Controls.Game.Enable();
-            Controls.Game.Attack.performed += _ => DoSlowmotion(slowdownFactor);
-            Controls.Game.Dodge.performed += _ => StopSlowmotion();
-            Controls.Game.LockOn.performed += _ => StartCoroutine(TransitionToSlowmotion(slowdownTransition, slowdownFactor));
-        }
+        SetTimeScale(1f);
+        originalFixedDeltaTime = Time.fixedDeltaTime;
     }
 
     private void Update()
     {
-        if (slowmoTime < slowdownLength)
+        if (slowmotionActive)
         {
-            slowmo = true;
-            Time.timeScale = slowdownFactor;
-            slowmoTime += Time.unscaledDeltaTime;
-            slowmoTime = Mathf.Clamp(slowmoTime + Time.deltaTime, 0f, slowdownLength);
-            if (slowmoTime >= slowdownLength)
+            if (slowmotionRemaining > 0f)
             {
-                Time.timeScale = savedTimeScale;
-                Time.fixedDeltaTime = savedFixedDeltaTime;
-                slowmo = false;
-                //Debug.Log("Stop slowmo");
+                slowmotionRemaining -= Time.unscaledDeltaTime;
             }
+            else
+                StopSlowmotion();
         }
     }
-
-    public void OverrideSavedTimeScale()
+#if UNITY_EDITOR
+    private void OnValidate()
     {
-        //Debug.Log("Saved timescale " + Time.timeScale);
-        savedTimeScale = Time.timeScale;
-        savedFixedDeltaTime = Time.fixedDeltaTime;
+        if (UnityEditor.EditorApplication.isPlaying)
+            SetTimeScale(timeScale);
     }
-
-    public void DoSlowmotion(float factor)
+#endif
+    private void SetTimeScale(float timeScale)
     {
-        if (slowmo)
-        {
-            //Debug.Log("Slowmo attempted while already active");
-            return;
-        }
-
-        slowmo = true;
-        //Debug.Log("Slowmo");
-        if (savedTimeScale == 0f || savedFixedDeltaTime == 0f)
-        {
-            OverrideSavedTimeScale();
-        }
-        Time.timeScale = factor;
-        Time.fixedDeltaTime = Time.timeScale * savedFixedDeltaTime;
+        this.timeScale = timeScale;
+        Time.timeScale = this.timeScale;
+        if (originalFixedDeltaTime == 0f) originalFixedDeltaTime = Time.fixedDeltaTime;
+        Time.fixedDeltaTime = fixedScaledDeltaTime;
     }
 
-    public void DoSlowmotionWithDuration(float factor, float duration)
+    private void ResetTimeScale()
     {
-        if (slowmo)
-        {
-            //Debug.Log("Slowmo attempted while already active");
-            return;
-        }
-        //Debug.Log("Slowmo for " + duration + " seconds");
-        
-        if (savedTimeScale == 0f || savedFixedDeltaTime == 0f)
-        {
-            OverrideSavedTimeScale();
-        }
-        slowdownFactor = factor;
-        slowmoTime = 0f;
-        slowdownLength = duration;
-
-        slowmo = true;
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = originalFixedDeltaTime;
     }
 
+    [ContextMenu("Start timed slowmotion")] public void StartSlowmotion() => StartSlowmotionWithDuration(slowmotionTimeScale, slowmotionDuration);
+    public void StartSlowmotion(float factor) => StartSlowmotionWithDuration(factor, slowmotionDuration);
+    public void StartSlowmotionWithDuration(float factor, float duration)
+    {
+        //Debug.Log(factor + " slowmo for " + duration + " seconds.");
+        SetTimeScale(factor);
+        slowmotionActive = true;
+        slowmotionRemaining = duration;
+    }
+
+    [ContextMenu("Stop slowmotion")]
     public void StopSlowmotion()
     {
-        if (!slowmo)
-        {
-            //Debug.Log("Slowmo already stopped");
-            return;
-        }
-        slowmo = false;
-
-        //Debug.Log("Unslomo");
-        Time.timeScale = savedTimeScale;
-        Time.fixedDeltaTime = savedFixedDeltaTime;
+        ResetTimeScale();
         if (transitioning)
         {
-            //Debug.Log("Transition cancelled");
             StopAllCoroutines();
             transitioning = false;
         }
+        slowmotionActive = false;
     }
 
+    [ContextMenu("Transition into slowmotion")] public void TransitionIntoSlowmotion() => StartCoroutine(TransitionToSlowmotion(slowmotionTransitionTime, slowmotionTimeScale));
     public IEnumerator TransitionToSlowmotion(float transitionTime, float factor)
     {
-        if (slowmo || transitioning)
+        if (transitioning)
             yield break;
+
         transitioning = true;
-        slowmo = true;
-        float newTimeScale = savedTimeScale * factor;
-        float newFixedDeltaTime = newTimeScale * savedFixedDeltaTime;
-
-        float startTime = Time.time;
-        float endTime = startTime + transitionTime;
-        while (Time.time < endTime)
+        float newTimeScale = factor;
+        float transitionTimeRemaining = transitionTime;
+        
+        while (transitionTimeRemaining > 0f)
         {
-            float progress = (Time.time - startTime)/transitionTime;
+            float progress = Mathf.InverseLerp(transitionTime, 0f, transitionTimeRemaining);
             yield return new WaitForEndOfFrame();
-            float CurveEvaluation = SlowdownTransition.Evaluate(progress);
-            Time.timeScale = Mathf.Lerp(savedTimeScale, newTimeScale, CurveEvaluation);
-            Time.fixedDeltaTime = Mathf.Lerp(savedFixedDeltaTime, newFixedDeltaTime, CurveEvaluation);
-
-
-            //Debug.Log("Transitioning... Progress: " + progress + ". Current timeScale: " + Time.timeScale + ". Current FixedDeltaTime: " + Time.fixedDeltaTime);
+            float CurveEvaluation = SlowmotionTransition.Evaluate(progress);
+            timeScale = Mathf.Lerp(1f, newTimeScale, CurveEvaluation);
+            SetTimeScale(timeScale);
+            transitionTimeRemaining -= Time.unscaledDeltaTime;
         }
-        //Debug.Log("Done!");
         transitioning = false;
+        StartSlowmotion(factor);
     }
 }

@@ -6,7 +6,9 @@ using UnityEngine;
 public class Jumpy : MonoBehaviour
 {
     public float JumpPower = 5f;
+    [Tooltip("Rotational force applied on jump")]
     public Vector3 Torque = Vector3.zero;
+    public ForceMode forceMode = ForceMode.VelocityChange;
 
     new Rigidbody rigidbody;
     Rigidbody Rigidbody
@@ -29,8 +31,8 @@ public class Jumpy : MonoBehaviour
 
     void Jump(float power)
     {
-        //Debug.Log("Jump");
-        Rigidbody.AddForce(Vector3.up * power, ForceMode.Impulse);
-        Rigidbody.AddTorque(Torque, ForceMode.Impulse);
+        Debug.Log("Jump");
+        Rigidbody.AddForce(Vector3.up * power, forceMode);
+        Rigidbody.AddTorque(Torque, forceMode);
     }
 }

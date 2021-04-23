@@ -171,7 +171,7 @@ namespace RanchyRats.Gyrus
             if (CameraShake.enabled)
                 Camera.main.DOShakePosition(CameraShake.Duration, CameraShake.Strength);
             if (HitStun.enabled)
-                TimeManager.Instance.DoSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
+                TimeManager.Instance.StartSlowmotionWithDuration(HitStun.Slowdown, HitStun.Duration);
 
             events.OnHitEvent.Invoke();
         }
