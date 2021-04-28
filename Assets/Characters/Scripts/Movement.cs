@@ -17,6 +17,8 @@ namespace RanchyRats.Gyrus
         [Tooltip("If the movement is being controlled by a NavMeshAgent component, the movement animation is still updated through this component but the movement is not applied to the rigidbody.")]
         public bool MovementByNavMeshAgent = false;
         internal Vector2 Input = Vector2.zero;
+        public Transform RotatingBody;
+        public Transform StaticVisualBody;
         internal Vector2 FacingDirection = Vector2.up;
         internal Vector3 playerMovement
         {
@@ -26,7 +28,7 @@ namespace RanchyRats.Gyrus
                 if (state == State.Dodging && Input == Vector2.zero)
                 {
                     if (defaultDodgeDirection == DefaultDodgeDirection.ToCamera) return new Vector2(0f, -1f) * CurrentStateSettings.speed;
-                    return -FacingDirection.XYToXZ() * CurrentStateSettings.speed;
+                    return -RotatingBody.forward * CurrentStateSettings.speed;
                 }
                 // Otherwise, return the regular movement
                 return Input.XYToXZ() * CurrentStateSettings.speed;
@@ -45,8 +47,6 @@ namespace RanchyRats.Gyrus
 
         // TODO: Use charachter stamina instead of separate reference
         public CharacterStatistic Stamina;
-
-        public Direction Direction;
 
         //Hey Julia here, I'm just throwing extra code things in here for now and will add comments where I also added something.
         public ParticleSystem dust;
@@ -114,27 +114,32 @@ namespace RanchyRats.Gyrus
             Rigidbody.MovePosition(Rigidbody.position + playerMovement.ConvertToObjectRelative(Camera.main.transform, true, true) * Time.fixedDeltaTime);
         }
 
+        public bool ContinuousInputRead = true;
+
         private void Update()
         {
             ManageRunningStaminaDrain();
+            if (ContinuousInputRead) ForceReadMoveInput();
+            UpdateVisualFacing();
         }
 
-        // Wanneer een aanval eindigt moet de input van de speler gelezen worden zodat de speler gelijk doorgaat met bewegen als de stick in een richting gehouden wordt tijdens de aanval. Zonder dit blijft de speler stilstaan.
+        // When an attack or dodge ends, the input from the player needs to be read again so the player will start to move if the player is holding the movement stick in a direction at the end of an attack.
         public void ForceReadMoveInput()
         {
             if (Character.Controller.PlayerController == null)
                 return;
 
             Vector2 input = (Character.Controller.PlayerController).Controls.Game.Movement.ReadValue<Vector2>();
-            if (input != Vector2.zero)
+            if (input == Vector2.zero)
             {
-                SetMoveInput(input);
-                bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Started;
-                if (run)
-                    StartRunning();
-            }
-            else
                 Stop();
+                return;
+            }
+
+            SetMoveInput(input);
+            bool run = (Character.Controller.PlayerController).Controls.Game.Run.phase == UnityEngine.InputSystem.InputActionPhase.Started;
+            if (run)
+                StartRunning();
         }
 
         public void SetMoveInput(Vector2 input)
@@ -245,31 +250,23 @@ namespace RanchyRats.Gyrus
             if (dust != null) dust.Stop();
         }
 
-        public void UpdateDirectionIndicator(Vector2 facingDirection)
-        {
-            if (Direction == null)
-            {
-                Debug.LogWarning("Direction indicator is null. Adding...", Direction);
-                Direction = new GameObject("Direction Indicator").AddComponent<Direction>();
-                Direction.transform.parent = transform;
-                Direction.transform.position = Vector3.zero;
-                return;
-            }
-            Direction.UpdatePosition(new Vector3(facingDirection.x, 0f, facingDirection.y));
-        }
-
-        
         public void SetFacingDirection(Vector2 direction)
         {
             if (LockFacingDirection)
                 return;
 
             FacingDirection = direction;
-            UpdateDirectionIndicator(FacingDirection);
+            Vector3 cameraRelativeDirection = direction.XYToXZ().ConvertToObjectRelative(Camera.main.transform, true);
+            RotatingBody.rotation = Quaternion.LookRotation(cameraRelativeDirection);
+        }
+
+        public void UpdateVisualFacing()
+        {
+            Vector3 worldspaceDirection = StaticVisualBody.InverseTransformVector(RotatingBody.transform.forward);
             if (Character.Animator == null)
                 return;
-            Character.Animator.SetFloat("Hor", direction.x);
-            Character.Animator.SetFloat("Vert", direction.y);
+            Character.Animator.SetFloat("Hor", worldspaceDirection.x);
+            Character.Animator.SetFloat("Vert", worldspaceDirection.z);
         }
     }
 }

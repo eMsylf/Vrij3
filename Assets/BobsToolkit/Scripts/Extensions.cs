@@ -36,8 +36,8 @@ namespace BobJeltes.Extensions
                 referenceUp.Normalize();
             }
 
-            Vector3 referenceRelativeVector3 = referenceForward * vector3.z + referenceRight * vector3.x + referenceUp * vector3.y;
-            return referenceRelativeVector3;
+            Vector3 outputVector3 = referenceForward * vector3.z + referenceRight * vector3.x + referenceUp * vector3.y;
+            return outputVector3;
         }
 
         /// <summary>
