@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(EnergyPool))]
 public class Death : MonoBehaviour
 {
     [Tooltip("This is turned off upon death")]
