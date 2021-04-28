@@ -1,0 +1,45 @@
+﻿using RanchyRats.Gyrus;
+using RanchyRats.Gyrus.AI.BehaviorTree;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+public class AnxietyBoss : Enemy
+{
+    public override void Die()
+    {
+        base.Die();
+        if (Animator == null)
+        {
+            Debug.LogError("Animator not assigned", gameObject);
+            return;
+        }
+
+        Animator.SetTrigger("Death");
+    }
+
+    public void StartAttack(string name)
+    {
+        Attack attack = attacks.Find(x => x.name == name);
+        if (attack == null)
+        {
+            Debug.LogError("No attack with name " + name + " found in attack list of " + gameObject.name, this);
+            return;
+        }
+        attack.Start();
+    }
+
+    public List<Attack> attacks = new List<Attack>();
+    [System.Serializable]
+    public class Attack
+    {
+        public string name = "";
+        public UnityEvent OnAttack = new UnityEvent();
+
+        public void Start()
+        {
+            OnAttack.Invoke();
+        }
+    }
+}
