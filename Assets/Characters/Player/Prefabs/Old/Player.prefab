@@ -5722,9 +5722,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5863021344190848546}
   - component: {fileID: 2015668516417722804}
-  - component: {fileID: 3383182193792440309}
+  - component: {fileID: 5542249697878567603}
   m_Layer: 15
-  m_Name: EnergyAbsorption
+  m_Name: EnergyPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5757,7 +5757,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3383182193792440309
+--- !u!114 &5542249697878567603
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5766,50 +5766,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 277391259079641396}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c045fd491923528408a9c945f3311ce4, type: 3}
+  m_Script: {fileID: 11500000, guid: df0515802cc7d0941b99f0aa946fab0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   layers:
     serializedVersion: 2
-    m_Bits: 32768
-  passedEventObject: 1
+    m_Bits: 0
+  passedEventObject: 0
   onTriggerEnter:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3383182193792440309}
-        m_MethodName: AbsorbEnergy
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onTriggerExit:
     m_PersistentCalls:
       m_Calls: []
   onDisableTriggerExit: 0
   energy: 0
-  OnAbsorbEnergy:
-    m_PersistentCalls:
-      m_Calls: []
-  DeactivateEnergyObject: 1
-  OnEnergyUpdated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6547991810296897095}
-        m_MethodName: UpdateValue
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  DeactivateIncomingObjects: 1
+  EnergyAbsorbedRatio: 0.1
+  InstantiateParticles: 0
+  FreePrefab: {fileID: 0}
+  AbsorbedPrefab: {fileID: 0}
+  EnergyEmitter: {fileID: 0}
+  freeParticles: {fileID: 0}
+  energyEvents:
+    OnEnergyAbsorbed:
+      m_PersistentCalls:
+        m_Calls: []
+    OnEnergyUpdated:
+      m_PersistentCalls:
+        m_Calls: []
+  absorbedParticles: {fileID: 0}
 --- !u!1 &681141144678315495
 GameObject:
   m_ObjectHideFlags: 0
@@ -6022,33 +6008,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_maxValue: 8
   m_value: 8
-  recoveryTime: 1
-  recoveryWindup: 1
-  allowRecovery: 1
-  syncValueToMax: 1
-  OnValueChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1064604015700537092}
-        m_MethodName: set_value
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDepleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OnIncrease:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDecrease:
-    m_PersistentCalls:
-      m_Calls: []
+  AllowOverflow: 0
+  AllowUnderflow: 0
+  setValueToMax: 1
+  events:
+    OnValueChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    OnValueIncrease:
+      m_PersistentCalls:
+        m_Calls: []
+    OnValueDecrease:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDepleted:
+      m_PersistentCalls:
+        m_Calls: []
+  TransformwiseVisualizer: {fileID: 0}
+  SliderVisualizer: {fileID: 0}
+  allowRecharge: 0
+  rechargeWindupTime: 1
+  rechargeTime: 1
+  rechargeAmount: 1
 --- !u!1 &1197776118080202872
 GameObject:
   m_ObjectHideFlags: 0
@@ -6376,7 +6357,7 @@ GameObject:
   - component: {fileID: 6262904987070955006}
   - component: {fileID: 7354810460561751113}
   m_Layer: 15
-  m_Name: EnergyPull
+  m_Name: EnergyForcefield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7123,6 +7104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DirectionIndicator: {fileID: 3104575834882688424}
+  distance: 1
 --- !u!1 &3104575834008534718
 GameObject:
   m_ObjectHideFlags: 0
@@ -7702,33 +7684,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_maxValue: 4
   m_value: 4
-  recoveryTime: 1
-  recoveryWindup: 1
-  allowRecovery: 0
-  syncValueToMax: 1
-  OnValueChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4180678295942639267}
-        m_MethodName: set_value
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDepleted:
-    m_PersistentCalls:
-      m_Calls: []
-  OnIncrease:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDecrease:
-    m_PersistentCalls:
-      m_Calls: []
+  AllowOverflow: 0
+  AllowUnderflow: 0
+  setValueToMax: 1
+  events:
+    OnValueChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    OnValueIncrease:
+      m_PersistentCalls:
+        m_Calls: []
+    OnValueDecrease:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDepleted:
+      m_PersistentCalls:
+        m_Calls: []
+  TransformwiseVisualizer: {fileID: 0}
+  SliderVisualizer: {fileID: 0}
+  allowRecharge: 0
+  rechargeWindupTime: 1
+  rechargeTime: 1
+  rechargeAmount: 1
 --- !u!1 &4308062211768046483
 GameObject:
   m_ObjectHideFlags: 0
@@ -7944,6 +7921,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 87040
   InvincibilityTime: 0
+  staminaCost: 0
+  restrictions: 0
+  ChargeRequirement: 0
   HitStun:
     enabled: 1
     Slowdown: 0.01
@@ -7964,34 +7944,16 @@ MonoBehaviour:
   Damage: 4
   StaminaReduction: 1
   MovementSpeedReduction: 1
-  OnAttackLaunched:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.4
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnHitEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.4
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!1 &5243299528513686603
 GameObject:
   m_ObjectHideFlags: 0
@@ -8373,6 +8335,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 87040
   InvincibilityTime: 0
+  staminaCost: 0
+  restrictions: 0
+  ChargeRequirement: 0
   HitStun:
     enabled: 1
     Slowdown: 0.01
@@ -8393,34 +8358,16 @@ MonoBehaviour:
   Damage: 1
   StaminaReduction: 14
   MovementSpeedReduction: 1
-  OnAttackLaunched:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.1
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnHitEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.1
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!54 &763919156259286551
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8454,6 +8401,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 87040
   InvincibilityTime: 0
+  staminaCost: 0
+  restrictions: 0
+  ChargeRequirement: 0
   HitStun:
     enabled: 1
     Slowdown: 0.01
@@ -8474,34 +8424,16 @@ MonoBehaviour:
   Damage: 2
   StaminaReduction: 1
   MovementSpeedReduction: 1
-  OnAttackLaunched:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.2
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnHitEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.2
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!1 &6624154488297973738
 GameObject:
   m_ObjectHideFlags: 0
@@ -8895,156 +8827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7195744fc6eea4e9ff8193ab614252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: {fileID: 6059562609268281831}
-  Stamina: {fileID: 6372173870489999893}
-  touchDamage:
-    enabled: 0
-    damage: 0
-    invincibilityTime: 1
-    layers:
-      serializedVersion: 2
-      m_Bits: 0
-    force: 0
-  HitObjects: []
-  PickRandomHitObject: 0
-  DeathObjects:
-  - {fileID: 5158045116331438428, guid: dd127f65693ebc14ba65ef33bb2bf587, type: 3}
-  - {fileID: 8197860418206088977, guid: fcf9407d38a220b46b3c37c29ab1911b, type: 3}
-  - {fileID: 4745142591786541650, guid: 50fe08b795d3c934187df25af82f02b0, type: 3}
-  PickRandomDeathObject: 0
-  BloodSplatters: []
-  PickRandomBloodSplatter: 0
-  OnHitEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.25
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 462968919}
-        m_MethodName: DoSpriteFlash
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDeathEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  dust: {fileID: 1593020624}
-  footstepInterval: 0.5
-  footstepIntervalRunning: 0.25
-  dodgeSound: {fileID: 4785978229808016446}
-  staminaLowSound: {fileID: 4900042824571271087}
-  staminaRegainSound: {fileID: 4189871794858404363}
-  healthLowSound: {fileID: 7784436941316184775}
-  respawnPoint: {x: 0, y: 1.4, z: 0}
-  OverrideRespawn: {fileID: 0}
-  Direction: {fileID: 3104575833432285019}
-  movement:
-    Speed: 7
-    DodgeSpeed: 17
-    DodgeDuration: 0.2
-    AcceptMovementInput: 1
-    RunSpeedMultiplier: 1.5
-    RunStaminaDrainTime: 1
-    defaultDodgeDirection: 1
-    state: 0
-  runningAnimationMultiplier: 1.5
-  attacking:
-    ChargeSlider: {fileID: 2499125909367898424}
-    WeaponAnimator: {fileID: 5145052013846552861}
-    ChargeZones:
-      serializedVersion: 2
-      key0: {r: 0, g: 0.34125412, b: 0.36200002, a: 1}
-      key1: {r: 0, g: 0.58615, b: 0.617, a: 1}
-      key2: {r: 0, g: 0.7450981, b: 0.78431374, a: 0}
-      key3: {r: 1, g: 0.495283, b: 0.495283, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
-      key5: {r: 0, g: 0, b: 0, a: 0}
-      key6: {r: 0, g: 0, b: 0, a: 0}
-      key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 16384
-      ctime1: 32768
-      ctime2: 62258
-      ctime3: 65535
-      ctime4: 0
-      ctime5: 0
-      ctime6: 0
-      ctime7: 0
-      atime0: 0
-      atime1: 65535
-      atime2: 0
-      atime3: 0
-      atime4: 0
-      atime5: 0
-      atime6: 0
-      atime7: 0
-      m_Mode: 1
-      m_NumColorKeys: 4
-      m_NumAlphaKeys: 2
-    ChargeIndicator:
-      max: 4
-      current: 0
-      recoveryTime: 1
-      syncCurrentToMax: 1
-      Visualizer: {fileID: 5844970147177082628}
-    ChargeTime: 2
-    ChargeTimeDeadzone: 0.1
-    ChargeEffectedBySlowdown: 0
-    slowmotionTrigger: 0.75
-    slowmotionFactor: 0.25
-    ChargeDisabledIndicator: {fileID: 1606558606035595258}
-    attackLaunched:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7717233248994819647}
-          m_MethodName: OnAttack
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    attackEnd:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7717233248994819647}
-          m_MethodName: OnAttackEnd
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    state: 0
-    energyAbsorption: {fileID: 3383182193792440309}
-    fullChargeCost: 20
-    EnergyChargeLimit: 0.75
-  targeting:
-    DebugTarget: {fileID: 0}
-    Radius: 3
-    RadiusColor: {r: 1, g: 0.91838396, b: 0, a: 1}
-    Targetable:
-      serializedVersion: 2
-      m_Bits: 0
+  controlledCharacters: []
 --- !u!114 &1667865824303161700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9755,6 +9538,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 87040
   InvincibilityTime: 0
+  staminaCost: 0
+  restrictions: 0
+  ChargeRequirement: 0
   HitStun:
     enabled: 1
     Slowdown: 0.01
@@ -9775,34 +9561,16 @@ MonoBehaviour:
   Damage: 2
   StaminaReduction: 1
   MovementSpeedReduction: 1
-  OnAttackLaunched:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.2
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnHitEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7717233248994819647}
-        m_MethodName: DoGamepadRumble
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.2
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!1 &8342225722661572292
 GameObject:
   m_ObjectHideFlags: 0
@@ -10512,15 +10280,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad9648736b8b68043aed5a13068784d0, type: 3}
---- !u!1 &6455570727373104480 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4717615782920449815, guid: ad9648736b8b68043aed5a13068784d0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1796546820810476151}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6455570727373104511 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4717615782920449800, guid: ad9648736b8b68043aed5a13068784d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1796546820810476151}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6455570727373104480 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4717615782920449815, guid: ad9648736b8b68043aed5a13068784d0,
     type: 3}
   m_PrefabInstance: {fileID: 1796546820810476151}
   m_PrefabAsset: {fileID: 0}
@@ -10733,15 +10501,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79701959bfe05fd43b2ffc1105f467fb, type: 3}
---- !u!4 &8163870451801385209 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7802025441190164630, guid: 79701959bfe05fd43b2ffc1105f467fb,
-    type: 3}
-  m_PrefabInstance: {fileID: 2093531878255415407}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8163870451801385214 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7802025441190164625, guid: 79701959bfe05fd43b2ffc1105f467fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 2093531878255415407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8163870451801385209 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7802025441190164630, guid: 79701959bfe05fd43b2ffc1105f467fb,
     type: 3}
   m_PrefabInstance: {fileID: 2093531878255415407}
   m_PrefabAsset: {fileID: 0}
@@ -11120,18 +10888,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3468294247243657651}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1064604015700537092 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4532838440818302647, guid: e567ebb91a8fb544caba96c4be7459b6,
-    type: 3}
-  m_PrefabInstance: {fileID: 3468294247243657651}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064604015700537096}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1064604015700537096 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4532838440818302651, guid: e567ebb91a8fb544caba96c4be7459b6,
@@ -11144,18 +10900,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3468294247243657651}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4180678295942639267 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 731021298605858576, guid: e567ebb91a8fb544caba96c4be7459b6,
-    type: 3}
-  m_PrefabInstance: {fileID: 3468294247243657651}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4180678295942639269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4032823922421342312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11345,15 +11089,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79701959bfe05fd43b2ffc1105f467fb, type: 3}
---- !u!4 &6607109617231862014 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7802025441190164630, guid: 79701959bfe05fd43b2ffc1105f467fb,
-    type: 3}
-  m_PrefabInstance: {fileID: 4032823922421342312}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6607109617231862009 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7802025441190164625, guid: 79701959bfe05fd43b2ffc1105f467fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4032823922421342312}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6607109617231862014 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7802025441190164630, guid: 79701959bfe05fd43b2ffc1105f467fb,
     type: 3}
   m_PrefabInstance: {fileID: 4032823922421342312}
   m_PrefabAsset: {fileID: 0}

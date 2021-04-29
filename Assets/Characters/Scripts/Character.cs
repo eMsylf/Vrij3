@@ -210,16 +210,10 @@ namespace RanchyRats.Gyrus
         public virtual void Die()
         {
             Debug.Log(name + " died", this);
+            Death.FireEverything(transform.position, transform.lossyScale);
 
-            Death.SpawnCollection(transform.position, transform.lossyScale);
-            Death.SpawnRandom(transform.position, transform.lossyScale);
-            Death.unityEvent.Invoke();
-
-            if (Controller.PlayerController != null)
+            if (Controller != null && Controller.PlayerController != null)
                 GameManager.Instance.PlayerDeath(Controller.Character);
-            //----------------------------------------------------------- Character dies
-            if (Death.sound != null)
-                Death.sound.Play();
 
             gameObject.SetActive(false);
         }
@@ -236,7 +230,7 @@ namespace RanchyRats.Gyrus
         }
         public Transform RespawnOverride;
 
-        // TODO: Verander dit naar een GameManager functie die de juiste instance van de character respawnt
+        [MenuItem("Respawn")]
         public void Respawn()
         {
             transform.position = RespawnPoint;

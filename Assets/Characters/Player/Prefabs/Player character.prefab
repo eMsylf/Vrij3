@@ -31,167 +31,9 @@ Transform:
   - {fileID: 379087687908923868}
   - {fileID: 1630545574999741841}
   - {fileID: 379087687724285745}
-  m_Father: {fileID: 379087687586001863}
+  m_Father: {fileID: 379087688321120580}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &379087686610427325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630545574999741844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 3
-  timeRemaining: 1
-  ScaledTime: 1
-  DisplayTimeInObjectName: 0
-  RestartOnEnable: 1
-  OnStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  indicator:
-    enabled: 0
-    IndicatorWidth: 0.3
-    IndicatorHeight: 1
-    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
-    direction: 0
-    invertDirection: 0
---- !u!114 &379087686610427319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630545574999741844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a05d87875dfe7834bbcdc4c14cb1faa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CanMultiHit: 0
-  HitsTheseLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  InvincibilityTime: 0
-  staminaCost: 0
-  restrictions: 0
-  ChargeRequirement: 0.533
-  HitStun:
-    enabled: 1
-    Slowdown: 0.01
-    Duration: 0.5
-  CameraShake:
-    enabled: 1
-    Duration: 0.5
-    Strength: 0.6
-  HitEffects: []
-  attackForce:
-    direction: 0
-    forceMode: 2
-    multiplier: 1
-    outwardForceMultiplier: 1
-    debugColor: {r: 1, g: 1, b: 1, a: 1}
-  effect: 1
-  Damage: 1
-  StaminaReduction: 1
-  MovementSpeedReduction: 1
-  events:
-    OnActivation:
-      m_PersistentCalls:
-        m_Calls: []
-    OnDeactivation:
-      m_PersistentCalls:
-        m_Calls: []
-    OnHitEvent:
-      m_PersistentCalls:
-        m_Calls: []
---- !u!114 &379087686969212200
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4916414227641127482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 0.15
-  timeRemaining: 1
-  ScaledTime: 1
-  DisplayTimeInObjectName: 0
-  RestartOnEnable: 1
-  OnStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  indicator:
-    enabled: 0
-    IndicatorWidth: 0.3
-    IndicatorHeight: 1
-    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
-    direction: 0
-    invertDirection: 0
---- !u!114 &379087686969212201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4916414227641127482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a05d87875dfe7834bbcdc4c14cb1faa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CanMultiHit: 0
-  HitsTheseLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  InvincibilityTime: 0
-  staminaCost: 0
-  restrictions: 0
-  ChargeRequirement: 0.501
-  HitStun:
-    enabled: 1
-    Slowdown: 0.01
-    Duration: 0.5
-  CameraShake:
-    enabled: 1
-    Duration: 0.5
-    Strength: 0.6
-  HitEffects: []
-  attackForce:
-    direction: 0
-    forceMode: 2
-    multiplier: 1
-    outwardForceMultiplier: 1
-    debugColor: {r: 1, g: 1, b: 1, a: 1}
-  effect: 1
-  Damage: 1
-  StaminaReduction: 1
-  MovementSpeedReduction: 1
-  events:
-    OnActivation:
-      m_PersistentCalls:
-        m_Calls: []
-    OnDeactivation:
-      m_PersistentCalls:
-        m_Calls: []
-    OnHitEvent:
-      m_PersistentCalls:
-        m_Calls: []
 --- !u!1 &379087687586001862
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,7 +45,7 @@ GameObject:
   - component: {fileID: 379087687586001863}
   - component: {fileID: 379087687586001860}
   m_Layer: 11
-  m_Name: Physics
+  m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -219,8 +61,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 379087686544537073}
+  m_Children: []
   m_Father: {fileID: 379087688272250365}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -371,85 +212,6 @@ MonoBehaviour:
     IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
     direction: 0
     invertDirection: 0
---- !u!114 &379087687790692385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7567339244844101811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 1
-  timeRemaining: 1
-  ScaledTime: 1
-  DisplayTimeInObjectName: 0
-  RestartOnEnable: 1
-  OnStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  indicator:
-    enabled: 0
-    IndicatorWidth: 0.3
-    IndicatorHeight: 1
-    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
-    direction: 0
-    invertDirection: 0
---- !u!114 &379087687790692414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7567339244844101811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a05d87875dfe7834bbcdc4c14cb1faa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CanMultiHit: 0
-  HitsTheseLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  InvincibilityTime: 0
-  staminaCost: 0
-  restrictions: 0
-  ChargeRequirement: 0
-  HitStun:
-    enabled: 1
-    Slowdown: 0.01
-    Duration: 0.5
-  CameraShake:
-    enabled: 1
-    Duration: 0.5
-    Strength: 0.6
-  HitEffects: []
-  attackForce:
-    direction: 0
-    forceMode: 2
-    multiplier: 1
-    outwardForceMultiplier: 1
-    debugColor: {r: 1, g: 1, b: 1, a: 1}
-  effect: 1
-  Damage: 1
-  StaminaReduction: 1
-  MovementSpeedReduction: 1
-  events:
-    OnActivation:
-      m_PersistentCalls:
-        m_Calls: []
-    OnDeactivation:
-      m_PersistentCalls:
-        m_Calls: []
-    OnHitEvent:
-      m_PersistentCalls:
-        m_Calls: []
 --- !u!1 &379087687908923871
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,7 +498,7 @@ Transform:
   - {fileID: 3701093102226521212}
   - {fileID: 3701093102194675967}
   m_Father: {fileID: 379087688321120580}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &379087688215610874
 MonoBehaviour:
@@ -805,7 +567,7 @@ Transform:
   - {fileID: 379087687586001863}
   - {fileID: 6223739470937303852}
   m_Father: {fileID: 379087688321120580}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &379087688321120584
 GameObject:
@@ -841,6 +603,7 @@ Transform:
   m_LocalPosition: {x: -24.36, y: 1.4, z: 7.010688}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 379087686544537073}
   - {fileID: 379087688272250365}
   - {fileID: 379087688215610877}
   m_Father: {fileID: 0}
@@ -1028,7 +791,7 @@ MonoBehaviour:
   ChargeTimeMax: 2
   energyCost:
     energyPool: {fileID: 0}
-    fullChargeCost: 0
+    fullChargeEnergyCost: 0
     ChargeLimitTime: 0
   slowmotion:
     AffectsCharge: 0
@@ -1129,6 +892,243 @@ MonoBehaviour:
   rechargeWindupTime: 1
   rechargeTime: 1
   rechargeAmount: 1
+--- !u!114 &379087686610427319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630545574999741844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05d87875dfe7834bbcdc4c14cb1faa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanMultiHit: 0
+  HitsTheseLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  InvincibilityTime: 0
+  staminaCost: 0
+  restrictions: 0
+  ChargeRequirement: 0.533
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
+  HitEffects: []
+  attackForce:
+    direction: 0
+    forceMode: 2
+    multiplier: 1
+    outwardForceMultiplier: 1
+    debugColor: {r: 1, g: 1, b: 1, a: 1}
+  effect: 1
+  Damage: 1
+  StaminaReduction: 1
+  MovementSpeedReduction: 1
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!114 &379087686610427325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630545574999741844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 3
+  timeRemaining: 1
+  ScaledTime: 1
+  DisplayTimeInObjectName: 0
+  RestartOnEnable: 1
+  OnStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  indicator:
+    enabled: 0
+    IndicatorWidth: 0.3
+    IndicatorHeight: 1
+    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
+    direction: 0
+    invertDirection: 0
+--- !u!114 &379087686969212200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4916414227641127482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 0.15
+  timeRemaining: 1
+  ScaledTime: 1
+  DisplayTimeInObjectName: 0
+  RestartOnEnable: 1
+  OnStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  indicator:
+    enabled: 0
+    IndicatorWidth: 0.3
+    IndicatorHeight: 1
+    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
+    direction: 0
+    invertDirection: 0
+--- !u!114 &379087686969212201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4916414227641127482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05d87875dfe7834bbcdc4c14cb1faa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanMultiHit: 0
+  HitsTheseLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  InvincibilityTime: 0
+  staminaCost: 0
+  restrictions: 0
+  ChargeRequirement: 0.501
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
+  HitEffects: []
+  attackForce:
+    direction: 0
+    forceMode: 2
+    multiplier: 1
+    outwardForceMultiplier: 1
+    debugColor: {r: 1, g: 1, b: 1, a: 1}
+  effect: 1
+  Damage: 1
+  StaminaReduction: 1
+  MovementSpeedReduction: 1
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!114 &379087687790692385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567339244844101811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 1
+  timeRemaining: 1
+  ScaledTime: 1
+  DisplayTimeInObjectName: 0
+  RestartOnEnable: 1
+  OnStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  indicator:
+    enabled: 0
+    IndicatorWidth: 0.3
+    IndicatorHeight: 1
+    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
+    direction: 0
+    invertDirection: 0
+--- !u!114 &379087687790692414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567339244844101811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05d87875dfe7834bbcdc4c14cb1faa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanMultiHit: 0
+  HitsTheseLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  InvincibilityTime: 0
+  staminaCost: 0
+  restrictions: 0
+  ChargeRequirement: 0
+  HitStun:
+    enabled: 1
+    Slowdown: 0.01
+    Duration: 0.5
+  CameraShake:
+    enabled: 1
+    Duration: 0.5
+    Strength: 0.6
+  HitEffects: []
+  attackForce:
+    direction: 0
+    forceMode: 2
+    multiplier: 1
+    outwardForceMultiplier: 1
+    debugColor: {r: 1, g: 1, b: 1, a: 1}
+  effect: 1
+  Damage: 1
+  StaminaReduction: 1
+  MovementSpeedReduction: 1
+  events:
+    OnActivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDeactivation:
+      m_PersistentCalls:
+        m_Calls: []
+    OnHitEvent:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!1001 &379087686610427326
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1213,15 +1213,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229, type: 3}
---- !u!1 &1630545574999741844 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1432732583754614826, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
-    type: 3}
-  m_PrefabInstance: {fileID: 379087686610427326}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1630545574999741841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1432732583754614831, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
+    type: 3}
+  m_PrefabInstance: {fileID: 379087686610427326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1630545574999741844 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1432732583754614826, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
     type: 3}
   m_PrefabInstance: {fileID: 379087686610427326}
   m_PrefabAsset: {fileID: 0}
