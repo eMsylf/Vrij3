@@ -6,6 +6,11 @@ public class TimeManager : Singleton<TimeManager>
 {
     public float slowmotionDuration = 10f;
     public float slowmotionTimeScale = .05f;
+    public float SlowmotionTimeScale
+    {
+        get => slowmotionTimeScale;
+        set => slowmotionTimeScale = value;
+    }
     public float slowmotionRemaining = 10f;
     [Range(0.0001f, 1f)]
     public float timeScale = 1f;
@@ -43,7 +48,7 @@ public class TimeManager : Singleton<TimeManager>
             SetTimeScale(timeScale);
     }
 #endif
-    private void SetTimeScale(float timeScale)
+    public void SetTimeScale(float timeScale)
     {
         this.timeScale = timeScale;
         Time.timeScale = this.timeScale;
