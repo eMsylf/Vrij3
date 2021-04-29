@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+[HelpURL("https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings")]
 public class ValueText : MonoBehaviour
 {
     public TextMeshProUGUI TMPComponent;
     TextMeshProUGUI GetTMPComponent()
     {
-        if (TMPComponent == null)
-        {
-            TMPComponent = GetComponent<TextMeshProUGUI>();
-        }
+        if (TMPComponent == null) TMPComponent = GetComponent<TextMeshProUGUI>();
         return TMPComponent;
     }
 
@@ -45,12 +43,12 @@ public class ValueText : MonoBehaviour
                 return string.Empty;
         }
     }
+    [Tooltip("For more custom number formats, check the help url of this script.")]
     public string CustomFormat = "";
 
     public void UpdateValue(float value)
     {
         string formattedSliderValue = value.ToString(GetNumberFormat());
-        GetTMPComponent().text = formattedSliderValue; //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
-                                                       //Debug.Log("Update value to " + formattedSliderValue, this);
+        GetTMPComponent().text = formattedSliderValue; 
     }
 }

@@ -15,14 +15,6 @@ public class CameraController : Singleton<CameraController>
 
     private Vector2 rotationDelta = new Vector2();
 
-    public bool AllowControls = true;
-
-    public void EnableControlsInstance(bool enabled)
-    {
-        //Debug.Log("Camera controls disabled");
-        Instance.AllowControls = enabled;
-    }
-
     Controls controls;
     Controls Controls
     {
@@ -61,10 +53,6 @@ public class CameraController : Singleton<CameraController>
 
     private Vector3 GetRotationDelta(Vector2 input)
     {
-        //Debug.Log("Set camera rotation delta: " + input);
-        if (!AllowControls)
-            return Vector3.zero;
-
         if (input == Vector2.zero)
         {
             return Vector3.zero;
@@ -82,8 +70,6 @@ public class CameraController : Singleton<CameraController>
 
     private float GetZoomDelta(float input)
     {
-        if (!AllowControls)
-            return 0f;
         //Debug.Log("Zoom input: " + input);
         return input * ZoomSpeed;
     }

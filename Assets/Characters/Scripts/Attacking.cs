@@ -22,7 +22,6 @@ namespace RanchyRats.Gyrus
             [Header("Passes the percentual charge between 0 and 1")]
             public UnityEventFloat OnChargeChanged;
         }
-        public Slider ChargeSlider;
         public CharacterStatistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
         [Min(0)]
@@ -32,7 +31,7 @@ namespace RanchyRats.Gyrus
         {
             public EnergyPool energyPool;
             [Min(0)]
-            public int fullChargeCost;
+            public int fullChargeEnergyCost;
             [Min(0)] [Tooltip("The time at which the player's charge is halted, if the character does not posess the required energy.")]
             public float ChargeLimitTime;
             internal bool CanFullCharge
@@ -40,7 +39,7 @@ namespace RanchyRats.Gyrus
                 get
                 {
                     if (energyPool == null) return true;
-                    return energyPool.Energy >= fullChargeCost;
+                    return energyPool.Energy >= fullChargeEnergyCost;
                 }
             }
         }
@@ -139,6 +138,11 @@ namespace RanchyRats.Gyrus
             Attacking,
             OnCooldown,
             Disabled
+        }
+
+        private void Awake()
+        {
+            if (ChargeIndicator != null) ChargeIndicator.Value = 0;
         }
 
         private void OnEnable()
@@ -247,7 +251,7 @@ namespace RanchyRats.Gyrus
                 if (energyCost.energyPool == null)
                     Debug.Log("Energy absorbtion component not assigned", this);
                 else
-                    energyCost.energyPool.Energy -= energyCost.fullChargeCost;
+                    energyCost.energyPool.Energy -= energyCost.fullChargeEnergyCost;
             }
             chargeEvents.OnChargeStopped.Invoke();
             IsCharging = false;
