@@ -125,10 +125,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7688933263388941947, guid: 90063d9c511b87d4aaa17f2fd1597ceb, type: 3}
-  Continuous: 0
-  PlayOnAwake: 1
-  Local: 0
   Amount: 0
+  Local: 0
+  SpawnOnEnable: 1
+  Continuous: 0
   Interval: 1
   OnSpawn:
     m_PersistentCalls:
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanMultiHit: 0
-  HitsTheseLayers:
+  layersHit:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanMultiHit: 0
-  HitsTheseLayers:
+  layersHit:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
@@ -677,8 +677,8 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 0
     force: 1
-  respawnPoint: {x: 0, y: 0, z: 0}
   RespawnOverride: {fileID: 0}
+  respawnPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &379087688321120581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -709,19 +709,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4069f98b3cc43af409e017075e020ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockMovementInput: 0
-  LockPosition: 0
-  LockFacingDirection: 0
-  MovementByNavMeshAgent: 0
   RotatingBody: {fileID: 379087686544537073}
   StaticVisualBody: {fileID: 379087688166748545}
-  defaultDodgeDirection: 0
-  Stamina: {fileID: 0}
-  dust: {fileID: 6645655834080476060}
+  constraints: 0
+  NavMeshAgentControlled: 0
+  MovePosition: 1
+  forceMode: 5
+  ContinuousInputRead: 1
+  BaseSpeed: 1
   state: 0
   StoppedSettings:
     speed: 0
-    footstepInterval: 0
+    animationParameter: 
     expires: 0
     duration: 0
     nextState: 0
@@ -730,7 +729,7 @@ MonoBehaviour:
     staminaDrainInterval: 1
   WalkingSettings:
     speed: 5
-    footstepInterval: 0.5
+    animationParameter: Walking
     expires: 0
     duration: 0
     nextState: 0
@@ -739,23 +738,23 @@ MonoBehaviour:
     staminaDrainInterval: 1
   RunningSettings:
     speed: 10
-    footstepInterval: 0.25
+    animationParameter: 
     expires: 0
     duration: 0
     nextState: 0
     drainsStamina: 0
     staminaDrainAmount: 0
     staminaDrainInterval: 1
-  runningAnimationMultiplier: 1.5
   DodgingSettings:
     speed: 15
-    footstepInterval: 0
+    animationParameter: 
     expires: 1
     duration: 0.3
     nextState: 0
     drainsStamina: 1
     staminaDrainAmount: 1
     staminaDrainInterval: 0
+  defaultDodgeDirection: 0
   dodgeEvents:
     OnDodgeStarted:
       m_PersistentCalls:
@@ -763,7 +762,6 @@ MonoBehaviour:
     OnDodgeCompleted:
       m_PersistentCalls:
         m_Calls: []
-  ContinuousInputRead: 1
 --- !u!114 &379087688321120585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -786,7 +784,6 @@ MonoBehaviour:
     OnChargeChanged:
       m_PersistentCalls:
         m_Calls: []
-  ChargeSlider: {fileID: 0}
   ChargeIndicator: {fileID: 379087688215610874}
   ChargeTimeMax: 2
   energyCost:
@@ -905,7 +902,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanMultiHit: 0
-  HitsTheseLayers:
+  layersHit:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
@@ -1014,7 +1011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanMultiHit: 0
-  HitsTheseLayers:
+  layersHit:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
@@ -1050,36 +1047,6 @@ MonoBehaviour:
     OnHitEvent:
       m_PersistentCalls:
         m_Calls: []
---- !u!114 &379087687790692385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7567339244844101811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 792c194f136c635429d995577ca26f38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 1
-  timeRemaining: 1
-  ScaledTime: 1
-  DisplayTimeInObjectName: 0
-  RestartOnEnable: 1
-  OnStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  indicator:
-    enabled: 0
-    IndicatorWidth: 0.3
-    IndicatorHeight: 1
-    IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
-    direction: 0
-    invertDirection: 0
 --- !u!114 &379087687790692414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1093,7 +1060,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanMultiHit: 0
-  HitsTheseLayers:
+  layersHit:
     serializedVersion: 2
     m_Bits: 0
   InvincibilityTime: 0
@@ -1213,15 +1180,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229, type: 3}
---- !u!4 &1630545574999741841 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1432732583754614831, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
-    type: 3}
-  m_PrefabInstance: {fileID: 379087686610427326}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1630545574999741844 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1432732583754614826, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
+    type: 3}
+  m_PrefabInstance: {fileID: 379087686610427326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1630545574999741841 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1432732583754614831, guid: cbb1eacdb7c893a4ab3ffbd4dcd4a229,
     type: 3}
   m_PrefabInstance: {fileID: 379087686610427326}
   m_PrefabAsset: {fileID: 0}
@@ -1690,12 +1657,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0005f6359f2ad141b74f9486d685a25, type: 3}
---- !u!198 &6645655834080476060 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6447139240384660139, guid: e0005f6359f2ad141b74f9486d685a25,
-    type: 3}
-  m_PrefabInstance: {fileID: 379087687518419255}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &379087687790692386
 PrefabInstance:
   m_ObjectHideFlags: 0

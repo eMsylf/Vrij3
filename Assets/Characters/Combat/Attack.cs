@@ -11,7 +11,7 @@ namespace RanchyRats.Gyrus
     public partial class Attack : MonoBehaviour
     {
         public bool CanMultiHit = false;
-        public LayerMask HitsTheseLayers;
+        public LayerMask layersHit;
 
         [Min(0f)]
         public float InvincibilityTime = 0f;
@@ -98,7 +98,7 @@ namespace RanchyRats.Gyrus
 
         private void OnTriggerEnter(Collider other)
         {
-            if (HitsTheseLayers != (HitsTheseLayers.value | 1 << other.gameObject.layer))
+            if (layersHit != (layersHit.value | 1 << other.gameObject.layer))
             {
                 //Debug.Log(name + " hit " + other.name + " on ignored layer: " + other.gameObject.layer, this);
                 //Debug.DrawLine(transform.position, other.transform.position, Color.red, 2f);

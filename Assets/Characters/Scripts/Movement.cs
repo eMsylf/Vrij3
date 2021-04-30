@@ -15,19 +15,16 @@ namespace RanchyRats.Gyrus
     {
         public Transform RotatingBody;
         public Transform StaticVisualBody;
+
         [Header("Constraints")]
         public Constraints constraints;
         [Flags] public enum Constraints
         {
             None = 0,
-            [Tooltip("The movement input can no longer be altered by the player. When dodging, this causes the player to keep moving in the same direction until the dodge is done.")]
-            Input = 1,
+            LockInput = 1,
             Position = 2,
             Rotation = 4
         }
-        public bool LockInput = false;
-        public bool LockPosition = false;
-        public bool LockFacingDirection = false;
         [Header("Movement type")]
         [Tooltip("If the movement is being controlled by a NavMeshAgent component, the movement animation is still updated through this component but the movement is not applied to the rigidbody.")]
         public bool NavMeshAgentControlled = false;
@@ -153,7 +150,7 @@ namespace RanchyRats.Gyrus
 
         public void SetMoveInput(Vector2 input)
         {
-            if (LockInput)
+            if (constraints.HasFlag(Constraints.LockInput))
                 return;
 
             Input = input;
@@ -163,7 +160,7 @@ namespace RanchyRats.Gyrus
                 return;
             }
             //Allow movement bool/flag?
-            if (!LockPosition && state == State.Stopped)
+            if (!constraints.HasFlag(Constraints.Position) && state == State.Stopped)
             {
                 if (Character.Animator != null) Character.Animator.SetBool(WalkingSettings.animationParameter, Input != Vector2.zero);
                 state = State.Walking;
@@ -245,19 +242,20 @@ namespace RanchyRats.Gyrus
             if (Character.Controller.attacking != null)
                 Character.Controller.attacking.EndCharge(false);
 
-            LockInput = true;
+            constraints |= Constraints.LockInput;
 
             dodgeEvents.OnDodgeStarted.Invoke();
             yield return new WaitForSeconds(duration);
             dodgeEvents.OnDodgeCompleted.Invoke();
 
-            LockInput = false;
+            constraints ^= Constraints.LockInput;
+            
             ForceReadMoveInput();
         }
 
         public void SetFacingDirection(Vector2 direction)
         {
-            if (LockFacingDirection)
+            if (constraints.HasFlag(Constraints.Rotation))
                 return;
 
             FacingDirection = direction;
