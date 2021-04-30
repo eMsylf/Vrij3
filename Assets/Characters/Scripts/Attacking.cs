@@ -350,11 +350,12 @@ namespace RanchyRats.Gyrus
         public void SetMovementRestrictions(Attack attack)
         {
             if (Character.Controller.movement == null) return;
-
             if (attack.restrictions.HasFlag(Restrictions.Move))
             {
                 Character.Controller.movement.Stop();
                 Character.Controller.movement.LockPosition = true; // TODO: Misschien beter om het movement component uit te schakelen
+                attack.events.OnDeactivation.AddListener(() => enabled = true);
+                enabled = false;
             }
             if (attack.restrictions.HasFlag(Restrictions.Rotate))
                 Character.Controller.movement.LockFacingDirection = true;

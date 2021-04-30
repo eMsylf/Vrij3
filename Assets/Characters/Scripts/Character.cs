@@ -218,6 +218,7 @@ namespace RanchyRats.Gyrus
             gameObject.SetActive(false);
         }
 
+        public Transform RespawnOverride;
         [SerializeField] private Vector3 respawnPoint = new Vector3();
         public Vector3 RespawnPoint
         {
@@ -228,9 +229,8 @@ namespace RanchyRats.Gyrus
                 return RespawnOverride.position;
             }
         }
-        public Transform RespawnOverride;
 
-        [MenuItem("Respawn")]
+        [ContextMenu("Respawn")]
         public void Respawn()
         {
             transform.position = RespawnPoint;
@@ -241,7 +241,7 @@ namespace RanchyRats.Gyrus
         {
             Handles.color = Color.white;
             Handles.DrawLine(transform.position, RespawnPoint);
-            Gizmos.DrawIcon(RespawnPoint, "Player Spawn Pos");
+            Gizmos.DrawIcon(RespawnPoint, name + " spawn position");
         }
 #endif
     }
