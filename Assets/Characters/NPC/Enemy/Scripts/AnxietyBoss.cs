@@ -17,6 +17,26 @@ public class AnxietyBoss : Enemy
         Debug.Log("Play teeth clack sound");
     }
 
+    public void PlayAttAnnounceSound()
+    {
+        Debug.Log("Play attack announce sound");
+    }
+
+    public void PlayScreamAttackSound()
+    {
+        Debug.Log("Play scream attack sound");
+    }
+
+    public void PlayEyePopSound()
+    {
+        Debug.Log("Play eye pop sound");
+    }
+
+    public void PlayDeathSound()
+    {
+        Debug.Log("Play death sound");
+    }
+
     public override void Die()
     {
         base.Die();
