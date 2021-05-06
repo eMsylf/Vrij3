@@ -1,7 +1,7 @@
-﻿using Boo.Lang;
-using RanchyRats.Gyrus;
+﻿using RanchyRats.Gyrus;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Enemy))]
 //[RequireComponent(typeof(Pathfinding))]
