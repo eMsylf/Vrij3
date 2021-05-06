@@ -7,6 +7,16 @@ using UnityEngine.Events;
 
 public class AnxietyBoss : Enemy
 {
+    public void PlayIdleSound()
+    {
+        Debug.Log("Play idle sound");
+    }
+
+    public void PlayTeethClackSound()
+    {
+        Debug.Log("Play teeth clack sound");
+    }
+
     public override void Die()
     {
         base.Die();
