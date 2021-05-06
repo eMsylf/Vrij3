@@ -20,7 +20,7 @@ public class Cone
     {
         
     }
-
+#if UNITY_EDITOR
     public void Draw(Vector3 origin, Vector3 direction, Vector3 orientation, float rangeModifier = 0f, float fovModifier = 0f)
     {
         Handles.color = handleColor;
@@ -38,4 +38,5 @@ public class Cone
         //    Handles.DrawSolidDisc(pos, orientation, 1);
         //}
     }
+#endif
 }
