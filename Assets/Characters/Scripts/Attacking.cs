@@ -354,8 +354,6 @@ namespace RanchyRats.Gyrus
             {
                 Character.Controller.movement.Stop();
                 Character.Controller.movement.constraints |= Movement.Constraints.Position; // TODO: Misschien beter om het movement component uit te schakelen
-                attack.events.OnDeactivation.AddListener(() => enabled = true);
-                enabled = false;
             }
             if (attack.restrictions.HasFlag(Restrictions.Rotate))
                 Character.Controller.movement.constraints |= Movement.Constraints.Rotation;
