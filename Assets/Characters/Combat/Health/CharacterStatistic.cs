@@ -105,6 +105,8 @@ namespace Gyrus
             {
                 Value = MaxValue;
             }
+            else
+                UpdateVisual(Value, false);
         }
 
         private void Update()

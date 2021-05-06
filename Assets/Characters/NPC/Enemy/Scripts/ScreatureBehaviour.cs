@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Screature : BehaviourController
+public class ScreatureBehaviour : BehaviourController
 {
     [Min(0)]
     public float 

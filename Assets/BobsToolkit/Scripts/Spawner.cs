@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BobJeltes.Attributes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,31 +7,38 @@ using UnityEngine.Events;
 public class Spawner : MonoBehaviour
 {
     public GameObject prefab;
-    public bool Continuous;
-    public bool PlayOnAwake = true;
-    public bool Local;
-    [Header("Wave settings")]
     [Min(0)]
     public int Amount;
+    public bool Local;
+    [ShowIf("Local", false)]
+    public Vector3 StartPosition = Vector3.zero;
+    public Vector3 StartRotation = Vector3.zero;
+    public bool SpawnOnEnable = true;
+    [Header("Wave settings")]
+    public bool Continuous;
     [Min(0)]
     public float Interval = 1f;
     private float timeRemaining;
     public UnityEvent OnSpawn;
 
+    [ContextMenu("Spawn")]
     public void Spawn()
     {
         Debug.Log("Spawn");
         for (int i = 0; i < Amount; i++)
         {
             if (Local) Instantiate(prefab, transform);
-            else Instantiate(prefab, transform.position, transform.rotation);
+            else
+            {
+                Instantiate(prefab, transform.position + StartPosition, transform.rotation * Quaternion.Euler(StartRotation));
+            }
         }
         OnSpawn.Invoke();
     }
 
     private void OnEnable()
     {
-        if (PlayOnAwake) Spawn();
+        if (SpawnOnEnable) Spawn();
     }
     private void Update()
     {

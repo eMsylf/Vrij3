@@ -340,7 +340,7 @@ namespace RanchyRats.Gyrus
             }
 
             if (Character.Animator != null)
-                Character.Animator.SetBool("IsAttacking", true);
+                Character.Animator.SetBool("Attacking", true);
             SetMovementRestrictions(attack);
             Character.stamina.Use(attack.staminaCost);
             attackEvents.OnAttackStarted.Invoke();
@@ -350,23 +350,23 @@ namespace RanchyRats.Gyrus
         public void SetMovementRestrictions(Attack attack)
         {
             if (Character.Controller.movement == null) return;
-
             if (attack.restrictions.HasFlag(Restrictions.Move))
             {
                 Character.Controller.movement.Stop();
-                Character.Controller.movement.LockPosition = true; // TODO: Misschien beter om het movement component uit te schakelen
+                Character.Controller.movement.constraints |= Movement.Constraints.Position; // TODO: Misschien beter om het movement component uit te schakelen
+                attack.events.OnDeactivation.AddListener(() => enabled = true);
+                enabled = false;
             }
             if (attack.restrictions.HasFlag(Restrictions.Rotate))
-                Character.Controller.movement.LockFacingDirection = true;
+                Character.Controller.movement.constraints |= Movement.Constraints.Rotation;
             if (attack.restrictions.HasFlag(Restrictions.StaminaRecovery))
                 Character.stamina.allowRecharge = !false;
         }
 
-        public void ResetMovementRestrictions()
+        public void ResetAttackRestrictions()
         {
             if (Character.Controller.movement == null) return;
-            Character.Controller.movement.LockPosition = false;
-            Character.Controller.movement.LockFacingDirection = false;
+            Character.Controller.movement.constraints = Movement.Constraints.None;
             Character.stamina.allowRecharge = true;
         }
 
@@ -374,13 +374,13 @@ namespace RanchyRats.Gyrus
         // Address this from the Animator, when leaving the attacking state
         public void EndAttack()
         {
-            ResetMovementRestrictions();
+            ResetAttackRestrictions();
 
             // Immediately update walking direction at end of attack 
             if (Character.Controller.movement != null)
                 Character.Controller.movement.ForceReadMoveInput();
             attackEvents.OnAttackEnded.Invoke();
-            if (Character.Animator != null) Character.Animator.SetBool("IsAttacking", false);
+            if (Character.Animator != null) Character.Animator.SetBool("Attacking", false);
         }
     }
 }
