@@ -8,18 +8,12 @@ using RanchyRats.Gyrus;
 
 public class PlayerAudioHandler : MonoBehaviour {
 
-    // TODO: Dit kan er wel uit, aangezien de PlayerController niet echt meer een rol speelt in het bepalen van positie
-    [SerializeField] private PlayerController playerController = default;
-    [Space]
     [Header("Audio settings")]
     [SerializeField] private AudioBank audioBankGameplay = default;
     [SerializeField] private AudioEvent audioEventFootstep = default;
     [SerializeField] private AudioEvent audioEventDash = default;
     [SerializeField] private AudioEvent audioEventPlayerAttack = default;
-    [SerializeField] private AudioEvent audioEventPlayerAttackv2 = default;
-    [SerializeField] private AudioEvent audioEventPlayerAttackv3 = default;
-
-    private AudioEvent currentAttackSound = default;
+    [SerializeField] private AudioParameter audioParameterPlayerAttackCharge = default;
 
     private IEnumerator Start()
     {
@@ -31,24 +25,6 @@ public class PlayerAudioHandler : MonoBehaviour {
 
         //playerController.PlayerDodge += OnPlayerDodge;
         //playerController.PlayerAttack += OnPlayerAttack;
-
-        currentAttackSound = audioEventPlayerAttack;
-    }
-
-    private void Update()
-    {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame)
-        {
-            currentAttackSound = audioEventPlayerAttack;
-        }
-        else if (Keyboard.current.digit2Key.wasPressedThisFrame)
-        {
-            currentAttackSound = audioEventPlayerAttackv2;
-        }
-        else if (Keyboard.current.digit3Key.wasPressedThisFrame)
-        {
-            currentAttackSound = audioEventPlayerAttackv3;
-        }
     }
 
     private void OnDestroy()
@@ -63,16 +39,18 @@ public class PlayerAudioHandler : MonoBehaviour {
     /// </summary>
     public void OnPlayerFootstep()
     {
-        audioEventFootstep.PlayOneShot(gameObject);
+        audioEventFootstep.PlayOneShot(gameObject, null).Release();
     }
 
     private void OnPlayerDodge()
     {
-        audioEventDash.PlayOneShot(gameObject);
+        audioEventDash.PlayOneShot(gameObject, null).Release();
     }
 
-    private void OnPlayerAttack(float charge)
+    public void HandlePlayerAttack(float charge)
     {
-        currentAttackSound.PlayOneShot(gameObject);
+        audioEventPlayerAttack.PlayOneShot(gameObject, null)
+            .SetParameter(audioParameterPlayerAttackCharge, charge)
+            .Release(); ;
     }
 }

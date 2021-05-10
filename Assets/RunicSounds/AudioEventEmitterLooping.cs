@@ -8,7 +8,7 @@ public class AudioEventEmitterLooping : MonoBehaviour
     [SerializeField] private AudioEvent audioEvent = default;
 
     private void Start() {
-        audioEvent.Play(gameObject);
+        audioEvent.Play(gameObject, null);
     }
 
     private void OnDestroy() {

@@ -10,15 +10,17 @@ namespace RunicSounds {
 
         [System.Serializable]
         public class PersistentFMODEventField {
-            private static readonly byte[] EMPTY_GUID = new byte[16] {
-                0,0,0,0,
-                0,0,0,0,
-                0,0,0,0,
-                0,0,0,0 };
 
             public bool IsValid {
                 get {
-                    return fmodGUID != EMPTY_GUID;
+                    for (int i = 0; i < fmodGUID.Length; i++)
+                    {
+                        if (fmodGUID[i] != 0)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
             }
 

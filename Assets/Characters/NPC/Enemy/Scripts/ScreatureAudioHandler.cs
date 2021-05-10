@@ -10,7 +10,7 @@ public class ScreatureAudioHandler : MonoBehaviour
 
     public void AttackStart()
     {
-        audioEventAttacking.Play(gameObject);
+        audioEventAttacking.Play(gameObject, null);
     }
 
     public void AttackEnd()
@@ -20,6 +20,6 @@ public class ScreatureAudioHandler : MonoBehaviour
 
     public void IsHitStart()
     {
-        audioEventIsHit.PlayOneShot(gameObject);
+        audioEventIsHit.PlayOneShot(gameObject, null).Release();
     }
 }

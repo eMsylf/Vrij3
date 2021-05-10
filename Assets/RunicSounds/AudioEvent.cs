@@ -36,9 +36,9 @@ namespace RunicSounds {
         /// Make sure Stop is called, otherwise memory issues might occur. Needs linked object for 3D information.
         /// </summary>
         /// <param name="linkedObject"></param>
-        public void Play(GameObject linkedObject = null) {
+        public void Play(GameObject linkedObject, Rigidbody linkedBody) {
             Stop();
-            activeAudioEvent = new ActiveAudioEvent(persistentFMODField.GUID, linkedObject);
+            activeAudioEvent = new ActiveAudioEvent(persistentFMODField.GUID, linkedObject, linkedBody);
         }
 
         /// <summary>
@@ -52,36 +52,28 @@ namespace RunicSounds {
         }
 
         /// <summary>
-        /// Cannot be stopped. Needs linked object for 3D information.
+        /// Don't forget to call release. Needs linked object for 3D information.
         /// </summary>
         /// <param name="linkedObject"></param>
-        public void PlayOneShot(GameObject linkedObject, params ActiveAudioParameter[] parameters) {
-            activeAudioEvent = new ActiveAudioEvent(persistentFMODField.GUID, linkedObject);
-            SetParameters(parameters);
-            activeAudioEvent.Release();
-            activeAudioEvent = null;
+        public ActiveAudioEvent PlayOneShot(GameObject linkedObject, Rigidbody linkedBody) {
+            return new ActiveAudioEvent(persistentFMODField.GUID, linkedObject, linkedBody);
         }
 
         /// <summary>
-        /// Cannot be stopped. Needs Vector3 for 3D information.
+        /// Don't forget to call release. Needs Vector3 for 3D information.
         /// </summary>
         /// <param name="linkedObject"></param>
-        public void PlayOneShot(Vector3 position, params ActiveAudioParameter[] parameters) {
-            activeAudioEvent = new ActiveAudioEvent(persistentFMODField.GUID, position);
-            SetParameters(parameters);
-            activeAudioEvent.Release();
-            activeAudioEvent = null;
+        public ActiveAudioEvent PlayOneShot(Vector3 position) {
+            return new ActiveAudioEvent(persistentFMODField.GUID, position);
         }
 
         /// <summary>
         /// Do not call before calling Play, parameter will not be applied.
         /// </summary>
         /// <param name="parameters"></param>
-        public void SetParameters(params ActiveAudioParameter[] parameters) {
+        public void SetParameter(PARAMETER_ID parameterID, float value, bool instant = false) {
             if (activeAudioEvent == null) { return; }
-            foreach (var parameter in parameters) {
-                activeAudioEvent.SetParameter(parameter.ID, parameter.Value, parameter.Instant);
-            }
+            activeAudioEvent.SetParameter(parameterID, value, instant);
         }
 
         /// <summary>
@@ -94,13 +86,13 @@ namespace RunicSounds {
             }
         }
 
-        private class ActiveAudioEvent {
+        public class ActiveAudioEvent {
             public EventInstance FMODEventInstance;
 
-            public ActiveAudioEvent(Guid Guid, GameObject LinkedObject) {
+            public ActiveAudioEvent(Guid Guid, GameObject LinkedObject, Rigidbody LinkedBody) {
                 this.FMODEventInstance = RuntimeManager.CreateInstance(Guid);
                 if (LinkedObject != null) {
-                    RuntimeManager.AttachInstanceToGameObject(this.FMODEventInstance, LinkedObject.transform, LinkedObject.GetComponent<Rigidbody>());
+                    RuntimeManager.AttachInstanceToGameObject(this.FMODEventInstance, LinkedObject.transform, LinkedBody);
                 }
                 this.FMODEventInstance.start();
             }
@@ -120,8 +112,9 @@ namespace RunicSounds {
                 this.FMODEventInstance.release();
             }
 
-            public void SetParameter(PARAMETER_ID parameterID, float value, bool instant) {
+            public ActiveAudioEvent SetParameter(PARAMETER_ID parameterID, float value, bool instant = false) {
                 this.FMODEventInstance.setParameterByID(parameterID, value, instant);
+                return this;
             }
         }
     }

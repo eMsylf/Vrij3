@@ -454,9 +454,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 761834d23738ce24f91ae494e3a258a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
   audioBankGameplay:
-    bankReference: {fileID: 0}
+    bankReference: {fileID: 11400000, guid: a4ee75da11bbe704a9babf83504ee123, type: 2}
   audioEventFootstep:
     persistentFMODField:
       stringFMODRef: event:/sfx/player/sd_sfx_player_footstep
@@ -468,15 +467,12 @@ MonoBehaviour:
   audioEventPlayerAttack:
     persistentFMODField:
       stringFMODRef: event:/sfx/player/sd_sfx_player_attack
-      fmodGUID: 65e491c0bb42bc44a7a56cbf7e08ae2d
-  audioEventPlayerAttackv2:
-    persistentFMODField:
-      stringFMODRef: event:/sfx/player/sd_sfx_player_attack_v2
-      fmodGUID: ef72328e02b672459e4c9be0fd4dff35
-  audioEventPlayerAttackv3:
-    persistentFMODField:
-      stringFMODRef: event:/sfx/player/sd_sfx_player_attack_v3
       fmodGUID: d783aa1c642cde468e8656194499d5bf
+  audioParameterPlayerAttackCharge:
+    persistentFMODParamField:
+      stringFMODRef: local - sd_param_attackCharge
+      paramdata1: 3995997462
+      paramdata2: 3300146722
 --- !u!1 &379087688215610876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,6 +997,19 @@ MonoBehaviour:
     IndicatorColor: {r: 1, g: 1, b: 1, a: 1}
     direction: 0
     invertDirection: 0
+--- !u!65 &1976061806
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4916414227641127482}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.9552891, y: 1.7390994, z: 2.8761928}
+  m_Center: {x: 0.39741448, y: 0.0000000018789497, z: -1.7463765e-16}
 --- !u!114 &379087686969212200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1080,19 +1089,6 @@ MonoBehaviour:
     OnHitEvent:
       m_PersistentCalls:
         m_Calls: []
---- !u!65 &1976061806
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4916414227641127482}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.9552891, y: 1.7390994, z: 2.8761928}
-  m_Center: {x: 0.39741448, y: 0.0000000018789497, z: -1.7463765e-16}
 --- !u!114 &379087687790692414
 MonoBehaviour:
   m_ObjectHideFlags: 0

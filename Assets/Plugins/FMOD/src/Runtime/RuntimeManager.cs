@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
@@ -1012,6 +1012,17 @@ retry:
         public static FMOD.Studio.EventInstance CreateInstance(Guid guid)
         {
             FMOD.Studio.EventDescription eventDesc = GetEventDescription(guid);
+            FMOD.Studio.LOADING_STATE state = FMOD.Studio.LOADING_STATE.UNLOADED;
+            var result = eventDesc.getSampleLoadingState(out state);
+
+            if (result == FMOD.RESULT.OK) {
+                if (state!= FMOD.Studio.LOADING_STATE.LOADED) {
+                    throw new Exception("FMOD: Cannot create event, event not loaded (loading state: " + state + ")");
+                }
+            } else {
+                throw new Exception(FMOD.Error.String(result));
+            }
+
             FMOD.Studio.EventInstance newInstance;
             eventDesc.createInstance(out newInstance);
 
