@@ -104,6 +104,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{9e51d290-09be-4d96-99c1-c182e5af89c3}">
+		<property name="volume">
+			<value>-3.5</value>
+		</property>
 		<relationship name="effectChain">
 			<destination>{c78f159c-39ab-4897-95cc-fe2abf652f23}</destination>
 		</relationship>
@@ -347,7 +350,7 @@
 	<object class="MixerBusFader" id="{d100b747-b80a-4f70-b700-c721168a6d8f}" />
 	<object class="ProxyEffect" id="{7f34ff31-e1f4-40b8-803c-9c7db0b5b8bd}">
 		<property name="inputFormat">
-			<value>1</value>
+			<value>0</value>
 		</property>
 		<relationship name="preset">
 			<destination>{13a39e24-ba62-44f2-abae-28fb74f11554}</destination>

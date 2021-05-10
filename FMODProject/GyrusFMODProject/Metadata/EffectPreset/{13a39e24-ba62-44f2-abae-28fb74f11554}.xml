@@ -14,14 +14,32 @@
 	<object class="EffectChain" id="{64105171-199e-4694-a758-bb29be88b11c}">
 		<relationship name="effects">
 			<destination>{bf62a7de-c09e-4206-bbac-5e1297ef6909}</destination>
+			<destination>{781e6355-1c96-4615-b1b4-8ee002e25e21}</destination>
 		</relationship>
 	</object>
 	<object class="SpatialiserEffect" id="{bf62a7de-c09e-4206-bbac-5e1297ef6909}">
 		<property name="minimumDistance">
-			<value>4</value>
+			<value>8</value>
 		</property>
 		<property name="maximumDistance">
-			<value>30</value>
+			<value>45</value>
 		</property>
+		<property name="extentMode">
+			<value>1</value>
+		</property>
+		<property name="soundSize">
+			<value>15</value>
+		</property>
+	</object>
+	<object class="MixerSend" id="{781e6355-1c96-4615-b1b4-8ee002e25e21}">
+		<property name="level">
+			<value>-11.5</value>
+		</property>
+		<property name="inputFormat">
+			<value>2</value>
+		</property>
+		<relationship name="mixerReturn">
+			<destination>{7f977b20-8382-4150-8a3d-4f59b553ca4e}</destination>
+		</relationship>
 	</object>
 </objects>

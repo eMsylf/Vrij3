@@ -18,7 +18,6 @@ public class ScreatureAudioHandler : MonoBehaviour
         {
             timeAttacking += Time.deltaTime;
             audioEventAttacking.SetParameter(audioParameterAttackProgress, Mathf.Clamp01(timeAttacking / attackDuration));
-            Debug.Log(Mathf.Clamp01(timeAttacking / attackDuration));
         }
     }
 
@@ -35,6 +34,7 @@ public class ScreatureAudioHandler : MonoBehaviour
 
     public void IsHitStart()
     {
+        Debug.Log("Hit sound should play");
         audioEventIsHit.PlayOneShot(gameObject, null).Release();
     }
 }
