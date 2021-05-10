@@ -16,8 +16,6 @@ public class PlayerStateMachine : StateMachineBehaviour
             audioHandler = animator.GetComponentInParent<PlayerAudioHandler>();
         }
 
-        Debug.Log("ENTER: " + thisState);
-
         switch (thisState)
         {
             case PlayerStates.Idle:
@@ -40,7 +38,6 @@ public class PlayerStateMachine : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("EXIT: " + thisState);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
