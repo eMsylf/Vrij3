@@ -14,6 +14,10 @@ public class PlayerAudioHandler : MonoBehaviour {
     [SerializeField] private AudioEvent audioEventDash = default;
     [SerializeField] private AudioEvent audioEventPlayerAttack = default;
     [SerializeField] private AudioParameter audioParameterPlayerAttackCharge = default;
+    [SerializeField] private AudioEvent audioEventPlayerCharge = default;
+    [SerializeField] private AudioParameter audioParameterChargeProgress = default;
+
+    private float lastChargeValue = 0;
 
     private IEnumerator Start()
     {
@@ -47,10 +51,38 @@ public class PlayerAudioHandler : MonoBehaviour {
         audioEventDash.PlayOneShot(gameObject, null).Release();
     }
 
-    public void HandlePlayerAttack(float charge)
+    public void HandlePlayerAttack()
     {
+        int chargeIntValue = 0;
+        if (lastChargeValue != 0)
+        {
+            chargeIntValue = 1;
+        }
+        if (lastChargeValue > 0.5f)
+        {
+            chargeIntValue = 2;
+        }
         audioEventPlayerAttack.PlayOneShot(gameObject, null)
-            .SetParameter(audioParameterPlayerAttackCharge, charge)
+            .SetParameter(audioParameterPlayerAttackCharge, chargeIntValue)
             .Release(); ;
+
+        lastChargeValue = 0;
+    }
+
+    public void HandleChargeStart()
+    {
+        audioEventPlayerCharge.Play(gameObject, null);
+    }
+
+    public void HandleChargeChanged(float value)
+    {
+        Debug.Log(value);
+        audioEventPlayerCharge.SetParameter(audioParameterChargeProgress, value);
+        lastChargeValue = value;
+    }
+
+    public void HandleChargeEnd()
+    {
+        audioEventPlayerCharge.Stop();
     }
 }

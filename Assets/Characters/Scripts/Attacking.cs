@@ -21,6 +21,8 @@ namespace RanchyRats.Gyrus
             public UnityEvent OnChargeStopped;
             [Header("Passes the percentual charge between 0 and 1")]
             public UnityEventFloat OnChargeChanged;
+            [Header("Passes the percentual charge between 0 and 1")]
+            public UnityEventFloat OnChargeChangedGradual;
         }
         public CharacterStatistic ChargeIndicator;
         [Tooltip("Time it takes for the slider to fill up")]
@@ -283,6 +285,7 @@ namespace RanchyRats.Gyrus
                 // TODO: Evaluate the current charge state. Do this using the attack charge requirements, and getting the attack's index
                 int currentIndex = chargedAttacks.FindIndex(x => x.Equals(GetChargedAttack(LatestCharge)));
                 Debug.Log("Latest charge: " + LatestCharge);
+                chargeEvents.OnChargeChangedGradual.Invoke(LatestCharge);
 
                 // Compare the current charge state with the previous charge state. If it's different, change the indicator and play the corresponding tick sound
                 if (currentIndex != previousIndex)

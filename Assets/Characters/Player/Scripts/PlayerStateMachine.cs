@@ -25,7 +25,6 @@ public class PlayerStateMachine : StateMachineBehaviour
             case PlayerStates.Walking:
                 break;
             case PlayerStates.Attack:
-                audioHandler.HandlePlayerAttack(0);
                 break;
             case PlayerStates.Hit:
                 break;

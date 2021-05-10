@@ -473,6 +473,15 @@ MonoBehaviour:
       stringFMODRef: local - sd_param_attackCharge
       paramdata1: 3995997462
       paramdata2: 3300146722
+  audioEventPlayerCharge:
+    persistentFMODField:
+      stringFMODRef: event:/sfx/player/sd_sfx_player_charge
+      fmodGUID: 27dc9c04729eef42ae52f0624d821b37
+  audioParameterChargeProgress:
+    persistentFMODParamField:
+      stringFMODRef: local - sd_param_progress
+      paramdata1: 1105688765
+      paramdata2: 3861410625
 --- !u!1 &379087688215610876
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,13 +815,49 @@ MonoBehaviour:
   chargeEvents:
     OnChargeStarted:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 379087688166748573}
+          m_MethodName: HandleChargeStart
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnChargeStopped:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 379087688166748573}
+          m_MethodName: HandleChargeEnd
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnChargeChanged:
       m_PersistentCalls:
         m_Calls: []
+    OnChargeChangedGradual:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 379087688166748573}
+          m_MethodName: HandleChargeChanged
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   ChargeIndicator: {fileID: 379087688215610874}
   ChargeTimeMax: 2
   energyCost:
@@ -842,7 +887,18 @@ MonoBehaviour:
         m_Calls: []
     OnAttackStarted:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 379087688166748573}
+          m_MethodName: HandlePlayerAttack
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnAttackEnded:
       m_PersistentCalls:
         m_Calls: []
