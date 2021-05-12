@@ -231,6 +231,7 @@ namespace RanchyRats.Gyrus
 
         public void EndCharge(bool complete)
         {
+            chargeEvents.OnChargeStopped.Invoke();
             if (!IsCharging)
             {
                 Debug.Log("Not charging.");
@@ -253,7 +254,7 @@ namespace RanchyRats.Gyrus
                 else
                     energyCost.energyPool.Energy -= energyCost.fullChargeEnergyCost;
             }
-            chargeEvents.OnChargeStopped.Invoke();
+            
             IsCharging = false;
             if (complete)
                 StartAttack(LatestCharge);
