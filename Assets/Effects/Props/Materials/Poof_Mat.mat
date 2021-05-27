@@ -7,29 +7,22 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anger_Mat
+  m_Name: Poof_Mat
   m_Shader: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON
-  m_LightmapFlags: 4
+  m_ShaderKeywords: _EMISSION
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2500
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3050
   stringTagMap:
-    RenderType: TransparentCutout
-  disabledShaderPasses: []
+    RenderType: Transparent
+  disabledShaderPasses:
+  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - Texture2D_35950978:
-        m_Texture: {fileID: 2800000, guid: 655f1aa00a5748c4fafdad84af0ef294, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: bc0ebd66e416ab344b0ae0f0a65e3846, type: 3}
+        m_Texture: {fileID: 2800000, guid: 71201f67fd579274981a8438c048a9f3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -41,18 +34,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2e0ef771ffe41944788ab21f634609d5, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e55d562d7f873cb45a877978ca2b69e9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -65,10 +50,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - FloodAmount: 0
-    - Vector1_A7F06659: -0.05
-    - Vector1_AB1CDAF4: 0
-    - _AlphaClip: 1
+    - _AlphaClip: 0
     - _Blend: 0
     - _BlendOp: 0
     - _BumpScale: 1
@@ -76,14 +58,13 @@ Material:
     - _CameraFarFadeDistance: 2
     - _CameraNearFadeDistance: 1
     - _ColorMode: 0
-    - _Cull: 0
+    - _Cull: 2
     - _Cutoff: 0.5
     - _DistortionBlend: 0.5
     - _DistortionEnabled: 0
     - _DistortionStrength: 1
     - _DistortionStrengthScaled: 0.1
-    - _DstBlend: 0
-    - _EnableExternalAlpha: 0
+    - _DstBlend: 10
     - _EnvironmentReflections: 1
     - _FlipbookBlending: 0
     - _FlipbookMode: 0
@@ -101,24 +82,19 @@ Material:
     - _SoftParticlesFarFadeDistance: 1
     - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _Surface: 0
+    - _SrcBlend: 5
+    - _Surface: 1
     - _WorkflowMode: 1
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
-    - Color_2A24F155: {r: 1, g: 1, b: 1, a: 1}
-    - Color_D18B9B64: {r: 1, g: 1, b: 1, a: 1}
-    - FloodColor: {r: 7.129739, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 1, g: 0.4481132, b: 0.6456593, a: 1}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _CameraFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0.8912174, g: 0.8912174, b: 0.8912174, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
---- !u!114 &6224534433153259710
+--- !u!114 &5108983764000143775
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
