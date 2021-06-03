@@ -4650,7 +4650,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 284320874}
-  m_LocalRotation: {x: 0.035247203, y: 0.562803, z: -0.024030866, w: 0.8254896}
+  m_LocalRotation: {x: 0.035247203, y: 0.5628029, z: -0.024030864, w: 0.82548964}
   m_LocalPosition: {x: -29.7, y: 3.5916436, z: -7.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -15618,7 +15618,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -15654,7 +15654,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -34384,7 +34384,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1740608649}
-  m_LocalRotation: {x: 0.04666244, y: -0.71446997, z: 0.047868732, w: 0.69646525}
+  m_LocalRotation: {x: 0.046662435, y: -0.71446997, z: 0.04786873, w: 0.69646525}
   m_LocalPosition: {x: -6.315899, y: 3.0632706, z: -1.2073857}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -36986,6 +36986,21 @@ PrefabInstance:
     - target: {fileID: 379087688321120584, guid: 1b4ca5e87d09fad4e8d572d1f68206fc,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 379087688321120585, guid: 1b4ca5e87d09fad4e8d572d1f68206fc,
+        type: 3}
+      propertyPath: slowmotion.Trigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 379087688321120585, guid: 1b4ca5e87d09fad4e8d572d1f68206fc,
+        type: 3}
+      propertyPath: slowmotion.Factor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 379087688321120585, guid: 1b4ca5e87d09fad4e8d572d1f68206fc,
+        type: 3}
+      propertyPath: AllowCharging
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -43266,22 +43281,22 @@ PrefabInstance:
     - target: {fileID: 3103253425258458974, guid: e05b2dc537fb9f244aefb355df3a1a6c,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.007121109
+      value: -0.007369472
       objectReference: {fileID: 0}
     - target: {fileID: 3103253425258458974, guid: e05b2dc537fb9f244aefb355df3a1a6c,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.66859525
+      value: 0.69191384
       objectReference: {fileID: 0}
     - target: {fileID: 3103253425258458974, guid: e05b2dc537fb9f244aefb355df3a1a6c,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00723094
+      value: -0.007483134
       objectReference: {fileID: 0}
     - target: {fileID: 3103253425258458974, guid: e05b2dc537fb9f244aefb355df3a1a6c,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.75262964
+      value: -0.7219037
       objectReference: {fileID: 0}
     - target: {fileID: 3103253425258458974, guid: e05b2dc537fb9f244aefb355df3a1a6c,
         type: 3}
